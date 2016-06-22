@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  EverywhereVisualViewControllers.h
 //  Everywhere
 //
 //  Created by 张保国 on 16/6/22.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
-
+@interface MainVC : UIViewController
 
 @end
-

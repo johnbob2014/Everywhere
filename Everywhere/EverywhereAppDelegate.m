@@ -1,22 +1,28 @@
 //
-//  AppDelegate.m
+//  EverywhereAppDelegate.m
 //  Everywhere
 //
 //  Created by 张保国 on 16/6/22.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#import "AppDelegate.h"
+#import "EverywhereAppDelegate.h"
+#import "EverywhereVisualViewControllers.h"
 
-@interface AppDelegate ()
+@interface EverywhereAppDelegate ()
 
 @end
 
-@implementation AppDelegate
+@implementation EverywhereAppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    MainVC *mainVC = [MainVC new];
+    //UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:mainVC];
+    self.window.rootViewController = mainVC;
+    [self.window makeKeyAndVisible];
+    
     return YES;
 }
 

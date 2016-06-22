@@ -8,26 +8,31 @@
 
 /* Begin PBXBuildFile section */
 		1E2847F71D1ADDB900189A83 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E2847F61D1ADDB900189A83 /* main.m */; };
-		1E2847FA1D1ADDB900189A83 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E2847F91D1ADDB900189A83 /* AppDelegate.m */; };
-		1E2847FD1D1ADDB900189A83 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E2847FC1D1ADDB900189A83 /* ViewController.m */; };
-		1E2848001D1ADDB900189A83 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E2847FE1D1ADDB900189A83 /* Main.storyboard */; };
+		1E2847FA1D1ADDB900189A83 /* EverywhereAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E2847F91D1ADDB900189A83 /* EverywhereAppDelegate.m */; };
 		1E2848031D1ADDB900189A83 /* Everywhere.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1E2848011D1ADDB900189A83 /* Everywhere.xcdatamodeld */; };
 		1E2848051D1ADDB900189A83 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1E2848041D1ADDB900189A83 /* Assets.xcassets */; };
 		1E2848081D1ADDB900189A83 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E2848061D1ADDB900189A83 /* LaunchScreen.storyboard */; };
+		1E2848141D1ADEC300189A83 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E2848131D1ADEC300189A83 /* StoreKit.framework */; };
+		1E2848171D1ADFF400189A83 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E2848161D1ADFF400189A83 /* CoreLocation.framework */; };
+		1E2848191D1AE00000189A83 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E2848181D1AE00000189A83 /* Photos.framework */; };
+		1E28481D1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E28481C1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1E2847F21D1ADDB900189A83 /* Everywhere.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Everywhere.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E2847F61D1ADDB900189A83 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		1E2847F81D1ADDB900189A83 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		1E2847F91D1ADDB900189A83 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		1E2847FB1D1ADDB900189A83 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		1E2847FC1D1ADDB900189A83 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		1E2847FF1D1ADDB900189A83 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		1E2847F81D1ADDB900189A83 /* EverywhereAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EverywhereAppDelegate.h; sourceTree = "<group>"; };
+		1E2847F91D1ADDB900189A83 /* EverywhereAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EverywhereAppDelegate.m; sourceTree = "<group>"; };
 		1E2848021D1ADDB900189A83 /* Everywhere.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Everywhere.xcdatamodel; sourceTree = "<group>"; };
 		1E2848041D1ADDB900189A83 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1E2848071D1ADDB900189A83 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1E2848091D1ADDB900189A83 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1E2848131D1ADEC300189A83 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		1E2848151D1ADF6700189A83 /* Everywhere.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Everywhere.entitlements; sourceTree = "<group>"; };
+		1E2848161D1ADFF400189A83 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		1E2848181D1AE00000189A83 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
+		1E28481B1D1AE0FD00189A83 /* EverywhereVisualViewControllers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EverywhereVisualViewControllers.h; sourceTree = "<group>"; };
+		1E28481C1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EverywhereVisualViewControllers.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +40,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E2848191D1AE00000189A83 /* Photos.framework in Frameworks */,
+				1E2848171D1ADFF400189A83 /* CoreLocation.framework in Frameworks */,
+				1E2848141D1ADEC300189A83 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +52,7 @@
 		1E2847E91D1ADDB900189A83 = {
 			isa = PBXGroup;
 			children = (
+				1E28481A1D1AE00C00189A83 /* Frameworks */,
 				1E2847F41D1ADDB900189A83 /* Everywhere */,
 				1E2847F31D1ADDB900189A83 /* Products */,
 			);
@@ -60,26 +69,28 @@
 		1E2847F41D1ADDB900189A83 /* Everywhere */ = {
 			isa = PBXGroup;
 			children = (
-				1E2847F81D1ADDB900189A83 /* AppDelegate.h */,
-				1E2847F91D1ADDB900189A83 /* AppDelegate.m */,
-				1E2847FB1D1ADDB900189A83 /* ViewController.h */,
-				1E2847FC1D1ADDB900189A83 /* ViewController.m */,
-				1E2847FE1D1ADDB900189A83 /* Main.storyboard */,
+				1E2848151D1ADF6700189A83 /* Everywhere.entitlements */,
+				1E2848011D1ADDB900189A83 /* Everywhere.xcdatamodeld */,
+				1E2847F61D1ADDB900189A83 /* main.m */,
+				1E2848091D1ADDB900189A83 /* Info.plist */,
+				1E2847F81D1ADDB900189A83 /* EverywhereAppDelegate.h */,
+				1E2847F91D1ADDB900189A83 /* EverywhereAppDelegate.m */,
+				1E28481B1D1AE0FD00189A83 /* EverywhereVisualViewControllers.h */,
+				1E28481C1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m */,
 				1E2848041D1ADDB900189A83 /* Assets.xcassets */,
 				1E2848061D1ADDB900189A83 /* LaunchScreen.storyboard */,
-				1E2848091D1ADDB900189A83 /* Info.plist */,
-				1E2848011D1ADDB900189A83 /* Everywhere.xcdatamodeld */,
-				1E2847F51D1ADDB900189A83 /* Supporting Files */,
 			);
 			path = Everywhere;
 			sourceTree = "<group>";
 		};
-		1E2847F51D1ADDB900189A83 /* Supporting Files */ = {
+		1E28481A1D1AE00C00189A83 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1E2847F61D1ADDB900189A83 /* main.m */,
+				1E2848181D1AE00000189A83 /* Photos.framework */,
+				1E2848161D1ADFF400189A83 /* CoreLocation.framework */,
+				1E2848131D1ADEC300189A83 /* StoreKit.framework */,
 			);
-			name = "Supporting Files";
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -113,6 +124,21 @@
 				TargetAttributes = {
 					1E2847F11D1ADDB900189A83 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = 9R3WHNFTF3;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+							com.apple.Maps.iOS = {
+								enabled = 0;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -141,7 +167,6 @@
 			files = (
 				1E2848081D1ADDB900189A83 /* LaunchScreen.storyboard in Resources */,
 				1E2848051D1ADDB900189A83 /* Assets.xcassets in Resources */,
-				1E2848001D1ADDB900189A83 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,9 +177,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1E2847FD1D1ADDB900189A83 /* ViewController.m in Sources */,
+				1E28481D1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m in Sources */,
 				1E2848031D1ADDB900189A83 /* Everywhere.xcdatamodeld in Sources */,
-				1E2847FA1D1ADDB900189A83 /* AppDelegate.m in Sources */,
+				1E2847FA1D1ADDB900189A83 /* EverywhereAppDelegate.m in Sources */,
 				1E2847F71D1ADDB900189A83 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -162,14 +187,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		1E2847FE1D1ADDB900189A83 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				1E2847FF1D1ADDB900189A83 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		1E2848061D1ADDB900189A83 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -267,10 +284,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Everywhere/Everywhere.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Everywhere/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ZhangBaoGuo.Everywhere;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -278,10 +300,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Everywhere/Everywhere.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Everywhere/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ZhangBaoGuo.Everywhere;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

@@ -1,5 +1,5 @@
 //
-//  AppDelegate.h
+//  EverywhereAppDelegate.h
 //  Everywhere
 //
 //  Created by 张保国 on 16/6/22.
@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface EverywhereAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
