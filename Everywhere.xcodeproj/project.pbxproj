@@ -16,6 +16,7 @@
 		1E2848171D1ADFF400189A83 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E2848161D1ADFF400189A83 /* CoreLocation.framework */; };
 		1E2848191D1AE00000189A83 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E2848181D1AE00000189A83 /* Photos.framework */; };
 		1E28481D1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E28481C1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m */; };
+		4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +34,8 @@
 		1E2848181D1AE00000189A83 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		1E28481B1D1AE0FD00189A83 /* EverywhereVisualViewControllers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EverywhereVisualViewControllers.h; sourceTree = "<group>"; };
 		1E28481C1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EverywhereVisualViewControllers.m; sourceTree = "<group>"; };
+		4B3C10061D1CDCA700C20C72 /* UIView+AutoLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AutoLayout.h"; sourceTree = "<group>"; };
+		4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AutoLayout.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,9 +55,9 @@
 		1E2847E91D1ADDB900189A83 = {
 			isa = PBXGroup;
 			children = (
+				1E2847F31D1ADDB900189A83 /* Products */,
 				1E28481A1D1AE00C00189A83 /* Frameworks */,
 				1E2847F41D1ADDB900189A83 /* Everywhere */,
-				1E2847F31D1ADDB900189A83 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -69,6 +72,7 @@
 		1E2847F41D1ADDB900189A83 /* Everywhere */ = {
 			isa = PBXGroup;
 			children = (
+				4B3C10051D1CDCA700C20C72 /* UIView+AutoLayout */,
 				1E2848151D1ADF6700189A83 /* Everywhere.entitlements */,
 				1E2848011D1ADDB900189A83 /* Everywhere.xcdatamodeld */,
 				1E2847F61D1ADDB900189A83 /* main.m */,
@@ -91,6 +95,15 @@
 				1E2848131D1ADEC300189A83 /* StoreKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4B3C10051D1CDCA700C20C72 /* UIView+AutoLayout */ = {
+			isa = PBXGroup;
+			children = (
+				4B3C10061D1CDCA700C20C72 /* UIView+AutoLayout.h */,
+				4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */,
+			);
+			path = "UIView+AutoLayout";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -177,6 +190,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */,
 				1E28481D1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m in Sources */,
 				1E2848031D1ADDB900189A83 /* Everywhere.xcdatamodeld in Sources */,
 				1E2847FA1D1ADDB900189A83 /* EverywhereAppDelegate.m in Sources */,
@@ -331,6 +345,7 @@
 				1E28480E1D1ADDB900189A83 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

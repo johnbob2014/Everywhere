@@ -11,3 +11,7 @@
 @interface MainVC : UIViewController
 
 @end
+
+@interface MapVC : UIViewController
+
+@end

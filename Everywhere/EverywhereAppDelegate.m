@@ -18,9 +18,13 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     MainVC *mainVC = [MainVC new];
-    //UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:mainVC];
-    self.window.rootViewController = mainVC;
+    MapVC *mapVC = [MapVC new];
+    mapVC.edgesForExtendedLayout = UIRectEdgeNone;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:mapVC];
+    self.window.backgroundColor = [UIColor whiteColor];
+    self.window.rootViewController = nav;
     [self.window makeKeyAndVisible];
     
     return YES;
