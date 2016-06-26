@@ -16,6 +16,8 @@
 		1E2848171D1ADFF400189A83 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E2848161D1ADFF400189A83 /* CoreLocation.framework */; };
 		1E2848191D1AE00000189A83 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E2848181D1AE00000189A83 /* Photos.framework */; };
 		1E28481D1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E28481C1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m */; };
+		1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */; };
+		1E9D5D441D1E8F2D00E8B630 /* Everywhere.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */; };
 		4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */; };
 /* End PBXBuildFile section */
 
@@ -34,6 +36,9 @@
 		1E2848181D1AE00000189A83 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		1E28481B1D1AE0FD00189A83 /* EverywhereVisualViewControllers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EverywhereVisualViewControllers.h; sourceTree = "<group>"; };
 		1E28481C1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EverywhereVisualViewControllers.m; sourceTree = "<group>"; };
+		1E9D5D401D1E2AFE00E8B630 /* WGS84TOGCJ02.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WGS84TOGCJ02.h; path = WGS84TOGCJ02/WGS84TOGCJ02.h; sourceTree = "<group>"; };
+		1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WGS84TOGCJ02.m; path = WGS84TOGCJ02/WGS84TOGCJ02.m; sourceTree = "<group>"; };
+		1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Everywhere.rtf; sourceTree = "<group>"; };
 		4B3C10061D1CDCA700C20C72 /* UIView+AutoLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AutoLayout.h"; sourceTree = "<group>"; };
 		4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AutoLayout.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -72,6 +77,7 @@
 		1E2847F41D1ADDB900189A83 /* Everywhere */ = {
 			isa = PBXGroup;
 			children = (
+				1E9D5D3F1D1E2ADB00E8B630 /* WGS84TOGCJ02 */,
 				4B3C10051D1CDCA700C20C72 /* UIView+AutoLayout */,
 				1E2848151D1ADF6700189A83 /* Everywhere.entitlements */,
 				1E2848011D1ADDB900189A83 /* Everywhere.xcdatamodeld */,
@@ -81,6 +87,7 @@
 				1E2847F91D1ADDB900189A83 /* EverywhereAppDelegate.m */,
 				1E28481B1D1AE0FD00189A83 /* EverywhereVisualViewControllers.h */,
 				1E28481C1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m */,
+				1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */,
 				1E2848041D1ADDB900189A83 /* Assets.xcassets */,
 				1E2848061D1ADDB900189A83 /* LaunchScreen.storyboard */,
 			);
@@ -95,6 +102,15 @@
 				1E2848131D1ADEC300189A83 /* StoreKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		1E9D5D3F1D1E2ADB00E8B630 /* WGS84TOGCJ02 */ = {
+			isa = PBXGroup;
+			children = (
+				1E9D5D401D1E2AFE00E8B630 /* WGS84TOGCJ02.h */,
+				1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */,
+			);
+			name = WGS84TOGCJ02;
 			sourceTree = "<group>";
 		};
 		4B3C10051D1CDCA700C20C72 /* UIView+AutoLayout */ = {
@@ -178,6 +194,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E9D5D441D1E8F2D00E8B630 /* Everywhere.rtf in Resources */,
 				1E2848081D1ADDB900189A83 /* LaunchScreen.storyboard in Resources */,
 				1E2848051D1ADDB900189A83 /* Assets.xcassets in Resources */,
 			);
@@ -191,6 +208,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */,
+				1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */,
 				1E28481D1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m in Sources */,
 				1E2848031D1ADDB900189A83 /* Everywhere.xcdatamodeld in Sources */,
 				1E2847FA1D1ADDB900189A83 /* EverywhereAppDelegate.m in Sources */,

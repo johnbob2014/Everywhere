@@ -19,24 +19,28 @@
 @import CoreLocation;
 @import MapKit;
 @import Photos;
+#import "WGS84TOGCJ02.h"
 
 #pragma mark - MapVC
 
 @interface EverywhereMKAnnotation : NSObject <MKAnnotation>
 @property (strong,nonatomic) CLLocation *locaton;
+@property (strong,nonatomic) UIImage *thumbnailImage;
+@property (strong,nonatomic) NSURL *assetURL;
 @end
 
 @implementation EverywhereMKAnnotation
 @synthesize coordinate;
 
-- (void)setLocaton:(CLLocation *)locaton{
-    if (locaton) coordinate = self.locaton.coordinate;
-    NSLog(@"EverywhereMKAnnotation : coordinate updated!");
-}
-
-//-(CLLocationCoordinate2D)coordinate{
-//    return self.locaton.coordinate;
+//- (void)setLocaton:(CLLocation *)locaton{
+//    if (locaton) coordinate = self.locaton.coordinate;
+//    NSLog(@"EverywhereMKAnnotation : coordinate updated!");
 //}
+
+-(CLLocationCoordinate2D)coordinate{
+    CLLocationCoordinate2D originalCoordinate = self.locaton.coordinate;
+    return [WGS84TOGCJ02 transformFromWGSToGCJ:originalCoordinate];
+}
 
 @end
 
@@ -55,16 +59,27 @@
 @end
 
 @implementation MapVC{
-    MKMapView *mapView;
+    MKMapView *myMapView;
     CLLocationManager *locationManager;
+    UILabel *scaleLabel;
 }
 
 - (void)loadView{
     self.view = [UIView new];
     self.view.backgroundColor = [UIColor grayColor];
-    mapView = [MKMapView newAutoLayoutView];
-    [self.view addSubview:mapView];
-    [mapView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+    myMapView = [MKMapView newAutoLayoutView];
+    myMapView.delegate = self;
+    myMapView.showsUserLocation = YES;
+    // myMapView.showsScale = YES;
+    // myMapView.showsCompass = YES;
+    // myMapView.showsPointsOfInterest = YES;
+    [self.view addSubview:myMapView];
+    [myMapView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+    
+    scaleLabel = [UILabel newAutoLayoutView];
+    [self.view addSubview:scaleLabel];
+    [scaleLabel autoPinEdgeToSuperviewEdge:ALEdgeLeading withInset:20];
+    [scaleLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:20];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(action:)];
 }
@@ -96,7 +111,7 @@
     //locationManager.distanceFilter = CLLocationDistanceMax;
     [locationManager startUpdatingLocation];
     
-    mapView.showsUserLocation = YES;
+    
 }
 
 - (void)didReceiveMemoryWarning{
@@ -106,9 +121,7 @@
 #pragma mark CLLocationManagerDelegate
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations{
-    CLLocationCoordinate2D currentLocation = [locations lastObject].coordinate;
-    MKCoordinateRegion aRegion = MKCoordinateRegionMakeWithDistance(currentLocation, 500, 500);
-    [mapView setRegion:aRegion animated:YES];
+
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{
@@ -131,17 +144,43 @@
     PHAsset *asset = fetchResult.firstObject;
     if (asset) self.imageLocation = asset.location;
     
-    if (self.imageLocation) {
+    if (self.imageLocation && self.imageLocation.coordinate.latitude != 0 && self.imageLocation.coordinate.longitude != 0) {
         [locationManager stopUpdatingLocation];
         
-        NSLog(@"Locate to : %@",self.imageLocation);
-        CLLocationCoordinate2D currentLocation = self.imageLocation.coordinate;
-        MKCoordinateRegion aRegion = MKCoordinateRegionMakeWithDistance(currentLocation, 500, 500);
-        [mapView setRegion:aRegion animated:YES];
+        __block UIImage *requestImage = nil;
+        PHImageRequestOptions *imageRequestOptions = [PHImageRequestOptions new];
+        // 设置同步获取图片
+        imageRequestOptions.synchronous = YES;
+        imageRequestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
+        imageRequestOptions.resizeMode = PHImageRequestOptionsResizeModeFast;
+        
+        [[PHImageManager defaultManager] requestImageForAsset:asset
+                                                   targetSize:CGSizeMake(80, 80)
+                                                  contentMode:PHImageContentModeAspectFill
+                                                      options:imageRequestOptions
+                                                resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                                                    requestImage = result;
+                                                }];
+
+        
+        //NSLog(@"Locate to : %@",self.imageLocation);
         
         EverywhereMKAnnotation *annotation = [EverywhereMKAnnotation new];
         annotation.locaton = self.imageLocation;
-        [mapView addAnnotation:annotation];
+        annotation.assetURL = referenceURL;
+        annotation.thumbnailImage = requestImage;
+        
+        [myMapView addAnnotation:annotation];
+        
+        CLLocationCoordinate2D points[2];
+        points[0] = myMapView.userLocation.coordinate;
+        points[1] = annotation.coordinate;
+        MKPolyline *polyline = [MKPolyline polylineWithCoordinates:points count:2];
+        polyline.title = @"Arrow";
+        [myMapView addOverlay:polyline];
+        //MKCoordinateSpan
+        //MKCoordinateRegion aRegion = MKCoordinateRegionMakeWithDistance(annotation.coordinate, 500, 500);
+        [myMapView setCenterCoordinate:annotation.coordinate animated:YES];
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -154,13 +193,43 @@
 #pragma mark MKMapViewDelegate
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation{
-    MKPinAnnotationView *pinAV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pin"];
-    pinAV.pinTintColor = [UIColor blueColor];
-    return nil;
+    MKAnnotationView *returnAnnotationView = nil;
+    NSLog(@"%@",annotation);
+    if ([annotation isKindOfClass:[MKUserLocation class]]) {
+        // 使用系统默认标记
+    }else if ([annotation isKindOfClass:[EverywhereMKAnnotation class]]) {
+        returnAnnotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"easy"];
+        if (!returnAnnotationView)
+            returnAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"easy"];
+        returnAnnotationView.image = ((EverywhereMKAnnotation *) annotation).thumbnailImage;
+    }else{
+//        MKPinAnnotationView *pinAV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pin"];
+//        pinAV.pinTintColor = [UIColor blueColor];
+//        returnAnnotationView = pinAV;
+    }
+    
+    return returnAnnotationView;
 }
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay{
-    return nil;
+    MKOverlayRenderer *overlayRenderer = nil;
+    if ([overlay isKindOfClass:[MKPolyline class]]) {
+        MKPolylineRenderer *polylineRenderer = [[MKPolylineRenderer alloc] initWithPolyline:(MKPolyline *)overlay];
+        polylineRenderer.strokeColor = [[UIColor blueColor] colorWithAlphaComponent:0.7];
+        polylineRenderer.fillColor = [[UIColor cyanColor] colorWithAlphaComponent:0.2];
+        polylineRenderer.lineWidth = 3;
+        
+        overlayRenderer = polylineRenderer;
+    }
+    return overlayRenderer;
 }
 
+- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation{
+    MKCoordinateRegion aRegion = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 1000, 1000);
+    [myMapView setRegion:aRegion animated:YES];
+}
+
+- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated{
+    //scaleLabel.text = [NSString stringWithFormat:@"%f",myMapView]
+}
 @end
