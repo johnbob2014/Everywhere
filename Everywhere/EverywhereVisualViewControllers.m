@@ -8,7 +8,7 @@
 
 #import "EverywhereVisualViewControllers.h"
 #import "UIView+AutoLayout.h"
-
+#import "CTPImageBrowserVC.h"
 
 #pragma mark - MainVC
 
@@ -111,8 +111,8 @@
     //locationManager.distanceFilter = CLLocationDistanceMax;
     [locationManager startUpdatingLocation];
     
-    
 }
+
 
 - (void)didReceiveMemoryWarning{
     NSLog(@"%@",NSStringFromSelector(_cmd));
@@ -231,5 +231,223 @@
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated{
     //scaleLabel.text = [NSString stringWithFormat:@"%f",myMapView]
+}
+@end
+
+#pragma mark - CollectionListTVC
+@interface CollectionListTVC()
+@end
+
+@implementation CollectionListTVC{
+    PHFetchResult <PHCollectionList *> *fetchResultArray;
+    UISegmentedControl *seg;
+}
+
+- (void)viewDidLoad{
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+    
+    seg = [[UISegmentedControl alloc] initWithItems:[@"Year Cluster" componentsSeparatedByString:@" "]];
+    seg.selectedSegmentIndex = 1;
+    [seg addTarget:self action:@selector(segChanged:) forControlEvents:UIControlEventValueChanged];
+    
+    self.navigationItem.titleView = seg;
+    
+    [self fetchCollectionLists];
+}
+
+- (void)segChanged:(id)sender{
+    [self fetchCollectionLists];
+    [self.tableView reloadData];
+}
+
+- (void)fetchCollectionLists{
+    PHCollectionListSubtype collectionListSubype = seg.selectedSegmentIndex == 0 ? PHCollectionListSubtypeMomentListYear : PHCollectionListSubtypeMomentListCluster;
+    
+    fetchResultArray = [PHCollectionList fetchCollectionListsWithType:PHCollectionListTypeMomentList
+                                                                                             subtype:collectionListSubype
+                                                                                             options:nil];
+    NSMutableArray *ma = [NSMutableArray array];
+    [fetchResultArray enumerateObjectsUsingBlock:^(PHCollectionList * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        // NSLog(@"%@",obj);
+        if (obj.localizedLocationNames) [ma addObject:obj];
+    }];
+    
+    fetchResultArray = (PHFetchResult <PHCollectionList *> *)ma;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return [fetchResultArray count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
+    }
+    
+    PHCollectionList *collectionList = fetchResultArray[indexPath.row];
+    NSMutableString *ms = [NSMutableString new];
+    NSInteger index = 0;
+    for (NSString *locationName in collectionList.localizedLocationNames) {
+        [ms appendFormat:@"%d : %@ ",index++,locationName];
+    }
+    
+    cell.textLabel.text = ms;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld",(long)indexPath.row];
+    [cell layoutSubviews];
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    PHCollectionList *collectionList = fetchResultArray[indexPath.row];
+    AssetCollectionTVC *assetCollectionTVC = [AssetCollectionTVC new];
+    assetCollectionTVC.collectionList = collectionList;
+    [self.navigationController pushViewController:assetCollectionTVC animated:YES];
+}
+@end
+
+#pragma mark - AssetCollectionTVC
+
+@implementation AssetCollectionTVC{
+    PHFetchResult <PHAssetCollection *> *fetchResultArray;
+}
+
+- (void)viewDidLoad{
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+    
+    [self fetchMoments];
+}
+
+- (void)fetchMoments{
+    fetchResultArray = [PHAssetCollection fetchMomentsInMomentList:self.collectionList options:nil];
+    
+    NSMutableArray *ma = [NSMutableArray array];
+    [fetchResultArray enumerateObjectsUsingBlock:^(PHAssetCollection * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        //NSLog(@"%@",obj);
+        if (obj.localizedLocationNames) [ma addObject:obj];
+    }];
+    
+    fetchResultArray = (PHFetchResult <PHAssetCollection *> *)ma;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return [fetchResultArray count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
+    }
+    
+    PHAssetCollection *assetCollection = fetchResultArray[indexPath.row];
+    NSMutableString *ms = [NSMutableString new];
+    NSInteger index = 0;
+    for (NSString *locationName in assetCollection.localizedLocationNames) {
+        [ms appendFormat:@"%d : %@ ",index++,locationName];
+    }
+    
+    cell.textLabel.text = ms;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld",(long)indexPath.row];
+    [cell layoutSubviews];
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    AssetTVC *assetTVC = [AssetTVC new];
+    assetTVC.assetCollection = fetchResultArray[indexPath.row];
+    [self.navigationController pushViewController:assetTVC animated:YES];
+}
+
+@end
+
+#pragma mark - AssetTVC
+
+@import AddressBookUI;
+#import "CLPlacemark+Assistant.h"
+
+@implementation AssetTVC{
+    PHFetchResult <PHAsset *> *fetchResultArray;
+}
+
+- (void)viewDidLoad{
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+    
+    [self fetchAssets];
+}
+
+- (void)fetchAssets{
+    fetchResultArray = [PHAsset fetchAssetsInAssetCollection:self.assetCollection options:nil];
+    
+    NSMutableArray *ma = [NSMutableArray array];
+    [fetchResultArray enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        //NSLog(@"%@",obj);
+        if (obj.location) [ma addObject:obj];
+    }];
+    
+    fetchResultArray = (PHFetchResult <PHAsset *> *)ma;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return [fetchResultArray count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
+    }
+    
+    PHAsset *asset = fetchResultArray[indexPath.row];
+    
+    cell.textLabel.text = asset.description;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld",(long)indexPath.row];
+    [cell layoutSubviews];
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    PHAsset *asset = fetchResultArray[indexPath.row];
+    
+    __block UIImage *requestImage = nil;
+    PHImageRequestOptions *imageRequestOptions = [PHImageRequestOptions new];
+    // 设置同步获取图片
+    imageRequestOptions.synchronous = YES;
+    imageRequestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeFastFormat;
+    imageRequestOptions.resizeMode = PHImageRequestOptionsResizeModeFast;
+    
+    [[PHImageManager defaultManager] requestImageForAsset:asset
+                                               targetSize:CGSizeMake(asset.pixelWidth, asset.pixelHeight)
+                                              contentMode:PHImageContentModeAspectFill
+                                                  options:imageRequestOptions
+                                            resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                                                requestImage = result;
+                                            }];
+    
+    CLGeocoder *geocoder = [CLGeocoder new];
+    [geocoder reverseGeocodeLocation:asset.location
+                   completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+                       NSString *placeInfo;
+                       if (!error) {
+                           CLPlacemark *placemark = placemarks.lastObject;
+                           
+                           placeInfo = [placemark localizedPlaceString];
+                           //placeInfo = [NSString stringWithFormat:@"%@\n%@",[placemark localizedPlaceString],[placemark areasOfInterestStringWithIndex:YES]];
+                           
+                           //placeInfo = [placeInfo stringByAppendingString:ABCreateStringWithAddressDictionary(placemark.addressDictionary, YES)];
+                       }else{
+                           placeInfo = error.localizedDescription;
+                       }
+                       
+                       CTPMultiImage *multiImage = [CTPMultiImage initWithSdImage:nil hdImage:requestImage placeholderImage:nil sdURL:nil hdURL:nil imageDetail:placeInfo];
+                       CTPImageBrowserVC *browser = [CTPImageBrowserVC new];
+                       browser.multiImageArray = @[multiImage];
+                       browser.imageCount = 1;
+                       browser.currentImageIndex = 0;
+                       
+                       [self presentViewController:browser animated:YES completion:nil];
+
+                       
+    }];
 }
 @end

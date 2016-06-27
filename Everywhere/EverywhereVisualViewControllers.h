@@ -15,3 +15,17 @@
 @interface MapVC : UIViewController
 
 @end
+
+@import Photos;
+
+@interface CollectionListTVC : UITableViewController
+//@property (nonatomic,strong) PHCollectionList * a;
+@end
+
+@interface AssetCollectionTVC : UITableViewController
+@property (nonatomic,strong) PHCollectionList *collectionList;
+@end
+
+@interface AssetTVC : UITableViewController
+@property (nonatomic,strong) PHAssetCollection *assetCollection;
+@end

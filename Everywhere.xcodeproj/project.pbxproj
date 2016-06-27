@@ -18,6 +18,11 @@
 		1E28481D1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E28481C1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m */; };
 		1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */; };
 		1E9D5D441D1E8F2D00E8B630 /* Everywhere.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */; };
+		4B001CD41D21002700DF7287 /* CTPImageBrowserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CCD1D21002700DF7287 /* CTPImageBrowserVC.m */; };
+		4B001CD51D21002700DF7287 /* CTPImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CCF1D21002700DF7287 /* CTPImageView.m */; };
+		4B001CD61D21002700DF7287 /* CTPMultiImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CD11D21002700DF7287 /* CTPMultiImage.m */; };
+		4B001CD71D21002700DF7287 /* CTPWaitingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CD31D21002700DF7287 /* CTPWaitingView.m */; };
+		4B001CDE1D2125FC00DF7287 /* CLPlacemark+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CDD1D2125FC00DF7287 /* CLPlacemark+Assistant.m */; };
 		4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */; };
 /* End PBXBuildFile section */
 
@@ -39,6 +44,17 @@
 		1E9D5D401D1E2AFE00E8B630 /* WGS84TOGCJ02.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WGS84TOGCJ02.h; path = WGS84TOGCJ02/WGS84TOGCJ02.h; sourceTree = "<group>"; };
 		1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WGS84TOGCJ02.m; path = WGS84TOGCJ02/WGS84TOGCJ02.m; sourceTree = "<group>"; };
 		1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Everywhere.rtf; sourceTree = "<group>"; };
+		4B001CCB1D21002700DF7287 /* CTPImageBrowserConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTPImageBrowserConfig.h; sourceTree = "<group>"; };
+		4B001CCC1D21002700DF7287 /* CTPImageBrowserVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTPImageBrowserVC.h; sourceTree = "<group>"; };
+		4B001CCD1D21002700DF7287 /* CTPImageBrowserVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTPImageBrowserVC.m; sourceTree = "<group>"; };
+		4B001CCE1D21002700DF7287 /* CTPImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTPImageView.h; sourceTree = "<group>"; };
+		4B001CCF1D21002700DF7287 /* CTPImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTPImageView.m; sourceTree = "<group>"; };
+		4B001CD01D21002700DF7287 /* CTPMultiImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTPMultiImage.h; sourceTree = "<group>"; };
+		4B001CD11D21002700DF7287 /* CTPMultiImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTPMultiImage.m; sourceTree = "<group>"; };
+		4B001CD21D21002700DF7287 /* CTPWaitingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTPWaitingView.h; sourceTree = "<group>"; };
+		4B001CD31D21002700DF7287 /* CTPWaitingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTPWaitingView.m; sourceTree = "<group>"; };
+		4B001CDC1D2125FC00DF7287 /* CLPlacemark+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CLPlacemark+Assistant.h"; path = "CLPlacemark+Assistant/CLPlacemark+Assistant.h"; sourceTree = "<group>"; };
+		4B001CDD1D2125FC00DF7287 /* CLPlacemark+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CLPlacemark+Assistant.m"; path = "CLPlacemark+Assistant/CLPlacemark+Assistant.m"; sourceTree = "<group>"; };
 		4B3C10061D1CDCA700C20C72 /* UIView+AutoLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AutoLayout.h"; sourceTree = "<group>"; };
 		4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AutoLayout.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -77,6 +93,8 @@
 		1E2847F41D1ADDB900189A83 /* Everywhere */ = {
 			isa = PBXGroup;
 			children = (
+				4B001CD81D21252400DF7287 /* CLPlacemark+Assistant */,
+				4B001CCA1D21002700DF7287 /* CTPImageBrowser */,
 				1E9D5D3F1D1E2ADB00E8B630 /* WGS84TOGCJ02 */,
 				4B3C10051D1CDCA700C20C72 /* UIView+AutoLayout */,
 				1E2848151D1ADF6700189A83 /* Everywhere.entitlements */,
@@ -111,6 +129,31 @@
 				1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */,
 			);
 			name = WGS84TOGCJ02;
+			sourceTree = "<group>";
+		};
+		4B001CCA1D21002700DF7287 /* CTPImageBrowser */ = {
+			isa = PBXGroup;
+			children = (
+				4B001CCB1D21002700DF7287 /* CTPImageBrowserConfig.h */,
+				4B001CCC1D21002700DF7287 /* CTPImageBrowserVC.h */,
+				4B001CCD1D21002700DF7287 /* CTPImageBrowserVC.m */,
+				4B001CCE1D21002700DF7287 /* CTPImageView.h */,
+				4B001CCF1D21002700DF7287 /* CTPImageView.m */,
+				4B001CD01D21002700DF7287 /* CTPMultiImage.h */,
+				4B001CD11D21002700DF7287 /* CTPMultiImage.m */,
+				4B001CD21D21002700DF7287 /* CTPWaitingView.h */,
+				4B001CD31D21002700DF7287 /* CTPWaitingView.m */,
+			);
+			path = CTPImageBrowser;
+			sourceTree = "<group>";
+		};
+		4B001CD81D21252400DF7287 /* CLPlacemark+Assistant */ = {
+			isa = PBXGroup;
+			children = (
+				4B001CDC1D2125FC00DF7287 /* CLPlacemark+Assistant.h */,
+				4B001CDD1D2125FC00DF7287 /* CLPlacemark+Assistant.m */,
+			);
+			name = "CLPlacemark+Assistant";
 			sourceTree = "<group>";
 		};
 		4B3C10051D1CDCA700C20C72 /* UIView+AutoLayout */ = {
@@ -210,9 +253,14 @@
 				4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */,
 				1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */,
 				1E28481D1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m in Sources */,
+				4B001CD41D21002700DF7287 /* CTPImageBrowserVC.m in Sources */,
 				1E2848031D1ADDB900189A83 /* Everywhere.xcdatamodeld in Sources */,
+				4B001CD61D21002700DF7287 /* CTPMultiImage.m in Sources */,
 				1E2847FA1D1ADDB900189A83 /* EverywhereAppDelegate.m in Sources */,
+				4B001CD51D21002700DF7287 /* CTPImageView.m in Sources */,
+				4B001CD71D21002700DF7287 /* CTPWaitingView.m in Sources */,
 				1E2847F71D1ADDB900189A83 /* main.m in Sources */,
+				4B001CDE1D2125FC00DF7287 /* CLPlacemark+Assistant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
