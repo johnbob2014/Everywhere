@@ -261,18 +261,21 @@
 }
 
 - (void)fetchCollectionLists{
+    /*
     PHCollectionListSubtype collectionListSubype = seg.selectedSegmentIndex == 0 ? PHCollectionListSubtypeMomentListYear : PHCollectionListSubtypeMomentListCluster;
     
     fetchResultArray = [PHCollectionList fetchCollectionListsWithType:PHCollectionListTypeMomentList
                                                                                              subtype:collectionListSubype
                                                                                              options:nil];
+     */
+    fetchResultArray = [PHCollectionList fetchCollectionListsWithType:PHCollectionListTypeSmartFolder subtype:PHCollectionListSubtypeSmartFolderEvents options:nil];
     NSMutableArray *ma = [NSMutableArray array];
     [fetchResultArray enumerateObjectsUsingBlock:^(PHCollectionList * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        // NSLog(@"%@",obj);
-        if (obj.localizedLocationNames) [ma addObject:obj];
+        NSLog(@"%@",obj);
+        //if (obj.localizedLocationNames) [ma addObject:obj];
     }];
     
-    fetchResultArray = (PHFetchResult <PHCollectionList *> *)ma;
+    //fetchResultArray = (PHFetchResult <PHCollectionList *> *)ma;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -292,7 +295,7 @@
         [ms appendFormat:@"%d : %@ ",index++,locationName];
     }
     
-    cell.textLabel.text = ms;
+    cell.textLabel.text = [NSString stringWithFormat:@"%ld",(long)indexPath.row];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld",(long)indexPath.row];
     [cell layoutSubviews];
     return cell;
@@ -310,21 +313,53 @@
 
 @implementation AssetCollectionTVC{
     PHFetchResult <PHAssetCollection *> *fetchResultArray;
+    UISegmentedControl *seg;
 }
 
 - (void)viewDidLoad{
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
     
-    [self fetchMoments];
+    seg = [[UISegmentedControl alloc] initWithItems:[@"Smart Album Moment" componentsSeparatedByString:@" "]];
+    seg.selectedSegmentIndex = 0;
+    [seg addTarget:self action:@selector(segChanged:) forControlEvents:UIControlEventValueChanged];
+    self.navigationItem.titleView = seg;
+    
+    [self fetchAssets];
 }
 
-- (void)fetchMoments{
-    fetchResultArray = [PHAssetCollection fetchMomentsInMomentList:self.collectionList options:nil];
+- (void)segChanged:(id)sender{
+    [self fetchAssets];
+    [self.tableView reloadData];
+}
+
+- (void)fetchAssets{
+    fetchResultArray = nil;
     
     NSMutableArray *ma = [NSMutableArray array];
+    
+    switch (seg.selectedSegmentIndex) {
+        case 0:
+            fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
+            break;
+        case 1:
+            fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
+            break;
+        case 2:{
+            PHFetchOptions *options = [[PHFetchOptions alloc] init];
+            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:NO],[NSSortDescriptor sortDescriptorWithKey:@"localizedTitle" ascending:YES]];
+            fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeMoment subtype:PHAssetCollectionSubtypeAny options:options];
+        }
+            break;
+        default:
+            break;
+    }
+    
+    //fetchResultArray = [PHAssetCollection fetchMomentsInMomentList:self.collectionList options:nil];
+    
     [fetchResultArray enumerateObjectsUsingBlock:^(PHAssetCollection * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         //NSLog(@"%@",obj);
-        if (obj.localizedLocationNames) [ma addObject:obj];
+        //if (obj.localizedLocationNames) [ma addObject:obj];
+        [ma addObject:obj];
     }];
     
     fetchResultArray = (PHFetchResult <PHAssetCollection *> *)ma;
@@ -347,7 +382,27 @@
         [ms appendFormat:@"%d : %@ ",index++,locationName];
     }
     
-    cell.textLabel.text = ms;
+    switch (seg.selectedSegmentIndex) {
+        case 0:
+            cell.textLabel.text = assetCollection.localizedTitle;
+            break;
+        case 1:
+            cell.textLabel.text = [assetCollection.localizedTitle stringByAppendingFormat:@"(%d)",assetCollection.estimatedAssetCount];
+            break;
+        case 2:{
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setDateStyle:NSDateFormatterShortStyle];
+            [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
+            
+            NSString *dateString = [dateFormatter stringFromDate:assetCollection.startDate];
+            NSString *locationString = assetCollection.localizedTitle ? assetCollection.localizedTitle : NSLocalizedString(@"Unknown Location", @"");
+            cell.textLabel.text = [locationString stringByAppendingFormat:@" %@",dateString];
+        }
+            break;
+        default:
+            break;
+    }
+    
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld",(long)indexPath.row];
     [cell layoutSubviews];
     return cell;
@@ -377,7 +432,9 @@
 }
 
 - (void)fetchAssets{
-    fetchResultArray = [PHAsset fetchAssetsInAssetCollection:self.assetCollection options:nil];
+    PHFetchOptions *options = [[PHFetchOptions alloc] init];
+    options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+    fetchResultArray = [PHAsset fetchAssetsInAssetCollection:self.assetCollection options:options];
     
     NSMutableArray *ma = [NSMutableArray array];
     [fetchResultArray enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -385,7 +442,7 @@
         if (obj.location) [ma addObject:obj];
     }];
     
-    fetchResultArray = (PHFetchResult <PHAsset *> *)ma;
+    //fetchResultArray = (PHFetchResult <PHAsset *> *)ma;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -398,9 +455,9 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
     }
     
-    PHAsset *asset = fetchResultArray[indexPath.row];
+    //PHAsset *asset = fetchResultArray[indexPath.row];
     
-    cell.textLabel.text = asset.description;
+    cell.textLabel.text = [NSString stringWithFormat:@"%ld",(long)indexPath.row];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld",(long)indexPath.row];
     [cell layoutSubviews];
     return cell;
@@ -431,8 +488,7 @@
                        if (!error) {
                            CLPlacemark *placemark = placemarks.lastObject;
                            
-                           placeInfo = [placemark localizedPlaceString];
-                           //placeInfo = [NSString stringWithFormat:@"%@\n%@",[placemark localizedPlaceString],[placemark areasOfInterestStringWithIndex:YES]];
+                           placeInfo = [placemark localizedPlaceStringInReverseOrder:YES withInlandWaterAndOcean:NO];
                            
                            //placeInfo = [placeInfo stringByAppendingString:ABCreateStringWithAddressDictionary(placemark.addressDictionary, YES)];
                        }else{

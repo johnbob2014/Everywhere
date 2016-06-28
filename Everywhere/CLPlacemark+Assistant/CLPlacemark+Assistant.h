@@ -16,6 +16,11 @@
 - (NSString *)localizedPlaceString;
 
 /**
+ 返回本地化地址字符串，以逗号分隔, 可指定是否逆序显示、是否包含水系信息- CLPlacemark+Assistant
+ */
+- (NSString *)localizedPlaceStringInReverseOrder:(BOOL)reverseOrder withInlandWaterAndOcean:(BOOL)inlandWaterAndOcean;
+
+/**
  返回附近兴趣点字符串，以逗号分隔，可指定是否带序号 - CLPlacemark+Assistant
  */
 - (NSString *)areasOfInterestStringWithIndex:(BOOL)withIndex;
