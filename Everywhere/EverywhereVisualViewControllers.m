@@ -430,6 +430,143 @@
 
 @end
 
+#pragma mark - PeriodAssetCollectionsTVC
+
+#import "NSDate+Utilities.h"
+@implementation PeriodAssetCollectionsTVC{
+    PHFetchResult <PHAssetCollection *> *fetchResultArray;
+    UISegmentedControl *seg;
+}
+
+- (void)viewDidLoad{
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+    
+    seg = [[UISegmentedControl alloc] initWithItems:[@"Day Month Year" componentsSeparatedByString:@" "]];
+    seg.selectedSegmentIndex = 0;
+    [seg addTarget:self action:@selector(segChanged:) forControlEvents:UIControlEventValueChanged];
+    self.navigationItem.titleView = seg;
+    
+    [self fetchAssets];
+}
+
+- (void)segChanged:(id)sender{
+    [self fetchAssets];
+    [self.tableView reloadData];
+}
+
+- (void)fetchAssets{
+    fetchResultArray = nil;
+    
+    NSMutableArray *ma = [NSMutableArray array];
+    
+    fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
+    
+    PHAssetCollection *CameraRoll = fetchResultArray.firstObject;
+    if (CameraRoll) {
+        PHFetchOptions *options = [PHFetchOptions new];
+        
+        NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:[NSDate date]];
+        components.day -= 1;
+        
+        components.hour = 0;
+        components.minute = 0;
+        components.second = 0;
+        NSDate *startOfToday = [[NSCalendar currentCalendar] dateFromComponents:components];
+        NSDate *startOfTodayLastMonth = [startOfToday dateBySubtractingDays:1];
+        
+        components.hour = 23;
+        components.minute = 59;
+        components.second = 59;
+        NSDate *endOfToday = [[NSCalendar currentCalendar] dateFromComponents:components];
+        
+        options.predicate = [NSPredicate predicateWithFormat:@" (creationDate > %@) && (creationDate < %@)",startOfTodayLastMonth,endOfToday];
+        PHFetchResult *assetArray = [PHAsset fetchAssetsInAssetCollection:CameraRoll options:options];
+        NSLog(@"%ld",assetArray.count);
+    }
+    /*
+    switch (seg.selectedSegmentIndex) {
+        case 0:
+            fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
+            break;
+        case 1:
+            fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
+            break;
+        case 2:{
+            PHFetchOptions *options = [[PHFetchOptions alloc] init];
+            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:NO],[NSSortDescriptor sortDescriptorWithKey:@"localizedTitle" ascending:YES]];
+            fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeMoment subtype:PHAssetCollectionSubtypeAny options:options];
+        }
+            break;
+        default:
+            break;
+    }
+    */
+    
+    //fetchResultArray = [PHAssetCollection fetchMomentsInMomentList:self.collectionList options:nil];
+    
+    [fetchResultArray enumerateObjectsUsingBlock:^(PHAssetCollection * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        //NSLog(@"%@",obj);
+        //if (obj.localizedLocationNames) [ma addObject:obj];
+        [ma addObject:obj];
+    }];
+    
+    fetchResultArray = (PHFetchResult <PHAssetCollection *> *)ma;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return [fetchResultArray count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
+    }
+    
+    PHAssetCollection *assetCollection = fetchResultArray[indexPath.row];
+    NSMutableString *ms = [NSMutableString new];
+    NSInteger index = 0;
+    for (NSString *locationName in assetCollection.localizedLocationNames) {
+        [ms appendFormat:@"%d : %@ ",index++,locationName];
+    }
+    
+    switch (seg.selectedSegmentIndex) {
+        case 0:
+            cell.textLabel.text = assetCollection.localizedTitle;
+            break;
+        case 1:
+            cell.textLabel.text = [assetCollection.localizedTitle stringByAppendingFormat:@"(%d)",assetCollection.estimatedAssetCount];
+            break;
+        case 2:{
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setDateStyle:NSDateFormatterShortStyle];
+            [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
+            
+            NSString *dateString = [dateFormatter stringFromDate:assetCollection.startDate];
+            NSString *locationString = assetCollection.localizedTitle ? assetCollection.localizedTitle : NSLocalizedString(@"Unknown Location", @"");
+            cell.textLabel.text = [locationString stringByAppendingFormat:@" %@",dateString];
+        }
+            break;
+        default:
+            break;
+    }
+    
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld",(long)indexPath.row];
+    [cell layoutSubviews];
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    //AssetsTVC *showVC = [AssetsTVC new];
+    AssetsMapVC *showVC = [AssetsMapVC new];
+    
+    showVC.assetCollection = fetchResultArray[indexPath.row];
+    [self.navigationController pushViewController:showVC animated:YES];
+}
+
+
+@end
+
 #pragma mark - AssetsTVC
 
 @import AddressBookUI;
@@ -709,3 +846,4 @@
 }
 
 @end
+

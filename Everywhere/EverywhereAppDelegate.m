@@ -22,10 +22,11 @@
     //MainVC *mainVC = [MainVC new];
     //MapVC *mapVC = [MapVC new];
     //mapVC.edgesForExtendedLayout = UIRectEdgeNone;
-    CollectionListsTVC *clTVC = [CollectionListsTVC new];
-    AssetCollectionsTVC *acTVC = [AssetCollectionsTVC new];
+    //CollectionListsTVC *clTVC = [CollectionListsTVC new];
+    //AssetCollectionsTVC *acTVC = [AssetCollectionsTVC new];
+    PeriodAssetCollectionsTVC *pacTVC = [PeriodAssetCollectionsTVC new];
     
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:acTVC];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:pacTVC];
     self.window.backgroundColor = [UIColor whiteColor];
     self.window.rootViewController = nav;
     [self.window makeKeyAndVisible];

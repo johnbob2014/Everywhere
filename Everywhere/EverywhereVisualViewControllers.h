@@ -27,6 +27,8 @@
 @property (nonatomic,strong) PHCollectionList *collectionList;
 @end
 
+@interface PeriodAssetCollectionsTVC : UITableViewController
+@end
 
 @interface AssetsTVC : UITableViewController
 @property (nonatomic,strong) PHAssetCollection *assetCollection;
@@ -39,3 +41,4 @@
 @interface AssetDetailVC : UIViewController
 @property (strong,nonatomic) NSString *assetLocalIdentifier;
 @end
+
