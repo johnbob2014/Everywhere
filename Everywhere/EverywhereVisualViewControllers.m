@@ -9,6 +9,7 @@
 #import "EverywhereVisualViewControllers.h"
 #import "UIView+AutoLayout.h"
 #import "CTPImageBrowserVC.h"
+#import "PHAsset+Assistant.h"
 
 #pragma mark - MainVC
 
@@ -27,6 +28,10 @@
 @property (strong,nonatomic) CLLocation *locaton;
 @property (strong,nonatomic) UIImage *thumbnailImage;
 @property (strong,nonatomic) NSURL *assetURL;
+
+@property (strong,nonatomic) NSString *assetLocalIdentifier;
+@property (strong,nonatomic) NSString *annotationTitle;
+
 @end
 
 @implementation EverywhereMKAnnotation
@@ -37,13 +42,17 @@
 //    NSLog(@"EverywhereMKAnnotation : coordinate updated!");
 //}
 
--(CLLocationCoordinate2D)coordinate{
+- (CLLocationCoordinate2D)coordinate{
     CLLocationCoordinate2D originalCoordinate = self.locaton.coordinate;
     return [WGS84TOGCJ02 transformFromWGSToGCJ:originalCoordinate];
 }
 
+- (NSString *)title{
+    return self.annotationTitle;
+}
 @end
 
+/*
 @interface EverywhereMKOverlay : NSObject <MKOverlay>
 
 @end
@@ -53,6 +62,7 @@
 @synthesize boundingMapRect;
 
 @end
+*/
 
 @interface MapVC () <CLLocationManagerDelegate,MKMapViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate>
 @property (strong,nonatomic) CLLocation *imageLocation;
@@ -82,6 +92,8 @@
     [scaleLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:20];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:@selector(action:)];
+    
+    
 }
 
 - (void)action:(id)sender{
@@ -234,11 +246,11 @@
 }
 @end
 
-#pragma mark - CollectionListTVC
-@interface CollectionListTVC()
+#pragma mark - CollectionListsTVC
+@interface CollectionListsTVC()
 @end
 
-@implementation CollectionListTVC{
+@implementation CollectionListsTVC{
     PHFetchResult <PHCollectionList *> *fetchResultArray;
     UISegmentedControl *seg;
 }
@@ -303,15 +315,15 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     PHCollectionList *collectionList = fetchResultArray[indexPath.row];
-    AssetCollectionTVC *assetCollectionTVC = [AssetCollectionTVC new];
+    AssetCollectionsTVC *assetCollectionTVC = [AssetCollectionsTVC new];
     assetCollectionTVC.collectionList = collectionList;
     [self.navigationController pushViewController:assetCollectionTVC animated:YES];
 }
 @end
 
-#pragma mark - AssetCollectionTVC
+#pragma mark - AssetCollectionsTVC
 
-@implementation AssetCollectionTVC{
+@implementation AssetCollectionsTVC{
     PHFetchResult <PHAssetCollection *> *fetchResultArray;
     UISegmentedControl *seg;
 }
@@ -409,19 +421,21 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    AssetTVC *assetTVC = [AssetTVC new];
-    assetTVC.assetCollection = fetchResultArray[indexPath.row];
-    [self.navigationController pushViewController:assetTVC animated:YES];
+    //AssetsTVC *showVC = [AssetsTVC new];
+    AssetsMapVC *showVC = [AssetsMapVC new];
+    
+    showVC.assetCollection = fetchResultArray[indexPath.row];
+    [self.navigationController pushViewController:showVC animated:YES];
 }
 
 @end
 
-#pragma mark - AssetTVC
+#pragma mark - AssetsTVC
 
 @import AddressBookUI;
 #import "CLPlacemark+Assistant.h"
 
-@implementation AssetTVC{
+@implementation AssetsTVC{
     PHFetchResult <PHAsset *> *fetchResultArray;
 }
 
@@ -506,4 +520,192 @@
                        
     }];
 }
+@end
+
+#pragma mark -
+@interface AssetsMapVC() <MKMapViewDelegate>
+
+@end
+
+@implementation AssetsMapVC{
+    PHFetchResult <PHAsset *> *fetchResultArray;
+    MKMapView *myMapView;
+}
+
+//- (void)loadView{
+//    
+//}
+
+- (void)viewDidLoad{
+    [super viewDidLoad];
+    
+    [self initMapView];
+    
+    [self fetchAssets];
+}
+
+- (void)initMapView{
+    myMapView = [MKMapView newAutoLayoutView];
+    myMapView.delegate = self;
+    myMapView.showsUserLocation = YES;
+    
+    [self.view addSubview:myMapView];
+    [myMapView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+}
+
+- (void)fetchAssets{
+    if (self.assetCollection) {
+        PHFetchOptions *options = [PHFetchOptions new];
+        // 按日期降序排列
+        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+        // 排除没有地址信息的PHAsset
+        /*
+        options.predicate = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+            PHAsset *asset = (PHAsset *)evaluatedObject;
+            if (asset.location) return YES;
+            else return NO;
+        }];
+         */
+        
+        fetchResultArray = [PHAsset fetchAssetsInAssetCollection:self.assetCollection options:options];
+        
+        // 添加 MKAnnotations
+        [myMapView removeAnnotations:myMapView.annotations];
+        
+        NSMutableArray <EverywhereMKAnnotation *> *annotationsToAdd = [NSMutableArray new];
+        [fetchResultArray enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (obj.location) {
+                EverywhereMKAnnotation *anno = [EverywhereMKAnnotation new];
+                anno.locaton = obj.location;
+                anno.assetLocalIdentifier = obj.localIdentifier;
+                anno.annotationTitle = [NSString stringWithFormat:@"MKAnnotation : %lu",idx];
+                [annotationsToAdd addObject:anno];
+            }
+        }];
+        
+        if (annotationsToAdd.count >= 1) {
+            [myMapView addAnnotations:annotationsToAdd];
+            
+            EverywhereMKAnnotation *lastAnnotation = (EverywhereMKAnnotation *) myMapView.annotations.lastObject;
+            MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(lastAnnotation.coordinate, 10000, 10000);
+            [myMapView setRegion:showRegion animated:YES];
+            
+            if (annotationsToAdd.count >= 2) {
+                // 记录距离信息
+                NSMutableArray *distanceArray = [NSMutableArray new];
+                __block CLLocationDistance totalDistance = 0;
+                
+                // 添加 MKOverlays
+                [myMapView removeOverlays:myMapView.overlays];
+                NSMutableArray <MKPolyline *> *overlaysToAdd = [NSMutableArray new];
+                __block CLLocationCoordinate2D lastCoordinate;
+                [annotationsToAdd enumerateObjectsUsingBlock:^(EverywhereMKAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    if (idx >= 1) {
+                        CLLocationCoordinate2D points[2];
+                        points[0] = lastCoordinate;
+                        points[1] = obj.coordinate;
+                        MKPolyline *polyline = [MKPolyline polylineWithCoordinates:points count:2];
+                        polyline.title = [NSString stringWithFormat:@"MKPolyline : %lu",idx];
+                        [overlaysToAdd addObject:polyline];
+                        
+                        CLLocationDistance subDistance = MKMetersBetweenMapPoints(MKMapPointForCoordinate(lastCoordinate), MKMapPointForCoordinate(obj.coordinate));
+                        totalDistance += subDistance;
+                        [distanceArray addObject:[NSNumber numberWithDouble:subDistance]];
+                        
+                        lastCoordinate = obj.coordinate;
+                    }else{
+                        lastCoordinate = obj.coordinate;
+                    }
+                }];
+                
+                NSLog(@"%@",overlaysToAdd);
+                [myMapView addOverlays:overlaysToAdd];
+                
+                NSString *totalString = NSLocalizedString(@"Total:", @"总行程:");
+                if (totalDistance >=1000) {
+                    self.title = [NSString stringWithFormat:@"%@ %.2f km",totalString,totalDistance/1000];
+                }else{
+                    self.title = [NSString stringWithFormat:@"%@ %.0f m",totalString,totalDistance];
+                }
+            }
+        }
+    }
+}
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation{
+    if ([annotation isKindOfClass:[EverywhereMKAnnotation class]]) {
+        MKPinAnnotationView *pinAV = (MKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"pinAV"];
+        if (!pinAV) pinAV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pinAV"];
+        pinAV.animatesDrop = YES;
+        pinAV.canShowCallout = YES;
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        imageView.contentMode = UIViewContentModeScaleAspectFill;
+        PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[((EverywhereMKAnnotation *)annotation).assetLocalIdentifier] options:nil].lastObject;
+        if (asset) imageView.image = [PHAsset synchronousFetchUIImageFromPHAsset:asset targetSize:CGSizeMake(80, 80)];
+        
+        pinAV.leftCalloutAccessoryView = imageView;
+        pinAV.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+        return pinAV;
+    }else{
+        return nil;
+    }
+}
+
+-(void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
+    if ([view isKindOfClass:[MKPinAnnotationView class]] && [control isKindOfClass:[UIButton class]]) {
+        EverywhereMKAnnotation *annotation = (EverywhereMKAnnotation *) view.annotation;
+        //UIButton *btn = (UIButton *) control;
+        
+        //PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[((EverywhereMKAnnotation *)annotation).assetLocalIdentifier] options:nil].lastObject;
+        
+        AssetDetailVC *showVC = [AssetDetailVC new];
+        showVC.edgesForExtendedLayout = UIRectEdgeNone;
+        showVC.assetLocalIdentifier = annotation.assetLocalIdentifier;
+        [self.navigationController pushViewController:showVC animated:YES];
+    }
+    
+}
+
+- (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay{
+    if ([overlay isKindOfClass:[MKPolyline class]]) {
+        MKPolylineRenderer *polylineRenderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
+        polylineRenderer.lineWidth = 2;
+        polylineRenderer.strokeColor = [UIColor greenColor];
+        NSLog(@"%@",polylineRenderer);
+        return polylineRenderer;
+    }else{
+        return nil;
+    }
+}
+
+- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation{
+    // MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 10000, 10000);
+    // [mapView setRegion:showRegion animated:YES];
+}
+
+@end
+
+
+#pragma mark - AssetDetailVC
+
+@interface AssetDetailVC ()
+
+@end
+
+@implementation AssetDetailVC{
+    PHAsset *asset;
+    UIImageView *imageView;
+}
+
+- (void)viewDidLoad{
+    asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[self.assetLocalIdentifier] options:nil].lastObject;
+    
+    imageView = [UIImageView newAutoLayoutView];
+    imageView.contentMode = UIViewContentModeScaleAspectFit;
+    imageView.image = [PHAsset synchronousFetchUIImageFromPHAsset:asset targetSize:PHImageManagerMaximumSize];
+    [self.view addSubview:imageView];
+    [imageView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+    
+}
+
 @end

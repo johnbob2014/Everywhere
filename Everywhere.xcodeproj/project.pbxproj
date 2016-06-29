@@ -23,6 +23,7 @@
 		4B001CD61D21002700DF7287 /* CTPMultiImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CD11D21002700DF7287 /* CTPMultiImage.m */; };
 		4B001CD71D21002700DF7287 /* CTPWaitingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CD31D21002700DF7287 /* CTPWaitingView.m */; };
 		4B001CDE1D2125FC00DF7287 /* CLPlacemark+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CDD1D2125FC00DF7287 /* CLPlacemark+Assistant.m */; };
+		4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */; };
 		4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +56,8 @@
 		4B001CD31D21002700DF7287 /* CTPWaitingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTPWaitingView.m; sourceTree = "<group>"; };
 		4B001CDC1D2125FC00DF7287 /* CLPlacemark+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CLPlacemark+Assistant.h"; path = "CLPlacemark+Assistant/CLPlacemark+Assistant.h"; sourceTree = "<group>"; };
 		4B001CDD1D2125FC00DF7287 /* CLPlacemark+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CLPlacemark+Assistant.m"; path = "CLPlacemark+Assistant/CLPlacemark+Assistant.m"; sourceTree = "<group>"; };
+		4B0D09261D23C94D0047D7E0 /* PHAsset+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PHAsset+Assistant.h"; path = "PHAsset+Assistant/PHAsset+Assistant.h"; sourceTree = "<group>"; };
+		4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PHAsset+Assistant.m"; path = "PHAsset+Assistant/PHAsset+Assistant.m"; sourceTree = "<group>"; };
 		4B3C10061D1CDCA700C20C72 /* UIView+AutoLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AutoLayout.h"; sourceTree = "<group>"; };
 		4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AutoLayout.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -93,6 +96,7 @@
 		1E2847F41D1ADDB900189A83 /* Everywhere */ = {
 			isa = PBXGroup;
 			children = (
+				4B0D09251D23C90B0047D7E0 /* PHAsset+Assistant */,
 				4B001CD81D21252400DF7287 /* CLPlacemark+Assistant */,
 				4B001CCA1D21002700DF7287 /* CTPImageBrowser */,
 				1E9D5D3F1D1E2ADB00E8B630 /* WGS84TOGCJ02 */,
@@ -154,6 +158,15 @@
 				4B001CDD1D2125FC00DF7287 /* CLPlacemark+Assistant.m */,
 			);
 			name = "CLPlacemark+Assistant";
+			sourceTree = "<group>";
+		};
+		4B0D09251D23C90B0047D7E0 /* PHAsset+Assistant */ = {
+			isa = PBXGroup;
+			children = (
+				4B0D09261D23C94D0047D7E0 /* PHAsset+Assistant.h */,
+				4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */,
+			);
+			name = "PHAsset+Assistant";
 			sourceTree = "<group>";
 		};
 		4B3C10051D1CDCA700C20C72 /* UIView+AutoLayout */ = {
@@ -257,6 +270,7 @@
 				1E2848031D1ADDB900189A83 /* Everywhere.xcdatamodeld in Sources */,
 				4B001CD61D21002700DF7287 /* CTPMultiImage.m in Sources */,
 				1E2847FA1D1ADDB900189A83 /* EverywhereAppDelegate.m in Sources */,
+				4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */,
 				4B001CD51D21002700DF7287 /* CTPImageView.m in Sources */,
 				4B001CD71D21002700DF7287 /* CTPWaitingView.m in Sources */,
 				1E2847F71D1ADDB900189A83 /* main.m in Sources */,

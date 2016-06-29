@@ -7,25 +7,35 @@
 //
 
 #import <UIKit/UIKit.h>
+@import Photos;
 
 @interface MainVC : UIViewController
 
 @end
 
+
 @interface MapVC : UIViewController
 
 @end
 
-@import Photos;
 
-@interface CollectionListTVC : UITableViewController
-//@property (nonatomic,strong) PHCollectionList * a;
+@interface CollectionListsTVC : UITableViewController
 @end
 
-@interface AssetCollectionTVC : UITableViewController
+
+@interface AssetCollectionsTVC : UITableViewController
 @property (nonatomic,strong) PHCollectionList *collectionList;
 @end
 
-@interface AssetTVC : UITableViewController
+
+@interface AssetsTVC : UITableViewController
 @property (nonatomic,strong) PHAssetCollection *assetCollection;
+@end
+
+@interface AssetsMapVC : UIViewController
+@property (strong,nonatomic) PHAssetCollection *assetCollection;
+@end
+
+@interface AssetDetailVC : UIViewController
+@property (strong,nonatomic) NSString *assetLocalIdentifier;
 @end

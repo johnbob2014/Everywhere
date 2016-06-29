@@ -22,8 +22,8 @@
     //MainVC *mainVC = [MainVC new];
     //MapVC *mapVC = [MapVC new];
     //mapVC.edgesForExtendedLayout = UIRectEdgeNone;
-    CollectionListTVC *clTVC = [CollectionListTVC new];
-    AssetCollectionTVC *acTVC = [AssetCollectionTVC new];
+    CollectionListsTVC *clTVC = [CollectionListsTVC new];
+    AssetCollectionsTVC *acTVC = [AssetCollectionsTVC new];
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:acTVC];
     self.window.backgroundColor = [UIColor whiteColor];
