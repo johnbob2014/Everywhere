@@ -29,7 +29,8 @@
 @property (strong,nonatomic) UIImage *thumbnailImage;
 @property (strong,nonatomic) NSURL *assetURL;
 
-@property (strong,nonatomic) NSString *assetLocalIdentifier;
+@property (assign,nonatomic) NSInteger assetCount;
+@property (strong,nonatomic) NSArray <NSString *> *assetLocalIdentifiers;
 @property (strong,nonatomic) NSString *annotationTitle;
 
 @end
@@ -50,6 +51,11 @@
 - (NSString *)title{
     return self.annotationTitle;
 }
+
+- (NSInteger)assetCount{
+    return self.assetLocalIdentifiers.count;
+}
+
 @end
 
 /*
@@ -424,7 +430,7 @@
     //AssetsTVC *showVC = [AssetsTVC new];
     AssetsMapVC *showVC = [AssetsMapVC new];
     
-    showVC.assetCollection = fetchResultArray[indexPath.row];
+    //showVC.assetCollection = fetchResultArray[indexPath.row];
     [self.navigationController pushViewController:showVC animated:YES];
 }
 
@@ -432,9 +438,9 @@
 
 #pragma mark - PeriodAssetCollectionsTVC
 
-#import "NSDate+Utilities.h"
+#import "NSDate+Assistant.h"
 @implementation PeriodAssetCollectionsTVC{
-    PHFetchResult <PHAssetCollection *> *fetchResultArray;
+    NSMutableDictionary <NSString *,NSArray *> *assetsDictionary;
     UISegmentedControl *seg;
 }
 
@@ -446,121 +452,115 @@
     [seg addTarget:self action:@selector(segChanged:) forControlEvents:UIControlEventValueChanged];
     self.navigationItem.titleView = seg;
     
-    [self fetchAssets];
+    [self asyncFetchAssets];
+    
+    NSLog(@"%@",NSStringFromSelector(_cmd));
 }
 
 - (void)segChanged:(id)sender{
-    [self fetchAssets];
-    [self.tableView reloadData];
+    [self asyncFetchAssets];
+}
+
+- (void)asyncFetchAssets{
+    assetsDictionary = [NSMutableDictionary new];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self fetchAssets];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    });
 }
 
 - (void)fetchAssets{
-    fetchResultArray = nil;
     
-    NSMutableArray *ma = [NSMutableArray array];
-    
-    fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
-    
+    PHFetchResult <PHAssetCollection *> *fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
     PHAssetCollection *CameraRoll = fetchResultArray.firstObject;
-    if (CameraRoll) {
-        PHFetchOptions *options = [PHFetchOptions new];
+    if (!CameraRoll) return;
+    
+    //NSLog(@"%ld,%@\,%@",CameraRoll.estimatedAssetCount,CameraRoll.startDate,CameraRoll.endDate);
+    NSInteger i = 365;
+    if (seg.selectedSegmentIndex == 1)
+        i = 120;
+    else if (seg.selectedSegmentIndex ==2)
+        i = 10;
+    
+    NSDate *now = [NSDate date];
+    NSDate *lastEndDate = [now dateAtEndOfToday];
+    if (seg.selectedSegmentIndex == 1)
+        lastEndDate = [now dateAtEndOfThisMonth];
+    else if (seg.selectedSegmentIndex ==2)
+        lastEndDate = [now dateAtEndOfThisYear];
+    PHFetchOptions *options = [PHFetchOptions new];
+    
+    while (i > 0) {
+        i--;
         
-        NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:[NSDate date]];
-        components.day -= 1;
+        NSDate *startDate = [lastEndDate dateAtStartOfToday];
         
-        components.hour = 0;
-        components.minute = 0;
-        components.second = 0;
-        NSDate *startOfToday = [[NSCalendar currentCalendar] dateFromComponents:components];
-        NSDate *startOfTodayLastMonth = [startOfToday dateBySubtractingDays:1];
+        if (seg.selectedSegmentIndex == 1)
+            startDate = [lastEndDate dateAtStartOfThisMonth];
+        else if (seg.selectedSegmentIndex ==2)
+            startDate = [lastEndDate dateAtStartOfThisYear];
         
-        components.hour = 23;
-        components.minute = 59;
-        components.second = 59;
-        NSDate *endOfToday = [[NSCalendar currentCalendar] dateFromComponents:components];
+        options.predicate = [NSPredicate predicateWithFormat:@" (creationDate > %@) && (creationDate < %@)",startDate,lastEndDate];
+        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+        PHFetchResult <PHAsset *> *assetArray = [PHAsset fetchAssetsInAssetCollection:CameraRoll options:options];
+        NSMutableArray <NSString *> *assetIDArray = [NSMutableArray new];
+        [assetArray enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (obj.location && obj.localIdentifier) [assetIDArray addObject:obj.localIdentifier];
+        }];
         
-        options.predicate = [NSPredicate predicateWithFormat:@" (creationDate > %@) && (creationDate < %@)",startOfTodayLastMonth,endOfToday];
-        PHFetchResult *assetArray = [PHAsset fetchAssetsInAssetCollection:CameraRoll options:options];
-        NSLog(@"%ld",assetArray.count);
-    }
-    /*
-    switch (seg.selectedSegmentIndex) {
-        case 0:
-            fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
-            break;
-        case 1:
-            fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
-            break;
-        case 2:{
-            PHFetchOptions *options = [[PHFetchOptions alloc] init];
-            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"startDate" ascending:NO],[NSSortDescriptor sortDescriptorWithKey:@"localizedTitle" ascending:YES]];
-            fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeMoment subtype:PHAssetCollectionSubtypeAny options:options];
+        if (assetIDArray.count > 0) {
+            NSString *assetIDArrayName = [startDate stringWithFormat:@"yyyy-MM-dd"];
+            if (seg.selectedSegmentIndex == 1)
+                assetIDArrayName = [startDate stringWithFormat:@"yyyy-MM"];
+            else if (seg.selectedSegmentIndex ==2)
+                assetIDArrayName = [startDate stringWithFormat:@"yyyy"];
+            
+            if (assetIDArrayName) [assetsDictionary setValue:assetIDArray forKey:assetIDArrayName];
+            //NSLog(@"%ld",assetArray.count);
         }
-            break;
-        default:
-            break;
+        
+        lastEndDate = [lastEndDate dateBySubtractingDays:1];
+        if (seg.selectedSegmentIndex == 1){
+            lastEndDate = [lastEndDate dateBySubtractingMonths:1];
+            lastEndDate = [lastEndDate dateAtEndOfThisMonth];
+        }
+        else if (seg.selectedSegmentIndex ==2)
+            lastEndDate = [lastEndDate dateBySubtractingYears:1];
+        
     }
-    */
     
-    //fetchResultArray = [PHAssetCollection fetchMomentsInMomentList:self.collectionList options:nil];
-    
-    [fetchResultArray enumerateObjectsUsingBlock:^(PHAssetCollection * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        //NSLog(@"%@",obj);
-        //if (obj.localizedLocationNames) [ma addObject:obj];
-        [ma addObject:obj];
-    }];
-    
-    fetchResultArray = (PHFetchResult <PHAssetCollection *> *)ma;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return [fetchResultArray count];
+    return [assetsDictionary count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    /*
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
     }
+    */
     
-    PHAssetCollection *assetCollection = fetchResultArray[indexPath.row];
-    NSMutableString *ms = [NSMutableString new];
-    NSInteger index = 0;
-    for (NSString *locationName in assetCollection.localizedLocationNames) {
-        [ms appendFormat:@"%d : %@ ",index++,locationName];
-    }
-    
-    switch (seg.selectedSegmentIndex) {
-        case 0:
-            cell.textLabel.text = assetCollection.localizedTitle;
-            break;
-        case 1:
-            cell.textLabel.text = [assetCollection.localizedTitle stringByAppendingFormat:@"(%d)",assetCollection.estimatedAssetCount];
-            break;
-        case 2:{
-            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            [dateFormatter setDateStyle:NSDateFormatterShortStyle];
-            [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
-            
-            NSString *dateString = [dateFormatter stringFromDate:assetCollection.startDate];
-            NSString *locationString = assetCollection.localizedTitle ? assetCollection.localizedTitle : NSLocalizedString(@"Unknown Location", @"");
-            cell.textLabel.text = [locationString stringByAppendingFormat:@" %@",dateString];
-        }
-            break;
-        default:
-            break;
-    }
-    
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld",(long)indexPath.row];
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
+    NSArray *keyArray = assetsDictionary.allKeys;
+    keyArray = [keyArray sortedArrayUsingSelector:@selector(localizedCompare:)].reverseObjectEnumerator.allObjects;
+    cell.textLabel.text = keyArray[indexPath.row];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld",(long)(assetsDictionary.count - indexPath.row)];
     [cell layoutSubviews];
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     //AssetsTVC *showVC = [AssetsTVC new];
-    AssetsMapVC *showVC = [AssetsMapVC new];
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     
-    showVC.assetCollection = fetchResultArray[indexPath.row];
+    AssetsMapVC *showVC = [AssetsMapVC new];
+    showVC.assetsLocalIdentifiers = assetsDictionary[cell.textLabel.text];
     [self.navigationController pushViewController:showVC animated:YES];
 }
 
@@ -569,7 +569,7 @@
 
 #pragma mark - AssetsTVC
 
-@import AddressBookUI;
+//@import AddressBookUI;
 #import "CLPlacemark+Assistant.h"
 
 @implementation AssetsTVC{
@@ -659,26 +659,33 @@
 }
 @end
 
-#pragma mark -
+#pragma mark - AssetsMapVC
+
 @interface AssetsMapVC() <MKMapViewDelegate>
 
 @end
 
 @implementation AssetsMapVC{
-    PHFetchResult <PHAsset *> *fetchResultArray;
+    PHFetchResult <PHAsset *> *assetArray;
+    NSMutableArray <PHAsset *> *assetArrayWithLocation;
+    NSMutableArray <NSNumber *> *distanceToPreviousArray;
     MKMapView *myMapView;
 }
 
-//- (void)loadView{
-//    
-//}
+- (void)setNearestAnnotationDistance:(CLLocationDistance)nearestAnnotationDistance{
+    _nearestAnnotationDistance = nearestAnnotationDistance;
+}
 
 - (void)viewDidLoad{
     [super viewDidLoad];
     
+    if (!self.nearestAnnotationDistance) self.nearestAnnotationDistance = 200;
+    
     [self initMapView];
     
-    [self fetchAssets];
+    [self updateAssetArray];
+    
+    [self initAnnotationsAndOverlays];
 }
 
 - (void)initMapView{
@@ -690,83 +697,168 @@
     [myMapView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
 }
 
-- (void)fetchAssets{
-    if (self.assetCollection) {
+- (void)updateAssetArray{
+    if (self.assetsLocalIdentifiers) {
         PHFetchOptions *options = [PHFetchOptions new];
-        // 按日期降序排列
-        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
-        // 排除没有地址信息的PHAsset
-        /*
-        options.predicate = [NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
-            PHAsset *asset = (PHAsset *)evaluatedObject;
-            if (asset.location) return YES;
-            else return NO;
-        }];
-         */
+        // 按日期排列
+        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
         
-        fetchResultArray = [PHAsset fetchAssetsInAssetCollection:self.assetCollection options:options];
+        assetArray = [PHAsset fetchAssetsWithLocalIdentifiers:self.assetsLocalIdentifiers options:options];
         
-        // 添加 MKAnnotations
-        [myMapView removeAnnotations:myMapView.annotations];
+        assetArrayWithLocation = [NSMutableArray new];
+        distanceToPreviousArray = [NSMutableArray new];
         
-        NSMutableArray <EverywhereMKAnnotation *> *annotationsToAdd = [NSMutableArray new];
-        [fetchResultArray enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if (obj.location) {
-                EverywhereMKAnnotation *anno = [EverywhereMKAnnotation new];
-                anno.locaton = obj.location;
-                anno.assetLocalIdentifier = obj.localIdentifier;
-                anno.annotationTitle = [NSString stringWithFormat:@"MKAnnotation : %lu",idx];
-                [annotationsToAdd addObject:anno];
+        __block CLLocationCoordinate2D lastCoordinate;
+        [assetArray enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (obj.location){
+                [assetArrayWithLocation addObject:obj];
+                if (idx > 0) {
+                    CLLocationCoordinate2D newCoordinate = obj.location.coordinate;
+                    CLLocationDistance distance = MKMetersBetweenMapPoints(MKMapPointForCoordinate(lastCoordinate), MKMapPointForCoordinate(newCoordinate));
+                    [distanceToPreviousArray addObject:[NSNumber numberWithDouble:distance]];
+                    lastCoordinate = newCoordinate;
+                }else{
+                    // 记录第一个位置的座标
+                    lastCoordinate = obj.location.coordinate;
+                    [distanceToPreviousArray addObject:[NSNumber numberWithDouble:0]];
+                }
             }
         }];
+        NSLog(@"distanceToPreviousArray :\n%@",distanceToPreviousArray);
+    }
+}
+
+- (void)initAnnotationsAndOverlays{
+    if (!assetArrayWithLocation || !assetArrayWithLocation.count) return;
+    
+    // 添加 MKAnnotations
+    [myMapView removeAnnotations:myMapView.annotations];
+    
+    NSMutableArray <EverywhereMKAnnotation *> *annotationsToAdd = [NSMutableArray new];
+    
+    if (assetArrayWithLocation.count == 1) {
+        PHAsset *asset = assetArrayWithLocation.firstObject;
+        EverywhereMKAnnotation *anno = [EverywhereMKAnnotation new];
+        anno.locaton = asset.location;
+        anno.assetLocalIdentifiers = @[asset.localIdentifier];
+        anno.annotationTitle = @" 1 Photo";
+        [annotationsToAdd addObject:anno];
+    }else if (assetArrayWithLocation.count > 1){
         
-        if (annotationsToAdd.count >= 1) {
-            [myMapView addAnnotations:annotationsToAdd];
+        //__block NSUInteger startIdx = 0;
+        //__block NSUInteger endIdx = 0;
+        __block NSMutableArray <NSString *> *tempAssetLocalIdentifiers = [NSMutableArray new];
+        __block NSMutableArray <CLLocation *> *tempLocations = [NSMutableArray new];
+        NSUInteger count = assetArrayWithLocation.count;
+        NSLog(@"assetArrayWithLocation.count : %ld",count);
+        
+        [assetArrayWithLocation enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             
-            EverywhereMKAnnotation *lastAnnotation = (EverywhereMKAnnotation *) myMapView.annotations.lastObject;
-            MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(lastAnnotation.coordinate, 10000, 10000);
-            [myMapView setRegion:showRegion animated:YES];
-            
-            if (annotationsToAdd.count >= 2) {
-                // 记录距离信息
-                NSMutableArray *distanceArray = [NSMutableArray new];
-                __block CLLocationDistance totalDistance = 0;
+            if (([distanceToPreviousArray[idx] doubleValue] < self.nearestAnnotationDistance) && (idx <= count-2)) {
                 
-                // 添加 MKOverlays
-                [myMapView removeOverlays:myMapView.overlays];
-                NSMutableArray <MKPolyline *> *overlaysToAdd = [NSMutableArray new];
-                __block CLLocationCoordinate2D lastCoordinate;
-                [annotationsToAdd enumerateObjectsUsingBlock:^(EverywhereMKAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                    if (idx >= 1) {
-                        CLLocationCoordinate2D points[2];
-                        points[0] = lastCoordinate;
-                        points[1] = obj.coordinate;
-                        MKPolyline *polyline = [MKPolyline polylineWithCoordinates:points count:2];
-                        polyline.title = [NSString stringWithFormat:@"MKPolyline : %lu",idx];
-                        [overlaysToAdd addObject:polyline];
-                        
-                        CLLocationDistance subDistance = MKMetersBetweenMapPoints(MKMapPointForCoordinate(lastCoordinate), MKMapPointForCoordinate(obj.coordinate));
-                        totalDistance += subDistance;
-                        [distanceArray addObject:[NSNumber numberWithDouble:subDistance]];
-                        
-                        lastCoordinate = obj.coordinate;
+                [tempLocations addObject:obj.location];
+                [tempAssetLocalIdentifiers addObject:obj.localIdentifier];
+            }else{
+                if (idx == count - 1) {
+                    if ([distanceToPreviousArray[idx] doubleValue] < self.nearestAnnotationDistance) {
+                        [tempLocations addObject:obj.location];
+                        [tempAssetLocalIdentifiers addObject:obj.localIdentifier];
                     }else{
-                        lastCoordinate = obj.coordinate;
+                        EverywhereMKAnnotation *anno = [EverywhereMKAnnotation new];
+                        anno.locaton = obj.location;
+                        anno.assetLocalIdentifiers = @[obj.localIdentifier];
+                        anno.annotationTitle = @" 1 Photo";
+                        [annotationsToAdd addObject:anno];
                     }
-                }];
-                
-                NSLog(@"%@",overlaysToAdd);
-                [myMapView addOverlays:overlaysToAdd];
-                
-                NSString *totalString = NSLocalizedString(@"Total:", @"总行程:");
-                if (totalDistance >=1000) {
-                    self.title = [NSString stringWithFormat:@"%@ %.2f km",totalString,totalDistance/1000];
-                }else{
-                    self.title = [NSString stringWithFormat:@"%@ %.0f m",totalString,totalDistance];
                 }
+                
+                if (tempAssetLocalIdentifiers.count > 0) {
+                    EverywhereMKAnnotation *anno = [EverywhereMKAnnotation new];
+                    anno.locaton = tempLocations.firstObject;
+                    anno.assetLocalIdentifiers = tempAssetLocalIdentifiers;
+                    anno.annotationTitle = tempAssetLocalIdentifiers.count == 1 ? @"1 Photo": [NSString stringWithFormat:@" %lu Photos",tempAssetLocalIdentifiers.count];
+                    [annotationsToAdd addObject:anno];
+                    
+                    // 重新开始记录
+                    tempLocations = [NSMutableArray new];
+                    tempAssetLocalIdentifiers = [NSMutableArray new];
+                    // 加上当前的obj信息（新一个位置开始）
+                    [tempLocations addObject:obj.location];
+                    [tempAssetLocalIdentifiers addObject:obj.localIdentifier];
+                }
+            }
+        }];
+    }
+    
+    
+    if (annotationsToAdd.count >= 1) {
+        [myMapView addAnnotations:annotationsToAdd];
+        
+        EverywhereMKAnnotation *lastAnnotation = (EverywhereMKAnnotation *) myMapView.annotations.lastObject;
+        MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(lastAnnotation.coordinate, 10000, 10000);
+        [myMapView setRegion:showRegion animated:YES];
+        
+        if (annotationsToAdd.count >= 2) {
+            // 记录距离信息
+            NSMutableArray *distanceArray = [NSMutableArray new];
+            __block CLLocationDistance totalDistance = 0;
+            
+            // 添加 MKOverlays
+            [myMapView removeOverlays:myMapView.overlays];
+            NSMutableArray <MKPolyline *> *overlaysToAdd = [NSMutableArray new];
+            __block CLLocationCoordinate2D lastCoordinate;
+            [annotationsToAdd enumerateObjectsUsingBlock:^(EverywhereMKAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                if (idx >= 1) {
+                    CLLocationCoordinate2D points[2];
+                    points[0] = lastCoordinate;
+                    points[1] = obj.coordinate;
+                    MKPolyline *polyline = [MKPolyline polylineWithCoordinates:points count:2];
+                    polyline.title = [NSString stringWithFormat:@"MKPolyline : %lu",idx];
+                    [overlaysToAdd addObject:polyline];
+                    
+                    CLLocationDistance subDistance = MKMetersBetweenMapPoints(MKMapPointForCoordinate(lastCoordinate), MKMapPointForCoordinate(obj.coordinate));
+                    totalDistance += subDistance;
+                    [distanceArray addObject:[NSNumber numberWithDouble:subDistance]];
+                    
+                    lastCoordinate = obj.coordinate;
+                }else{
+                    lastCoordinate = obj.coordinate;
+                }
+            }];
+            
+            //NSLog(@"%@",overlaysToAdd);
+            [myMapView addOverlays:overlaysToAdd];
+            
+            NSString *totalString = NSLocalizedString(@"Total:", @"总行程:");
+            if (totalDistance >=1000) {
+                self.title = [NSString stringWithFormat:@"%@ %.2f km",totalString,totalDistance/1000];
+            }else{
+                self.title = [NSString stringWithFormat:@"%@ %.0f m",totalString,totalDistance];
             }
         }
     }
+}
+
+- (CLLocation *)averageLocationForLocations:(NSArray <CLLocation *> *)locations{
+    
+    CLLocationCoordinate2D resultCoordinate;
+    CLLocationDistance resultAltitude = 0;
+    
+    for (CLLocation *location in locations) {
+        resultCoordinate.latitude += location.coordinate.latitude;
+        resultCoordinate.longitude += location.coordinate.longitude;
+        resultAltitude += location.altitude;
+    }
+    
+    double count = (double)locations.count;
+    
+    resultCoordinate.longitude /= count;
+    resultCoordinate.latitude /= count;
+    resultAltitude /= count;
+    
+    CLLocation *resultLocation = [[CLLocation alloc] initWithCoordinate:resultCoordinate altitude:resultAltitude horizontalAccuracy:0 verticalAccuracy:0 course:0 speed:0 timestamp:[NSDate date]];
+    
+    return resultLocation;
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation{
@@ -777,7 +869,7 @@
         pinAV.canShowCallout = YES;
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
         imageView.contentMode = UIViewContentModeScaleAspectFill;
-        PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[((EverywhereMKAnnotation *)annotation).assetLocalIdentifier] options:nil].lastObject;
+        PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:((EverywhereMKAnnotation *)annotation).assetLocalIdentifiers options:nil].lastObject;
         if (asset) imageView.image = [PHAsset synchronousFetchUIImageFromPHAsset:asset targetSize:CGSizeMake(80, 80)];
         
         pinAV.leftCalloutAccessoryView = imageView;
@@ -797,7 +889,7 @@
         
         AssetDetailVC *showVC = [AssetDetailVC new];
         showVC.edgesForExtendedLayout = UIRectEdgeNone;
-        showVC.assetLocalIdentifier = annotation.assetLocalIdentifier;
+        showVC.assetLocalIdentifier = annotation.assetLocalIdentifiers.firstObject;
         [self.navigationController pushViewController:showVC animated:YES];
     }
     
@@ -808,7 +900,7 @@
         MKPolylineRenderer *polylineRenderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
         polylineRenderer.lineWidth = 2;
         polylineRenderer.strokeColor = [UIColor greenColor];
-        NSLog(@"%@",polylineRenderer);
+        //NSLog(@"%@",polylineRenderer);
         return polylineRenderer;
     }else{
         return nil;
