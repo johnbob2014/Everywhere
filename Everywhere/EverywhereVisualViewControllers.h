@@ -36,10 +36,10 @@
 
 @interface AssetsMapVC : UIViewController
 @property (assign,nonatomic) CLLocationDistance nearestAnnotationDistance;
-@property (strong,nonatomic) NSArray <NSString *> *assetsLocalIdentifiers;
+@property (strong,nonatomic) NSArray <NSString *> *assetLocalIdentifiers;
 @end
 
 @interface AssetDetailVC : UIViewController
-@property (strong,nonatomic) NSString *assetLocalIdentifier;
+@property (strong,nonatomic) NSArray <NSString *> *assetLocalIdentifiers;
 @end
 
