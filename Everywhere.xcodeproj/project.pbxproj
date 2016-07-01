@@ -16,6 +16,15 @@
 		1E2848171D1ADFF400189A83 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E2848161D1ADFF400189A83 /* CoreLocation.framework */; };
 		1E2848191D1AE00000189A83 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E2848181D1AE00000189A83 /* Photos.framework */; };
 		1E28481D1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E28481C1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m */; };
+		1E74C3081D268377000A9790 /* floatTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E74C3041D268377000A9790 /* floatTableViewCell.m */; };
+		1E74C3091D268377000A9790 /* floatTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E74C3051D268377000A9790 /* floatTableViewCell.xib */; };
+		1E74C30A1D268377000A9790 /* VCFloatingActionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E74C3071D268377000A9790 /* VCFloatingActionButton.m */; };
+		1E74C3121D26839B000A9790 /* cross.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E74C30C1D26839B000A9790 /* cross.png */; };
+		1E74C3131D26839B000A9790 /* fb-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E74C30D1D26839B000A9790 /* fb-icon.png */; };
+		1E74C3141D26839B000A9790 /* google-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E74C30E1D26839B000A9790 /* google-icon.png */; };
+		1E74C3151D26839B000A9790 /* linkedin-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E74C30F1D26839B000A9790 /* linkedin-icon.png */; };
+		1E74C3161D26839B000A9790 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E74C3101D26839B000A9790 /* plus.png */; };
+		1E74C3171D26839B000A9790 /* twitter-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E74C3111D26839B000A9790 /* twitter-icon.png */; };
 		1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */; };
 		1E9D5D441D1E8F2D00E8B630 /* Everywhere.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */; };
 		4B001CD41D21002700DF7287 /* CTPImageBrowserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CCD1D21002700DF7287 /* CTPImageBrowserVC.m */; };
@@ -43,6 +52,17 @@
 		1E2848181D1AE00000189A83 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		1E28481B1D1AE0FD00189A83 /* EverywhereVisualViewControllers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EverywhereVisualViewControllers.h; sourceTree = "<group>"; };
 		1E28481C1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EverywhereVisualViewControllers.m; sourceTree = "<group>"; };
+		1E74C3031D268377000A9790 /* floatTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = floatTableViewCell.h; sourceTree = "<group>"; };
+		1E74C3041D268377000A9790 /* floatTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = floatTableViewCell.m; sourceTree = "<group>"; };
+		1E74C3051D268377000A9790 /* floatTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = floatTableViewCell.xib; sourceTree = "<group>"; };
+		1E74C3061D268377000A9790 /* VCFloatingActionButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VCFloatingActionButton.h; sourceTree = "<group>"; };
+		1E74C3071D268377000A9790 /* VCFloatingActionButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VCFloatingActionButton.m; sourceTree = "<group>"; };
+		1E74C30C1D26839B000A9790 /* cross.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cross.png; sourceTree = "<group>"; };
+		1E74C30D1D26839B000A9790 /* fb-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fb-icon.png"; sourceTree = "<group>"; };
+		1E74C30E1D26839B000A9790 /* google-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "google-icon.png"; sourceTree = "<group>"; };
+		1E74C30F1D26839B000A9790 /* linkedin-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "linkedin-icon.png"; sourceTree = "<group>"; };
+		1E74C3101D26839B000A9790 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus.png; sourceTree = "<group>"; };
+		1E74C3111D26839B000A9790 /* twitter-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "twitter-icon.png"; sourceTree = "<group>"; };
 		1E9D5D401D1E2AFE00E8B630 /* WGS84TOGCJ02.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WGS84TOGCJ02.h; path = WGS84TOGCJ02/WGS84TOGCJ02.h; sourceTree = "<group>"; };
 		1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WGS84TOGCJ02.m; path = WGS84TOGCJ02/WGS84TOGCJ02.m; sourceTree = "<group>"; };
 		1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Everywhere.rtf; sourceTree = "<group>"; };
@@ -99,6 +119,8 @@
 		1E2847F41D1ADDB900189A83 /* Everywhere */ = {
 			isa = PBXGroup;
 			children = (
+				1E74C30B1D268382000A9790 /* Images */,
+				1E74C3021D268377000A9790 /* VCFloatingActionButton */,
 				4B30E2A51D24A960002C2DE7 /* NSDate+Assistant */,
 				4B0D09251D23C90B0047D7E0 /* PHAsset+Assistant */,
 				4B001CD81D21252400DF7287 /* CLPlacemark+Assistant */,
@@ -128,6 +150,31 @@
 				1E2848131D1ADEC300189A83 /* StoreKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		1E74C3021D268377000A9790 /* VCFloatingActionButton */ = {
+			isa = PBXGroup;
+			children = (
+				1E74C3031D268377000A9790 /* floatTableViewCell.h */,
+				1E74C3041D268377000A9790 /* floatTableViewCell.m */,
+				1E74C3051D268377000A9790 /* floatTableViewCell.xib */,
+				1E74C3061D268377000A9790 /* VCFloatingActionButton.h */,
+				1E74C3071D268377000A9790 /* VCFloatingActionButton.m */,
+			);
+			path = VCFloatingActionButton;
+			sourceTree = "<group>";
+		};
+		1E74C30B1D268382000A9790 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				1E74C30C1D26839B000A9790 /* cross.png */,
+				1E74C30D1D26839B000A9790 /* fb-icon.png */,
+				1E74C30E1D26839B000A9790 /* google-icon.png */,
+				1E74C30F1D26839B000A9790 /* linkedin-icon.png */,
+				1E74C3101D26839B000A9790 /* plus.png */,
+				1E74C3111D26839B000A9790 /* twitter-icon.png */,
+			);
+			name = Images;
 			sourceTree = "<group>";
 		};
 		1E9D5D3F1D1E2ADB00E8B630 /* WGS84TOGCJ02 */ = {
@@ -263,8 +310,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E74C3151D26839B000A9790 /* linkedin-icon.png in Resources */,
+				1E74C3141D26839B000A9790 /* google-icon.png in Resources */,
+				1E74C3161D26839B000A9790 /* plus.png in Resources */,
+				1E74C3121D26839B000A9790 /* cross.png in Resources */,
+				1E74C3091D268377000A9790 /* floatTableViewCell.xib in Resources */,
+				1E74C3131D26839B000A9790 /* fb-icon.png in Resources */,
 				1E9D5D441D1E8F2D00E8B630 /* Everywhere.rtf in Resources */,
 				1E2848081D1ADDB900189A83 /* LaunchScreen.storyboard in Resources */,
+				1E74C3171D26839B000A9790 /* twitter-icon.png in Resources */,
 				1E2848051D1ADDB900189A83 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -278,12 +332,14 @@
 			files = (
 				4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */,
 				4B30E2A81D24A999002C2DE7 /* NSDate+Assistant.m in Sources */,
+				1E74C3081D268377000A9790 /* floatTableViewCell.m in Sources */,
 				1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */,
 				1E28481D1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m in Sources */,
 				4B001CD41D21002700DF7287 /* CTPImageBrowserVC.m in Sources */,
 				1E2848031D1ADDB900189A83 /* Everywhere.xcdatamodeld in Sources */,
 				4B001CD61D21002700DF7287 /* CTPMultiImage.m in Sources */,
 				1E2847FA1D1ADDB900189A83 /* EverywhereAppDelegate.m in Sources */,
+				1E74C30A1D268377000A9790 /* VCFloatingActionButton.m in Sources */,
 				4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */,
 				4B001CD51D21002700DF7287 /* CTPImageView.m in Sources */,
 				4B001CD71D21002700DF7287 /* CTPWaitingView.m in Sources */,

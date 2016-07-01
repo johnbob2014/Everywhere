@@ -438,10 +438,15 @@
 
 #pragma mark - PeriodAssetCollectionsTVC
 
+#import "VCFloatingActionButton.h"
 #import "NSDate+Assistant.h"
+@interface PeriodAssetCollectionsTVC()<floatMenuDelegate>
+@end
+
 @implementation PeriodAssetCollectionsTVC{
     NSMutableDictionary <NSString *,NSArray *> *assetsDictionary;
     UISegmentedControl *seg;
+    VCFloatingActionButton *addButton;
 }
 
 - (void)viewDidLoad{
@@ -454,7 +459,32 @@
     
     [self asyncFetchAssets];
     
-    NSLog(@"%@",NSStringFromSelector(_cmd));
+    //CGRect floatFrame = CGRectMake([UIScreen mainScreen].bounds.size.width - 44 - 20, [UIScreen mainScreen].bounds.size.height - 44 - 20 - 64 , 44, 44);
+    /*
+    addButton = [VCFloatingActionButton newAutoLayoutView];
+    addButton.imageArray = @[@"fb-icon",@"twitter-icon",@"google-icon",@"linkedin-icon"];
+    addButton.labelArray = @[@"Facebook",@"Twitter",@"Google Plus",@"Linked in"];
+    addButton.hideWhileScrolling = NO;
+    addButton.delegate = self;
+    
+    //NSLog(@"%@",NSStringFromCGRect(self.view.frame));
+    [self.view insertSubview:addButton aboveSubview:self.tableView];
+    [addButton autoSetDimensionsToSize:CGSizeMake(44, 44)];
+    [addButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:10];
+    [addButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    NSLog(@"%@",NSStringFromCGRect(addButton.frame));
+     */
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:YES];
+    //NSLog(@"%@",NSStringFromCGRect(addButton.frame));
+    //[addButton setNormalImage:[UIImage imageNamed:@"plus"] andPressedImage:[UIImage imageNamed:@"cross"] withScrollview:nil];
+
+}
+
+- (void)didSelectMenuOptionAtIndex:(NSInteger)row{
+    NSLog(@"Floating action tapped index %tu",row);
 }
 
 - (void)segChanged:(id)sender{
@@ -670,6 +700,7 @@
     NSMutableArray <PHAsset *> *assetArrayWithLocation;
     NSMutableArray <NSNumber *> *distanceToPreviousArray;
     MKMapView *myMapView;
+    NSArray <EverywhereMKAnnotation *> *addedAnnotationsWithIndex;
 }
 
 - (void)setNearestAnnotationDistance:(CLLocationDistance)nearestAnnotationDistance{
@@ -686,6 +717,8 @@
     [self updateAssetArray];
     
     [self initAnnotationsAndOverlays];
+    
+    [self initNaviBar];
 }
 
 - (void)initMapView{
@@ -799,6 +832,7 @@
     
     if (!annotationsToAdd || !annotationsToAdd.count) return;
     [myMapView addAnnotations:annotationsToAdd];
+    addedAnnotationsWithIndex = annotationsToAdd;
     
     __block CLLocationDistance maxDistance = 500;
     [distanceToPreviousArray enumerateObjectsUsingBlock:^(NSNumber * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -870,6 +904,81 @@
         }
     }
 
+}
+
+- (void)initNaviBar{
+    UIView *naviBar = [UIView newAutoLayoutView];
+    [naviBar setBackgroundColor:[[UIColor grayColor] colorWithAlphaComponent:0.6]];
+    [self.view addSubview:naviBar];
+    [naviBar autoSetDimension:ALDimensionHeight toSize:44];
+    [naviBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 5, 20, 5) excludingEdge:ALEdgeTop];
+    
+    UIButton *firstButton = [UIButton newAutoLayoutView];
+    [firstButton setTitle:@"First" forState:UIControlStateNormal];
+    [firstButton addTarget:self action:@selector(firstButtonPressed:) forControlEvents:UIControlEventTouchDown];
+    [naviBar addSubview:firstButton];
+    [firstButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
+    [firstButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+    
+    UIButton *previousButton = [UIButton newAutoLayoutView];
+    [previousButton setTitle:@"Previous" forState:UIControlStateNormal];
+    [previousButton addTarget:self action:@selector(previousButtonPressed:) forControlEvents:UIControlEventTouchDown];
+    [naviBar addSubview:previousButton];
+    [previousButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:firstButton withOffset:30];
+    [previousButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+    
+    UIButton *nextButton = [UIButton newAutoLayoutView];
+    [nextButton setTitle:@"Next" forState:UIControlStateNormal];
+    [nextButton addTarget:self action:@selector(nextButtonPressed:) forControlEvents:UIControlEventTouchDown];
+    [naviBar addSubview:nextButton];
+    [nextButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:previousButton withOffset:30];
+    [nextButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+    
+    UIButton *lastButton = [UIButton newAutoLayoutView];
+    [lastButton setTitle:@"Last" forState:UIControlStateNormal];
+    [lastButton addTarget:self action:@selector(lastButtonPressed:) forControlEvents:UIControlEventTouchDown];
+    [naviBar addSubview:lastButton];
+    [lastButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:nextButton withOffset:30];
+    [lastButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+}
+
+- (void)firstButtonPressed:(id)sender{
+    EverywhereMKAnnotation *ida = addedAnnotationsWithIndex.firstObject;
+    [myMapView setCenterCoordinate:ida.coordinate animated:YES];
+    [myMapView selectAnnotation:ida animated:YES];
+}
+
+- (void)previousButtonPressed:(id)sender{
+    EverywhereMKAnnotation *ida = myMapView.selectedAnnotations.firstObject;
+    if (ida) {
+        NSInteger index = [addedAnnotationsWithIndex indexOfObject:ida];
+        if (--index >= 0) {
+            [myMapView deselectAnnotation:ida animated:YES];
+            ida = addedAnnotationsWithIndex[index];
+            [myMapView setCenterCoordinate:ida.coordinate animated:YES];
+            [myMapView selectAnnotation:ida animated:YES];
+        }
+    }
+}
+
+- (void)nextButtonPressed:(id)sender{
+    EverywhereMKAnnotation *ida = myMapView.selectedAnnotations.firstObject;
+    if (ida) {
+        NSInteger index = [addedAnnotationsWithIndex indexOfObject:ida];
+        if (++index < addedAnnotationsWithIndex.count) {
+            [myMapView deselectAnnotation:ida animated:YES];
+            ida = addedAnnotationsWithIndex[index];
+            
+            [myMapView setCenterCoordinate:ida.coordinate animated:YES];
+            [myMapView selectAnnotation:ida animated:YES];
+        }
+    }
+}
+
+- (void)lastButtonPressed:(id)sender{
+    EverywhereMKAnnotation *ida = addedAnnotationsWithIndex.lastObject;
+    [myMapView setCenterCoordinate:ida.coordinate animated:YES];
+    [myMapView selectAnnotation:ida animated:YES];
 }
 
 - (CLLocation *)averageLocationForLocations:(NSArray <CLLocation *> *)locations{
