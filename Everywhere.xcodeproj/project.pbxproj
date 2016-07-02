@@ -27,6 +27,7 @@
 		1E74C3171D26839B000A9790 /* twitter-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E74C3111D26839B000A9790 /* twitter-icon.png */; };
 		1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */; };
 		1E9D5D441D1E8F2D00E8B630 /* Everywhere.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */; };
+		1EC3138F1D27FC4800A2C301 /* CalendarVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EC3138E1D27FC4800A2C301 /* CalendarVC.m */; };
 		1EEA794D1D279070002B6291 /* AssetsMapVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEA794C1D279070002B6291 /* AssetsMapVC.m */; };
 		1EEA79511D2791A0002B6291 /* EverywhereMKAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEA79501D2791A0002B6291 /* EverywhereMKAnnotation.m */; };
 		4B001CD41D21002700DF7287 /* CTPImageBrowserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CCD1D21002700DF7287 /* CTPImageBrowserVC.m */; };
@@ -37,6 +38,7 @@
 		4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */; };
 		4B30E2A81D24A999002C2DE7 /* NSDate+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B30E2A71D24A999002C2DE7 /* NSDate+Assistant.m */; };
 		4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */; };
+		6CB38890FA94424195AD957F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CC0D2203C20D4BDAA8408724 /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +70,8 @@
 		1E9D5D401D1E2AFE00E8B630 /* WGS84TOGCJ02.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WGS84TOGCJ02.h; path = WGS84TOGCJ02/WGS84TOGCJ02.h; sourceTree = "<group>"; };
 		1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WGS84TOGCJ02.m; path = WGS84TOGCJ02/WGS84TOGCJ02.m; sourceTree = "<group>"; };
 		1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Everywhere.rtf; sourceTree = "<group>"; };
+		1EC3138D1D27FC4800A2C301 /* CalendarVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CalendarVC.h; path = EverywhereVisualViewControllers/CalendarVC.h; sourceTree = "<group>"; };
+		1EC3138E1D27FC4800A2C301 /* CalendarVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CalendarVC.m; path = EverywhereVisualViewControllers/CalendarVC.m; sourceTree = "<group>"; };
 		1EEA794B1D279070002B6291 /* AssetsMapVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AssetsMapVC.h; path = EverywhereVisualViewControllers/AssetsMapVC.h; sourceTree = "<group>"; };
 		1EEA794C1D279070002B6291 /* AssetsMapVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AssetsMapVC.m; path = EverywhereVisualViewControllers/AssetsMapVC.m; sourceTree = "<group>"; };
 		1EEA794F1D2791A0002B6291 /* EverywhereMKAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereMKAnnotation.h; path = EverywhereModels/EverywhereMKAnnotation.h; sourceTree = "<group>"; };
@@ -89,6 +93,8 @@
 		4B30E2A71D24A999002C2DE7 /* NSDate+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDate+Assistant.m"; path = "NSDate+Assistant/NSDate+Assistant.m"; sourceTree = "<group>"; };
 		4B3C10061D1CDCA700C20C72 /* UIView+AutoLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AutoLayout.h"; sourceTree = "<group>"; };
 		4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AutoLayout.m"; sourceTree = "<group>"; };
+		6F74F5C408DD478FB7DADC1B /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		CC0D2203C20D4BDAA8408724 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +105,7 @@
 				1E2848191D1AE00000189A83 /* Photos.framework in Frameworks */,
 				1E2848171D1ADFF400189A83 /* CoreLocation.framework in Frameworks */,
 				1E2848141D1ADEC300189A83 /* StoreKit.framework in Frameworks */,
+				6CB38890FA94424195AD957F /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,6 +118,7 @@
 				1E2847F31D1ADDB900189A83 /* Products */,
 				1E28481A1D1AE00C00189A83 /* Frameworks */,
 				1E2847F41D1ADDB900189A83 /* Everywhere */,
+				6F74F5C408DD478FB7DADC1B /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -156,6 +164,7 @@
 				1E2848181D1AE00000189A83 /* Photos.framework */,
 				1E2848161D1ADFF400189A83 /* CoreLocation.framework */,
 				1E2848131D1ADEC300189A83 /* StoreKit.framework */,
+				CC0D2203C20D4BDAA8408724 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -199,6 +208,8 @@
 			children = (
 				1EEA794B1D279070002B6291 /* AssetsMapVC.h */,
 				1EEA794C1D279070002B6291 /* AssetsMapVC.m */,
+				1EC3138D1D27FC4800A2C301 /* CalendarVC.h */,
+				1EC3138E1D27FC4800A2C301 /* CalendarVC.m */,
 			);
 			name = EverywhereVisualViewControllers;
 			sourceTree = "<group>";
@@ -271,9 +282,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1E28480C1D1ADDB900189A83 /* Build configuration list for PBXNativeTarget "Everywhere" */;
 			buildPhases = (
+				098B5D22613A4C24B545F2A4 /* Check Pods Manifest.lock */,
 				1E2847EE1D1ADDB900189A83 /* Sources */,
 				1E2847EF1D1ADDB900189A83 /* Frameworks */,
 				1E2847F01D1ADDB900189A83 /* Resources */,
+				4AE840D9BA8B4A8EA4664DBD /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -351,6 +364,39 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		098B5D22613A4C24B545F2A4 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		4AE840D9BA8B4A8EA4664DBD /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		1E2847EE1D1ADDB900189A83 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -368,6 +414,7 @@
 				1E2847FA1D1ADDB900189A83 /* EverywhereAppDelegate.m in Sources */,
 				1E74C30A1D268377000A9790 /* VCFloatingActionButton.m in Sources */,
 				4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */,
+				1EC3138F1D27FC4800A2C301 /* CalendarVC.m in Sources */,
 				4B001CD51D21002700DF7287 /* CTPImageView.m in Sources */,
 				4B001CD71D21002700DF7287 /* CTPWaitingView.m in Sources */,
 				1EEA79511D2791A0002B6291 /* EverywhereMKAnnotation.m in Sources */,
@@ -474,6 +521,7 @@
 		};
 		1E28480D1D1ADDB900189A83 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6F74F5C408DD478FB7DADC1B /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Everywhere/Everywhere.entitlements;
@@ -490,6 +538,7 @@
 		};
 		1E28480E1D1ADDB900189A83 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6F74F5C408DD478FB7DADC1B /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Everywhere/Everywhere.entitlements;
