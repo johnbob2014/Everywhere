@@ -27,6 +27,8 @@
 		1E74C3171D26839B000A9790 /* twitter-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E74C3111D26839B000A9790 /* twitter-icon.png */; };
 		1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */; };
 		1E9D5D441D1E8F2D00E8B630 /* Everywhere.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */; };
+		1EEA794D1D279070002B6291 /* AssetsMapVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEA794C1D279070002B6291 /* AssetsMapVC.m */; };
+		1EEA79511D2791A0002B6291 /* EverywhereMKAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEA79501D2791A0002B6291 /* EverywhereMKAnnotation.m */; };
 		4B001CD41D21002700DF7287 /* CTPImageBrowserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CCD1D21002700DF7287 /* CTPImageBrowserVC.m */; };
 		4B001CD51D21002700DF7287 /* CTPImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CCF1D21002700DF7287 /* CTPImageView.m */; };
 		4B001CD61D21002700DF7287 /* CTPMultiImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CD11D21002700DF7287 /* CTPMultiImage.m */; };
@@ -66,6 +68,10 @@
 		1E9D5D401D1E2AFE00E8B630 /* WGS84TOGCJ02.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WGS84TOGCJ02.h; path = WGS84TOGCJ02/WGS84TOGCJ02.h; sourceTree = "<group>"; };
 		1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WGS84TOGCJ02.m; path = WGS84TOGCJ02/WGS84TOGCJ02.m; sourceTree = "<group>"; };
 		1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Everywhere.rtf; sourceTree = "<group>"; };
+		1EEA794B1D279070002B6291 /* AssetsMapVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AssetsMapVC.h; path = EverywhereVisualViewControllers/AssetsMapVC.h; sourceTree = "<group>"; };
+		1EEA794C1D279070002B6291 /* AssetsMapVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AssetsMapVC.m; path = EverywhereVisualViewControllers/AssetsMapVC.m; sourceTree = "<group>"; };
+		1EEA794F1D2791A0002B6291 /* EverywhereMKAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereMKAnnotation.h; path = EverywhereModels/EverywhereMKAnnotation.h; sourceTree = "<group>"; };
+		1EEA79501D2791A0002B6291 /* EverywhereMKAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereMKAnnotation.m; path = EverywhereModels/EverywhereMKAnnotation.m; sourceTree = "<group>"; };
 		4B001CCB1D21002700DF7287 /* CTPImageBrowserConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTPImageBrowserConfig.h; sourceTree = "<group>"; };
 		4B001CCC1D21002700DF7287 /* CTPImageBrowserVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTPImageBrowserVC.h; sourceTree = "<group>"; };
 		4B001CCD1D21002700DF7287 /* CTPImageBrowserVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTPImageBrowserVC.m; sourceTree = "<group>"; };
@@ -119,6 +125,8 @@
 		1E2847F41D1ADDB900189A83 /* Everywhere */ = {
 			isa = PBXGroup;
 			children = (
+				1EEA794E1D27915C002B6291 /* EverywhereModels */,
+				1EEA794A1D279047002B6291 /* EverywhereVisualViewControllers */,
 				1E74C30B1D268382000A9790 /* Images */,
 				1E74C3021D268377000A9790 /* VCFloatingActionButton */,
 				4B30E2A51D24A960002C2DE7 /* NSDate+Assistant */,
@@ -184,6 +192,24 @@
 				1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */,
 			);
 			name = WGS84TOGCJ02;
+			sourceTree = "<group>";
+		};
+		1EEA794A1D279047002B6291 /* EverywhereVisualViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				1EEA794B1D279070002B6291 /* AssetsMapVC.h */,
+				1EEA794C1D279070002B6291 /* AssetsMapVC.m */,
+			);
+			name = EverywhereVisualViewControllers;
+			sourceTree = "<group>";
+		};
+		1EEA794E1D27915C002B6291 /* EverywhereModels */ = {
+			isa = PBXGroup;
+			children = (
+				1EEA794F1D2791A0002B6291 /* EverywhereMKAnnotation.h */,
+				1EEA79501D2791A0002B6291 /* EverywhereMKAnnotation.m */,
+			);
+			name = EverywhereModels;
 			sourceTree = "<group>";
 		};
 		4B001CCA1D21002700DF7287 /* CTPImageBrowser */ = {
@@ -332,6 +358,7 @@
 			files = (
 				4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */,
 				4B30E2A81D24A999002C2DE7 /* NSDate+Assistant.m in Sources */,
+				1EEA794D1D279070002B6291 /* AssetsMapVC.m in Sources */,
 				1E74C3081D268377000A9790 /* floatTableViewCell.m in Sources */,
 				1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */,
 				1E28481D1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m in Sources */,
@@ -343,6 +370,7 @@
 				4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */,
 				4B001CD51D21002700DF7287 /* CTPImageView.m in Sources */,
 				4B001CD71D21002700DF7287 /* CTPWaitingView.m in Sources */,
+				1EEA79511D2791A0002B6291 /* EverywhereMKAnnotation.m in Sources */,
 				1E2847F71D1ADDB900189A83 /* main.m in Sources */,
 				4B001CDE1D2125FC00DF7287 /* CLPlacemark+Assistant.m in Sources */,
 			);

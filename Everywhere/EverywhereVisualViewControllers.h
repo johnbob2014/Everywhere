@@ -34,10 +34,6 @@
 @property (nonatomic,strong) PHAssetCollection *assetCollection;
 @end
 
-@interface AssetsMapVC : UIViewController
-@property (assign,nonatomic) CLLocationDistance nearestAnnotationDistance;
-@property (strong,nonatomic) NSArray <NSString *> *assetLocalIdentifiers;
-@end
 
 @interface AssetDetailVC : UIViewController
 @property (strong,nonatomic) NSArray <NSString *> *assetLocalIdentifiers;
