@@ -8,15 +8,17 @@
 
 #import "CalendarVC.h"
 #import "AssetsMapVC.h"
+#import "AssetsMapProVC.h"
 #import "NSDate+Assistant.h"
 #import "UIView+AutoLayout.h"
-
+#import "GCPhotoManager.h"
+#import "GCLocationAnalyser.h"
 #import <JTCalendar.h>
 
 @import Photos;
 
 @interface CalendarVC ()<JTCalendarDelegate>
-@property (strong,nonatomic) PHAssetCollection *cameraRollAssetCollection;
+
 @end
 
 @implementation CalendarVC{
@@ -25,18 +27,14 @@
     JTCalendarManager *calendarManager;
     NSDate *userSelectedDate;
     
+    GCPhotoManager *photoManager;
+    
     NSMutableDictionary <NSString *,NSArray *> *assetsDictionary;
 }
 
-- (PHAssetCollection *)cameraRollAssetCollection{
-    if (!_cameraRollAssetCollection) {
-        PHFetchResult <PHAssetCollection *> *fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
-        _cameraRollAssetCollection = fetchResultArray.firstObject;
-    }
-    return _cameraRollAssetCollection;
-}
-
 - (void)viewDidLoad{
+    photoManager = [GCPhotoManager defaultManager];
+    
     userSelectedDate = [NSDate date];
     
     [self initJTCalendar];
@@ -154,12 +152,7 @@
 }
 
 
-- (void)pushAssetsMapVCWithAssetLocalIdentifiers:(NSArray <NSString *> *)assetLocalIdentifiers title:(NSString *)title{
-    AssetsMapVC *showVC = [AssetsMapVC new];
-    showVC.assetLocalIdentifiers = assetLocalIdentifiers;
-    showVC.title = title;
-    [self.navigationController pushViewController:showVC animated:YES];
-}
+
 
 #pragma mark - Views customization
 
@@ -178,9 +171,38 @@
 }
 
 - (void)menuButtonTouchDown:(id)sender{
-    NSLog(@"%@",NSStringFromSelector(_cmd));
-    [self pushAssetsMapVCWithAssetLocalIdentifiers:[self fetchToday:userSelectedDate] title:nil];
+    /*
+     NSLog(@"%@",NSStringFromSelector(_cmd));
+    NSDictionary *dic = [photoManager fetchAssetIDsFormStartDate:userSelectedDate toEndDate:userSelectedDate fromAssetCollectionIDs:@[photoManager.GCAssetCollectionID_UserLibrary]];
+    [self pushAssetsMapVCWithAssetLocalIdentifiers:dic[photoManager.GCAssetCollectionID_UserLibrary] title:nil];
+     */
+    
+    NSDictionary *dic = [photoManager fetchAssetsFormStartDate:userSelectedDate toEndDate:userSelectedDate fromAssetCollectionIDs:@[photoManager.GCAssetCollectionID_UserLibrary]];
+    NSArray <PHAsset *> *assetArray = dic[photoManager.GCAssetCollectionID_UserLibrary];
+    NSMutableArray *assetArrayWithLocations = [NSMutableArray new];
+    [assetArray enumerateObjectsUsingBlock:^(PHAsset *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.location) [assetArrayWithLocations addObject:obj];
+    }];
+    NSArray *assetsArray = [GCLocationAnalyser analyseLocationsToArray:assetArrayWithLocations nearestDistance:200];
+    [self pushAssetsMapProVCWithAssetsArray:assetsArray title:nil];
+    
 }
+
+- (void)pushAssetsMapVCWithAssetLocalIdentifiers:(NSArray <NSString *> *)assetLocalIdentifiers title:(NSString *)title{
+    AssetsMapVC *showVC = [AssetsMapVC new];
+    showVC.assetLocalIdentifiers = assetLocalIdentifiers;
+    showVC.title = title;
+    [self.navigationController pushViewController:showVC animated:YES];
+}
+
+
+-(void)pushAssetsMapProVCWithAssetsArray:(NSArray <NSArray *> *)assetsArray title:(NSString *)title{
+    AssetsMapProVC *showVC = [AssetsMapProVC new];
+    showVC.assetsArray = assetsArray;
+    showVC.title = title;
+    [self.navigationController pushViewController:showVC animated:YES];
+}
+
 
 - (void)calendar:(JTCalendarManager *)calendar prepareMenuItemView:(UIButton *)menuItemView date:(NSDate *)date
 {
@@ -223,42 +245,6 @@
 }
 */
 
-#pragma mark - Photo Data
-
-- (NSArray <NSString *> *)fetchAssetLocalIdentifiersFormStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate{
-    PHFetchOptions *options = [PHFetchOptions new];
-    startDate = [startDate dateAtStartOfToday];
-    endDate = [endDate dateAtEndOfToday];
-    //NSString *predicateFormat = nil;
-    if (startDate && endDate) {
-        options.predicate = [NSPredicate predicateWithFormat:@" (creationDate > %@) && (creationDate < %@)",startDate,endDate];
-    }else if (startDate) {
-        options.predicate = [NSPredicate predicateWithFormat:@"creationDate > %@",startDate];
-    }else if (endDate){
-        options.predicate = [NSPredicate predicateWithFormat:@"creationDate < %@",endDate];
-    }
-    
-    options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
-    PHFetchResult <PHAsset *> *assetArray = [PHAsset fetchAssetsInAssetCollection:self.cameraRollAssetCollection options:options];
-    
-    NSMutableArray <NSString *> *assetIDArray = [NSMutableArray new];
-    [assetArray enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (obj.location && obj.localIdentifier) [assetIDArray addObject:obj.localIdentifier];
-    }];
-    return assetIDArray;
-}
-
-- (NSArray <NSString *> *)fetchToday:(NSDate *)today{
-    return [self fetchAssetLocalIdentifiersFormStartDate:today toEndDate:today];
-}
-
-- (NSArray <NSString *> *)fetchMonth:(NSDate *)oneDayInTheMonth{
-    return [self fetchAssetLocalIdentifiersFormStartDate:[oneDayInTheMonth dateAtStartOfThisMonth] toEndDate:[oneDayInTheMonth dateAtEndOfThisMonth]];
-}
-
-- (NSArray <NSString *> *)fetchYear:(NSDate *)oneDayInTheYear{
-    return [self fetchAssetLocalIdentifiersFormStartDate:[oneDayInTheYear dateAtStartOfThisYear] toEndDate:[oneDayInTheYear dateAtEndOfThisYear]];
-}
 
 /*
 - (void)viewDidAppear:(BOOL)animated{

@@ -180,7 +180,7 @@ static const NSInteger BIG_MONTH[7] = {1,3,5,7,8,10,12};
 
 #pragma mark - String Properties
 - (NSString *) stringWithDefaultFormat{
-    return [self stringWithFormat:@"yyyy-MM-dd hh-mm-ss"];
+    return [self stringWithFormat:@"yyyy-MM-dd hh:mm:ss"];
 }
 
 - (NSString *) stringWithFormat: (NSString *) format

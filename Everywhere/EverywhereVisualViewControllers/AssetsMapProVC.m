@@ -1,12 +1,12 @@
 //
-//  AssetsMapVC.m
+//  AssetsMapProVC.m
 //  Everywhere
 //
-//  Created by 张保国 on 16/7/2.
+//  Created by 张保国 on 16/7/3.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#import "AssetsMapVC.h"
+#import "AssetsMapProVC.h"
 @import Photos;
 @import MapKit;
 #import "EverywhereMKAnnotation.h"
@@ -17,17 +17,11 @@
 #import "EverywhereVisualViewControllers.h"
 #import "GCLocationAnalyser.h"
 
-#pragma mark - AssetsMapVC
-
-@interface AssetsMapVC() <MKMapViewDelegate>
+@interface AssetsMapProVC () <MKMapViewDelegate>
 @property (assign,nonatomic) NSInteger currentAnnotationIndex;
 @end
 
-@implementation AssetsMapVC{
-    PHFetchResult <PHAsset *> *assetArray;
-    NSMutableArray <PHAsset *> *assetArrayWithLocation;
-    NSMutableArray <NSNumber *> *distanceToPreviousArray;
-    
+@implementation AssetsMapProVC{
     MKMapView *myMapView;
     NSArray <EverywhereMKAnnotation *> *addedAnnotationsWithIndex;
     
@@ -41,20 +35,14 @@
     
     BOOL isPlaying;
     NSTimer *playTimer;
+
 }
 
-- (void)setNearestAnnotationDistance:(CLLocationDistance)nearestAnnotationDistance{
-    _nearestAnnotationDistance = nearestAnnotationDistance;
-}
 
 - (void)viewDidLoad{
     [super viewDidLoad];
     
-    if (!self.nearestAnnotationDistance) self.nearestAnnotationDistance = 200;
-    
     [self initMapView];
-    
-    [self updateAssetArray];
     
     [self initAnnotationsAndOverlays];
     
@@ -70,115 +58,33 @@
     [myMapView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
 }
 
-- (void)updateAssetArray{
-    if (self.assetLocalIdentifiers) {
-        PHFetchOptions *options = [PHFetchOptions new];
-        // 按日期排列
-        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
-        
-        assetArray = [PHAsset fetchAssetsWithLocalIdentifiers:self.assetLocalIdentifiers options:options];
-        
-        assetArrayWithLocation = [NSMutableArray new];
-        distanceToPreviousArray = [NSMutableArray new];
-        
-        __block CLLocationCoordinate2D lastCoordinate;
-        [assetArray enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if (obj.location){
-                if (assetArrayWithLocation.count) {
-                    CLLocationCoordinate2D newCoordinate = obj.location.coordinate;
-                    CLLocationDistance distance = MKMetersBetweenMapPoints(MKMapPointForCoordinate(lastCoordinate), MKMapPointForCoordinate(newCoordinate));
-                    [distanceToPreviousArray addObject:[NSNumber numberWithDouble:distance]];
-                    lastCoordinate = newCoordinate;
-                }else{
-                    // 记录第一个位置的座标
-                    lastCoordinate = obj.location.coordinate;
-                    [distanceToPreviousArray addObject:[NSNumber numberWithDouble:0.0]];
-                }
-                [assetArrayWithLocation addObject:obj];
-            }
-        }];
-        //NSLog(@"distanceToPreviousArray:\n%@",distanceToPreviousArray);
-        //NSLog(@"assetArrayWithLocation:\n%@",assetArrayWithLocation);
-        
-    }
-}
-
 - (void)initAnnotationsAndOverlays{
-    if (!assetArrayWithLocation || !assetArrayWithLocation.count) return;
     
     // 添加 MKAnnotations
     [myMapView removeAnnotations:myMapView.annotations];
     
     NSMutableArray <EverywhereMKAnnotation *> *annotationsToAdd = [NSMutableArray new];
     
-    if (assetArrayWithLocation.count == 1) {
-        PHAsset *asset = assetArrayWithLocation.firstObject;
-        EverywhereMKAnnotation *onlyOne = [EverywhereMKAnnotation new];
-        onlyOne.locaton = asset.location;
-        onlyOne.assetLocalIdentifiers = @[asset.localIdentifier];
-        onlyOne.annotationTitle = [asset.creationDate stringWithDefaultFormat];
-        [annotationsToAdd addObject:onlyOne];
-    }else if (assetArrayWithLocation.count > 1){
-        
-        //__block NSUInteger startIdx = 0;
-        //__block NSUInteger endIdx = 0;
-        __block NSMutableArray <NSString *> *tempAssetLocalIdentifiers = [NSMutableArray new];
-        __block NSMutableArray <PHAsset *> *tempAssets = [NSMutableArray new];
-        NSUInteger count = assetArrayWithLocation.count;
-        
-        [assetArrayWithLocation enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            
-            if (([distanceToPreviousArray[idx] doubleValue] < self.nearestAnnotationDistance) && (idx <= count-2)) {
-                
-                [tempAssets addObject:obj];
-                [tempAssetLocalIdentifiers addObject:obj.localIdentifier];
-            }else{
-                EverywhereMKAnnotation *lastAnno = nil;
-                
-                if (idx == count - 1) {
-                    if ([distanceToPreviousArray[idx] doubleValue] < self.nearestAnnotationDistance) {
-                        [tempAssets addObject:obj];
-                        [tempAssetLocalIdentifiers addObject:obj.localIdentifier];
-                    }else{
-                        lastAnno = [EverywhereMKAnnotation new];
-                        lastAnno.locaton = obj.location;
-                        lastAnno.assetLocalIdentifiers = @[obj.localIdentifier];
-                        lastAnno.annotationTitle = [obj.creationDate stringWithDefaultFormat];
-                    }
-                }
-                
-                if (tempAssetLocalIdentifiers.count > 0) {
-                    EverywhereMKAnnotation *anno = [EverywhereMKAnnotation new];
-                    anno.locaton = tempAssets.firstObject.location;
-                    anno.assetLocalIdentifiers = tempAssetLocalIdentifiers;
-                    anno.annotationTitle =[NSString stringWithFormat:@" %@",[tempAssets.firstObject.creationDate stringWithDefaultFormat]];
-                    [annotationsToAdd addObject:anno];
-                    
-                    // 重新开始记录
-                    tempAssets = [NSMutableArray new];
-                    tempAssetLocalIdentifiers = [NSMutableArray new];
-                    // 加上当前的obj信息（新一个位置开始）
-                    [tempAssets addObject:obj];
-                    [tempAssetLocalIdentifiers addObject:obj.localIdentifier];
-                }
-                
-                if (lastAnno) [annotationsToAdd addObject:lastAnno];
-                
-            }
+    [self.assetsArray enumerateObjectsUsingBlock:^(NSArray<PHAsset *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        PHAsset *asset = obj.firstObject;
+        NSMutableArray *ids = [NSMutableArray new];
+        [obj enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [ids addObject:obj.localIdentifier];
         }];
-    }
+        EverywhereMKAnnotation *anno = [EverywhereMKAnnotation new];
+        anno.locaton = asset.location;
+        anno.annotationTitle = [asset.creationDate stringWithDefaultFormat];
+        anno.assetLocalIdentifiers = ids;
+        [annotationsToAdd addObject:anno];
+    }];
     
     if (!annotationsToAdd || !annotationsToAdd.count) return;
     [myMapView addAnnotations:annotationsToAdd];
     addedAnnotationsWithIndex = annotationsToAdd;
     //NSLog(@"%@",addedAnnotationsWithIndex);
     
-    __block CLLocationDistance maxDistance = 500;
-    [distanceToPreviousArray enumerateObjectsUsingBlock:^(NSNumber * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (maxDistance < obj.doubleValue) maxDistance = obj.doubleValue;
-    }];
     EverywhereMKAnnotation *firstAnnotation = addedAnnotationsWithIndex.firstObject;
-    MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(firstAnnotation.coordinate, maxDistance, maxDistance);
+    MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(firstAnnotation.coordinate, 1000, 1000);
     [myMapView setRegion:showRegion animated:YES];
     [myMapView selectAnnotation:firstAnnotation animated:YES];
     
