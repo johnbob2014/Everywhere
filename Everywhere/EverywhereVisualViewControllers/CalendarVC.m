@@ -18,26 +18,65 @@
 @import Photos;
 
 @interface CalendarVC ()<JTCalendarDelegate>
-
+@property (strong,nonatomic) NSDate *userSelectedDate;
+@property (assign,nonatomic) NSInteger mode;
 @end
 
 @implementation CalendarVC{
     JTCalendarMenuView *calendarMenuView;
     JTHorizontalCalendarView *calendarContentView;
     JTCalendarManager *calendarManager;
-    NSDate *userSelectedDate;
+
+    NSDate *startDate;
+    NSDate *endDate;
     
     GCPhotoManager *photoManager;
     
-    NSMutableDictionary <NSString *,NSArray *> *assetsDictionary;
+    UIView *naviBar;
+    
+}
+
+- (void)setUserSelectedDate:(NSDate *)userSelectedDate{
+    _userSelectedDate = userSelectedDate;
+    [self updateStartEndDate];
+}
+
+- (void)setMode:(NSInteger)mode{
+    _mode = mode;
+    [self updateStartEndDate];
+}
+
+- (void)updateStartEndDate{
+    switch (self.mode) {
+        case 0:{
+            startDate = self.userSelectedDate;
+            endDate = self.userSelectedDate;
+        }
+            break;
+        case 1:{
+            startDate = [self.userSelectedDate dateAtStartOfThisMonth];
+            endDate = [self.userSelectedDate dateAtEndOfThisMonth];
+        }
+            break;
+        case 2:{
+            startDate = [self.userSelectedDate dateAtStartOfThisYear];
+            endDate = [self.userSelectedDate dateAtEndOfThisYear];
+        }
+            break;
+        default:
+            break;
+    }
+
 }
 
 - (void)viewDidLoad{
     photoManager = [GCPhotoManager defaultManager];
     
-    userSelectedDate = [NSDate date];
+    self.userSelectedDate = [NSDate date];
+    self.mode = 0;
     
     [self initJTCalendar];
+    [self initNaviBar];
     /*
     seg = [[UISegmentedControl alloc] initWithItems:[@"Day Month Year" componentsSeparatedByString:@" "]];
     seg.selectedSegmentIndex = 0;
@@ -86,6 +125,46 @@
     
 }
 
+- (void)initNaviBar{
+    naviBar = [UIView newAutoLayoutView];
+    [naviBar setBackgroundColor:[[UIColor grayColor] colorWithAlphaComponent:0.6]];
+    [self.view addSubview:naviBar];
+    [naviBar autoSetDimension:ALDimensionHeight toSize:44];
+    [naviBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 5, 20, 5) excludingEdge:ALEdgeTop];
+    
+    UISegmentedControl *seg = [[UISegmentedControl alloc] initWithItems:[@"Day Month Year" componentsSeparatedByString:@" "]];
+    seg.selectedSegmentIndex = 0;
+    [seg addTarget:self action:@selector(segmentControlValueChanged:) forControlEvents:UIControlEventValueChanged];
+    [naviBar addSubview:seg];
+    [seg autoSetDimensionsToSize:CGSizeMake(220, 30)];
+    [seg autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+    [seg autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    
+    UIButton *goButton = [UIButton newAutoLayoutView];
+    [goButton setTitle:@"Go!" forState:UIControlStateNormal];
+    [goButton addTarget:self action:@selector(goButtonPressed:) forControlEvents:UIControlEventTouchDown];
+    [naviBar addSubview:goButton];
+    
+    [goButton autoSetDimensionsToSize:CGSizeMake(100, 40)];
+    [goButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
+    [goButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+}
+
+- (void)segmentControlValueChanged:(UISegmentedControl *)sender{
+    self.mode = sender.selectedSegmentIndex;
+}
+
+- (void)goButtonPressed:(UIButton *)sender{
+    NSDictionary *dic = [photoManager fetchAssetsFormStartDate:startDate toEndDate:endDate fromAssetCollectionIDs:@[photoManager.GCAssetCollectionID_UserLibrary]];
+    NSArray <PHAsset *> *assetArray = dic[photoManager.GCAssetCollectionID_UserLibrary];
+    NSMutableArray *assetArrayWithLocations = [NSMutableArray new];
+    [assetArray enumerateObjectsUsingBlock:^(PHAsset *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.location) [assetArrayWithLocations addObject:obj];
+    }];
+    NSArray *assetsArray = [GCLocationAnalyser analyseLocationsToArray:assetArrayWithLocations nearestDistance:200];
+    [self pushAssetsMapProVCWithAssetsArray:assetsArray title:nil];
+}
+
 #pragma mark - JTCalendarDelegate
 
 - (void)calendar:(JTCalendarManager *)calendar prepareDayView:(JTCalendarDayView *)dayView
@@ -105,7 +184,7 @@
         dayView.textLabel.textColor = [UIColor whiteColor];
     }
     // Selected date
-    else if(userSelectedDate && [calendarManager.dateHelper date:userSelectedDate isTheSameDayThan:dayView.date]){
+    else if(self.userSelectedDate && [calendarManager.dateHelper date:self.userSelectedDate isTheSameDayThan:dayView.date]){
         dayView.circleView.hidden = NO;
         dayView.circleView.backgroundColor = [UIColor brownColor];
         dayView.dotView.backgroundColor = [UIColor whiteColor];
@@ -125,7 +204,7 @@
 - (void)calendar:(JTCalendarManager *)calendar didTouchDayView:(JTCalendarDayView *)dayView
 {
     // Use to indicate the selected date
-    userSelectedDate = dayView.date;
+    self.userSelectedDate = dayView.date;
     
     // Animation for the circleView
     dayView.circleView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.1, 0.1);
@@ -148,7 +227,6 @@
     }
     
     
-
 }
 
 
@@ -177,16 +255,10 @@
     [self pushAssetsMapVCWithAssetLocalIdentifiers:dic[photoManager.GCAssetCollectionID_UserLibrary] title:nil];
      */
     
-    NSDictionary *dic = [photoManager fetchAssetsFormStartDate:userSelectedDate toEndDate:userSelectedDate fromAssetCollectionIDs:@[photoManager.GCAssetCollectionID_UserLibrary]];
-    NSArray <PHAsset *> *assetArray = dic[photoManager.GCAssetCollectionID_UserLibrary];
-    NSMutableArray *assetArrayWithLocations = [NSMutableArray new];
-    [assetArray enumerateObjectsUsingBlock:^(PHAsset *obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (obj.location) [assetArrayWithLocations addObject:obj];
-    }];
-    NSArray *assetsArray = [GCLocationAnalyser analyseLocationsToArray:assetArrayWithLocations nearestDistance:200];
-    [self pushAssetsMapProVCWithAssetsArray:assetsArray title:nil];
     
 }
+
+//- updateAssetsArray
 
 - (void)pushAssetsMapVCWithAssetLocalIdentifiers:(NSArray <NSString *> *)assetLocalIdentifiers title:(NSString *)title{
     AssetsMapVC *showVC = [AssetsMapVC new];
@@ -209,7 +281,7 @@
     static NSDateFormatter *dateFormatter;
     if(!dateFormatter){
         dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"yyyy MM";
+        dateFormatter.dateFormat = @"yyyy MMMM";
         
         dateFormatter.locale = calendarManager.dateHelper.calendar.locale;
         dateFormatter.timeZone = calendarManager.dateHelper.calendar.timeZone;

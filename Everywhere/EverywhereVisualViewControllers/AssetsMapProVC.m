@@ -17,7 +17,7 @@
 #import "EverywhereVisualViewControllers.h"
 #import "GCLocationAnalyser.h"
 
-@interface AssetsMapProVC () <MKMapViewDelegate>
+@interface AssetsMapProVC () <MKMapViewDelegate,UIGestureRecognizerDelegate>
 @property (assign,nonatomic) NSInteger currentAnnotationIndex;
 @end
 
@@ -56,6 +56,24 @@
     
     [self.view addSubview:myMapView];
     [myMapView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+    
+    //NSLog(@"%@",myMapView.gestureRecognizers);
+    
+    UITapGestureRecognizer *mapViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mapViewTapGR:)];
+    mapViewTapGR.delegate = self;
+    [myMapView addGestureRecognizer:mapViewTapGR];
+    
+    //NSLog(@"%@",myMapView.gestureRecognizers);
+}
+
+- (void)mapViewTapGR:(id)sender{
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    //naviBar.hidden = ! naviBar.hidden;
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
+    return NO;
 }
 
 - (void)initAnnotationsAndOverlays{
@@ -83,11 +101,7 @@
     addedAnnotationsWithIndex = annotationsToAdd;
     //NSLog(@"%@",addedAnnotationsWithIndex);
     
-    EverywhereMKAnnotation *firstAnnotation = addedAnnotationsWithIndex.firstObject;
-    MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(firstAnnotation.coordinate, 1000, 1000);
-    [myMapView setRegion:showRegion animated:YES];
-    [myMapView selectAnnotation:firstAnnotation animated:YES];
-    
+    __block CLLocationDistance maxDistance = 500;
     if (annotationsToAdd.count >= 2) {
         // 记录距离信息
         NSMutableArray *distanceArray = [NSMutableArray new];
@@ -108,6 +122,7 @@
                 [polylinesToAdd addObject:polyline];
                 
                 CLLocationDistance subDistance = MKMetersBetweenMapPoints(MKMapPointForCoordinate(lastCoordinate), MKMapPointForCoordinate(obj.coordinate));
+                if (maxDistance < subDistance) maxDistance = subDistance;
                 totalDistance += subDistance;
                 [distanceArray addObject:[NSNumber numberWithDouble:subDistance]];
                 
@@ -150,6 +165,11 @@
         }
     }
     
+    // 设置地图
+    EverywhereMKAnnotation *firstAnnotation = addedAnnotationsWithIndex.firstObject;
+    MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(firstAnnotation.coordinate, maxDistance, maxDistance);
+    [myMapView setRegion:showRegion animated:YES];
+    [myMapView selectAnnotation:firstAnnotation animated:YES];
 }
 
 - (void)initNaviBar{
@@ -213,6 +233,9 @@
 
 - (void)previousButtonPressed:(id)sender{
     EverywhereMKAnnotation *ida = myMapView.selectedAnnotations.firstObject;
+    if (!ida && self.currentAnnotationIndex) {
+        ida = addedAnnotationsWithIndex[self.currentAnnotationIndex];
+    }
     if (ida) {
         NSInteger index = [addedAnnotationsWithIndex indexOfObject:ida];
         if (--index >= 0) {
@@ -240,6 +263,9 @@
 
 - (void)nextButtonPressed:(id)sender{
     EverywhereMKAnnotation *ida = myMapView.selectedAnnotations.firstObject;
+    if (!ida && self.currentAnnotationIndex) {
+        ida = addedAnnotationsWithIndex[self.currentAnnotationIndex];
+    }
     if (ida) {
         NSInteger index = [addedAnnotationsWithIndex indexOfObject:ida];
         if (++index < addedAnnotationsWithIndex.count) {
@@ -287,16 +313,25 @@
         pinAV.pinColor = MKPinAnnotationColorPurple;
         pinAV.animatesDrop = YES;
         pinAV.canShowCallout = YES;
+        
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
         imageView.contentMode = UIViewContentModeScaleAspectFill;
         imageView.userInteractionEnabled = YES;
+        UITapGestureRecognizer *imageViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapGR:)];
+        [imageView addGestureRecognizer:imageViewTapGR];
+        
+        
         PHFetchOptions *options = [PHFetchOptions new];
         // 按日期排列
         options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
         PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:((EverywhereMKAnnotation *)annotation).assetLocalIdentifiers options:options].firstObject;
         if (asset) imageView.image = [PHAsset synchronousFetchUIImageFromPHAsset:asset targetSize:CGSizeMake(80, 80)];
         
+        //UIButton *transparentButton = [UIButton newAutoLayoutView];
+        
+        
         UIButton *badgeButton = [UIButton newAutoLayoutView];
+        badgeButton.userInteractionEnabled = NO;
         [badgeButton setBackgroundImage:[UIImage imageNamed:@"badge"] forState:UIControlStateNormal];
         [badgeButton setTitle:[NSString stringWithFormat:@"%ld",((EverywhereMKAnnotation *)annotation).assetCount] forState:UIControlStateNormal];
         badgeButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
@@ -308,24 +343,28 @@
         pinAV.leftCalloutAccessoryView = imageView;
         pinAV.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
         return pinAV;
+    }else if([annotation isKindOfClass:[MKUserLocation class]]){
+        MKAnnotationView *view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"userLocation"];
+        view.canShowCallout = NO;
+        return nil;
     }else{
         return nil;
     }
 }
 
--(void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
+- (void)imageViewTapGR:(UITapGestureRecognizer *)sender{
+    AssetDetailVC *showVC = [AssetDetailVC new];
+    showVC.edgesForExtendedLayout = UIRectEdgeNone;
+    EverywhereMKAnnotation *annotation = myMapView.selectedAnnotations.firstObject;
+    showVC.assetLocalIdentifiers = annotation.assetLocalIdentifiers;
+    showVC.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [self.navigationController presentViewController:showVC animated:YES completion:nil];
+}
+
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
     if ([view isKindOfClass:[MKPinAnnotationView class]]) {
-        NSLog(@"control: %@",control);
-        EverywhereMKAnnotation *annotation = (EverywhereMKAnnotation *) view.annotation;
-        //UIButton *btn = (UIButton *) control;
+        NSLog(@"calloutAccessoryControlTapped:");
         
-        //PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[((EverywhereMKAnnotation *)annotation).assetLocalIdentifier] options:nil].lastObject;
-        
-        AssetDetailVC *showVC = [AssetDetailVC new];
-        showVC.edgesForExtendedLayout = UIRectEdgeNone;
-        showVC.assetLocalIdentifiers = annotation.assetLocalIdentifiers;
-        showVC.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-        [self.navigationController presentViewController:showVC animated:YES completion:nil];
     }
     
 }
@@ -341,7 +380,7 @@
         MKPolygonRenderer *polygonRenderer = [[MKPolygonRenderer alloc] initWithPolygon:overlay];
         polygonRenderer.lineWidth = 1;
         polygonRenderer.strokeColor = [[UIColor brownColor] colorWithAlphaComponent:0.6];
-        polygonRenderer.fillColor = [[UIColor cyanColor] colorWithAlphaComponent:0.4];
+        //polygonRenderer.fillColor = [[UIColor cyanColor] colorWithAlphaComponent:0.4];
         return polygonRenderer;
         
     }else{
