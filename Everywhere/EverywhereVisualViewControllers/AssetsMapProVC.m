@@ -16,12 +16,15 @@
 #import "UIFont+Assistant.h"
 #import "EverywhereVisualViewControllers.h"
 #import "GCLocationAnalyser.h"
+#import <STPopup.h>
 
 @interface AssetsMapProVC () <MKMapViewDelegate,UIGestureRecognizerDelegate>
 @property (assign,nonatomic) NSInteger currentAnnotationIndex;
 @end
 
 @implementation AssetsMapProVC{
+    STPopupController *popupController;
+    
     MKMapView *myMapView;
     NSArray <EverywhereMKAnnotation *> *addedAnnotationsWithIndex;
     
@@ -38,15 +41,25 @@
 
 }
 
+#pragma mark - Getter & Setter
+
+- (void)setAssetsArray:(NSArray<NSArray<PHAsset *> *> *)assetsArray{
+    _assetsArray = assetsArray;
+    // 如果地图已经初始化，才进行更新
+    if (myMapView) [self initAnnotationsAndOverlays];
+}
+
+#pragma mark - Life Cycle
 
 - (void)viewDidLoad{
     [super viewDidLoad];
     
     [self initMapView];
     
+    [self initNaviBar];
+    
     [self initAnnotationsAndOverlays];
     
-    [self initNaviBar];
 }
 
 - (void)initMapView{
@@ -67,7 +80,7 @@
 }
 
 - (void)mapViewTapGR:(id)sender{
-    NSLog(@"%@",NSStringFromSelector(_cmd));
+    //NSLog(@"%@",NSStringFromSelector(_cmd));
     //naviBar.hidden = ! naviBar.hidden;
 }
 
@@ -76,7 +89,12 @@
     return NO;
 }
 
+#pragma mark - initAnnotationsAndOverlays
+
 - (void)initAnnotationsAndOverlays{
+    
+    // 清理数组
+    addedAnnotationsWithIndex = nil;
     
     // 添加 MKAnnotations
     [myMapView removeAnnotations:myMapView.annotations];
@@ -171,6 +189,8 @@
     [myMapView setRegion:showRegion animated:YES];
     [myMapView selectAnnotation:firstAnnotation animated:YES];
 }
+
+#pragma mark - Navigation Bar
 
 - (void)initNaviBar{
     
@@ -306,6 +326,8 @@
     return resultLocation;
 }
 
+#pragma mark - MKMapViewDelegate
+
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation{
     if ([annotation isKindOfClass:[EverywhereMKAnnotation class]]) {
         MKPinAnnotationView *pinAV = (MKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"pinAV"];
@@ -333,7 +355,7 @@
         UIButton *badgeButton = [UIButton newAutoLayoutView];
         badgeButton.userInteractionEnabled = NO;
         [badgeButton setBackgroundImage:[UIImage imageNamed:@"badge"] forState:UIControlStateNormal];
-        [badgeButton setTitle:[NSString stringWithFormat:@"%ld",((EverywhereMKAnnotation *)annotation).assetCount] forState:UIControlStateNormal];
+        [badgeButton setTitle:[NSString stringWithFormat:@"%ld",(long)((EverywhereMKAnnotation *)annotation).assetCount] forState:UIControlStateNormal];
         badgeButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
         [imageView addSubview:badgeButton];
         [badgeButton autoSetDimensionsToSize:CGSizeMake(20, 20)];
@@ -357,8 +379,18 @@
     showVC.edgesForExtendedLayout = UIRectEdgeNone;
     EverywhereMKAnnotation *annotation = myMapView.selectedAnnotations.firstObject;
     showVC.assetLocalIdentifiers = annotation.assetLocalIdentifiers;
+    
+    /*
     showVC.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [self.navigationController presentViewController:showVC animated:YES completion:nil];
+     */
+    
+    showVC.contentSizeInPopup = CGSizeMake(300, 400);
+    showVC.landscapeContentSizeInPopup = CGSizeMake(400,200);
+    popupController = [[STPopupController alloc] initWithRootViewController:showVC];
+    popupController.style = STPopupStyleFormSheet;
+    popupController.transitionStyle = STPopupTransitionStyleFade;
+    [popupController presentInViewController:self];
 }
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
