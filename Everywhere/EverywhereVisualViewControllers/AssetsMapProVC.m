@@ -17,6 +17,10 @@
 #import "EverywhereVisualViewControllers.h"
 #import "GCLocationAnalyser.h"
 #import <STPopup.h>
+#import "GCLocationAnalyser.h"
+#import "GCPhotoManager.h"
+#import "LocationInfoBar.h"
+#import "CLPlacemark+Assistant.h"
 
 @interface AssetsMapProVC () <MKMapViewDelegate,UIGestureRecognizerDelegate>
 @property (assign,nonatomic) NSInteger currentAnnotationIndex;
@@ -28,6 +32,9 @@
     MKMapView *myMapView;
     NSArray <EverywhereMKAnnotation *> *addedAnnotationsWithIndex;
     
+    LocationInfoBar *infoBar;
+    BOOL infoBarIsHidden;
+    
     UIView *naviBar;
     UIButton *firstButton;
     UIButton *previousButton;
@@ -38,6 +45,11 @@
     
     BOOL isPlaying;
     NSTimer *playTimer;
+    
+    NSDate *startDate;
+    NSDate *endDate;
+    
+    GCPhotoManager *photoManager;
 
 }
 
@@ -54,12 +66,32 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     
+    photoManager = [GCPhotoManager defaultManager];
+    
+    [self initAssetsArray];
+    
     [self initMapView];
     
     [self initNaviBar];
     
     [self initAnnotationsAndOverlays];
     
+    [self initinfoBar];
+    
+}
+
+
+- (void)initAssetsArray{
+    NSDate *now = [NSDate date];
+    startDate = [now dateAtStartOfThisMonth];
+    endDate = [now dateAtEndOfThisMonth];
+    NSDictionary *dic = [photoManager fetchAssetsFormStartDate:startDate toEndDate:endDate fromAssetCollectionIDs:@[photoManager.GCAssetCollectionID_UserLibrary]];
+    NSArray <PHAsset *> *assetArray = dic[photoManager.GCAssetCollectionID_UserLibrary];
+    NSMutableArray *assetArrayWithLocations = [NSMutableArray new];
+    [assetArray enumerateObjectsUsingBlock:^(PHAsset *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.location) [assetArrayWithLocations addObject:obj];
+    }];
+    self.assetsArray = [GCLocationAnalyser analyseLocationsToArray:assetArrayWithLocations nearestDistance:200];
 }
 
 - (void)initMapView{
@@ -74,7 +106,7 @@
     
     UITapGestureRecognizer *mapViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mapViewTapGR:)];
     mapViewTapGR.delegate = self;
-    [myMapView addGestureRecognizer:mapViewTapGR];
+    //[myMapView addGestureRecognizer:mapViewTapGR];
     
     //NSLog(@"%@",myMapView.gestureRecognizers);
 }
@@ -326,6 +358,56 @@
     return resultLocation;
 }
 
+#pragma mark - Tool Bar
+
+#define InfoBarHeight 200
+#define ScreenWidth [UIScreen mainScreen].bounds.size.width
+
+- (void)initinfoBar{
+    infoBar = [[LocationInfoBar alloc] initWithFrame:CGRectMake(0, -InfoBarHeight, ScreenWidth , InfoBarHeight)];
+    [self.view addSubview:infoBar];
+    [infoBar setBackgroundColor:[[UIColor cyanColor] colorWithAlphaComponent:0.6]];
+    infoBarIsHidden = YES;
+}
+
+- (void)showInfoBar{
+    [UIView animateKeyframesWithDuration:1
+                                   delay:0
+                                 options:UIViewKeyframeAnimationOptionBeginFromCurrentState
+                              animations:^{
+                                  [UIView addKeyframeWithRelativeStartTime:0 relativeDuration:0.4 animations:^{
+                                      infoBar.frame = CGRectMake(0, 20 + 10, ScreenWidth, InfoBarHeight);
+                                  }];
+                                  [UIView addKeyframeWithRelativeStartTime:0.4 relativeDuration:0.3 animations:^{
+                                      infoBar.frame = CGRectMake(0, 20, ScreenWidth, InfoBarHeight);
+                                  }];
+                                  
+                              }
+                              completion:^(BOOL finished) {
+                                  infoBarIsHidden = NO;
+                              }];
+
+}
+
+- (void)hideInfoBar{
+    [UIView animateKeyframesWithDuration:1
+                                   delay:0
+                                 options:UIViewKeyframeAnimationOptionBeginFromCurrentState
+                              animations:^{
+                                  [UIView addKeyframeWithRelativeStartTime:0 relativeDuration:0.3 animations:^{
+                                      infoBar.frame = CGRectMake(0, 20 + 10, ScreenWidth, InfoBarHeight);
+                                  }];
+                                  [UIView addKeyframeWithRelativeStartTime:0.3 relativeDuration:0.4 animations:^{
+                                      infoBar.frame = CGRectMake(0, -InfoBarHeight, ScreenWidth , InfoBarHeight);
+                                  }];
+                                  
+                              }
+                              completion:^(BOOL finished) {
+                                  infoBarIsHidden = YES;
+                              }];
+
+}
+
 #pragma mark - MKMapViewDelegate
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation{
@@ -395,8 +477,30 @@
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
     if ([view isKindOfClass:[MKPinAnnotationView class]]) {
-        NSLog(@"calloutAccessoryControlTapped:");
+        //NSLog(@"calloutAccessoryControlTapped:");
         
+        
+        EverywhereMKAnnotation *anno = (EverywhereMKAnnotation *)view.annotation;
+        
+        CLGeocoder *geocoder = [CLGeocoder new];
+        [geocoder reverseGeocodeLocation:anno.locaton
+                       completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+                           NSString *placeInfo;
+                           if (!error) {
+                               CLPlacemark *placemark = placemarks.lastObject;
+                               
+                               placeInfo = [placemark localizedPlaceStringInReverseOrder:YES withInlandWaterAndOcean:NO];
+                               
+                           }else{
+                               placeInfo = error.localizedDescription;
+                           }
+                           
+                           infoBar.address = placeInfo;
+                           
+                           if (infoBarIsHidden) [self showInfoBar];
+                           
+                       }];
+
     }
     
 }

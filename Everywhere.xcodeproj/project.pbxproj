@@ -16,6 +16,7 @@
 		1E2848171D1ADFF400189A83 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E2848161D1ADFF400189A83 /* CoreLocation.framework */; };
 		1E2848191D1AE00000189A83 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E2848181D1AE00000189A83 /* Photos.framework */; };
 		1E28481D1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E28481C1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m */; };
+		1E41FD211D2AB66100E1A5B9 /* LocationInfoBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E41FD201D2AB66100E1A5B9 /* LocationInfoBar.m */; };
 		1E5A54181D28FE0F0056CF46 /* AssetsMapProVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E5A54171D28FE0F0056CF46 /* AssetsMapProVC.m */; };
 		1E6521841D2899EE00F41860 /* GCPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E6521831D2899EE00F41860 /* GCPhotoManager.m */; };
 		1E6521861D28BC1F00F41860 /* badge.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E6521851D28BC1F00F41860 /* badge.png */; };
@@ -61,6 +62,8 @@
 		1E2848181D1AE00000189A83 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		1E28481B1D1AE0FD00189A83 /* EverywhereVisualViewControllers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EverywhereVisualViewControllers.h; sourceTree = "<group>"; };
 		1E28481C1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EverywhereVisualViewControllers.m; sourceTree = "<group>"; };
+		1E41FD1F1D2AB66100E1A5B9 /* LocationInfoBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationInfoBar.h; path = EverywhereVisualViewControllers/LocationInfoBar.h; sourceTree = "<group>"; };
+		1E41FD201D2AB66100E1A5B9 /* LocationInfoBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationInfoBar.m; path = EverywhereVisualViewControllers/LocationInfoBar.m; sourceTree = "<group>"; };
 		1E5A54161D28FE0F0056CF46 /* AssetsMapProVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AssetsMapProVC.h; path = EverywhereVisualViewControllers/AssetsMapProVC.h; sourceTree = "<group>"; };
 		1E5A54171D28FE0F0056CF46 /* AssetsMapProVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AssetsMapProVC.m; path = EverywhereVisualViewControllers/AssetsMapProVC.m; sourceTree = "<group>"; };
 		1E6521821D2899EE00F41860 /* GCPhotoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCPhotoManager.h; path = EverywhereModels/GCPhotoManager.h; sourceTree = "<group>"; };
@@ -238,6 +241,8 @@
 				1EC3138E1D27FC4800A2C301 /* CalendarVC.m */,
 				1E5A54161D28FE0F0056CF46 /* AssetsMapProVC.h */,
 				1E5A54171D28FE0F0056CF46 /* AssetsMapProVC.m */,
+				1E41FD1F1D2AB66100E1A5B9 /* LocationInfoBar.h */,
+				1E41FD201D2AB66100E1A5B9 /* LocationInfoBar.m */,
 			);
 			name = EverywhereVisualViewControllers;
 			sourceTree = "<group>";
@@ -466,6 +471,7 @@
 				1E74C3081D268377000A9790 /* floatTableViewCell.m in Sources */,
 				1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */,
 				1E28481D1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m in Sources */,
+				1E41FD211D2AB66100E1A5B9 /* LocationInfoBar.m in Sources */,
 				4B001CD41D21002700DF7287 /* CTPImageBrowserVC.m in Sources */,
 				1E2848031D1ADDB900189A83 /* Everywhere.xcdatamodeld in Sources */,
 				1E6521961D28D56900F41860 /* GCLocationAnalyser.m in Sources */,

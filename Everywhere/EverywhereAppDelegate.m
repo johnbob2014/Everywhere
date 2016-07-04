@@ -9,6 +9,7 @@
 #import "EverywhereAppDelegate.h"
 #import "EverywhereVisualViewControllers.h"
 #import "CalendarVC.h"
+#import "AssetsMapProVC.h"
 
 @interface EverywhereAppDelegate ()
 
@@ -26,11 +27,11 @@
     //CollectionListsTVC *clTVC = [CollectionListsTVC new];
     //AssetCollectionsTVC *acTVC = [AssetCollectionsTVC new];
     //PeriodAssetCollectionsTVC *pacTVC = [PeriodAssetCollectionsTVC new];
-    CalendarVC *calendarVC = [CalendarVC new];
-    calendarVC.edgesForExtendedLayout = UIRectEdgeNone;
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:calendarVC];
-    self.window.backgroundColor = [UIColor whiteColor];
-    self.window.rootViewController = nav;
+    //alendarVC *calendarVC = [CalendarVC new];
+    //calendarVC.edgesForExtendedLayout = UIRectEdgeNone;
+    //UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:calendarVC];
+    AssetsMapProVC *vc = [AssetsMapProVC new];
+    self.window.rootViewController = vc;
     [self.window makeKeyAndVisible];
     
     return YES;
