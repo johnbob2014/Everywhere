@@ -7,15 +7,23 @@
 //
 
 #import "EverywhereAppDelegate.h"
-#import "EverywhereVisualViewControllers.h"
-#import "CalendarVC.h"
+
+#import "GCPhotoManager.h"
+#import "NSDate+Assistant.h"
+
+#import "EverywhereCoreDataManager.h"
+#import "PHAssetInfo.h"
+
 #import "AssetsMapProVC.h"
 
 @interface EverywhereAppDelegate ()
 
 @end
 
-@implementation EverywhereAppDelegate
+@implementation EverywhereAppDelegate{
+    GCPhotoManager *photoManager;
+    EverywhereCoreDataManager *cdManager;
+}
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -30,11 +38,53 @@
     //alendarVC *calendarVC = [CalendarVC new];
     //calendarVC.edgesForExtendedLayout = UIRectEdgeNone;
     //UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:calendarVC];
+    
+    photoManager = [GCPhotoManager defaultManager];
+    cdManager = [EverywhereCoreDataManager defaultManager];
+    
+    if (!cdManager.lastUpdateDate) {
+        // 首次加载照片数据
+        [self updateCoreDataFormStartDate:nil toEndDate:nil];
+    }else{
+        // 更新照片数据
+        [self updateCoreDataFormStartDate:cdManager.lastUpdateDate toEndDate:nil];
+    }
+    
+    // 更新刷新时间
+    cdManager.lastUpdateDate = [NSDate date];
+    
     AssetsMapProVC *vc = [AssetsMapProVC new];
     self.window.rootViewController = vc;
     [self.window makeKeyAndVisible];
     
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        NSArray <PHAssetInfo *> *allAssetInfoArray = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:cdManager.appMOC];
+        [allAssetInfoArray enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (![obj.reverseGeocodeSucceed boolValue]) {
+                [PHAssetInfo updatePlacemarkForAssetInfo:obj];
+                sleep(0.3);
+            }
+        }];
+    });
+
     return YES;
+}
+
+- (void)updateCoreDataFormStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate{
+    NSDate *timeTest = [NSDate date];
+    __block NSInteger addPhotosCount = 0;
+    
+    NSDictionary *dic = [photoManager fetchAssetsFormStartDate:startDate toEndDate:endDate fromAssetCollectionIDs:@[photoManager.GCAssetCollectionID_UserLibrary]];
+    NSArray <PHAsset *> *assetArray = dic[photoManager.GCAssetCollectionID_UserLibrary];
+    //NSMutableArray *assetArrayWithLocations = [NSMutableArray new];
+    [assetArray enumerateObjectsUsingBlock:^(PHAsset *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.location){
+            //[assetArrayWithLocations addObject:obj];
+            PHAssetInfo *info = [PHAssetInfo newAssetInfoWithPHAsset:obj inManagedObjectContext:cdManager.appMOC];
+            addPhotosCount++;
+        }
+    }];
+    NSLog(@"Time : %.3f , Add Photo Count : %ld",[[NSDate date] timeIntervalSinceDate:timeTest],addPhotosCount);
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

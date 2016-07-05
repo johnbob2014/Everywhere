@@ -269,10 +269,12 @@
 
 
 -(void)pushAssetsMapProVCWithAssetsArray:(NSArray <NSArray *> *)assetsArray title:(NSString *)title{
+    /*
     AssetsMapProVC *showVC = [AssetsMapProVC new];
     showVC.assetsArray = assetsArray;
     showVC.title = title;
     [self.navigationController pushViewController:showVC animated:YES];
+     */
 }
 
 

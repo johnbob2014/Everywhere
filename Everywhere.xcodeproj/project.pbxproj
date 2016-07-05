@@ -45,6 +45,10 @@
 		4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */; };
 		4B30E2A81D24A999002C2DE7 /* NSDate+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B30E2A71D24A999002C2DE7 /* NSDate+Assistant.m */; };
 		4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */; };
+		4BD51FC81D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FC51D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m */; };
+		4BD51FC91D2B47B900F18244 /* PHAssetInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FC71D2B47B900F18244 /* PHAssetInfo.m */; };
+		4BD51FCC1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FCB1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m */; };
+		4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -111,6 +115,14 @@
 		4B30E2A71D24A999002C2DE7 /* NSDate+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDate+Assistant.m"; path = "NSDate+Assistant/NSDate+Assistant.m"; sourceTree = "<group>"; };
 		4B3C10061D1CDCA700C20C72 /* UIView+AutoLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AutoLayout.h"; sourceTree = "<group>"; };
 		4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AutoLayout.m"; sourceTree = "<group>"; };
+		4BD51FC41D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PHAssetInfo+CoreDataProperties.h"; path = "EverywhereCoreData/PHAssetInfo+CoreDataProperties.h"; sourceTree = "<group>"; };
+		4BD51FC51D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PHAssetInfo+CoreDataProperties.m"; path = "EverywhereCoreData/PHAssetInfo+CoreDataProperties.m"; sourceTree = "<group>"; };
+		4BD51FC61D2B47B900F18244 /* PHAssetInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PHAssetInfo.h; path = EverywhereCoreData/PHAssetInfo.h; sourceTree = "<group>"; };
+		4BD51FC71D2B47B900F18244 /* PHAssetInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PHAssetInfo.m; path = EverywhereCoreData/PHAssetInfo.m; sourceTree = "<group>"; };
+		4BD51FCA1D2B4B1B00F18244 /* PHAssetInfo+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PHAssetInfo+Assistant.h"; path = "EverywhereCoreData/PHAssetInfo+Assistant.h"; sourceTree = "<group>"; };
+		4BD51FCB1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PHAssetInfo+Assistant.m"; path = "EverywhereCoreData/PHAssetInfo+Assistant.m"; sourceTree = "<group>"; };
+		4BD51FCD1D2B4B8400F18244 /* EverywhereCoreDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereCoreDataManager.h; path = EverywhereCoreData/EverywhereCoreDataManager.h; sourceTree = "<group>"; };
+		4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereCoreDataManager.m; path = EverywhereCoreData/EverywhereCoreDataManager.m; sourceTree = "<group>"; };
 		6C5CC4DC43B9922DBD449DFF /* Pods-Everywhere.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Everywhere.release.xcconfig"; path = "Pods/Target Support Files/Pods-Everywhere/Pods-Everywhere.release.xcconfig"; sourceTree = "<group>"; };
 		8CB0F045B4429E7E7F66F602 /* Pods-Everywhere.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Everywhere.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Everywhere/Pods-Everywhere.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -151,6 +163,7 @@
 		1E2847F41D1ADDB900189A83 /* Everywhere */ = {
 			isa = PBXGroup;
 			children = (
+				4BD51FC31D2B475000F18244 /* EverywhereCoreData */,
 				1E6521871D28BF2200F41860 /* UIFont+Assistant */,
 				1EEA794E1D27915C002B6291 /* EverywhereModels */,
 				1EEA794A1D279047002B6291 /* EverywhereVisualViewControllers */,
@@ -312,6 +325,21 @@
 			path = "UIView+AutoLayout";
 			sourceTree = "<group>";
 		};
+		4BD51FC31D2B475000F18244 /* EverywhereCoreData */ = {
+			isa = PBXGroup;
+			children = (
+				4BD51FC41D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.h */,
+				4BD51FC51D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m */,
+				4BD51FC61D2B47B900F18244 /* PHAssetInfo.h */,
+				4BD51FC71D2B47B900F18244 /* PHAssetInfo.m */,
+				4BD51FCA1D2B4B1B00F18244 /* PHAssetInfo+Assistant.h */,
+				4BD51FCB1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m */,
+				4BD51FCD1D2B4B8400F18244 /* EverywhereCoreDataManager.h */,
+				4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */,
+			);
+			name = EverywhereCoreData;
+			sourceTree = "<group>";
+		};
 		8E868D57129C0D604CE02162 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -469,13 +497,16 @@
 				4B30E2A81D24A999002C2DE7 /* NSDate+Assistant.m in Sources */,
 				1EEA794D1D279070002B6291 /* AssetsMapVC.m in Sources */,
 				1E74C3081D268377000A9790 /* floatTableViewCell.m in Sources */,
+				4BD51FC81D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m in Sources */,
 				1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */,
 				1E28481D1D1AE0FD00189A83 /* EverywhereVisualViewControllers.m in Sources */,
 				1E41FD211D2AB66100E1A5B9 /* LocationInfoBar.m in Sources */,
 				4B001CD41D21002700DF7287 /* CTPImageBrowserVC.m in Sources */,
+				4BD51FC91D2B47B900F18244 /* PHAssetInfo.m in Sources */,
 				1E2848031D1ADDB900189A83 /* Everywhere.xcdatamodeld in Sources */,
 				1E6521961D28D56900F41860 /* GCLocationAnalyser.m in Sources */,
 				4B001CD61D21002700DF7287 /* CTPMultiImage.m in Sources */,
+				4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */,
 				1E2847FA1D1ADDB900189A83 /* EverywhereAppDelegate.m in Sources */,
 				1E74C30A1D268377000A9790 /* VCFloatingActionButton.m in Sources */,
 				1E5A54181D28FE0F0056CF46 /* AssetsMapProVC.m in Sources */,
@@ -484,6 +515,7 @@
 				4B001CD51D21002700DF7287 /* CTPImageView.m in Sources */,
 				4B001CD71D21002700DF7287 /* CTPWaitingView.m in Sources */,
 				1E6521841D2899EE00F41860 /* GCPhotoManager.m in Sources */,
+				4BD51FCC1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m in Sources */,
 				1EEA79511D2791A0002B6291 /* EverywhereMKAnnotation.m in Sources */,
 				1E2847F71D1ADDB900189A83 /* main.m in Sources */,
 				4B001CDE1D2125FC00DF7287 /* CLPlacemark+Assistant.m in Sources */,

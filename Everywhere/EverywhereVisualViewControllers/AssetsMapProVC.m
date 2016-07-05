@@ -22,7 +22,13 @@
 #import "LocationInfoBar.h"
 #import "CLPlacemark+Assistant.h"
 
+#import "EverywhereCoreDataManager.h"
+#import "PHAssetInfo.h"
+
 @interface AssetsMapProVC () <MKMapViewDelegate,UIGestureRecognizerDelegate>
+@property (strong,nonatomic) NSArray <PHAssetInfo *> *assetInfoArray;
+@property (strong,nonatomic) NSArray <PHAsset *> *assetArray;
+@property (strong,nonatomic) NSArray <NSArray <PHAsset *> *> *assetsArray;
 @property (assign,nonatomic) NSInteger currentAnnotationIndex;
 @end
 
@@ -50,13 +56,26 @@
     NSDate *endDate;
     
     GCPhotoManager *photoManager;
+    EverywhereCoreDataManager *cdManager;
 
 }
 
 #pragma mark - Getter & Setter
 
-- (void)setAssetsArray:(NSArray<NSArray<PHAsset *> *> *)assetsArray{
-    _assetsArray = assetsArray;
+- (void)setAssetInfoArray:(NSArray<PHAssetInfo *> *)assetInfoArray{
+    _assetInfoArray = assetInfoArray;
+    
+    NSMutableArray *assetIDArry = [NSMutableArray new];
+    [assetInfoArray enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [assetIDArry addObject:obj.localIdentifier];
+    }];
+    
+    PHFetchOptions *options = [PHFetchOptions new];
+    options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+    PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:assetIDArry options:options];
+    
+    self.assetArray = (NSArray <PHAsset *> *)fetchResult;
+    self.assetsArray = [GCLocationAnalyser analyseLocationsToArray:self.assetArray nearestDistance:200];
     // 如果地图已经初始化，才进行更新
     if (myMapView) [self initAnnotationsAndOverlays];
 }
@@ -67,6 +86,7 @@
     [super viewDidLoad];
     
     photoManager = [GCPhotoManager defaultManager];
+    cdManager = [EverywhereCoreDataManager defaultManager];
     
     [self initAssetsArray];
     
@@ -76,12 +96,18 @@
     
     [self initAnnotationsAndOverlays];
     
-    [self initinfoBar];
+    [self initInfoBar];
     
 }
 
+- (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    [self initInfoBar];
+}
+
+#pragma mark - Init
 
 - (void)initAssetsArray{
+    /*
     NSDate *now = [NSDate date];
     startDate = [now dateAtStartOfThisMonth];
     endDate = [now dateAtEndOfThisMonth];
@@ -91,7 +117,12 @@
     [assetArray enumerateObjectsUsingBlock:^(PHAsset *obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (obj.location) [assetArrayWithLocations addObject:obj];
     }];
-    self.assetsArray = [GCLocationAnalyser analyseLocationsToArray:assetArrayWithLocations nearestDistance:200];
+     */
+    NSDate *now = [[NSDate date] dateBySubtractingMonths:1];
+    startDate = [now dateAtStartOfThisMonth];
+    endDate = [now dateAtEndOfThisMonth];
+    self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:startDate toEndDate:endDate inManagedObjectContext:cdManager.appMOC];
+    
 }
 
 - (void)initMapView{
@@ -363,7 +394,7 @@
 #define InfoBarHeight 200
 #define ScreenWidth [UIScreen mainScreen].bounds.size.width
 
-- (void)initinfoBar{
+- (void)initInfoBar{
     infoBar = [[LocationInfoBar alloc] initWithFrame:CGRectMake(0, -InfoBarHeight, ScreenWidth , InfoBarHeight)];
     [self.view addSubview:infoBar];
     [infoBar setBackgroundColor:[[UIColor cyanColor] colorWithAlphaComponent:0.6]];
@@ -482,6 +513,7 @@
         
         EverywhereMKAnnotation *anno = (EverywhereMKAnnotation *)view.annotation;
         
+        /*
         CLGeocoder *geocoder = [CLGeocoder new];
         [geocoder reverseGeocodeLocation:anno.locaton
                        completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
@@ -500,7 +532,12 @@
                            if (infoBarIsHidden) [self showInfoBar];
                            
                        }];
-
+        */
+        
+        PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:cdManager.appMOC];
+        if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
+        if (infoBarIsHidden) [self showInfoBar];
+        infoBar.address = assetInfo.localizedPlaceString_Placemark;
     }
     
 }
@@ -531,6 +568,11 @@
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view{
     self.currentAnnotationIndex = [addedAnnotationsWithIndex indexOfObject:view.annotation];
+    
+    EverywhereMKAnnotation *anno = (EverywhereMKAnnotation *)view.annotation;
+    PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:cdManager.appMOC];
+    if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
+    infoBar.address = assetInfo.localizedPlaceString_Placemark;
 }
 
 - (void)setCurrentAnnotationIndex:(NSInteger)currentAnnotationIndex{

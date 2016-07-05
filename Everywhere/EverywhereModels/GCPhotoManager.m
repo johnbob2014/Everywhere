@@ -59,15 +59,15 @@
 - (NSDictionary <NSString *,NSArray *> *)fetchAssetIDsFormStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate fromAssetCollectionIDs:(NSArray <NSString *> *)assetCollectionIDs{
     
     PHFetchOptions *assetOptions = [PHFetchOptions new];
-    startDate = [startDate dateAtStartOfToday];
-    endDate = [endDate dateAtEndOfToday];
+    //startDate = [startDate dateAtStartOfToday];
+    //endDate = [endDate dateAtEndOfToday];
     //NSString *predicateFormat = nil;
     if (startDate && endDate) {
-        assetOptions.predicate = [NSPredicate predicateWithFormat:@" (creationDate > %@) && (creationDate < %@)",startDate,endDate];
+        assetOptions.predicate = [NSPredicate predicateWithFormat:@" (creationDate >= %@) && (creationDate <= %@)",startDate,endDate];
     }else if (startDate) {
-        assetOptions.predicate = [NSPredicate predicateWithFormat:@"creationDate > %@",startDate];
+        assetOptions.predicate = [NSPredicate predicateWithFormat:@"creationDate >= %@",startDate];
     }else if (endDate){
-        assetOptions.predicate = [NSPredicate predicateWithFormat:@"creationDate < %@",endDate];
+        assetOptions.predicate = [NSPredicate predicateWithFormat:@"creationDate <= %@",endDate];
     }
     assetOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
     
@@ -94,15 +94,15 @@
 - (NSDictionary <NSString *,NSArray *> *)fetchAssetsFormStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate fromAssetCollectionIDs:(NSArray <NSString *> *)assetCollectionIDs{
     
     PHFetchOptions *assetOptions = [PHFetchOptions new];
-    startDate = [startDate dateAtStartOfToday];
-    endDate = [endDate dateAtEndOfToday];
+    //startDate = [startDate dateAtStartOfToday];
+    //endDate = [endDate dateAtEndOfToday];
     //NSString *predicateFormat = nil;
     if (startDate && endDate) {
-        assetOptions.predicate = [NSPredicate predicateWithFormat:@" (creationDate > %@) && (creationDate < %@)",startDate,endDate];
+        assetOptions.predicate = [NSPredicate predicateWithFormat:@" (creationDate >= %@) && (creationDate <= %@)",startDate,endDate];
     }else if (startDate) {
-        assetOptions.predicate = [NSPredicate predicateWithFormat:@"creationDate > %@",startDate];
+        assetOptions.predicate = [NSPredicate predicateWithFormat:@"creationDate >= %@",startDate];
     }else if (endDate){
-        assetOptions.predicate = [NSPredicate predicateWithFormat:@"creationDate < %@",endDate];
+        assetOptions.predicate = [NSPredicate predicateWithFormat:@"creationDate <= %@",endDate];
     }
     assetOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
     

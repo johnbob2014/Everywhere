@@ -1,4 +1,43 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="Test1.xcdatamodel" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
-    <elements/>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10174" systemVersion="15F34" minimumToolsVersion="Automatic">
+    <entity name="PHAssetInfo" representedClassName="PHAssetInfo" syncable="YES">
+        <attribute name="administrativeArea_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="altitude_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="burstIdentifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="burstSelectionTypes" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="ccISOcountryCode_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="country_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="course_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="creationDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="favorite" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="hidden" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="horizontalAccuracy_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="inlandWater_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="latitude_Coordinate_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="level_floor_Location" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="localIdentifier" attributeType="String" syncable="YES"/>
+        <attribute name="locality_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="localizedPlaceString_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="longitude_Coordinate_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="mediaSubtypes" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="mediaType" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="modificationDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="name_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ocean_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pixelHeight" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="pixelWidth" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="postalCode_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="representsBurst" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="reverseGeocodeSucceed" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="speed_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="subAdministrativeArea_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="subLocality_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="subThoroughfare_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="thoroughfare_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="verticalAccuracy_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="PHAssetInfo" positionX="-63" positionY="-18" width="128" height="570"/>
+    </elements>
 </model>

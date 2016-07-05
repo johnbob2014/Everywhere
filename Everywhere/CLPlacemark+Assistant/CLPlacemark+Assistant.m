@@ -15,7 +15,7 @@
 }
 
 - (NSString *)localizedPlaceStringInReverseOrder:(BOOL)reverseOrder withInlandWaterAndOcean:(BOOL)inlandWaterAndOcean{
-    NSLog(@"%@",[self class]);
+    //NSLog(@"%@",[self class]);
     
     // subLocality及其之前的地址信息，以逗号分隔
     NSMutableString *detailLocationStringTillSubLocality = [NSMutableString new];
@@ -25,48 +25,48 @@
     NSString *trimmedNameString = self.name;
     
     if (self.country){
-        NSLog(@"country : %@",self.country);
+        //NSLog(@"country : %@",self.country);
         [detailLocationStringTillSubLocality appendFormat:@"%@",self.country];
         //detailLocationStringTillSubLocality = [self.country stringByAppendingFormat:@",%@",detailLocationStringTillSubLocality];
         trimmedNameString = [trimmedNameString stringByReplacingOccurrencesOfString:self.country withString:@""];
     }
     if (self.administrativeArea){
-        NSLog(@"administrativeArea : %@",self.administrativeArea);
+        //NSLog(@"administrativeArea : %@",self.administrativeArea);
         [detailLocationStringTillSubLocality appendFormat:@",%@",self.administrativeArea];
         //detailLocationStringTillSubLocality = [self.administrativeArea stringByAppendingFormat:@",%@",detailLocationStringTillSubLocality];
         trimmedNameString = [trimmedNameString stringByReplacingOccurrencesOfString:self.administrativeArea withString:@""];
     }
     if (self.subAdministrativeArea){
-        NSLog(@"subAdministrativeArea : %@",self.subAdministrativeArea);
+        //NSLog(@"subAdministrativeArea : %@",self.subAdministrativeArea);
         [detailLocationStringTillSubLocality appendFormat:@",%@",self.subAdministrativeArea];
         //detailLocationStringTillSubLocality = [self.subAdministrativeArea stringByAppendingFormat:@",%@",detailLocationStringTillSubLocality];
         trimmedNameString = [trimmedNameString stringByReplacingOccurrencesOfString:self.subAdministrativeArea withString:@""];
     }
     if (self.locality){
-        NSLog(@"locality : %@",self.locality);
+        //NSLog(@"locality : %@",self.locality);
         [detailLocationStringTillSubLocality appendFormat:@",%@",self.locality];
         //detailLocationStringTillSubLocality = [self.locality stringByAppendingFormat:@",%@",detailLocationStringTillSubLocality];
         trimmedNameString = [trimmedNameString stringByReplacingOccurrencesOfString:self.locality withString:@""];
     }
     if (self.subLocality){
-        NSLog(@"subLocality : %@",self.subLocality);
+        //NSLog(@"subLocality : %@",self.subLocality);
         [detailLocationStringTillSubLocality appendFormat:@",%@",self.subLocality];
         //detailLocationStringTillSubLocality = self.subLocality;
         trimmedNameString = [trimmedNameString stringByReplacingOccurrencesOfString:self.subLocality withString:@""];
     }
     if (self.thoroughfare){
-        NSLog(@"thoroughfare : %@",self.thoroughfare);
+        //NSLog(@"thoroughfare : %@",self.thoroughfare);
         //[detailLocationStringTillSubLocality appendFormat:@"%@,",self.thoroughfare];
         trimmedNameString = [trimmedNameString stringByReplacingOccurrencesOfString:self.thoroughfare withString:@""];
     }
     if (self.subThoroughfare){
-        NSLog(@"subThoroughfare : %@",self.subThoroughfare);
+        //NSLog(@"subThoroughfare : %@",self.subThoroughfare);
         //[detailLocationStringTillSubLocality appendFormat:@"%@,",self.subThoroughfare];
         trimmedNameString = [trimmedNameString stringByReplacingOccurrencesOfString:self.subThoroughfare withString:@""];
     }
     
-    NSLog(@"name : %@",self.name);
-    NSLog(@"trimmedNameString : %@",trimmedNameString);
+    //NSLog(@"name : %@",self.name);
+    //NSLog(@"trimmedNameString : %@",trimmedNameString);
     
     // 全部地址信息，以逗号分隔
     NSString *combinedDetailLocationString = nil;
@@ -95,7 +95,7 @@
         combinedDetailLocationString = [combinedDetailLocationString stringByAppendingFormat:@",%@",self.name];
     }
     
-    NSLog(@"combinedDetailLocationString : %@",combinedDetailLocationString);
+    //NSLog(@"combinedDetailLocationString : %@",combinedDetailLocationString);
     
     NSString *resultString = combinedDetailLocationString;
     
@@ -103,7 +103,7 @@
         // 生成逆序地址
         NSMutableString *tempMS = [NSMutableString new];
         NSArray *array = [combinedDetailLocationString componentsSeparatedByString:@","];
-        for (int i = array.count - 1; i >= 0; i--) {
+        for (NSInteger i = array.count - 1; i >= 0; i--) {
             [tempMS appendFormat:@"%@,",array[i]];
         }
         resultString = [tempMS substringToIndex:tempMS.length - 1];

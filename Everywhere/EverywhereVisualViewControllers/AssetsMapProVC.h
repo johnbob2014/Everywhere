@@ -10,5 +10,5 @@
 @import Photos;
 
 @interface AssetsMapProVC : UIViewController
-@property (strong,nonatomic) NSArray <NSArray <PHAsset *> *> *assetsArray;
+
 @end
