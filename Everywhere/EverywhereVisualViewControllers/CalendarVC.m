@@ -13,6 +13,7 @@
 #import "UIView+AutoLayout.h"
 #import "GCPhotoManager.h"
 #import "GCLocationAnalyser.h"
+#import "TNRadioButtonGroup.h"
 #import <JTCalendar.h>
 
 @import Photos;
@@ -26,6 +27,8 @@
     JTCalendarMenuView *calendarMenuView;
     JTHorizontalCalendarView *calendarContentView;
     JTCalendarManager *calendarManager;
+    
+    TNRadioButtonGroup *radioGroup;
 
     NSDate *startDate;
     NSDate *endDate;
@@ -38,9 +41,9 @@
 
 - (void)setUserSelectedDate:(NSDate *)userSelectedDate{
     _userSelectedDate = userSelectedDate;
-    [self updateStartEndDate];
 }
 
+/*
 - (void)setMode:(NSInteger)mode{
     _mode = mode;
     [self updateStartEndDate];
@@ -68,51 +71,37 @@
     }
 
 }
+*/
 
 - (void)viewDidLoad{
+    [super viewDidLoad];
+    
     photoManager = [GCPhotoManager defaultManager];
     
     self.userSelectedDate = [NSDate date];
     self.mode = 0;
     
     [self initJTCalendar];
-    [self initNaviBar];
-    /*
-    seg = [[UISegmentedControl alloc] initWithItems:[@"Day Month Year" componentsSeparatedByString:@" "]];
-    seg.selectedSegmentIndex = 0;
-    [seg addTarget:self action:@selector(segChanged:) forControlEvents:UIControlEventValueChanged];
-    self.navigationItem.titleView = seg;
-    */
-    //[self asyncFetchAssets];
     
-    //CGRect floatFrame = CGRectMake([UIScreen mainScreen].bounds.size.width - 44 - 20, [UIScreen mainScreen].bounds.size.height - 44 - 20 - 64 , 44, 44);
-    /*
-     addButton = [VCFloatingActionButton newAutoLayoutView];
-     addButton.imageArray = @[@"fb-icon",@"twitter-icon",@"google-icon",@"linkedin-icon"];
-     addButton.labelArray = @[@"Facebook",@"Twitter",@"Google Plus",@"Linked in"];
-     addButton.hideWhileScrolling = NO;
-     addButton.delegate = self;
-     
-     //NSLog(@"%@",NSStringFromCGRect(self.view.frame));
-     [self.view insertSubview:addButton aboveSubview:self.tableView];
-     [addButton autoSetDimensionsToSize:CGSizeMake(44, 44)];
-     [addButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:10];
-     [addButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-     NSLog(@"%@",NSStringFromCGRect(addButton.frame));
-     */
+    [self initRadioGroup];
+    
 }
 
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    
+}
 
 - (void)initJTCalendar{
     calendarMenuView = [JTCalendarMenuView newAutoLayoutView];
     [self.view addSubview:calendarMenuView];
-    [calendarMenuView autoSetDimension:ALDimensionHeight toSize:30];
+    [calendarMenuView autoSetDimension:ALDimensionHeight toSize:20];
     [calendarMenuView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
     
     calendarContentView = [JTHorizontalCalendarView newAutoLayoutView];
     [self.view addSubview:calendarContentView];
     [calendarContentView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:calendarMenuView];
-    [calendarContentView autoSetDimension:ALDimensionHeight toSize:[UIScreen mainScreen].bounds.size.height/3.0];
+    [calendarContentView autoSetDimension:ALDimensionHeight toSize:200];
     [calendarContentView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
     [calendarContentView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
     
@@ -125,6 +114,80 @@
     
 }
 
+- (void)initRadioGroup {
+    TNImageRadioButtonData *dayData = [TNImageRadioButtonData new];
+    dayData.labelText = NSLocalizedString(@"Day", @"");
+    dayData.identifier = @"Day";
+    dayData.selected = YES;
+    dayData.unselectedImage = [UIImage imageNamed:@"unchecked"];
+    dayData.selectedImage = [UIImage imageNamed:@"checked"];
+    
+    TNImageRadioButtonData *monthData = [TNImageRadioButtonData new];
+    monthData.labelText = NSLocalizedString(@"Month", @"");
+    monthData.identifier = @"Month";
+    monthData.selected = NO;
+    monthData.unselectedImage = [UIImage imageNamed:@"unchecked"];
+    monthData.selectedImage = [UIImage imageNamed:@"checked"];
+    
+    TNImageRadioButtonData *yearData = [TNImageRadioButtonData new];
+    yearData.labelText = NSLocalizedString(@"Year", @"");
+    yearData.identifier = @"Year";
+    yearData.selected = NO;
+    yearData.unselectedImage = [UIImage imageNamed:@"unchecked"];
+    yearData.selectedImage = [UIImage imageNamed:@"checked"];
+    
+    TNImageRadioButtonData *rangeData = [TNImageRadioButtonData new];
+    rangeData.labelText = NSLocalizedString(@"Range", @"");
+    rangeData.identifier = @"Range";
+    rangeData.selected = NO;
+    rangeData.unselectedImage = [UIImage imageNamed:@"unchecked"];
+    rangeData.selectedImage = [UIImage imageNamed:@"checked"];
+    
+    radioGroup = [[TNRadioButtonGroup alloc] initWithRadioButtonData:@[dayData, monthData,yearData,rangeData] layout:TNRadioButtonGroupLayoutVertical];
+    radioGroup.identifier = @"Date Group";
+    [radioGroup create];
+    radioGroup.position = CGPointMake(15, 240);
+    
+    [self.view addSubview:radioGroup];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(temperatureGroupUpdated:) name:SELECTED_RADIO_BUTTON_CHANGED object:radioGroup];
+}
+
+- (void)temperatureGroupUpdated:(NSNotification *)notification {
+    NSLog(@"Group updated to %@", radioGroup.selectedRadioButton.data.identifier);
+    NSUInteger index = [[@"Day Month Year Range" componentsSeparatedByString:@" "] indexOfObject:radioGroup.selectedRadioButton.data.identifier];
+    switch (index) {
+        case 0:{
+            startDate = self.userSelectedDate;
+            endDate = self.userSelectedDate;
+        }
+            break;
+        case 1:{
+            startDate = [self.userSelectedDate dateAtStartOfThisMonth];
+            endDate = [self.userSelectedDate dateAtEndOfThisMonth];
+        }
+            break;
+        case 2:{
+            startDate = [self.userSelectedDate dateAtStartOfThisYear];
+            endDate = [self.userSelectedDate dateAtEndOfThisYear];
+        }
+            break;
+        case 3:{
+            // ??
+            startDate = nil;
+            endDate = nil;
+        }
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:SELECTED_RADIO_BUTTON_CHANGED object:radioGroup];
+}
+
+/*
 - (void)initNaviBar{
     naviBar = [UIView newAutoLayoutView];
     [naviBar setBackgroundColor:[[UIColor grayColor] colorWithAlphaComponent:0.6]];
@@ -150,6 +213,7 @@
     [goButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
 }
 
+
 - (void)segmentControlValueChanged:(UISegmentedControl *)sender{
     self.mode = sender.selectedSegmentIndex;
 }
@@ -164,6 +228,7 @@
     NSArray *assetsArray = [GCLocationAnalyser analyseLocationsToArray:assetArrayWithLocations nearestDistance:200];
     [self pushAssetsMapProVCWithAssetsArray:assetsArray title:nil];
 }
+*/
 
 #pragma mark - JTCalendarDelegate
 
@@ -179,7 +244,7 @@
     // Today
     else if([calendarManager.dateHelper date:[NSDate date] isTheSameDayThan:dayView.date]){
         dayView.circleView.hidden = NO;
-        dayView.circleView.backgroundColor = [UIColor redColor];
+        dayView.circleView.backgroundColor = [[UIColor brownColor] colorWithAlphaComponent:0.4];
         dayView.dotView.backgroundColor = [UIColor whiteColor];
         dayView.textLabel.textColor = [UIColor whiteColor];
     }
@@ -229,9 +294,6 @@
     
 }
 
-
-
-
 #pragma mark - Views customization
 
 - (UIView *)calendarBuildMenuItemView:(JTCalendarManager *)calendar
@@ -249,41 +311,14 @@
 }
 
 - (void)menuButtonTouchDown:(id)sender{
-    /*
-     NSLog(@"%@",NSStringFromSelector(_cmd));
-    NSDictionary *dic = [photoManager fetchAssetIDsFormStartDate:userSelectedDate toEndDate:userSelectedDate fromAssetCollectionIDs:@[photoManager.GCAssetCollectionID_UserLibrary]];
-    [self pushAssetsMapVCWithAssetLocalIdentifiers:dic[photoManager.GCAssetCollectionID_UserLibrary] title:nil];
-     */
-    
-    
+    if (self.calendarWillDisappear) self.calendarWillDisappear(startDate,endDate);
 }
 
-//- updateAssetsArray
-
-- (void)pushAssetsMapVCWithAssetLocalIdentifiers:(NSArray <NSString *> *)assetLocalIdentifiers title:(NSString *)title{
-    AssetsMapVC *showVC = [AssetsMapVC new];
-    showVC.assetLocalIdentifiers = assetLocalIdentifiers;
-    showVC.title = title;
-    [self.navigationController pushViewController:showVC animated:YES];
-}
-
-
--(void)pushAssetsMapProVCWithAssetsArray:(NSArray <NSArray *> *)assetsArray title:(NSString *)title{
-    /*
-    AssetsMapProVC *showVC = [AssetsMapProVC new];
-    showVC.assetsArray = assetsArray;
-    showVC.title = title;
-    [self.navigationController pushViewController:showVC animated:YES];
-     */
-}
-
-
-- (void)calendar:(JTCalendarManager *)calendar prepareMenuItemView:(UIButton *)menuItemView date:(NSDate *)date
-{
+- (void)calendar:(JTCalendarManager *)calendar prepareMenuItemView:(UIButton *)menuItemView date:(NSDate *)date{
     static NSDateFormatter *dateFormatter;
     if(!dateFormatter){
         dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"yyyy MMMM";
+        dateFormatter.dateFormat = @"yyyy-MM";
         
         dateFormatter.locale = calendarManager.dateHelper.calendar.locale;
         dateFormatter.timeZone = calendarManager.dateHelper.calendar.timeZone;
@@ -319,126 +354,4 @@
 }
 */
 
-
-/*
-- (void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:YES];
-    //NSLog(@"%@",NSStringFromCGRect(addButton.frame));
-    //[addButton setNormalImage:[UIImage imageNamed:@"plus"] andPressedImage:[UIImage imageNamed:@"cross"] withScrollview:nil];
-    
-}
-
-- (void)didSelectMenuOptionAtIndex:(NSInteger)row{
-    NSLog(@"Floating action tapped index %tu",row);
-}
-*/
-
-/*
-- (void)segChanged:(id)sender{
-    [self asyncFetchAssets];
-}
-
-- (void)asyncFetchAssets{
-    assetsDictionary = [NSMutableDictionary new];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self fetchAssets];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-        });
-    });
-}
-
-- (void)fetchAssets{
-    
-    PHFetchResult <PHAssetCollection *> *fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
-    PHAssetCollection *CameraRoll = fetchResultArray.firstObject;
-    if (!CameraRoll) return;
-    
-    //NSLog(@"%ld,%@\,%@",CameraRoll.estimatedAssetCount,CameraRoll.startDate,CameraRoll.endDate);
-    NSInteger i = 365;
-    if (seg.selectedSegmentIndex == 1)
-        i = 120;
-    else if (seg.selectedSegmentIndex ==2)
-        i = 10;
-    
-    NSDate *now = [NSDate date];
-    NSDate *lastEndDate = [now dateAtEndOfToday];
-    if (seg.selectedSegmentIndex == 1)
-        lastEndDate = [now dateAtEndOfThisMonth];
-    else if (seg.selectedSegmentIndex ==2)
-        lastEndDate = [now dateAtEndOfThisYear];
-    PHFetchOptions *options = [PHFetchOptions new];
-    
-    while (i > 0) {
-        i--;
-        
-        NSDate *startDate = [lastEndDate dateAtStartOfToday];
-        
-        if (seg.selectedSegmentIndex == 1)
-            startDate = [lastEndDate dateAtStartOfThisMonth];
-        else if (seg.selectedSegmentIndex ==2)
-            startDate = [lastEndDate dateAtStartOfThisYear];
-        
-        options.predicate = [NSPredicate predicateWithFormat:@" (creationDate > %@) && (creationDate < %@)",startDate,lastEndDate];
-        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
-        PHFetchResult <PHAsset *> *assetArray = [PHAsset fetchAssetsInAssetCollection:CameraRoll options:options];
-        NSMutableArray <NSString *> *assetIDArray = [NSMutableArray new];
-        [assetArray enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if (obj.location && obj.localIdentifier) [assetIDArray addObject:obj.localIdentifier];
-        }];
-        
-        if (assetIDArray.count > 0) {
-            NSString *assetIDArrayName = [startDate stringWithFormat:@"yyyy-MM-dd"];
-            if (seg.selectedSegmentIndex == 1)
-                assetIDArrayName = [startDate stringWithFormat:@"yyyy-MM"];
-            else if (seg.selectedSegmentIndex ==2)
-                assetIDArrayName = [startDate stringWithFormat:@"yyyy"];
-            
-            if (assetIDArrayName) [assetsDictionary setValue:assetIDArray forKey:assetIDArrayName];
-            //NSLog(@"%ld",assetArray.count);
-        }
-        
-        lastEndDate = [lastEndDate dateBySubtractingDays:1];
-        if (seg.selectedSegmentIndex == 1){
-            lastEndDate = [lastEndDate dateBySubtractingMonths:1];
-            lastEndDate = [lastEndDate dateAtEndOfThisMonth];
-        }
-        else if (seg.selectedSegmentIndex ==2)
-            lastEndDate = [lastEndDate dateBySubtractingYears:1];
-        
-    }
-    
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return [assetsDictionary count];
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
- 
-     //UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-     //if (!cell) {
-     //cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
-     //}
- 
-    
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
-    NSArray *keyArray = assetsDictionary.allKeys;
-    keyArray = [keyArray sortedArrayUsingSelector:@selector(localizedCompare:)].reverseObjectEnumerator.allObjects;
-    cell.textLabel.text = keyArray[indexPath.row];
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld",(long)(assetsDictionary.count - indexPath.row)];
-    [cell layoutSubviews];
-    return cell;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    //AssetsTVC *showVC = [AssetsTVC new];
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    
-    AssetsMapVC *showVC = [AssetsMapVC new];
-    showVC.assetLocalIdentifiers = assetsDictionary[cell.textLabel.text];
-    [self.navigationController pushViewController:showVC animated:YES];
-}
-*/
 @end

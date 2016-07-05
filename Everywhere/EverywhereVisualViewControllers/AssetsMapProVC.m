@@ -21,6 +21,7 @@
 #import "GCPhotoManager.h"
 #import "LocationInfoBar.h"
 #import "CLPlacemark+Assistant.h"
+#import "CalendarVC.h"
 
 #import "EverywhereCoreDataManager.h"
 #import "PHAssetInfo.h"
@@ -98,6 +99,7 @@
     
     [self initInfoBar];
     
+    [self initMenu];
 }
 
 - (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -389,7 +391,7 @@
     return resultLocation;
 }
 
-#pragma mark - Tool Bar
+#pragma mark - Info Bar
 
 #define InfoBarHeight 200
 #define ScreenWidth [UIScreen mainScreen].bounds.size.width
@@ -437,6 +439,31 @@
                                   infoBarIsHidden = YES;
                               }];
 
+}
+
+#pragma mark - Menu
+
+- (void)initMenu{
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeInfoLight];
+    button.translatesAutoresizingMaskIntoConstraints = NO;
+    [button addTarget:self action:@selector(showDatePicker:) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:button];
+    
+    [button autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+    [button autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:5];
+}
+
+- (void)showDatePicker:(id)sender{
+    CalendarVC *calendarVC = [CalendarVC new];
+    calendarVC.contentSizeInPopup = CGSizeMake(300, 400);
+    calendarVC.landscapeContentSizeInPopup = CGSizeMake(400, 200);
+    calendarVC.calendarWillDisappear = ^(NSDate *choosedStartDate,NSDate *choosedEndDate){
+        startDate = choosedStartDate;
+        endDate = choosedEndDate;
+        self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:startDate toEndDate:endDate inManagedObjectContext:cdManager.appMOC];
+    };
+    popupController = [[STPopupController alloc] initWithRootViewController:calendarVC];
+    [popupController presentInViewController:self];
 }
 
 #pragma mark - MKMapViewDelegate

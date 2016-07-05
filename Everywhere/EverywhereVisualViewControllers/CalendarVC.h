@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^CalendarWillDisappear)(NSDate *choosedStartDate,NSDate *choosedEndDate);
+
 @interface CalendarVC : UIViewController
+
+@property (copy,nonatomic) CalendarWillDisappear calendarWillDisappear;
 
 @end
