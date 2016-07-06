@@ -16,6 +16,8 @@ static const NSTimeInterval TI_WEEK;
 @interface NSDate (Assistant)
 - (NSDate *) dateAtStartOfToday;
 - (NSDate *) dateAtEndOfToday;
+- (NSDate *) dateAtStartOfThisWeek;
+- (NSDate *) dateAtEndOfThisWeek;
 - (NSDate *) dateAtStartOfThisMonth;
 - (NSDate *) dateAtEndOfThisMonth;
 - (NSDate *) dateAtStartOfThisYear;

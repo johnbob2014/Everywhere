@@ -122,8 +122,7 @@ static const NSInteger BIG_MONTH[7] = {1,3,5,7,8,10,12};
 
 #pragma mark - Extremes
 
-- (NSDate *) dateAtStartOfToday
-{
+- (NSDate *) dateAtStartOfToday{
     NSDateComponents *components = [[NSDate currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:self];
     components.hour = 0;
     components.minute = 0;
@@ -131,13 +130,24 @@ static const NSInteger BIG_MONTH[7] = {1,3,5,7,8,10,12};
     return [[NSDate currentCalendar] dateFromComponents:components];
 }
 
-- (NSDate *) dateAtEndOfToday
-{
+- (NSDate *) dateAtEndOfToday{
     NSDateComponents *components = [[NSDate currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:self];
     components.hour = 23; // Thanks Aleksey Kononov
     components.minute = 59;
     components.second = 59;
     return [[NSDate currentCalendar] dateFromComponents:components];
+}
+
+- (NSDate *) dateAtStartOfThisWeek{
+    NSDateComponents *components = [[NSDate currentCalendar] components:NSCalendarUnitWeekday fromDate:self];
+    NSDate *monday = [self dateBySubtractingDays:components.weekday - 1];
+    return [monday dateAtStartOfToday];
+}
+
+- (NSDate *) dateAtEndOfThisWeek{
+    NSDateComponents *components = [[NSDate currentCalendar] components:NSCalendarUnitWeekday fromDate:self];
+    NSDate *monday = [self dateByAddingDays:7 - components.weekday];
+    return [monday dateAtEndOfToday];
 }
 
 - (NSDate *) dateAtStartOfThisMonth{

@@ -14,7 +14,6 @@
 #import "UIView+AutoLayout.h"
 #import "PHAsset+Assistant.h"
 #import "UIFont+Assistant.h"
-#import "EverywhereVisualViewControllers.h"
 #import "GCLocationAnalyser.h"
 #import <STPopup.h>
 #import "GCLocationAnalyser.h"
@@ -22,6 +21,7 @@
 #import "LocationInfoBar.h"
 #import "CLPlacemark+Assistant.h"
 #import "CalendarVC.h"
+#import "AssetDetailVC.h"
 
 #import "EverywhereCoreDataManager.h"
 #import "PHAssetInfo.h"
@@ -58,6 +58,8 @@
     
     GCPhotoManager *photoManager;
     EverywhereCoreDataManager *cdManager;
+    
+    __block CLLocationDistance maxDistance;
 
 }
 
@@ -79,6 +81,7 @@
     self.assetsArray = [GCLocationAnalyser analyseLocationsToArray:self.assetArray nearestDistance:200];
     // 如果地图已经初始化，才进行更新
     if (myMapView) [self initAnnotationsAndOverlays];
+    
 }
 
 #pragma mark - Life Cycle
@@ -89,7 +92,9 @@
     photoManager = [GCPhotoManager defaultManager];
     cdManager = [EverywhereCoreDataManager defaultManager];
     
-    [self initAssetsArray];
+    [self initData];
+    
+    [self initPopupController];
     
     [self initMapView];
     
@@ -108,7 +113,7 @@
 
 #pragma mark - Init
 
-- (void)initAssetsArray{
+- (void)initData{
     /*
     NSDate *now = [NSDate date];
     startDate = [now dateAtStartOfThisMonth];
@@ -127,10 +132,20 @@
     
 }
 
+- (void)initPopupController{
+    [STPopupNavigationBar appearance].barTintColor = [UIColor colorWithRed:0.20 green:0.60 blue:0.86 alpha:1.0];
+    [STPopupNavigationBar appearance].tintColor = [UIColor whiteColor];
+    [STPopupNavigationBar appearance].barStyle = UIBarStyleDefault;
+    [STPopupNavigationBar appearance].titleTextAttributes = @{ NSFontAttributeName: [UIFont fontWithName:@"Cochin" size:18],
+                                                               NSForegroundColorAttributeName: [UIColor whiteColor] };
+    
+    [[UIBarButtonItem appearanceWhenContainedIn:[STPopupNavigationBar class], nil] setTitleTextAttributes:@{ NSFontAttributeName:[UIFont fontWithName:@"Cochin" size:17] } forState:UIControlStateNormal];
+}
+
 - (void)initMapView{
     myMapView = [MKMapView newAutoLayoutView];
     myMapView.delegate = self;
-    myMapView.showsUserLocation = YES;
+    //myMapView.showsUserLocation = YES;
     
     [self.view addSubview:myMapView];
     [myMapView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
@@ -156,8 +171,7 @@
 
 #pragma mark - initAnnotationsAndOverlays
 
-- (void)initAnnotationsAndOverlays{
-    
+- (void)addAnnotations{
     // 清理数组
     addedAnnotationsWithIndex = nil;
     
@@ -173,29 +187,32 @@
             [ids addObject:obj.localIdentifier];
         }];
         EverywhereMKAnnotation *anno = [EverywhereMKAnnotation new];
-        anno.locaton = asset.location;
+        anno.location = asset.location;
         anno.annotationTitle = [asset.creationDate stringWithDefaultFormat];
         anno.assetLocalIdentifiers = ids;
         [annotationsToAdd addObject:anno];
+        [myMapView addAnnotation:anno];
     }];
     
     if (!annotationsToAdd || !annotationsToAdd.count) return;
-    [myMapView addAnnotations:annotationsToAdd];
+    //[myMapView addAnnotations:annotationsToAdd];
     addedAnnotationsWithIndex = annotationsToAdd;
-    //NSLog(@"%@",addedAnnotationsWithIndex);
-    
-    __block CLLocationDistance maxDistance = 500;
-    if (annotationsToAdd.count >= 2) {
+}
+
+- (void)addOverlays{
+    [myMapView removeOverlays:myMapView.overlays];
+    maxDistance = 500;
+    if (addedAnnotationsWithIndex.count >= 2) {
         // 记录距离信息
         NSMutableArray *distanceArray = [NSMutableArray new];
         __block CLLocationDistance totalDistance = 0;
         
         // 添加 MKOverlays
-        [myMapView removeOverlays:myMapView.overlays];
+        
         NSMutableArray <MKPolyline *> *polylinesToAdd = [NSMutableArray new];
         NSMutableArray <MKPolygon *> *polygonsToAdd = [NSMutableArray new];
         __block CLLocationCoordinate2D lastCoordinate;
-        [annotationsToAdd enumerateObjectsUsingBlock:^(EverywhereMKAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [addedAnnotationsWithIndex enumerateObjectsUsingBlock:^(EverywhereMKAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if (idx >= 1) {
                 CLLocationCoordinate2D points[2];
                 points[0] = lastCoordinate;
@@ -247,12 +264,18 @@
             self.title = [NSString stringWithFormat:@"%@ %.0f m",totalString,totalDistance];
         }
     }
-    
-    // 设置地图
-    EverywhereMKAnnotation *firstAnnotation = addedAnnotationsWithIndex.firstObject;
-    MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(firstAnnotation.coordinate, maxDistance, maxDistance);
-    [myMapView setRegion:showRegion animated:YES];
-    [myMapView selectAnnotation:firstAnnotation animated:YES];
+}
+
+- (void)initAnnotationsAndOverlays{
+    [self addAnnotations];
+    [self addOverlays];
+    // 移动地图到第一个点
+    if (addedAnnotationsWithIndex.count > 0) {
+        EverywhereMKAnnotation *firstAnnotation = addedAnnotationsWithIndex.firstObject;
+        MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(firstAnnotation.coordinate, maxDistance, maxDistance);
+        [myMapView setRegion:showRegion animated:YES];
+        [myMapView selectAnnotation:firstAnnotation animated:YES];
+    }
 }
 
 #pragma mark - Navigation Bar
@@ -335,12 +358,12 @@
 - (void)playButtonPressed:(id)sender{
     if (isPlaying) {
         // 暂停播放
-        [sender setTitle:@"⭕️" forState:UIControlStateNormal];
+        [sender setTitle:@"▶️" forState:UIControlStateNormal];
         [playTimer invalidate];
         playTimer = nil;
     }else{
         // 开始播放
-        [sender setTitle:@"❌" forState:UIControlStateNormal];
+        [sender setTitle:@"⏸" forState:UIControlStateNormal];
         playTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(nextButtonPressed:) userInfo:nil repeats:YES];
     }
     isPlaying = !isPlaying;
@@ -449,20 +472,21 @@
     [button addTarget:self action:@selector(showDatePicker:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:button];
     
-    [button autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
-    [button autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:5];
+    [button autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:30];
+    [button autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
 }
 
 - (void)showDatePicker:(id)sender{
     CalendarVC *calendarVC = [CalendarVC new];
     calendarVC.contentSizeInPopup = CGSizeMake(300, 400);
     calendarVC.landscapeContentSizeInPopup = CGSizeMake(400, 200);
-    calendarVC.calendarWillDisappear = ^(NSDate *choosedStartDate,NSDate *choosedEndDate){
+    calendarVC.dateRangeDidChangeHandler = ^(NSDate *choosedStartDate,NSDate *choosedEndDate){
         startDate = choosedStartDate;
         endDate = choosedEndDate;
         self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:startDate toEndDate:endDate inManagedObjectContext:cdManager.appMOC];
     };
     popupController = [[STPopupController alloc] initWithRootViewController:calendarVC];
+    popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
 }
 
@@ -530,6 +554,7 @@
     popupController = [[STPopupController alloc] initWithRootViewController:showVC];
     popupController.style = STPopupStyleFormSheet;
     popupController.transitionStyle = STPopupTransitionStyleFade;
+    popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
 }
 

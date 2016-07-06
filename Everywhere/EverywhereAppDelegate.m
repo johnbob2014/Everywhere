@@ -62,7 +62,7 @@
         [allAssetInfoArray enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if (![obj.reverseGeocodeSucceed boolValue]) {
                 [PHAssetInfo updatePlacemarkForAssetInfo:obj];
-                sleep(0.3);
+                [NSThread sleepForTimeInterval:0.5];
             }
         }];
     });
@@ -79,12 +79,15 @@
     //NSMutableArray *assetArrayWithLocations = [NSMutableArray new];
     [assetArray enumerateObjectsUsingBlock:^(PHAsset *obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (obj.location){
-            //[assetArrayWithLocations addObject:obj];
-            PHAssetInfo *info = [PHAssetInfo newAssetInfoWithPHAsset:obj inManagedObjectContext:cdManager.appMOC];
-            addPhotosCount++;
+            CLLocationCoordinate2D coordinate = obj.location.coordinate;
+            if ((coordinate.latitude != 0) && (coordinate.longitude != 0)) {
+                //[assetArrayWithLocations addObject:obj];
+                PHAssetInfo *info = [PHAssetInfo newAssetInfoWithPHAsset:obj inManagedObjectContext:cdManager.appMOC];
+                addPhotosCount++;
+            }
         }
     }];
-    NSLog(@"Time : %.3f , Add Photo Count : %ld",[[NSDate date] timeIntervalSinceDate:timeTest],addPhotosCount);
+    NSLog(@"Time : %.3f , Add Photo Count : %ld",[[NSDate date] timeIntervalSinceDate:timeTest],(long)addPhotosCount);
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

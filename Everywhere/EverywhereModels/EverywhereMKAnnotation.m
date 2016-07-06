@@ -18,7 +18,7 @@
 //}
 
 - (CLLocationCoordinate2D)coordinate{
-    CLLocationCoordinate2D originalCoordinate = self.locaton.coordinate;
+    CLLocationCoordinate2D originalCoordinate = self.location.coordinate;
     return [WGS84TOGCJ02 transformFromWGSToGCJ:originalCoordinate];
 }
 

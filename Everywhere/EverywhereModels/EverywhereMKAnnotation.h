@@ -10,12 +10,25 @@
 @import MapKit;
 
 @interface EverywhereMKAnnotation : NSObject <MKAnnotation>
-@property (strong,nonatomic) CLLocation *locaton;
-@property (strong,nonatomic) UIImage *thumbnailImage;
-@property (strong,nonatomic) NSURL *assetURL;
 
-@property (assign,nonatomic) NSInteger assetCount;
+/**
+ 必需，该Annotation的location - EverywhereMKAnnotation
+ */
+@property (strong,nonatomic) CLLocation *location;
+
+/**
+ 该Annotation包含的照片的localIdentifier数组 - EverywhereMKAnnotation
+ */
 @property (strong,nonatomic) NSArray <NSString *> *assetLocalIdentifiers;
+
+/**
+ 该Annotation的标题 - EverywhereMKAnnotation
+ */
 @property (strong,nonatomic) NSString *annotationTitle;
+
+/**
+ 只读，该Annotation包含的照片数量 - EverywhereMKAnnotation
+ */
+@property (assign,nonatomic,readonly) NSInteger assetCount;
 
 @end

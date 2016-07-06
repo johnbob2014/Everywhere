@@ -1,15 +1,13 @@
 //
-//  AssetsMapVC.h
+//  AssetDetailVC.h
 //  Everywhere
 //
-//  Created by 张保国 on 16/7/2.
+//  Created by BobZhang on 16/7/6.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-@interface AssetsMapVC : UIViewController
-@property (assign,nonatomic) double nearestAnnotationDistance;
-
+@interface AssetDetailVC : UIViewController
 @property (strong,nonatomic) NSArray <NSString *> *assetLocalIdentifiers;
 @end

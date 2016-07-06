@@ -63,7 +63,7 @@
         labelSize = CGSizeMake(labelRect.size.width, labelRect.size.height);
     }
 
-    self.lblLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.radioButton.frame.origin.x + self.radioButton.frame.size.width + 15, (self.radioButton.frame.size.height - labelSize.height) / 2, labelSize.width, labelSize.height)];
+    self.lblLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.radioButton.frame.origin.x + self.radioButton.frame.size.width + 5, (self.radioButton.frame.size.height - labelSize.height) / 2, labelSize.width, labelSize.height)];
 	[self updateLabel];
     [self addSubview:self.lblLabel];
 }
