@@ -72,13 +72,25 @@ UIEdgeInsets UIEdgeInsetsMake (
     [self updateCoordinateLabel];
 }
 
++ (NSString *)dmsStringWithDegrees:(CLLocationDegrees)degrees{
+    double degreeFloor = floor(degrees);
+    double minutes = (degrees - degreeFloor) * 60.0;
+    double minuteFloor = floor(minutes);
+    double seconds = (minutes - minuteFloor) * 60.0;
+    double secondFloor = floor(seconds);
+    NSString *dmsString = [NSString stringWithFormat:@"%.0f°%0.f‘%.0f“",degreeFloor,minuteFloor,secondFloor];
+    return dmsString;
+}
+
 -(void)updateCoordinateLabel{
     NSMutableString *ma = [NSMutableString new];
     [ma appendString:self.latitude > 0 ? NSLocalizedString(@"N : ", @""):NSLocalizedString(@"S : ", @"")];
-    [ma appendFormat:@"%.4f",fabs(self.latitude)];
+    [ma appendString:[LocationInfoBar dmsStringWithDegrees:self.latitude]];
+    [ma appendFormat:@" (%.4f°)",fabs(self.latitude)];
     [ma appendFormat:@"\n"];
     [ma appendString:self.longitude > 0 ? NSLocalizedString(@"E : ", @""):NSLocalizedString(@"W : ", @"")];
-    [ma appendFormat:@"%.4f",fabs(self.longitude)];
+    [ma appendString:[LocationInfoBar dmsStringWithDegrees:self.longitude]];
+    [ma appendFormat:@" (%.4f°)",fabs(self.longitude)];
     self.coordinateLabel.text = ma;
 }
 

@@ -54,6 +54,8 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     
+    self.title = NSLocalizedString(@"Date Picker", @"");
+    
     // Month
     lastIndex = 2;
     

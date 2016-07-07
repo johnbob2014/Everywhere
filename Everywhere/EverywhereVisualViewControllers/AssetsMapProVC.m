@@ -29,6 +29,10 @@
 #import "EverywhereCoreDataManager.h"
 #import "PHAssetInfo.h"
 
+#import "GCPolyline.h"
+#import "GCRoutePolyline.h"
+#import "GCRoutePolylineManager.h"
+
 @interface AssetsMapProVC () <MKMapViewDelegate,UIGestureRecognizerDelegate>
 @property (strong,nonatomic) NSArray <PHAssetInfo *> *assetInfoArray;
 @property (strong,nonatomic) NSArray <PHAsset *> *assetArray;
@@ -220,7 +224,7 @@
     addedAnnotationsWithIndex = annotationsToAdd;
 }
 
-- (void)addOverlays{
+- (void)addLineOverlays{
     [myMapView removeOverlays:myMapView.overlays];
     maxDistance = 500;
     if (addedAnnotationsWithIndex.count >= 2) {
@@ -278,18 +282,110 @@
         [myMapView addOverlays:polylinesToAdd];
         [myMapView addOverlays:polygonsToAdd];
         
+        NSString *total;
         NSString *totalString = NSLocalizedString(@"Total:", @"总行程:");
         if (totalDistance >=1000) {
-            self.title = [NSString stringWithFormat:@"%@ %.2f km",totalString,totalDistance/1000];
+            total = [NSString stringWithFormat:@"%@ %.2f km",totalString,totalDistance/1000];
         }else{
-            self.title = [NSString stringWithFormat:@"%@ %.0f m",totalString,totalDistance];
+            total = [NSString stringWithFormat:@"%@ %.0f m",totalString,totalDistance];
         }
+        NSLog(@"%@",total);
     }
+}
+
+- (void)asyncAddRouteOverlays{
+    [myMapView removeOverlays:myMapView.overlays];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        maxDistance = 500;
+        if (addedAnnotationsWithIndex.count >= 2) {
+            // 记录距离信息
+            NSMutableArray *distanceArray = [NSMutableArray new];
+            __block CLLocationDistance totalDistance = 0;
+            __block CLLocationCoordinate2D lastCoordinate;
+            // 添加 MKOverlays
+            
+            //NSMutableArray <MKPolyline *> *polylinesToAdd = [NSMutableArray new];
+            GCRoutePolylineManager *rpManager = [GCRoutePolylineManager defaultManager];
+            
+            [addedAnnotationsWithIndex enumerateObjectsUsingBlock:^(EverywhereMKAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                if (idx > 0){
+                    GCRoutePolyline *foundedRP = [rpManager fetchRoutePolylineWithSource:lastCoordinate destination:obj.coordinate];
+                    __block CLLocationDistance subDistance;
+                    if (foundedRP) {
+                        NSLog(@"foundedRP : %@",foundedRP);
+                        subDistance = foundedRP.routeDistance;
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [myMapView addOverlay:foundedRP.polyline];
+                        });
+                        
+                    }else{
+                        MKMapItem *lastMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:lastCoordinate addressDictionary:nil]];
+                        MKMapItem *currentMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:obj.coordinate addressDictionary:nil]];
+                        
+                        MKDirectionsRequest *directionsRequest = [MKDirectionsRequest new];
+                        [directionsRequest setSource:lastMapItem];
+                        [directionsRequest setDestination:currentMapItem];
+                        
+                        MKDirections *directions = [[MKDirections alloc] initWithRequest:directionsRequest];
+                        [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse * _Nullable response, NSError * _Nullable error) {
+                            MKRoute *route = response.routes.firstObject;
+                            
+                            subDistance = route.distance;
+                            
+                            
+                            MKPolyline *routePolyline = route.polyline;
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                if(routePolyline) [myMapView addOverlay:routePolyline];
+                            });
+                            
+                            if (routePolyline){
+                                GCRoutePolyline *newRP = [GCRoutePolyline newRoutePolyline:routePolyline source:lastCoordinate destination:obj.coordinate];
+                                newRP.routeDistance = subDistance;
+                                NSLog(@"newRP : %@",newRP);
+                                [rpManager addRoutePolyline:newRP];
+                            }
+                            
+                            [NSThread sleepForTimeInterval:0.5];
+                        }];
+
+                    }
+                    
+                    if (maxDistance < subDistance) maxDistance = subDistance;
+                    totalDistance += subDistance;
+                    [distanceArray addObject:[NSNumber numberWithDouble:subDistance]];
+                    
+                    
+                }else{
+                    lastCoordinate = obj.coordinate;
+                }
+                
+            }];// 结束循环
+            
+            NSString *total;
+            NSString *totalString = NSLocalizedString(@"Total:", @"总行程:");
+            if (totalDistance >=1000) {
+                total = [NSString stringWithFormat:@"%@ %.2f km",totalString,totalDistance/1000];
+            }else{
+                total = [NSString stringWithFormat:@"%@ %.0f m",totalString,totalDistance];
+            }
+            NSLog(@"%@",total);
+            
+        }
+
+    });
+    
 }
 
 - (void)initAnnotationsAndOverlays{
     [self addAnnotations];
-    [self addOverlays];
+    
+    //[self addLineOverlays];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self asyncAddRouteOverlays];
+    });
+    
     // 移动地图到第一个点
     if (addedAnnotationsWithIndex.count > 0) {
         EverywhereMKAnnotation *firstAnnotation = addedAnnotationsWithIndex.firstObject;
@@ -646,7 +742,7 @@
 
 - (void)setCurrentAnnotationIndex:(NSInteger)currentAnnotationIndex{
     _currentAnnotationIndex = currentAnnotationIndex;
-    currentAnnotationIndexLabel.text = [NSString stringWithFormat:@"%d / %ld",currentAnnotationIndex + 1,(unsigned long)addedAnnotationsWithIndex.count];
+    currentAnnotationIndexLabel.text = [NSString stringWithFormat:@"%ld / %ld",currentAnnotationIndex + 1,(unsigned long)addedAnnotationsWithIndex.count];
     
     /*
      if (currentAnnotationIndex == 0) {
