@@ -16,8 +16,8 @@
 
 @interface GCLocationAnalyser : NSObject
 
-+ (NSDictionary <CLLocation *,NSArray *> *)analyseLocationsToDictionary:(NSArray <id<GCLocationAnalyserProtocol>> *)idArray nearestDistance:(CLLocationDistance)nearestDistance;
++ (NSDictionary <CLLocation *,NSArray *> *)divideLocationsToDictionary:(NSArray <id<GCLocationAnalyserProtocol>> *)idArray nearestDistance:(CLLocationDistance)nearestDistance;
 
-+ (NSArray <NSArray *> *)analyseLocationsToArray:(NSArray <id<GCLocationAnalyserProtocol>> *)idArray nearestDistance:(CLLocationDistance) nearestDistance;
++ (NSArray <NSArray *> *)divideLocationsToArray:(NSArray <id<GCLocationAnalyserProtocol>> *)idArray nearestDistance:(CLLocationDistance) nearestDistance;
 
 @end

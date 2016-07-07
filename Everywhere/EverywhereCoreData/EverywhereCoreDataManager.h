@@ -13,7 +13,7 @@
 @interface EverywhereCoreDataManager : NSObject
 
 @property (strong,nonatomic) NSManagedObjectContext *appMOC;
-//@property (assign,nonatomic) BOOL isFirstLoad;
+
 @property (strong,nonatomic) NSDate *lastUpdateDate;
 
 + (instancetype)defaultManager;

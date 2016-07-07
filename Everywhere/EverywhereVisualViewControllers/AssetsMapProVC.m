@@ -22,9 +22,12 @@
 #import "GCLocationAnalyser.h"
 #import "GCPhotoManager.h"
 #import "LocationInfoBar.h"
+#import "PlacemarkInfoBar.h"
 #import "CLPlacemark+Assistant.h"
 #import "CalendarVC.h"
 #import "AssetDetailVC.h"
+#import "UIButton+Bootstrap.h"
+
 
 #import "EverywhereCoreDataManager.h"
 #import "PHAssetInfo.h"
@@ -46,10 +49,14 @@
     MKMapView *myMapView;
     NSArray <EverywhereMKAnnotation *> *addedAnnotationsWithIndex;
     
-    LocationInfoBar *infoBar;
-    float infoBarHeight;
-    BOOL infoBarIsHidden;
+    LocationInfoBar *locationInfoBar;
+    float locationInfoBarHeight;
+    BOOL locationInfoBarIsHidden;
     
+    PlacemarkInfoBar *placemarkInfoBar;
+    float placemarkInfoBarHeight;
+    BOOL placemarkInfoBarIsHidden;
+
     UIView *naviBar;
     UIButton *firstButton;
     UIButton *previousButton;
@@ -88,7 +95,7 @@
         PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:assetIDArry options:options];
         
         self.assetArray = (NSArray <PHAsset *> *)fetchResult;
-        self.assetsArray = [GCLocationAnalyser analyseLocationsToArray:self.assetArray nearestDistance:200];
+        self.assetsArray = [GCLocationAnalyser divideLocationsToArray:self.assetArray nearestDistance:200];
         // 如果地图已经初始化，才进行更新
         if (myMapView) [self initAnnotationsAndOverlays];
 
@@ -113,19 +120,22 @@
     
     [self initAnnotationsAndOverlays];
     
-    infoBarHeight = 150;
-    [self initInfoBar];
+    locationInfoBarHeight = 150;
+    [self initLocationInfoBar];
     
+    placemarkInfoBarHeight = 60;
+    [self initPlacemarkInfoBar];
+
     [self initMenu];
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
     if(toInterfaceOrientation == UIInterfaceOrientationPortrait || toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown){
-        infoBarHeight = 150;
-        infoBar.frame = CGRectMake(0, -infoBarHeight, ScreenWidth , infoBarHeight);
+        locationInfoBarHeight = 150;
+        locationInfoBar.frame = CGRectMake(0, -locationInfoBarHeight, ScreenWidth , locationInfoBarHeight);
     }else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight){
-        infoBarHeight = 90;
-        infoBar.frame = CGRectMake(0, -infoBarHeight, ScreenHeight , infoBarHeight);
+        locationInfoBarHeight = 90;
+        locationInfoBar.frame = CGRectMake(0, -locationInfoBarHeight, ScreenHeight , locationInfoBarHeight);
     }
 }
 
@@ -531,17 +541,17 @@
     return resultLocation;
 }
 
-#pragma mark - Info Bar
+#pragma mark - Location Info Bar
 
-- (void)initInfoBar{
-    infoBar = [[LocationInfoBar alloc] initWithFrame:CGRectMake(0, -infoBarHeight, ScreenWidth , infoBarHeight)];
-    [self.view addSubview:infoBar];
-    [infoBar setBackgroundColor:[[UIColor grayColor] colorWithAlphaComponent:0.6]];
-    infoBarIsHidden = YES;
+- (void)initLocationInfoBar{
+    locationInfoBar = [[LocationInfoBar alloc] initWithFrame:CGRectMake(0, -locationInfoBarHeight, ScreenWidth , locationInfoBarHeight)];
+    [self.view addSubview:locationInfoBar];
+    [locationInfoBar setBackgroundColor:[[UIColor grayColor] colorWithAlphaComponent:0.6]];
+    locationInfoBarIsHidden = YES;
     
     UISwipeGestureRecognizer *swipeUpGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeUp:)];
     swipeUpGR.direction = UISwipeGestureRecognizerDirectionUp;
-    [infoBar addGestureRecognizer:swipeUpGR];
+    [locationInfoBar addGestureRecognizer:swipeUpGR];
 }
 
 - (void)swipeUp:(UISwipeGestureRecognizer *)sender{
@@ -554,15 +564,15 @@
                                  options:UIViewKeyframeAnimationOptionBeginFromCurrentState
                               animations:^{
                                   [UIView addKeyframeWithRelativeStartTime:0 relativeDuration:0.4 animations:^{
-                                      infoBar.frame = CGRectMake(0, 20 + 10, ScreenWidth, infoBarHeight);
+                                      locationInfoBar.frame = CGRectMake(0, 20 + 10, ScreenWidth, locationInfoBarHeight);
                                   }];
                                   [UIView addKeyframeWithRelativeStartTime:0.4 relativeDuration:0.3 animations:^{
-                                      infoBar.frame = CGRectMake(0, 20, ScreenWidth, infoBarHeight);
+                                      locationInfoBar.frame = CGRectMake(0, 20, ScreenWidth, locationInfoBarHeight);
                                   }];
                                   
                               }
                               completion:^(BOOL finished) {
-                                  infoBarIsHidden = NO;
+                                  locationInfoBarIsHidden = NO;
                               }];
 
 }
@@ -573,29 +583,54 @@
                                  options:UIViewKeyframeAnimationOptionBeginFromCurrentState
                               animations:^{
                                   [UIView addKeyframeWithRelativeStartTime:0 relativeDuration:0.3 animations:^{
-                                      infoBar.frame = CGRectMake(0, 20 + 10, ScreenWidth, infoBarHeight);
+                                      locationInfoBar.frame = CGRectMake(0, 20 + 10, ScreenWidth, locationInfoBarHeight);
                                   }];
                                   [UIView addKeyframeWithRelativeStartTime:0.3 relativeDuration:0.4 animations:^{
-                                      infoBar.frame = CGRectMake(0, -infoBarHeight, ScreenWidth , infoBarHeight);
+                                      locationInfoBar.frame = CGRectMake(0, -locationInfoBarHeight, ScreenWidth , locationInfoBarHeight);
                                   }];
                                   
                               }
                               completion:^(BOOL finished) {
-                                  infoBarIsHidden = YES;
+                                  locationInfoBarIsHidden = YES;
                               }];
 
+}
+
+#pragma mark - Placemark Info Bar
+
+- (void)initPlacemarkInfoBar{
+    placemarkInfoBar = [PlacemarkInfoBar newAutoLayoutView];
+    [self.view addSubview:placemarkInfoBar];
+    [placemarkInfoBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(5, 5, 5, 5) excludingEdge:ALEdgeBottom];
+    [placemarkInfoBar autoSetDimension:ALDimensionHeight toSize:placemarkInfoBarHeight];
+    [placemarkInfoBar setBackgroundColor:[[UIColor grayColor] colorWithAlphaComponent:0.6]];
+    placemarkInfoBarIsHidden = NO;
 }
 
 #pragma mark - Menu
 
 - (void)initMenu{
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeInfoLight];
-    button.translatesAutoresizingMaskIntoConstraints = NO;
-    [button addTarget:self action:@selector(showDatePicker:) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:button];
+    UIButton *datePickerBtn = [UIButton newAutoLayoutView];
+    [datePickerBtn primaryStyle];
+    [datePickerBtn setTitle:@"DatePicker" forState:UIControlStateNormal];
+    [datePickerBtn autoSetDimensionsToSize:CGSizeMake(100, 40)];
+    datePickerBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    [datePickerBtn addTarget:self action:@selector(showDatePicker:) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:datePickerBtn];
     
-    [button autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:220];
-    [button autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
+    [datePickerBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:80];
+    [datePickerBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
+    
+    UIButton *placemarkInfoBtn = [UIButton newAutoLayoutView];
+    [placemarkInfoBtn primaryStyle];
+    [placemarkInfoBtn setTitle:@"PlaceInfo" forState:UIControlStateNormal];
+    [placemarkInfoBtn autoSetDimensionsToSize:CGSizeMake(100, 40)];
+    placemarkInfoBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    [placemarkInfoBtn addTarget:self action:@selector(showPlacemarkInfoBar:) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:placemarkInfoBtn];
+    
+    [placemarkInfoBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:80];
+    [placemarkInfoBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:180];
 }
 
 - (void)showDatePicker:(id)sender{
@@ -610,6 +645,15 @@
     popupController = [[STPopupController alloc] initWithRootViewController:calendarVC];
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
+}
+
+- (void)showPlacemarkInfoBar:(id)sender{
+    NSDictionary *placemarkDic = [PHAssetInfo placemarkInfoFromAssetInfos:self.assetInfoArray];
+    placemarkInfoBar.countryCount = [placemarkDic[kCountryCount] integerValue];
+    placemarkInfoBar.administrativeAreaCount = [placemarkDic[kAdministrativeAreaCount] integerValue];
+    placemarkInfoBar.localityCount = [placemarkDic[kLocalityCount] integerValue];
+    placemarkInfoBar.subLocalityCount = [placemarkDic[kSubLocalityCount] integerValue];
+    placemarkInfoBar.thoroughfareCount = [placemarkDic[kThoroughfareCount] integerValue];
 }
 
 #pragma mark - MKMapViewDelegate
@@ -689,7 +733,7 @@
         
         PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:cdManager.appMOC];
         if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
-        if (infoBarIsHidden) [self showInfoBar];
+        if (locationInfoBarIsHidden) [self showInfoBar];
         else [self hideInfoBar];
         
         [self updateInfoBarWithAssetInfo:assetInfo];
@@ -698,13 +742,13 @@
 }
 
 - (void)updateInfoBarWithAssetInfo:(PHAssetInfo *)assetInfo{
-    infoBar.latitude = [assetInfo.latitude_Coordinate_Location doubleValue];
-    infoBar.longitude = [assetInfo.longitude_Coordinate_Location doubleValue];
-    infoBar.horizontalAccuracy = [assetInfo.horizontalAccuracy_Location doubleValue];
-    infoBar.altitude = [assetInfo.altitude_Location doubleValue];
-    infoBar.verticalAccuracy = [assetInfo.verticalAccuracy_Location doubleValue];
-    infoBar.level = [assetInfo.level_floor_Location integerValue];
-    infoBar.address = assetInfo.localizedPlaceString_Placemark;
+    locationInfoBar.latitude = [assetInfo.latitude_Coordinate_Location doubleValue];
+    locationInfoBar.longitude = [assetInfo.longitude_Coordinate_Location doubleValue];
+    locationInfoBar.horizontalAccuracy = [assetInfo.horizontalAccuracy_Location doubleValue];
+    locationInfoBar.altitude = [assetInfo.altitude_Location doubleValue];
+    locationInfoBar.verticalAccuracy = [assetInfo.verticalAccuracy_Location doubleValue];
+    locationInfoBar.level = [assetInfo.level_floor_Location integerValue];
+    locationInfoBar.address = assetInfo.localizedPlaceString_Placemark;
 }
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay{

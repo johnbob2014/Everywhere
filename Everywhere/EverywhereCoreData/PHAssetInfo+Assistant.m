@@ -59,57 +59,6 @@
     return info;
 }
 
-+ (CLGeocoder *)defaultGeocoder{
-    static id instance;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        instance = [CLGeocoder new];
-    });
-    return instance;
-}
-
-+ (void)updatePlacemarkForAssetInfo:(PHAssetInfo *)assetInfo{
-    PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetInfo.localIdentifier] options:nil].firstObject;
-    
-    [[PHAssetInfo defaultGeocoder] reverseGeocodeLocation:asset.location
-                                        completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
-                                            NSString *placeInfo;
-                                            
-                                            if (!error) {
-                                                // 解析成功
-                                                CLPlacemark *placemark = placemarks.lastObject;
-                                                assetInfo.name_Placemark = placemark.name;
-                                                assetInfo.ccISOcountryCode_Placemark = placemark.ISOcountryCode;
-                                                assetInfo.country_Placemark = placemark.country;
-                                                assetInfo.postalCode_Placemark = placemark.postalCode;
-                                                assetInfo.administrativeArea_Placemark = placemark.administrativeArea;
-                                                assetInfo.subAdministrativeArea_Placemark = placemark.subAdministrativeArea;
-                                                assetInfo.locality_Placemark = placemark.locality;
-                                                assetInfo.subLocality_Placemark = placemark.subLocality;
-                                                assetInfo.thoroughfare_Placemark = placemark.thoroughfare;
-                                                assetInfo.subThoroughfare_Placemark = placemark.subThoroughfare;
-                                                assetInfo.inlandWater_Placemark = placemark.inlandWater;
-                                                assetInfo.ocean_Placemark = placemark.ocean;
-                                                
-                                                assetInfo.localizedPlaceString_Placemark = [placemark localizedPlaceString];
-                                                
-                                                assetInfo.reverseGeocodeSucceed = @(YES);
-                                                
-                                            }else{
-                                                // 解析失败
-                                                placeInfo = error.localizedDescription;
-                                                assetInfo.reverseGeocodeSucceed = @(NO);
-                                            }
-                                            
-                                            NSLog(@"%@",assetInfo.localizedPlaceString_Placemark);
-                                            
-                                            // 保存修改后的信息
-                                            [assetInfo.managedObjectContext save:NULL];
-                                        }];
-    
-    
-}
-
 + (PHAssetInfo *)fetchAssetInfoWithLocalIdentifier:(NSString *)localID inManagedObjectContext:(NSManagedObjectContext *)context{
     PHAssetInfo *info = nil;
     
@@ -172,6 +121,99 @@
     else NSLog(@"Delete All PHAssetInfos Failed!");
     
     return success;
+}
+
++ (CLGeocoder *)defaultGeocoder{
+    static id instance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        instance = [CLGeocoder new];
+    });
+    return instance;
+}
+
++ (void)updatePlacemarkForAssetInfo:(PHAssetInfo *)assetInfo{
+    PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetInfo.localIdentifier] options:nil].firstObject;
+    
+    [[PHAssetInfo defaultGeocoder] reverseGeocodeLocation:asset.location
+                                        completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+                                            NSString *placeInfo;
+                                            
+                                            if (!error) {
+                                                // 解析成功
+                                                CLPlacemark *placemark = placemarks.lastObject;
+                                                assetInfo.name_Placemark = placemark.name;
+                                                assetInfo.ccISOcountryCode_Placemark = placemark.ISOcountryCode;
+                                                assetInfo.country_Placemark = placemark.country;
+                                                assetInfo.postalCode_Placemark = placemark.postalCode;
+                                                assetInfo.administrativeArea_Placemark = placemark.administrativeArea;
+                                                assetInfo.subAdministrativeArea_Placemark = placemark.subAdministrativeArea;
+                                                assetInfo.locality_Placemark = placemark.locality;
+                                                assetInfo.subLocality_Placemark = placemark.subLocality;
+                                                assetInfo.thoroughfare_Placemark = placemark.thoroughfare;
+                                                assetInfo.subThoroughfare_Placemark = placemark.subThoroughfare;
+                                                assetInfo.inlandWater_Placemark = placemark.inlandWater;
+                                                assetInfo.ocean_Placemark = placemark.ocean;
+                                                
+                                                assetInfo.localizedPlaceString_Placemark = [placemark localizedPlaceString];
+                                                
+                                                assetInfo.reverseGeocodeSucceed = @(YES);
+                                                
+                                            }else{
+                                                // 解析失败
+                                                placeInfo = error.localizedDescription;
+                                                assetInfo.reverseGeocodeSucceed = @(NO);
+                                            }
+                                            
+                                            NSLog(@"%@",assetInfo.localizedPlaceString_Placemark);
+                                            
+                                            // 保存修改后的信息
+                                            [assetInfo.managedObjectContext save:NULL];
+                                        }];
+    
+    
+}
+
++ (NSDictionary <NSString *,NSNumber *> *)placemarkInfoFromAssetInfos:(NSArray <PHAssetInfo *> *)assetInfoArray{
+    NSMutableArray <NSString *> *country_Placemark = [NSMutableArray new];
+    NSMutableArray <NSString *> *administrativeArea_Placemark = [NSMutableArray new];
+    NSMutableArray <NSString *> *subAdministrativeArea_Placemark = [NSMutableArray new];
+    NSMutableArray <NSString *> *locality_Placemark = [NSMutableArray new];
+    NSMutableArray <NSString *> *subLocality_Placemark = [NSMutableArray new];
+    NSMutableArray <NSString *> *thoroughfare_Placemark = [NSMutableArray new];
+    NSMutableArray <NSString *> *subThoroughfare_Placemark = [NSMutableArray new];
+
+    [assetInfoArray enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.country_Placemark) {
+            if (![country_Placemark containsObject:obj.country_Placemark]) [country_Placemark addObject:obj.country_Placemark];
+        }
+        if (obj.administrativeArea_Placemark){
+            if (![administrativeArea_Placemark containsObject:obj.administrativeArea_Placemark]) [administrativeArea_Placemark addObject:obj.administrativeArea_Placemark];
+        }
+        if (obj.subAdministrativeArea_Placemark){
+            if (![subAdministrativeArea_Placemark containsObject:obj.subAdministrativeArea_Placemark]) [subAdministrativeArea_Placemark addObject:obj.subAdministrativeArea_Placemark];
+        }
+        if (obj.locality_Placemark){
+            if (![locality_Placemark containsObject:obj.locality_Placemark]) [locality_Placemark addObject:obj.locality_Placemark];
+        }
+        if (obj.subLocality_Placemark){
+            if (![subLocality_Placemark containsObject:obj.subLocality_Placemark]) [subLocality_Placemark addObject:obj.subLocality_Placemark];
+        }
+        if (obj.thoroughfare_Placemark){
+            if (![thoroughfare_Placemark containsObject:obj.thoroughfare_Placemark]) [thoroughfare_Placemark addObject:obj.thoroughfare_Placemark];
+        }
+        if (obj.subThoroughfare_Placemark){
+            if (![subThoroughfare_Placemark containsObject:obj.subThoroughfare_Placemark]) [subThoroughfare_Placemark addObject:obj.subThoroughfare_Placemark];
+        }
+    }];
+    
+    return @{kCountryCount:@(country_Placemark.count),
+             kAdministrativeAreaCount:@(administrativeArea_Placemark.count),
+             kSubAdministrativeAreaCount:@(subAdministrativeArea_Placemark.count),
+             kLocalityCount:@(locality_Placemark.count),
+             kSubLocalityCount:@(subLocality_Placemark.count),
+             kThoroughfareCount:@(thoroughfare_Placemark.count),
+             kSubThoroughfareCount:@(subThoroughfare_Placemark.count)};
 }
 
 @end

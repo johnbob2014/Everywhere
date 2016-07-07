@@ -11,6 +11,14 @@
 
 #define EntityName_PHAssetInfo @"PHAssetInfo"
 
+#define kCountryCount @"kCountryCount"
+#define kAdministrativeAreaCount @"kAdministrativeAreaCount"
+#define kSubAdministrativeAreaCount @"kSubAdministrativeAreaCount"
+#define kLocalityCount @"kLocalityCount"
+#define kSubLocalityCount @"kSubLocalityCount"
+#define kThoroughfareCount @"kThoroughfareCount"
+#define kSubThoroughfareCount @"kSubThoroughfareCount"
+
 @interface PHAssetInfo (Assistant)
 
 + (PHAssetInfo *)newAssetInfoWithLocalIdentifier:(NSString *)localID inManagedObjectContext:(NSManagedObjectContext *)context;
@@ -21,5 +29,7 @@
 + (BOOL)deleteAllAssetInfosInManagedObjectContext:(NSManagedObjectContext *)context;
 
 + (void)updatePlacemarkForAssetInfo:(PHAssetInfo *)assetInfo;
+
++ (NSDictionary <NSString *,NSNumber *> *)placemarkInfoFromAssetInfos:(NSArray <PHAssetInfo *> *)assetInfoArray;
 
 @end
