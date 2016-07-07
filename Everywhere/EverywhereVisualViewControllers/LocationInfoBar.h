@@ -7,8 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+@import CoreLocation;
 
 @interface LocationInfoBar : UIView
+
+@property (assign,nonatomic) CLLocationDegrees latitude;
+@property (assign,nonatomic) CLLocationDegrees longitude;
+@property (assign,nonatomic) CLLocationDistance horizontalAccuracy;
+@property (strong,nonatomic) UILabel *coordinateLabel;
+
+@property (assign,nonatomic) CLLocationDistance altitude;
+@property (assign,nonatomic) CLLocationDistance verticalAccuracy;
+@property (assign,nonatomic) NSInteger level;
+@property (strong,nonatomic) UILabel *altitudeLabel;
 
 @property (strong,nonatomic) NSString *address;
 @property (strong,nonatomic) UILabel *addressLabel;

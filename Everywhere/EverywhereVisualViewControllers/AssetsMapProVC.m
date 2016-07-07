@@ -6,6 +6,9 @@
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
+#define ScreenWidth [UIScreen mainScreen].bounds.size.width
+#define ScreenHeight [UIScreen mainScreen].bounds.size.height
+
 #import "AssetsMapProVC.h"
 @import Photos;
 @import MapKit;
@@ -40,6 +43,7 @@
     NSArray <EverywhereMKAnnotation *> *addedAnnotationsWithIndex;
     
     LocationInfoBar *infoBar;
+    float infoBarHeight;
     BOOL infoBarIsHidden;
     
     UIView *naviBar;
@@ -68,20 +72,23 @@
 - (void)setAssetInfoArray:(NSArray<PHAssetInfo *> *)assetInfoArray{
     _assetInfoArray = assetInfoArray;
     
-    NSMutableArray *assetIDArry = [NSMutableArray new];
-    [assetInfoArray enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [assetIDArry addObject:obj.localIdentifier];
-    }];
-    
-    PHFetchOptions *options = [PHFetchOptions new];
-    options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
-    PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:assetIDArry options:options];
-    
-    self.assetArray = (NSArray <PHAsset *> *)fetchResult;
-    self.assetsArray = [GCLocationAnalyser analyseLocationsToArray:self.assetArray nearestDistance:200];
-    // 如果地图已经初始化，才进行更新
-    if (myMapView) [self initAnnotationsAndOverlays];
-    
+    // 只有当存在照片数据的时候，才更新视图
+    if (assetInfoArray.count > 0) {
+        NSMutableArray *assetIDArry = [NSMutableArray new];
+        [assetInfoArray enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [assetIDArry addObject:obj.localIdentifier];
+        }];
+        
+        PHFetchOptions *options = [PHFetchOptions new];
+        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+        PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:assetIDArry options:options];
+        
+        self.assetArray = (NSArray <PHAsset *> *)fetchResult;
+        self.assetsArray = [GCLocationAnalyser analyseLocationsToArray:self.assetArray nearestDistance:200];
+        // 如果地图已经初始化，才进行更新
+        if (myMapView) [self initAnnotationsAndOverlays];
+
+    }
 }
 
 #pragma mark - Life Cycle
@@ -102,14 +109,28 @@
     
     [self initAnnotationsAndOverlays];
     
+    infoBarHeight = 150;
     [self initInfoBar];
     
     [self initMenu];
 }
 
-- (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
-    [self initInfoBar];
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
+    if(toInterfaceOrientation == UIInterfaceOrientationPortrait || toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown){
+        infoBarHeight = 150;
+        infoBar.frame = CGRectMake(0, -infoBarHeight, ScreenWidth , infoBarHeight);
+    }else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight){
+        infoBarHeight = 90;
+        infoBar.frame = CGRectMake(0, -infoBarHeight, ScreenHeight , infoBarHeight);
+    }
 }
+
+/*
+- (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    
+    
+}
+*/
 
 #pragma mark - Init
 
@@ -125,7 +146,7 @@
         if (obj.location) [assetArrayWithLocations addObject:obj];
     }];
      */
-    NSDate *now = [[NSDate date] dateBySubtractingMonths:1];
+    NSDate *now = [NSDate date];
     startDate = [now dateAtStartOfThisMonth];
     endDate = [now dateAtEndOfThisMonth];
     self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:startDate toEndDate:endDate inManagedObjectContext:cdManager.appMOC];
@@ -303,7 +324,7 @@
     [previousButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
     
     playButton = [UIButton newAutoLayoutView];
-    [playButton setTitle:@"⭕️" forState:UIControlStateNormal];
+    [playButton setTitle:@"▶️" forState:UIControlStateNormal];
     [playButton addTarget:self action:@selector(playButtonPressed:) forControlEvents:UIControlEventTouchDown];
     [naviBar addSubview:playButton];
     [playButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:previousButton withOffset:30 relation:NSLayoutRelationLessThanOrEqual];
@@ -416,14 +437,19 @@
 
 #pragma mark - Info Bar
 
-#define InfoBarHeight 200
-#define ScreenWidth [UIScreen mainScreen].bounds.size.width
-
 - (void)initInfoBar{
-    infoBar = [[LocationInfoBar alloc] initWithFrame:CGRectMake(0, -InfoBarHeight, ScreenWidth , InfoBarHeight)];
+    infoBar = [[LocationInfoBar alloc] initWithFrame:CGRectMake(0, -infoBarHeight, ScreenWidth , infoBarHeight)];
     [self.view addSubview:infoBar];
-    [infoBar setBackgroundColor:[[UIColor cyanColor] colorWithAlphaComponent:0.6]];
+    [infoBar setBackgroundColor:[[UIColor grayColor] colorWithAlphaComponent:0.6]];
     infoBarIsHidden = YES;
+    
+    UISwipeGestureRecognizer *swipeUpGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeUp:)];
+    swipeUpGR.direction = UISwipeGestureRecognizerDirectionUp;
+    [infoBar addGestureRecognizer:swipeUpGR];
+}
+
+- (void)swipeUp:(UISwipeGestureRecognizer *)sender{
+    [self hideInfoBar];
 }
 
 - (void)showInfoBar{
@@ -432,10 +458,10 @@
                                  options:UIViewKeyframeAnimationOptionBeginFromCurrentState
                               animations:^{
                                   [UIView addKeyframeWithRelativeStartTime:0 relativeDuration:0.4 animations:^{
-                                      infoBar.frame = CGRectMake(0, 20 + 10, ScreenWidth, InfoBarHeight);
+                                      infoBar.frame = CGRectMake(0, 20 + 10, ScreenWidth, infoBarHeight);
                                   }];
                                   [UIView addKeyframeWithRelativeStartTime:0.4 relativeDuration:0.3 animations:^{
-                                      infoBar.frame = CGRectMake(0, 20, ScreenWidth, InfoBarHeight);
+                                      infoBar.frame = CGRectMake(0, 20, ScreenWidth, infoBarHeight);
                                   }];
                                   
                               }
@@ -451,10 +477,10 @@
                                  options:UIViewKeyframeAnimationOptionBeginFromCurrentState
                               animations:^{
                                   [UIView addKeyframeWithRelativeStartTime:0 relativeDuration:0.3 animations:^{
-                                      infoBar.frame = CGRectMake(0, 20 + 10, ScreenWidth, InfoBarHeight);
+                                      infoBar.frame = CGRectMake(0, 20 + 10, ScreenWidth, infoBarHeight);
                                   }];
                                   [UIView addKeyframeWithRelativeStartTime:0.3 relativeDuration:0.4 animations:^{
-                                      infoBar.frame = CGRectMake(0, -InfoBarHeight, ScreenWidth , InfoBarHeight);
+                                      infoBar.frame = CGRectMake(0, -infoBarHeight, ScreenWidth , infoBarHeight);
                                   }];
                                   
                               }
@@ -472,7 +498,7 @@
     [button addTarget:self action:@selector(showDatePicker:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:button];
     
-    [button autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:30];
+    [button autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:220];
     [button autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
 }
 
@@ -565,33 +591,24 @@
         
         EverywhereMKAnnotation *anno = (EverywhereMKAnnotation *)view.annotation;
         
-        /*
-        CLGeocoder *geocoder = [CLGeocoder new];
-        [geocoder reverseGeocodeLocation:anno.locaton
-                       completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
-                           NSString *placeInfo;
-                           if (!error) {
-                               CLPlacemark *placemark = placemarks.lastObject;
-                               
-                               placeInfo = [placemark localizedPlaceStringInReverseOrder:YES withInlandWaterAndOcean:NO];
-                               
-                           }else{
-                               placeInfo = error.localizedDescription;
-                           }
-                           
-                           infoBar.address = placeInfo;
-                           
-                           if (infoBarIsHidden) [self showInfoBar];
-                           
-                       }];
-        */
-        
         PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:cdManager.appMOC];
         if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
         if (infoBarIsHidden) [self showInfoBar];
-        infoBar.address = assetInfo.localizedPlaceString_Placemark;
+        else [self hideInfoBar];
+        
+        [self updateInfoBarWithAssetInfo:assetInfo];
     }
     
+}
+
+- (void)updateInfoBarWithAssetInfo:(PHAssetInfo *)assetInfo{
+    infoBar.latitude = [assetInfo.latitude_Coordinate_Location doubleValue];
+    infoBar.longitude = [assetInfo.longitude_Coordinate_Location doubleValue];
+    infoBar.horizontalAccuracy = [assetInfo.horizontalAccuracy_Location doubleValue];
+    infoBar.altitude = [assetInfo.altitude_Location doubleValue];
+    infoBar.verticalAccuracy = [assetInfo.verticalAccuracy_Location doubleValue];
+    infoBar.level = [assetInfo.level_floor_Location integerValue];
+    infoBar.address = assetInfo.localizedPlaceString_Placemark;
 }
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay{
@@ -624,12 +641,12 @@
     EverywhereMKAnnotation *anno = (EverywhereMKAnnotation *)view.annotation;
     PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:cdManager.appMOC];
     if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
-    infoBar.address = assetInfo.localizedPlaceString_Placemark;
+    [self updateInfoBarWithAssetInfo:assetInfo];
 }
 
 - (void)setCurrentAnnotationIndex:(NSInteger)currentAnnotationIndex{
-    _currentAnnotationIndex= currentAnnotationIndex;
-    currentAnnotationIndexLabel.text = [NSString stringWithFormat:@"%ld / %ld",currentAnnotationIndex + 1,addedAnnotationsWithIndex.count];
+    _currentAnnotationIndex = currentAnnotationIndex;
+    currentAnnotationIndexLabel.text = [NSString stringWithFormat:@"%d / %ld",currentAnnotationIndex + 1,(unsigned long)addedAnnotationsWithIndex.count];
     
     /*
      if (currentAnnotationIndex == 0) {

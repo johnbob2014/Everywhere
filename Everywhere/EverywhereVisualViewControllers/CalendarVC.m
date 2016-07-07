@@ -28,6 +28,7 @@
     JTHorizontalCalendarView *calendarContentView;
     JTCalendarManager *calendarManager;
     
+    UIView *radioGroupView;
     TNRadioButtonGroup *radioGroupDayWeekMonth;
     TNRadioButtonGroup *radioGroupYearAllRange;
     TNRadioButtonGroup *radioGroupShortLong;
@@ -52,7 +53,9 @@
 }
 - (void)viewDidLoad{
     [super viewDidLoad];
-    lastIndex = 1;
+    
+    // Month
+    lastIndex = 2;
     
     photoManager = [GCPhotoManager defaultManager];
     
@@ -86,17 +89,6 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)viewWillDisappear:(BOOL)animated{
-    [super viewWillDisappear:animated];
-    
-}
-
-//#define viewWidth self.view.bounds.size.width
-//#define viewHeight self.view.bounds.size.Height
-//#define calendarWidth viewWidth
-//#define calendarHeight 200
-//#define radioGroupWidth viewWidth
-
 - (void)initJTCalendar{
     calendarView = [UIView newAutoLayoutView];
     [self.view addSubview:calendarView];
@@ -104,7 +96,7 @@
     [calendarView autoSetDimension:ALDimensionHeight toSize:220];
     
     calendarMenuView = [JTCalendarMenuView newAutoLayoutView];
-    [calendarView addSubview:calendarMenuView];
+    [calendarView addSubview:calendarMenuView];
     [calendarMenuView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
     [calendarMenuView autoSetDimension:ALDimensionHeight toSize:20];
     
@@ -123,6 +115,7 @@
 }
 
 - (void)initRadioGroup {
+    radioGroupView = [UIView newAutoLayoutView];
     
     TNCircularRadioButtonData *shortData = [TNCircularRadioButtonData new];
     shortData.labelText = NSLocalizedString(@"S", @"");
@@ -139,7 +132,7 @@
     radioGroupShortLong = [[TNRadioButtonGroup alloc] initWithRadioButtonData:@[shortData,longData] layout:TNRadioButtonGroupLayoutVertical];
     radioGroupShortLong.marginBetweenItems = 20;
     [radioGroupShortLong create];
-    radioGroupShortLong.position = CGPointMake(10, 250);
+    radioGroupShortLong.position = CGPointMake(10, 245);
     [self.view addSubview:radioGroupShortLong];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(radioGroupShortLongUpdated:) name:SELECTED_RADIO_BUTTON_CHANGED object:radioGroupShortLong];
@@ -154,14 +147,14 @@
     TNImageRadioButtonData *weekData = [TNImageRadioButtonData new];
     weekData.labelText = NSLocalizedString(@"Week", @"");
     weekData.identifier = @"Week";
-    weekData.selected = YES;
+    weekData.selected = NO;
     weekData.unselectedImage = [UIImage imageNamed:@"unchecked"];
     weekData.selectedImage = [UIImage imageNamed:@"checked"];
     
     TNImageRadioButtonData *monthData = [TNImageRadioButtonData new];
     monthData.labelText = NSLocalizedString(@"Month", @"");
     monthData.identifier = @"Month";
-    monthData.selected = NO;
+    monthData.selected = YES;
     monthData.unselectedImage = [UIImage imageNamed:@"unchecked"];
     monthData.selectedImage = [UIImage imageNamed:@"checked"];
     
@@ -394,11 +387,18 @@
             [calendarContentView loadPreviousPageWithAnimation];
         }
     }
-    
-    
 }
 
-#pragma mark - Views customization
+- (void)calendarDidLoadNextPage:(JTCalendarManager *)calendar{
+    self.userSelectedDate = [self.userSelectedDate dateByAddingMonths:1];
+}
+
+- (void)calendarDidLoadPreviousPage:(JTCalendarManager *)calendar{
+    self.userSelectedDate = [self.userSelectedDate dateBySubtractingMonths:1];
+}
+
+
+#pragma mark - JTCalendar Views customization
 
 - (UIView *)calendarBuildMenuItemView:(JTCalendarManager *)calendar
 {
