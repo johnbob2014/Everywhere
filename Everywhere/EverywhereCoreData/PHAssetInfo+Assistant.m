@@ -93,7 +93,7 @@
         fetchRequest.predicate = [NSPredicate predicateWithFormat:@"creationDate <= %@",endDate];
     }
 
-    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+    //fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
     NSError *fetchError;
     NSArray <PHAssetInfo *> *matches = [context executeFetchRequest:fetchRequest error:&fetchError];
     if (fetchError) NSLog(@"Fetch PHAssetInfos By Date Error : %@",fetchError.localizedDescription);
@@ -101,9 +101,19 @@
     return matches;
 }
 
++ (NSArray <PHAssetInfo *> *)fetchAssetInfosContainsPlacemark:(NSString *)subPlacemark inManagedObjectContext:(NSManagedObjectContext *)context{
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:EntityName_PHAssetInfo];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"localizedPlaceString_Placemark CONTAINS %@",subPlacemark];
+    NSError *fetchError;
+    NSArray <PHAssetInfo *> *matches = [context executeFetchRequest:fetchRequest error:&fetchError];
+    if (fetchError) NSLog(@"Fetch PHAssetInfos Contains Placemark Error : %@",fetchError.localizedDescription);
+    return matches;
+}
+
+
 + (NSArray <PHAssetInfo *> *)fetchAllAssetInfosInManagedObjectContext:(NSManagedObjectContext *)context{
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:EntityName_PHAssetInfo];
-    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+    //fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
     NSError *fetchError;
     NSArray <PHAssetInfo *> *matches = [context executeFetchRequest:fetchRequest error:&fetchError];
     if (fetchError) NSLog(@"Fetch All PHAssetInfos Error : %@",fetchError.localizedDescription);

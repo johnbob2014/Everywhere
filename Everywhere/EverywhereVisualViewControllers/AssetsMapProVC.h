@@ -9,6 +9,11 @@
 #import <UIKit/UIKit.h>
 @import Photos;
 
+typedef NS_ENUM(NSInteger, MapShowMode) {
+    MapShowModeMoment = 0,      // 时刻模式
+    MapShowModeLocation         // 地点模式
+};
+
 @interface AssetsMapProVC : UIViewController
 
 @end

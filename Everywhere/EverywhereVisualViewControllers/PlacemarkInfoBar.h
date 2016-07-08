@@ -17,4 +17,5 @@
 @property (assign,nonatomic) NSUInteger subLocalityCount;
 @property (assign,nonatomic) NSUInteger thoroughfareCount;
 @property (assign,nonatomic) NSUInteger subThoroughfareCount;
+@property (assign,nonatomic) double totalDistance;
 @end

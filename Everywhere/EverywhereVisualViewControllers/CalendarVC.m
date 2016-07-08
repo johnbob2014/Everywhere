@@ -324,7 +324,7 @@
     [assetArray enumerateObjectsUsingBlock:^(PHAsset *obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (obj.location) [assetArrayWithLocations addObject:obj];
     }];
-    NSArray *assetsArray = [GCLocationAnalyser divideLocationsToArray:assetArrayWithLocations nearestDistance:200];
+    NSArray *assetsArray = [GCLocationAnalyser divideLocationsInOrderToArray:assetArrayWithLocations nearestDistance:200];
     [self pushAssetsMapProVCWithAssetsArray:assetsArray title:nil];
 }
 */

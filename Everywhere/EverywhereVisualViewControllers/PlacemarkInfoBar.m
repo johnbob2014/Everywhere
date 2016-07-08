@@ -13,9 +13,6 @@
 @interface CellView : UIView
 @property (strong,nonatomic) NSString *cellInfo;
 @property (strong,nonatomic) NSString *cellTitle;
-@end
-
-@interface CellView ()
 @property (strong,nonatomic) UILabel *cellInfoLabel;
 @property (strong,nonatomic) UILabel *cellTitleLabel;
 @end
@@ -29,16 +26,18 @@
         self.backgroundColor = [UIColor clearColor];
         
         self.cellInfoLabel = [UILabel newAutoLayoutView];
-        self.cellInfoLabel.font = [UIFont bodyFontWithSizeMultiplier:1.5];
+        self.cellInfoLabel.font = [UIFont bodyFontWithSizeMultiplier:1.2];
         self.cellInfoLabel.textAlignment = NSTextAlignmentCenter;
         self.cellInfoLabel.text = @"0";
         [self addSubview:self.cellInfoLabel];
         
         self.cellTitleLabel = [UILabel newAutoLayoutView];
-        self.cellTitleLabel.font = [UIFont bodyFontWithSizeMultiplier:1.0];
+        self.cellTitleLabel.font = [UIFont bodyFontWithSizeMultiplier:0.8];
         self.cellTitleLabel.textAlignment = NSTextAlignmentCenter;
         self.cellTitleLabel.text = @"/";
         [self addSubview:self.cellTitleLabel];
+        
+        //self.clipsToBounds = YES;
 
     }
     return self;
@@ -52,14 +51,51 @@
 }
 
 - (void)layoutSubviews{
+    
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         //[self.cellInfoLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
         //[self.cellInfoLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
         
-        [self.cellInfoLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 0, 0, 0) excludingEdge:ALEdgeBottom];
-        [self.cellTitleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
+        
     });
+    /*
+    [self.cellTitleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
+    [self.cellInfoLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    [self.cellInfoLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    */
+    
+    //[self.cellInfoLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
+    [self.cellTitleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
+    [self.cellInfoLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [self.cellInfoLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:self withOffset:self.cellTitleLabel.frame.size.height];
+    
+    /*
+    [self.cellInfoLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+    [self.cellInfoLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+    [self.cellInfoLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.cellTitleLabel withOffset:5 relation:NSLayoutRelationGreaterThanOrEqual];
+    */
+    
+    /*
+    CGRect infoRect = self.cellInfoLabel.frame;
+    infoRect.origin.x = 0;
+    infoRect.origin.y = 0;
+    self.cellInfoLabel.frame = infoRect;
+    
+    CGRect titleRect = self.cellTitleLabel.frame;
+    titleRect.origin.x = 0;
+    titleRect.origin.y = self.frame.size.height - titleRect.size.height;
+    self.cellTitleLabel.frame = titleRect;
+    */
+    
+    /*
+    self.cellInfoLabel.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height * 0.3);
+    self.cellTitleLabel.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y + self.frame.size.height * 0.3, self.frame.size.width, self.frame.size.height * 0.1);
+    */
+    
+    //self.cellInfoLabel.frame = CGPointMake(0, 0);
+    //NSLog(@"\ncell          : %@\ncellInfoLabel : %@",NSStringFromCGPoint(self.frame.origin),NSStringFromCGRect(self.cellInfoLabel.frame));
+    //NSLog(@"\ncellInfoLabel : %@\ncellTitleLabel : %@",NSStringFromCGPoint(self.cellInfoLabel.frame.origin),NSStringFromCGPoint(self.cellTitleLabel.frame.origin));
 }
 
 - (void)setCellInfo:(NSString *)cellInfo{
@@ -84,6 +120,7 @@
     CellView *subLocalityCell;
     CellView *thoroughfareCell;
     //CellView *subThoroughfareCell;
+    CellView *totalDistanceCell;
 }
 
 /*
@@ -93,9 +130,6 @@
     // Drawing code
 }
 */
-
-#define blankToSuper 5.0
-#define blankBetweenCellView 5.0
 
 - (instancetype)init{
     //NSLog(@"PlacemarkInfoBar : %@",NSStringFromSelector(_cmd));
@@ -125,41 +159,63 @@
         countryCell = [CellView newAutoLayoutView];
         countryCell.cellTitle = NSLocalizedString(@"国家", @"");
         [self addSubview:countryCell];
+        
+        // 里程
+        totalDistanceCell = [CellView newAutoLayoutView];
+        totalDistanceCell.cellInfoLabel.numberOfLines = 0;
+        totalDistanceCell.cellTitle = NSLocalizedString(@"里程", @"");
+        [self addSubview:totalDistanceCell];
+
     }
     return self;
 }
+
+#define blankToSuper 5.0
+#define blankBetweenCellView 5.0
+#define cellWidthRate 0.14
 
 - (void)layoutSubviews{
     //NSLog(@"%@",NSStringFromSelector(_cmd));
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        [thoroughfareCell autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:blankToSuper];
-        [thoroughfareCell autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:blankToSuper];
-        [thoroughfareCell autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:blankToSuper];
-        [thoroughfareCell autoSetDimension:ALDimensionWidth toSize:self.bounds.size.width * 0.18];
         
-        [subLocalityCell autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:blankToSuper];
-        [subLocalityCell autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:blankToSuper];
-        [subLocalityCell autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:thoroughfareCell withOffset:blankBetweenCellView];
-        [subLocalityCell autoSetDimension:ALDimensionWidth toSize:self.bounds.size.width * 0.18];
-        
-        [localityCell autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:blankToSuper];
-        [localityCell autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:blankToSuper];
-        [localityCell autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:subLocalityCell withOffset:blankBetweenCellView];
-        [localityCell autoSetDimension:ALDimensionWidth toSize:self.bounds.size.width * 0.18];
-        
-        [administrativeAreaCell autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:blankToSuper];
-        [administrativeAreaCell autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:blankToSuper];
-        [administrativeAreaCell autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:localityCell withOffset:blankBetweenCellView];
-        [administrativeAreaCell autoSetDimension:ALDimensionWidth toSize:self.bounds.size.width * 0.18];
-        
-        [countryCell autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:blankToSuper];
-        [countryCell autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:blankToSuper];
-        [countryCell autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:administrativeAreaCell withOffset:blankBetweenCellView];
-        [countryCell autoSetDimension:ALDimensionWidth toSize:self.bounds.size.width * 0.18];
-
     });
+    
+    [self.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [obj removeConstraints:obj.constraints];
+    }];
+    
+    [thoroughfareCell autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:blankToSuper];
+    [thoroughfareCell autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:blankToSuper];
+    [thoroughfareCell autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:blankToSuper];
+    [thoroughfareCell autoSetDimension:ALDimensionWidth toSize:self.bounds.size.width * cellWidthRate];
+    
+    [subLocalityCell autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:blankToSuper];
+    [subLocalityCell autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:blankToSuper];
+    [subLocalityCell autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:thoroughfareCell withOffset:blankBetweenCellView];
+    [subLocalityCell autoSetDimension:ALDimensionWidth toSize:self.bounds.size.width * cellWidthRate];
+    
+    [localityCell autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:blankToSuper];
+    [localityCell autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:blankToSuper];
+    [localityCell autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:subLocalityCell withOffset:blankBetweenCellView];
+    [localityCell autoSetDimension:ALDimensionWidth toSize:self.bounds.size.width * cellWidthRate];
+    
+    [administrativeAreaCell autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:blankToSuper];
+    [administrativeAreaCell autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:blankToSuper];
+    [administrativeAreaCell autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:localityCell withOffset:blankBetweenCellView];
+    [administrativeAreaCell autoSetDimension:ALDimensionWidth toSize:self.bounds.size.width * cellWidthRate];
+    
+    [countryCell autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:blankToSuper];
+    [countryCell autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:blankToSuper];
+    [countryCell autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:administrativeAreaCell withOffset:blankBetweenCellView];
+    [countryCell autoSetDimension:ALDimensionWidth toSize:self.bounds.size.width * cellWidthRate];
+    
+    [totalDistanceCell autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:blankToSuper];
+    [totalDistanceCell autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:blankToSuper];
+    [totalDistanceCell autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:countryCell withOffset:blankBetweenCellView];
+    [totalDistanceCell autoSetDimension:ALDimensionWidth toSize:self.bounds.size.width * 0.22];
+
 }
 
 - (void)setThoroughfareCount:(NSUInteger)thoroughfareCount{
@@ -187,4 +243,14 @@
     countryCell.cellInfo = [NSString stringWithFormat:@"%ld",(unsigned long)countryCount];
 }
 
+- (void)setTotalDistance:(double)totalDistance{
+    _totalDistance = totalDistance;
+    NSString *totalString;
+    if (totalDistance >=1000) {
+        totalString = [NSString stringWithFormat:@"%.2f km",totalDistance/1000.0];
+    }else{
+        totalString = [NSString stringWithFormat:@"%.0f m",totalDistance];
+    }
+    totalDistanceCell.cellInfo = totalString;
+}
 @end
