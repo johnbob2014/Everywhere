@@ -120,10 +120,8 @@
     
     [self initAnnotationsAndOverlays];
     
-    locationInfoBarHeight = 150;
     [self initLocationInfoBar];
     
-    placemarkInfoBarHeight = 60;
     [self initPlacemarkInfoBar];
 
     [self initMenu];
@@ -209,11 +207,10 @@
 - (void)addAnnotations{
     // 清理数组
     addedAnnotationsWithIndex = nil;
+    NSMutableArray <EverywhereMKAnnotation *> *annotationsToAdd = [NSMutableArray new];
     
     // 添加 MKAnnotations
     [myMapView removeAnnotations:myMapView.annotations];
-    
-    NSMutableArray <EverywhereMKAnnotation *> *annotationsToAdd = [NSMutableArray new];
     
     [self.assetsArray enumerateObjectsUsingBlock:^(NSArray<PHAsset *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         PHAsset *asset = obj.firstObject;
@@ -305,9 +302,9 @@
 
 - (void)asyncAddRouteOverlays{
     [myMapView removeOverlays:myMapView.overlays];
+    maxDistance = 500;
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        maxDistance = 500;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         if (addedAnnotationsWithIndex.count >= 2) {
             // 记录距离信息
             NSMutableArray *distanceArray = [NSMutableArray new];
@@ -324,7 +321,7 @@
                     __block CLLocationDistance subDistance;
                     if (foundedRP) {
                         NSLog(@"foundedRP : %@",foundedRP);
-                        subDistance = foundedRP.routeDistance;
+                        //subDistance = foundedRP.routeDistance;
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [myMapView addOverlay:foundedRP.polyline];
                         });
@@ -390,11 +387,13 @@
 - (void)initAnnotationsAndOverlays{
     [self addAnnotations];
     
-    //[self addLineOverlays];
+    [self addLineOverlays];
     
+    /*
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self asyncAddRouteOverlays];
     });
+    */
     
     // 移动地图到第一个点
     if (addedAnnotationsWithIndex.count > 0) {
@@ -544,6 +543,7 @@
 #pragma mark - Location Info Bar
 
 - (void)initLocationInfoBar{
+    locationInfoBarHeight = 150;
     locationInfoBar = [[LocationInfoBar alloc] initWithFrame:CGRectMake(0, -locationInfoBarHeight, ScreenWidth , locationInfoBarHeight)];
     [self.view addSubview:locationInfoBar];
     [locationInfoBar setBackgroundColor:[[UIColor grayColor] colorWithAlphaComponent:0.6]];
@@ -599,9 +599,10 @@
 #pragma mark - Placemark Info Bar
 
 - (void)initPlacemarkInfoBar{
+    placemarkInfoBarHeight = 100;
     placemarkInfoBar = [PlacemarkInfoBar newAutoLayoutView];
     [self.view addSubview:placemarkInfoBar];
-    [placemarkInfoBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(5, 5, 5, 5) excludingEdge:ALEdgeBottom];
+    [placemarkInfoBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(25, 5, 5, 5) excludingEdge:ALEdgeBottom];
     [placemarkInfoBar autoSetDimension:ALDimensionHeight toSize:placemarkInfoBarHeight];
     [placemarkInfoBar setBackgroundColor:[[UIColor grayColor] colorWithAlphaComponent:0.6]];
     placemarkInfoBarIsHidden = NO;

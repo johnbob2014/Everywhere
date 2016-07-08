@@ -18,19 +18,10 @@
 		1E41FD211D2AB66100E1A5B9 /* LocationInfoBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E41FD201D2AB66100E1A5B9 /* LocationInfoBar.m */; };
 		1E5A54181D28FE0F0056CF46 /* AssetsMapProVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E5A54171D28FE0F0056CF46 /* AssetsMapProVC.m */; };
 		1E63B77C1D2E9D90003E355B /* PlacemarkInfoBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E63B77B1D2E9D90003E355B /* PlacemarkInfoBar.m */; };
-		1E6521841D2899EE00F41860 /* GCPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E6521831D2899EE00F41860 /* GCPhotoManager.m */; };
-		1E6521861D28BC1F00F41860 /* badge.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E6521851D28BC1F00F41860 /* badge.png */; };
 		1E65218D1D28BFB500F41860 /* UIFont+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E65218C1D28BFB500F41860 /* UIFont+Assistant.m */; };
-		1E6521961D28D56900F41860 /* GCLocationAnalyser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E6521951D28D56900F41860 /* GCLocationAnalyser.m */; };
 		1E74C3081D268377000A9790 /* floatTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E74C3041D268377000A9790 /* floatTableViewCell.m */; };
 		1E74C3091D268377000A9790 /* floatTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E74C3051D268377000A9790 /* floatTableViewCell.xib */; };
 		1E74C30A1D268377000A9790 /* VCFloatingActionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E74C3071D268377000A9790 /* VCFloatingActionButton.m */; };
-		1E74C3121D26839B000A9790 /* cross.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E74C30C1D26839B000A9790 /* cross.png */; };
-		1E74C3131D26839B000A9790 /* fb-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E74C30D1D26839B000A9790 /* fb-icon.png */; };
-		1E74C3141D26839B000A9790 /* google-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E74C30E1D26839B000A9790 /* google-icon.png */; };
-		1E74C3151D26839B000A9790 /* linkedin-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E74C30F1D26839B000A9790 /* linkedin-icon.png */; };
-		1E74C3161D26839B000A9790 /* plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E74C3101D26839B000A9790 /* plus.png */; };
-		1E74C3171D26839B000A9790 /* twitter-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1E74C3111D26839B000A9790 /* twitter-icon.png */; };
 		1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */; };
 		1E9D5D441D1E8F2D00E8B630 /* Everywhere.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */; };
 		1EB047111D2BFF8100298422 /* TNCircularRadioButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB046FE1D2BFF8100298422 /* TNCircularRadioButton.m */; };
@@ -51,19 +42,21 @@
 		4B001CD71D21002700DF7287 /* CTPWaitingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CD31D21002700DF7287 /* CTPWaitingView.m */; };
 		4B001CDE1D2125FC00DF7287 /* CLPlacemark+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CDD1D2125FC00DF7287 /* CLPlacemark+Assistant.m */; };
 		4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */; };
-		4B1A60431D2E45D0000DA6E7 /* GCRoutePolylineManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1A60421D2E45D0000DA6E7 /* GCRoutePolylineManager.m */; };
 		4B27FDC31D2CA12000067683 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4B27FDBE1D2CA12000067683 /* FontAwesome.ttf */; };
 		4B27FDC41D2CA12000067683 /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B27FDC01D2CA12000067683 /* NSString+FontAwesome.m */; };
 		4B27FDC51D2CA12000067683 /* UIButton+Bootstrap.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B27FDC21D2CA12000067683 /* UIButton+Bootstrap.m */; };
 		4B27FDC81D2CAB5500067683 /* AssetDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B27FDC71D2CAB5500067683 /* AssetDetailVC.m */; };
 		4B30E2A81D24A999002C2DE7 /* NSDate+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B30E2A71D24A999002C2DE7 /* NSDate+Assistant.m */; };
+		4B3AF9C91D2F3E70009BD545 /* GCLocationAnalyser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3AF9BE1D2F3E70009BD545 /* GCLocationAnalyser.m */; };
+		4B3AF9CA1D2F3E70009BD545 /* GCPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3AF9C11D2F3E70009BD545 /* GCPhotoManager.m */; };
+		4B3AF9CB1D2F3E70009BD545 /* GCPolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3AF9C41D2F3E70009BD545 /* GCPolyline.m */; };
+		4B3AF9CC1D2F3E70009BD545 /* GCRoutePolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3AF9C61D2F3E70009BD545 /* GCRoutePolyline.m */; };
+		4B3AF9CD1D2F3E70009BD545 /* GCRoutePolylineManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3AF9C81D2F3E70009BD545 /* GCRoutePolylineManager.m */; };
 		4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */; };
-		4B5A2C641D2E38EE00F3AE99 /* GCRoutePolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B5A2C631D2E38EE00F3AE99 /* GCRoutePolyline.m */; };
 		4BD51FC81D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FC51D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m */; };
 		4BD51FC91D2B47B900F18244 /* PHAssetInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FC71D2B47B900F18244 /* PHAssetInfo.m */; };
 		4BD51FCC1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FCB1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m */; };
 		4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */; };
-		4BF356071D2DFD1300649C0F /* GCPolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF356061D2DFD1300649C0F /* GCPolyline.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -85,24 +78,13 @@
 		1E5A54171D28FE0F0056CF46 /* AssetsMapProVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AssetsMapProVC.m; path = EverywhereVisualViewControllers/AssetsMapProVC.m; sourceTree = "<group>"; };
 		1E63B77A1D2E9D90003E355B /* PlacemarkInfoBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlacemarkInfoBar.h; path = EverywhereVisualViewControllers/PlacemarkInfoBar.h; sourceTree = "<group>"; };
 		1E63B77B1D2E9D90003E355B /* PlacemarkInfoBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlacemarkInfoBar.m; path = EverywhereVisualViewControllers/PlacemarkInfoBar.m; sourceTree = "<group>"; };
-		1E6521821D2899EE00F41860 /* GCPhotoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCPhotoManager.h; path = EverywhereModels/GCPhotoManager.h; sourceTree = "<group>"; };
-		1E6521831D2899EE00F41860 /* GCPhotoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCPhotoManager.m; path = EverywhereModels/GCPhotoManager.m; sourceTree = "<group>"; };
-		1E6521851D28BC1F00F41860 /* badge.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = badge.png; sourceTree = "<group>"; };
 		1E65218B1D28BFB500F41860 /* UIFont+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIFont+Assistant.h"; path = "UIFont+Assistant/UIFont+Assistant.h"; sourceTree = "<group>"; };
 		1E65218C1D28BFB500F41860 /* UIFont+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIFont+Assistant.m"; path = "UIFont+Assistant/UIFont+Assistant.m"; sourceTree = "<group>"; };
-		1E6521941D28D56900F41860 /* GCLocationAnalyser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCLocationAnalyser.h; path = EverywhereModels/GCLocationAnalyser.h; sourceTree = "<group>"; };
-		1E6521951D28D56900F41860 /* GCLocationAnalyser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCLocationAnalyser.m; path = EverywhereModels/GCLocationAnalyser.m; sourceTree = "<group>"; };
 		1E74C3031D268377000A9790 /* floatTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = floatTableViewCell.h; sourceTree = "<group>"; };
 		1E74C3041D268377000A9790 /* floatTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = floatTableViewCell.m; sourceTree = "<group>"; };
 		1E74C3051D268377000A9790 /* floatTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = floatTableViewCell.xib; sourceTree = "<group>"; };
 		1E74C3061D268377000A9790 /* VCFloatingActionButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VCFloatingActionButton.h; sourceTree = "<group>"; };
 		1E74C3071D268377000A9790 /* VCFloatingActionButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VCFloatingActionButton.m; sourceTree = "<group>"; };
-		1E74C30C1D26839B000A9790 /* cross.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cross.png; sourceTree = "<group>"; };
-		1E74C30D1D26839B000A9790 /* fb-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fb-icon.png"; sourceTree = "<group>"; };
-		1E74C30E1D26839B000A9790 /* google-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "google-icon.png"; sourceTree = "<group>"; };
-		1E74C30F1D26839B000A9790 /* linkedin-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "linkedin-icon.png"; sourceTree = "<group>"; };
-		1E74C3101D26839B000A9790 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus.png; sourceTree = "<group>"; };
-		1E74C3111D26839B000A9790 /* twitter-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "twitter-icon.png"; sourceTree = "<group>"; };
 		1E9CF64AE7F289869F003D6F /* libPods-Everywhere.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Everywhere.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E9D5D401D1E2AFE00E8B630 /* WGS84TOGCJ02.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WGS84TOGCJ02.h; path = WGS84TOGCJ02/WGS84TOGCJ02.h; sourceTree = "<group>"; };
 		1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WGS84TOGCJ02.m; path = WGS84TOGCJ02/WGS84TOGCJ02.m; sourceTree = "<group>"; };
@@ -145,8 +127,6 @@
 		4B0620771D2CE36C00545FCE /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		4B0D09261D23C94D0047D7E0 /* PHAsset+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PHAsset+Assistant.h"; path = "PHAsset+Assistant/PHAsset+Assistant.h"; sourceTree = "<group>"; };
 		4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PHAsset+Assistant.m"; path = "PHAsset+Assistant/PHAsset+Assistant.m"; sourceTree = "<group>"; };
-		4B1A60411D2E45D0000DA6E7 /* GCRoutePolylineManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCRoutePolylineManager.h; path = EverywhereModels/GCRoutePolylineManager.h; sourceTree = "<group>"; };
-		4B1A60421D2E45D0000DA6E7 /* GCRoutePolylineManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCRoutePolylineManager.m; path = EverywhereModels/GCRoutePolylineManager.m; sourceTree = "<group>"; };
 		4B27FDBE1D2CA12000067683 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
 		4B27FDBF1D2CA12000067683 /* NSString+FontAwesome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+FontAwesome.h"; sourceTree = "<group>"; };
 		4B27FDC01D2CA12000067683 /* NSString+FontAwesome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+FontAwesome.m"; sourceTree = "<group>"; };
@@ -156,10 +136,18 @@
 		4B27FDC71D2CAB5500067683 /* AssetDetailVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AssetDetailVC.m; path = EverywhereVisualViewControllers/AssetDetailVC.m; sourceTree = "<group>"; };
 		4B30E2A61D24A999002C2DE7 /* NSDate+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+Assistant.h"; path = "NSDate+Assistant/NSDate+Assistant.h"; sourceTree = "<group>"; };
 		4B30E2A71D24A999002C2DE7 /* NSDate+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDate+Assistant.m"; path = "NSDate+Assistant/NSDate+Assistant.m"; sourceTree = "<group>"; };
+		4B3AF9BD1D2F3E70009BD545 /* GCLocationAnalyser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCLocationAnalyser.h; sourceTree = "<group>"; };
+		4B3AF9BE1D2F3E70009BD545 /* GCLocationAnalyser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCLocationAnalyser.m; sourceTree = "<group>"; };
+		4B3AF9C01D2F3E70009BD545 /* GCPhotoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCPhotoManager.h; sourceTree = "<group>"; };
+		4B3AF9C11D2F3E70009BD545 /* GCPhotoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCPhotoManager.m; sourceTree = "<group>"; };
+		4B3AF9C31D2F3E70009BD545 /* GCPolyline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCPolyline.h; sourceTree = "<group>"; };
+		4B3AF9C41D2F3E70009BD545 /* GCPolyline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCPolyline.m; sourceTree = "<group>"; };
+		4B3AF9C51D2F3E70009BD545 /* GCRoutePolyline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCRoutePolyline.h; sourceTree = "<group>"; };
+		4B3AF9C61D2F3E70009BD545 /* GCRoutePolyline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCRoutePolyline.m; sourceTree = "<group>"; };
+		4B3AF9C71D2F3E70009BD545 /* GCRoutePolylineManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCRoutePolylineManager.h; sourceTree = "<group>"; };
+		4B3AF9C81D2F3E70009BD545 /* GCRoutePolylineManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCRoutePolylineManager.m; sourceTree = "<group>"; };
 		4B3C10061D1CDCA700C20C72 /* UIView+AutoLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AutoLayout.h"; sourceTree = "<group>"; };
 		4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AutoLayout.m"; sourceTree = "<group>"; };
-		4B5A2C621D2E38EE00F3AE99 /* GCRoutePolyline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCRoutePolyline.h; path = EverywhereModels/GCRoutePolyline.h; sourceTree = "<group>"; };
-		4B5A2C631D2E38EE00F3AE99 /* GCRoutePolyline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCRoutePolyline.m; path = EverywhereModels/GCRoutePolyline.m; sourceTree = "<group>"; };
 		4BD51FC41D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PHAssetInfo+CoreDataProperties.h"; path = "EverywhereCoreData/PHAssetInfo+CoreDataProperties.h"; sourceTree = "<group>"; };
 		4BD51FC51D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PHAssetInfo+CoreDataProperties.m"; path = "EverywhereCoreData/PHAssetInfo+CoreDataProperties.m"; sourceTree = "<group>"; };
 		4BD51FC61D2B47B900F18244 /* PHAssetInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PHAssetInfo.h; path = EverywhereCoreData/PHAssetInfo.h; sourceTree = "<group>"; };
@@ -168,8 +156,6 @@
 		4BD51FCB1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PHAssetInfo+Assistant.m"; path = "EverywhereCoreData/PHAssetInfo+Assistant.m"; sourceTree = "<group>"; };
 		4BD51FCD1D2B4B8400F18244 /* EverywhereCoreDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereCoreDataManager.h; path = EverywhereCoreData/EverywhereCoreDataManager.h; sourceTree = "<group>"; };
 		4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereCoreDataManager.m; path = EverywhereCoreData/EverywhereCoreDataManager.m; sourceTree = "<group>"; };
-		4BF356051D2DFD1300649C0F /* GCPolyline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCPolyline.h; path = EverywhereModels/GCPolyline.h; sourceTree = "<group>"; };
-		4BF356061D2DFD1300649C0F /* GCPolyline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCPolyline.m; path = EverywhereModels/GCPolyline.m; sourceTree = "<group>"; };
 		6C5CC4DC43B9922DBD449DFF /* Pods-Everywhere.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Everywhere.release.xcconfig"; path = "Pods/Target Support Files/Pods-Everywhere/Pods-Everywhere.release.xcconfig"; sourceTree = "<group>"; };
 		8CB0F045B4429E7E7F66F602 /* Pods-Everywhere.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Everywhere.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Everywhere/Pods-Everywhere.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -210,20 +196,11 @@
 		1E2847F41D1ADDB900189A83 /* Everywhere */ = {
 			isa = PBXGroup;
 			children = (
-				4B27FDBD1D2CA12000067683 /* UIButton+Bootstrap */,
+				4B3AF9CF1D2F3ECE009BD545 /* GeneralClass */,
+				4B3AF9CE1D2F3EBA009BD545 /* GeneralCategory */,
 				4BD51FC31D2B475000F18244 /* EverywhereCoreData */,
 				1EEA794E1D27915C002B6291 /* EverywhereModels */,
 				1EEA794A1D279047002B6291 /* EverywhereVisualViewControllers */,
-				1E74C3021D268377000A9790 /* VCFloatingActionButton */,
-				4B30E2A51D24A960002C2DE7 /* NSDate+Assistant */,
-				1E6521871D28BF2200F41860 /* UIFont+Assistant */,
-				4B0D09251D23C90B0047D7E0 /* PHAsset+Assistant */,
-				4B001CD81D21252400DF7287 /* CLPlacemark+Assistant */,
-				4B001CCA1D21002700DF7287 /* CTPImageBrowser */,
-				1E9D5D3F1D1E2ADB00E8B630 /* WGS84TOGCJ02 */,
-				4B3C10051D1CDCA700C20C72 /* UIView+AutoLayout */,
-				1EB046FC1D2BFF8100298422 /* TNRadioButtonGroup */,
-				1E74C30B1D268382000A9790 /* Images */,
 				1E2848151D1ADF6700189A83 /* Everywhere.entitlements */,
 				1E2848011D1ADDB900189A83 /* Everywhere.xcdatamodeld */,
 				1E2847F61D1ADDB900189A83 /* main.m */,
@@ -268,20 +245,6 @@
 				1E74C3071D268377000A9790 /* VCFloatingActionButton.m */,
 			);
 			path = VCFloatingActionButton;
-			sourceTree = "<group>";
-		};
-		1E74C30B1D268382000A9790 /* Images */ = {
-			isa = PBXGroup;
-			children = (
-				1E6521851D28BC1F00F41860 /* badge.png */,
-				1E74C30C1D26839B000A9790 /* cross.png */,
-				1E74C30D1D26839B000A9790 /* fb-icon.png */,
-				1E74C30E1D26839B000A9790 /* google-icon.png */,
-				1E74C30F1D26839B000A9790 /* linkedin-icon.png */,
-				1E74C3101D26839B000A9790 /* plus.png */,
-				1E74C3111D26839B000A9790 /* twitter-icon.png */,
-			);
-			name = Images;
 			sourceTree = "<group>";
 		};
 		1E9D5D3F1D1E2ADB00E8B630 /* WGS84TOGCJ02 */ = {
@@ -342,16 +305,6 @@
 			children = (
 				1EEA794F1D2791A0002B6291 /* EverywhereMKAnnotation.h */,
 				1EEA79501D2791A0002B6291 /* EverywhereMKAnnotation.m */,
-				1E6521821D2899EE00F41860 /* GCPhotoManager.h */,
-				1E6521831D2899EE00F41860 /* GCPhotoManager.m */,
-				1E6521941D28D56900F41860 /* GCLocationAnalyser.h */,
-				1E6521951D28D56900F41860 /* GCLocationAnalyser.m */,
-				4BF356051D2DFD1300649C0F /* GCPolyline.h */,
-				4BF356061D2DFD1300649C0F /* GCPolyline.m */,
-				4B5A2C621D2E38EE00F3AE99 /* GCRoutePolyline.h */,
-				4B5A2C631D2E38EE00F3AE99 /* GCRoutePolyline.m */,
-				4B1A60411D2E45D0000DA6E7 /* GCRoutePolylineManager.h */,
-				4B1A60421D2E45D0000DA6E7 /* GCRoutePolylineManager.m */,
 			);
 			name = EverywhereModels;
 			sourceTree = "<group>";
@@ -409,6 +362,64 @@
 				4B30E2A71D24A999002C2DE7 /* NSDate+Assistant.m */,
 			);
 			name = "NSDate+Assistant";
+			sourceTree = "<group>";
+		};
+		4B3AF9BC1D2F3E70009BD545 /* GCLocationAnalyser */ = {
+			isa = PBXGroup;
+			children = (
+				4B3AF9BD1D2F3E70009BD545 /* GCLocationAnalyser.h */,
+				4B3AF9BE1D2F3E70009BD545 /* GCLocationAnalyser.m */,
+			);
+			path = GCLocationAnalyser;
+			sourceTree = "<group>";
+		};
+		4B3AF9BF1D2F3E70009BD545 /* GCPhotoManager */ = {
+			isa = PBXGroup;
+			children = (
+				4B3AF9C01D2F3E70009BD545 /* GCPhotoManager.h */,
+				4B3AF9C11D2F3E70009BD545 /* GCPhotoManager.m */,
+			);
+			path = GCPhotoManager;
+			sourceTree = "<group>";
+		};
+		4B3AF9C21D2F3E70009BD545 /* GCPolyline */ = {
+			isa = PBXGroup;
+			children = (
+				4B3AF9C31D2F3E70009BD545 /* GCPolyline.h */,
+				4B3AF9C41D2F3E70009BD545 /* GCPolyline.m */,
+				4B3AF9C51D2F3E70009BD545 /* GCRoutePolyline.h */,
+				4B3AF9C61D2F3E70009BD545 /* GCRoutePolyline.m */,
+				4B3AF9C71D2F3E70009BD545 /* GCRoutePolylineManager.h */,
+				4B3AF9C81D2F3E70009BD545 /* GCRoutePolylineManager.m */,
+			);
+			path = GCPolyline;
+			sourceTree = "<group>";
+		};
+		4B3AF9CE1D2F3EBA009BD545 /* GeneralCategory */ = {
+			isa = PBXGroup;
+			children = (
+				4B27FDBD1D2CA12000067683 /* UIButton+Bootstrap */,
+				4B30E2A51D24A960002C2DE7 /* NSDate+Assistant */,
+				1E6521871D28BF2200F41860 /* UIFont+Assistant */,
+				4B0D09251D23C90B0047D7E0 /* PHAsset+Assistant */,
+				4B001CD81D21252400DF7287 /* CLPlacemark+Assistant */,
+				4B3C10051D1CDCA700C20C72 /* UIView+AutoLayout */,
+			);
+			name = GeneralCategory;
+			sourceTree = "<group>";
+		};
+		4B3AF9CF1D2F3ECE009BD545 /* GeneralClass */ = {
+			isa = PBXGroup;
+			children = (
+				1E74C3021D268377000A9790 /* VCFloatingActionButton */,
+				4B001CCA1D21002700DF7287 /* CTPImageBrowser */,
+				1EB046FC1D2BFF8100298422 /* TNRadioButtonGroup */,
+				1E9D5D3F1D1E2ADB00E8B630 /* WGS84TOGCJ02 */,
+				4B3AF9BC1D2F3E70009BD545 /* GCLocationAnalyser */,
+				4B3AF9BF1D2F3E70009BD545 /* GCPhotoManager */,
+				4B3AF9C21D2F3E70009BD545 /* GCPolyline */,
+			);
+			name = GeneralClass;
 			sourceTree = "<group>";
 		};
 		4B3C10051D1CDCA700C20C72 /* UIView+AutoLayout */ = {
@@ -519,16 +530,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1E74C3151D26839B000A9790 /* linkedin-icon.png in Resources */,
-				1E74C3141D26839B000A9790 /* google-icon.png in Resources */,
-				1E74C3161D26839B000A9790 /* plus.png in Resources */,
-				1E74C3121D26839B000A9790 /* cross.png in Resources */,
 				1E74C3091D268377000A9790 /* floatTableViewCell.xib in Resources */,
-				1E74C3131D26839B000A9790 /* fb-icon.png in Resources */,
 				1E9D5D441D1E8F2D00E8B630 /* Everywhere.rtf in Resources */,
 				1E2848081D1ADDB900189A83 /* LaunchScreen.storyboard in Resources */,
-				1E6521861D28BC1F00F41860 /* badge.png in Resources */,
-				1E74C3171D26839B000A9790 /* twitter-icon.png in Resources */,
 				1E2848051D1ADDB900189A83 /* Assets.xcassets in Resources */,
 				4B27FDC31D2CA12000067683 /* FontAwesome.ttf in Resources */,
 			);
@@ -592,8 +596,8 @@
 				4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */,
 				4B30E2A81D24A999002C2DE7 /* NSDate+Assistant.m in Sources */,
 				1EB047121D2BFF8100298422 /* TNCircularRadioButtonData.m in Sources */,
-				4BF356071D2DFD1300649C0F /* GCPolyline.m in Sources */,
 				1E74C3081D268377000A9790 /* floatTableViewCell.m in Sources */,
+				4B3AF9C91D2F3E70009BD545 /* GCLocationAnalyser.m in Sources */,
 				4BD51FC81D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m in Sources */,
 				1EB047131D2BFF8100298422 /* TNImageRadioButton.m in Sources */,
 				1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */,
@@ -603,9 +607,10 @@
 				4B001CD41D21002700DF7287 /* CTPImageBrowserVC.m in Sources */,
 				4BD51FC91D2B47B900F18244 /* PHAssetInfo.m in Sources */,
 				4B27FDC81D2CAB5500067683 /* AssetDetailVC.m in Sources */,
+				4B3AF9CB1D2F3E70009BD545 /* GCPolyline.m in Sources */,
 				1E2848031D1ADDB900189A83 /* Everywhere.xcdatamodeld in Sources */,
-				1E6521961D28D56900F41860 /* GCLocationAnalyser.m in Sources */,
 				1EB047161D2BFF8100298422 /* TNRadioButtonData.m in Sources */,
+				4B3AF9CC1D2F3E70009BD545 /* GCRoutePolyline.m in Sources */,
 				4B001CD61D21002700DF7287 /* CTPMultiImage.m in Sources */,
 				1E63B77C1D2E9D90003E355B /* PlacemarkInfoBar.m in Sources */,
 				4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */,
@@ -617,17 +622,16 @@
 				4B27FDC51D2CA12000067683 /* UIButton+Bootstrap.m in Sources */,
 				1EC3138F1D27FC4800A2C301 /* CalendarVC.m in Sources */,
 				4B001CD51D21002700DF7287 /* CTPImageView.m in Sources */,
-				4B1A60431D2E45D0000DA6E7 /* GCRoutePolylineManager.m in Sources */,
 				4B001CD71D21002700DF7287 /* CTPWaitingView.m in Sources */,
-				1E6521841D2899EE00F41860 /* GCPhotoManager.m in Sources */,
 				1EB047111D2BFF8100298422 /* TNCircularRadioButton.m in Sources */,
 				4BD51FCC1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m in Sources */,
-				4B5A2C641D2E38EE00F3AE99 /* GCRoutePolyline.m in Sources */,
 				1EEA79511D2791A0002B6291 /* EverywhereMKAnnotation.m in Sources */,
 				1E2847F71D1ADDB900189A83 /* main.m in Sources */,
 				1EB047141D2BFF8100298422 /* TNImageRadioButtonData.m in Sources */,
 				1EB047191D2BFF8100298422 /* TNRectangularRadioButtonData.m in Sources */,
+				4B3AF9CA1D2F3E70009BD545 /* GCPhotoManager.m in Sources */,
 				1EB047151D2BFF8100298422 /* TNRadioButton.m in Sources */,
+				4B3AF9CD1D2F3E70009BD545 /* GCRoutePolylineManager.m in Sources */,
 				4B001CDE1D2125FC00DF7287 /* CLPlacemark+Assistant.m in Sources */,
 				1E65218D1D28BFB500F41860 /* UIFont+Assistant.m in Sources */,
 			);
