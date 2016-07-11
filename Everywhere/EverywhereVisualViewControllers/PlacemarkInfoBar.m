@@ -8,6 +8,8 @@
 
 #import "PlacemarkInfoBar.h"
 
+//#define superViewWidth self.superview.bounds.size.width
+
 #pragma mark - CellView
 
 @interface CellView : UIView
@@ -120,7 +122,7 @@
     CellView *subLocalityCell;
     CellView *thoroughfareCell;
     //CellView *subThoroughfareCell;
-    CellView *totalDistanceCell;
+    CellView *totalCell;
 }
 
 /*
@@ -137,41 +139,39 @@
     if (self) {
         // 村镇街道
         thoroughfareCell = [CellView newAutoLayoutView];
-        thoroughfareCell.cellTitle = NSLocalizedString(@"街道", @"");
+        thoroughfareCell.cellTitle = NSLocalizedString(@"St.", @"");
         [self addSubview:thoroughfareCell];
         
         // 县区
         subLocalityCell = [CellView newAutoLayoutView];
-        subLocalityCell.cellTitle = NSLocalizedString(@"县区", @"");
+        subLocalityCell.cellTitle = NSLocalizedString(@"Dist.", @"");
         [self addSubview:subLocalityCell];
         
         // 市
         localityCell = [CellView newAutoLayoutView];
-        localityCell.cellTitle = NSLocalizedString(@"市", @"");
+        localityCell.cellTitle = NSLocalizedString(@"City", @"");
         [self addSubview:localityCell];
 
         // 省、直瞎市
         administrativeAreaCell = [CellView newAutoLayoutView];
-        administrativeAreaCell.cellTitle = NSLocalizedString(@"省", @"");
+        administrativeAreaCell.cellTitle = NSLocalizedString(@"Prov.", @"");
         [self addSubview:administrativeAreaCell];
         
         // 国家
         countryCell = [CellView newAutoLayoutView];
-        countryCell.cellTitle = NSLocalizedString(@"国家", @"");
+        countryCell.cellTitle = NSLocalizedString(@"State", @"");
         [self addSubview:countryCell];
         
-        // 里程
-        totalDistanceCell = [CellView newAutoLayoutView];
-        totalDistanceCell.cellInfoLabel.numberOfLines = 0;
-        totalDistanceCell.cellTitle = NSLocalizedString(@"里程", @"");
-        [self addSubview:totalDistanceCell];
+        // 里程/面积
+        totalCell = [CellView newAutoLayoutView];
+        totalCell.cellInfoLabel.numberOfLines = 0;
+        [self addSubview:totalCell];
 
     }
     return self;
 }
 
 #define blankToSuper 5.0
-#define blankBetweenCellView 5.0
 #define cellWidthRate 0.14
 
 - (void)layoutSubviews{
@@ -185,6 +185,8 @@
     [self.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [obj removeConstraints:obj.constraints];
     }];
+    
+    float blankBetweenCellView = (self.bounds.size.width * (1 - cellWidthRate*5 - 0.22) - blankToSuper * 2) / 5.0;
     
     [thoroughfareCell autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:blankToSuper];
     [thoroughfareCell autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:blankToSuper];
@@ -211,10 +213,10 @@
     [countryCell autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:administrativeAreaCell withOffset:blankBetweenCellView];
     [countryCell autoSetDimension:ALDimensionWidth toSize:self.bounds.size.width * cellWidthRate];
     
-    [totalDistanceCell autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:blankToSuper];
-    [totalDistanceCell autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:blankToSuper];
-    [totalDistanceCell autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:countryCell withOffset:blankBetweenCellView];
-    [totalDistanceCell autoSetDimension:ALDimensionWidth toSize:self.bounds.size.width * 0.22];
+    [totalCell autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:blankToSuper];
+    [totalCell autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:blankToSuper];
+    [totalCell autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:countryCell withOffset:blankBetweenCellView];
+    [totalCell autoSetDimension:ALDimensionWidth toSize:self.bounds.size.width * 0.22];
 
 }
 
@@ -243,6 +245,11 @@
     countryCell.cellInfo = [NSString stringWithFormat:@"%ld",(unsigned long)countryCount];
 }
 
+- (void)setTotalTitle:(NSString *)totalTitle{
+    _totalTitle = totalTitle;
+    totalCell.cellTitle = totalTitle;
+}
+
 - (void)setTotalDistance:(double)totalDistance{
     _totalDistance = totalDistance;
     NSString *totalString;
@@ -251,6 +258,18 @@
     }else{
         totalString = [NSString stringWithFormat:@"%.0f m",totalDistance];
     }
-    totalDistanceCell.cellInfo = totalString;
+    totalCell.cellInfo = totalString;
 }
+
+- (void)setTotalArea:(double)totalArea{
+    _totalArea = totalArea;
+    NSString *totalString;
+    if (totalArea >=1000*1000) {
+        totalString = [NSString stringWithFormat:@"%.2f k㎡",totalArea/(1000.0*1000.0)];
+    }else{
+        totalString = [NSString stringWithFormat:@"%.0f ",totalArea];
+    }
+    totalCell.cellInfo = totalString;
+}
+
 @end

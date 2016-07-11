@@ -27,10 +27,11 @@
 #import "LocationInfoBar.h"
 #import "PlacemarkInfoBar.h"
 #import "CLPlacemark+Assistant.h"
-#import "CalendarVC.h"
+#import "DatePickerVC.h"
 #import "AssetDetailVC.h"
 #import "UIButton+Bootstrap.h"
-
+#import "MapShowModeBar.h"
+#import "LocationPickerVC.h"
 
 #import "EverywhereCoreDataManager.h"
 #import "PHAssetInfo.h"
@@ -54,6 +55,8 @@
     
     MKMapView *myMapView;
     NSArray <EverywhereMKAnnotation *> *addedAnnotationsWithIndex;
+    
+    MapShowModeBar *mapShowModeBar;
     
     LocationInfoBar *locationInfoBar;
     float locationInfoBarHeight;
@@ -83,6 +86,7 @@
     
     __block CLLocationDistance maxDistance;
     __block CLLocationDistance totalDistance;
+    __block CLLocationDistance totalArea;
 }
 
 #pragma mark - Getter & Setter
@@ -90,6 +94,16 @@
 - (void)setAssetInfoArray:(NSArray<PHAssetInfo *> *)assetInfoArray{
     _assetInfoArray = assetInfoArray;
     
+    switch (settingManager.mapShowMode) {
+        case MapShowModeMoment:
+            mapShowModeBar.info = [[startDate stringWithFormat:@"yyyy-MM-dd ~ "] stringByAppendingString:[endDate stringWithFormat:@"yyyy-MM-dd"]];
+            break;
+        case MapShowModeLocation:
+            mapShowModeBar.info = @"中国";
+            break;
+        default:
+            break;
+    }
     // 只有当存在照片数据的时候，才更新视图
     if (assetInfoArray.count > 0) {
         NSMutableArray *assetIDArry = [NSMutableArray new];
@@ -101,6 +115,8 @@
         options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
         PHFetchResult <PHAsset *> *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:assetIDArry options:options];
         self.assetArray = (NSArray <PHAsset *> *)fetchResult;
+        
+        [self updatePlacemarkInfoBar];
     }
 }
 
@@ -135,7 +151,7 @@
     }
     
     // 如果地图已经初始化，才进行更新
-    if (myMapView) [self moveMapView];
+    if (myMapView) [self updateVisualViewAfterAddAnnotationsAndOverlays];
     
 }
 
@@ -148,19 +164,22 @@
     cdManager = [EverywhereCoreDataManager defaultManager];
     settingManager = [EverywhereSettingManager defaultManager];
     
-    [self initPopupController];
-    
     [self initMapView];
+    
+    [self initData];
+    
+    [self initMapShowModeBar];
     
     [self initNaviBar];
     
     [self initLocationInfoBar];
     
+    // PlacemarkInfoBar 位于 MapShowModeBar 下方10
     [self initPlacemarkInfoBar];
-
-    [self initMenu];
     
-    [self initData];
+    [self initVerticalAccessories];
+
+    [self initPopupController];
     
 }
 
@@ -181,68 +200,9 @@
 }
 */
 
-#pragma mark - Init
+#pragma mark - Init Interface
 
-- (void)initData{
-    NSDate *now = [NSDate date];
-    
-    switch (settingManager.dateMode) {
-        case DateModeDay:{
-            startDate = [now dateAtStartOfToday];
-            endDate = [now dateAtEndOfToday];
-        }
-            break;
-        case DateModeWeek:{
-            startDate = [now dateAtStartOfThisWeek];
-            endDate = [now dateAtEndOfThisWeek];
-        }
-            break;
-        case DateModeMonth:{
-            startDate = [now dateAtStartOfThisMonth];
-            endDate = [now dateAtEndOfThisMonth];
-        }
-            break;
-        case DateModeYear:{
-            startDate = [now dateAtStartOfThisYear];
-            endDate = [now dateAtEndOfThisYear];
-        }
-            break;
-        case DateModeAll:{
-            startDate = nil;
-            endDate = nil;
-        }
-            break;
-        default:{
-            startDate = [now dateAtStartOfThisMonth];
-            endDate = [now dateAtEndOfThisMonth];
-        }
-            break;
-    }
-    
-    startDate = [now dateAtStartOfThisYear];
-    endDate = [now dateAtEndOfThisYear];
-    switch (settingManager.mapShowMode) {
-        case MapShowModeMoment:
-            self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:startDate toEndDate:endDate inManagedObjectContext:cdManager.appMOC];
-            break;
-        case MapShowModeLocation:
-            self.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:settingManager.defaultPlacemark inManagedObjectContext:cdManager.appMOC];
-            break;
-        default:
-            break;
-    }
-    
-}
-
-- (void)initPopupController{
-    [STPopupNavigationBar appearance].barTintColor = [UIColor colorWithRed:0.20 green:0.60 blue:0.86 alpha:1.0];
-    [STPopupNavigationBar appearance].tintColor = [UIColor whiteColor];
-    [STPopupNavigationBar appearance].barStyle = UIBarStyleDefault;
-    [STPopupNavigationBar appearance].titleTextAttributes = @{ NSFontAttributeName: [UIFont fontWithName:@"Cochin" size:18],
-                                                               NSForegroundColorAttributeName: [UIColor whiteColor] };
-    
-    [[UIBarButtonItem appearanceWhenContainedIn:[STPopupNavigationBar class], nil] setTitleTextAttributes:@{ NSFontAttributeName:[UIFont fontWithName:@"Cochin" size:17] } forState:UIControlStateNormal];
-}
+#pragma mark MapView
 
 - (void)initMapView{
     myMapView = [MKMapView newAutoLayoutView];
@@ -266,226 +226,73 @@
     //naviBar.hidden = ! naviBar.hidden;
 }
 
-#pragma mark - UIGestureRecognizerDelegate
+//UIGestureRecognizerDelegate
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
     return NO;
 }
 
-#pragma mark - addAnnotationsAndOverlays
+#pragma mark ModeBar
 
-- (void)addAnnotations{
-    // 清理数组
-    addedAnnotationsWithIndex = nil;
-    NSMutableArray <EverywhereMKAnnotation *> *annotationsToAdd = [NSMutableArray new];
+- (void)initMapShowModeBar{
+    mapShowModeBar = [MapShowModeBar newAutoLayoutView];
+    [self.view addSubview:mapShowModeBar];
+    [mapShowModeBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 5, 0, 5) excludingEdge:ALEdgeBottom];
+    [mapShowModeBar autoSetDimension:ALDimensionHeight toSize:60];
+    mapShowModeBar.mapShowMode = settingManager.mapShowMode;
+    mapShowModeBar.info = [[startDate stringWithFormat:@"yyyy-MM-dd ~ "] stringByAppendingString:[endDate stringWithFormat:@"yyyy-MM-dd"]];
     
-    // 添加 MKAnnotations
-    [myMapView removeAnnotations:myMapView.annotations];
+    __weak AssetsMapProVC *weakSelf = self;
+    mapShowModeBar.mapShowModeChangedHandler = ^(UISegmentedControl *sender){
+        [EverywhereSettingManager defaultManager].mapShowMode = sender.selectedSegmentIndex;
+    };
     
-    [self.assetsArray enumerateObjectsUsingBlock:^(NSArray<PHAsset *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        PHAsset *asset = obj.firstObject;
-        NSMutableArray *ids = [NSMutableArray new];
-        [obj enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [ids addObject:obj.localIdentifier];
-        }];
-        EverywhereMKAnnotation *anno = [EverywhereMKAnnotation new];
-        anno.location = asset.location;
-        anno.annotationTitle = [asset.creationDate stringWithDefaultFormat];
-        anno.assetLocalIdentifiers = ids;
-        [annotationsToAdd addObject:anno];
-        [myMapView addAnnotation:anno];
-    }];
+    mapShowModeBar.datePickerTouchDownHandler = ^(UIButton *sender) {
+        [weakSelf showDatePicker];
+    };
     
-    if (!annotationsToAdd || !annotationsToAdd.count) return;
-    //[myMapView addAnnotations:annotationsToAdd];
-    addedAnnotationsWithIndex = annotationsToAdd;
+    mapShowModeBar.locaitonPickerTouchDownHandler = ^(UIButton *sender){
+        [weakSelf showLocationPicker];
+    };
 }
 
-- (void)addLineOverlays{
-    [myMapView removeOverlays:myMapView.overlays];
-    maxDistance = 500;
-    if (addedAnnotationsWithIndex.count >= 2) {
-        // 记录距离信息
-        NSMutableArray *distanceArray = [NSMutableArray new];
-        totalDistance = 0;
-        
-        // 添加 MKOverlays
-        
-        NSMutableArray <MKPolyline *> *polylinesToAdd = [NSMutableArray new];
-        NSMutableArray <MKPolygon *> *polygonsToAdd = [NSMutableArray new];
-        __block CLLocationCoordinate2D lastCoordinate;
-        [addedAnnotationsWithIndex enumerateObjectsUsingBlock:^(EverywhereMKAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if (idx >= 1) {
-                CLLocationCoordinate2D points[2];
-                points[0] = lastCoordinate;
-                points[1] = obj.coordinate;
-                MKPolyline *polyline = [MKPolyline polylineWithCoordinates:points count:2];
-                polyline.title = [NSString stringWithFormat:@"MKPolyline : %lu",(unsigned long)idx];
-                [polylinesToAdd addObject:polyline];
-                
-                CLLocationDistance subDistance = MKMetersBetweenMapPoints(MKMapPointForCoordinate(lastCoordinate), MKMapPointForCoordinate(obj.coordinate));
-                if (maxDistance < subDistance) maxDistance = subDistance;
-                totalDistance += subDistance;
-                [distanceArray addObject:[NSNumber numberWithDouble:subDistance]];
-                
-                MKMapPoint start_MP = MKMapPointForCoordinate(lastCoordinate);
-                MKMapPoint end_MP = MKMapPointForCoordinate(obj.coordinate);
-                
-                MKMapPoint x_MP,y_MP,z_MP;
-                CLLocationDistance arrowLength = subDistance;
-                
-                double z_radian = atan2(end_MP.x - start_MP.x, end_MP.y - start_MP.y);
-                z_MP.x = end_MP.x - arrowLength * 0.75 * sin(z_radian);
-                z_MP.y = end_MP.y - arrowLength * 0.75 * cos(z_radian);
-                
-                double arrowRadian = 90.0 / 360.0 * M_2_PI;
-                x_MP.x = end_MP.x - arrowLength * sin(z_radian - arrowRadian);
-                x_MP.y = end_MP.y - arrowLength * cos(z_radian - arrowRadian);
-                y_MP.x = end_MP.x - arrowLength * sin(z_radian + arrowRadian);
-                y_MP.y = end_MP.y - arrowLength * cos(z_radian + arrowRadian);
-                
-                MKMapPoint mapPoint[4] = {z_MP,x_MP,end_MP,y_MP};
-                MKPolygon *polygon = [MKPolygon polygonWithPoints:mapPoint count:4];
-                [polygonsToAdd addObject:polygon];
-                
-                
-                lastCoordinate = obj.coordinate;
-            }else{
-                lastCoordinate = obj.coordinate;
-            }
-        }];
-        
-        //NSLog(@"%@",overlaysToAdd);
-        [myMapView addOverlays:polylinesToAdd];
-        [myMapView addOverlays:polygonsToAdd];
-        }
+- (void)showDatePicker{
+    DatePickerVC *datePickerVC = [DatePickerVC new];
+    datePickerVC.contentSizeInPopup = CGSizeMake(300, 400);
+    datePickerVC.landscapeContentSizeInPopup = CGSizeMake(400, 200);
+    
+    datePickerVC.dateModeChangedHandler = ^(DateMode choosedDateMode){
+        [EverywhereSettingManager defaultManager].dateMode = choosedDateMode;
+    };
+    
+    datePickerVC.dateRangeChangedHandler = ^(NSDate *choosedStartDate,NSDate *choosedEndDate){
+        //settingManager.mapShowMode = MapShowModeMoment;
+        startDate = choosedStartDate;
+        endDate = choosedEndDate;
+        self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:startDate toEndDate:endDate inManagedObjectContext:cdManager.appMOC];
+    };
+    
+    popupController = [[STPopupController alloc] initWithRootViewController:datePickerVC];
+    popupController.containerView.layer.cornerRadius = 4;
+    [popupController presentInViewController:self];
 }
 
-- (void)addCircleOverlays{
-    [myMapView removeOverlays:myMapView.overlays];
-    maxDistance = 500;
-    if (addedAnnotationsWithIndex.count >= 2) {
-        // 记录距离信息
-        //NSMutableArray *distanceArray = [NSMutableArray new];
-        //totalDistance = 0;
-        
-        // 添加 MKOverlays
-        
-        NSMutableArray <MKCircle *> *circlesToAdd = [NSMutableArray new];
-        //__block CLLocationCoordinate2D lastCoordinate;
-        [addedAnnotationsWithIndex enumerateObjectsUsingBlock:^(EverywhereMKAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            MKCircle *circle = [MKCircle circleWithCenterCoordinate:obj.coordinate radius:settingManager.nearestDistanceForLocation / 2.0];
-            if (circle) [circlesToAdd addObject:circle];
-        }];
-        
-        [myMapView addOverlays:circlesToAdd];
-    }
+- (void)showLocationPicker{
+    LocationPickerVC *locationPickerVC = [LocationPickerVC new];
+    NSArray <PHAssetInfo *> *allAssetInfoArray = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:cdManager.appMOC];
+    locationPickerVC.placemarkInfoDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:allAssetInfoArray];
+    locationPickerVC.contentSizeInPopup = CGSizeMake(300, 400);
+    locationPickerVC.landscapeContentSizeInPopup = CGSizeMake(400, 200);
+    
+    locationPickerVC.locationDidChangeHandler = ^(NSString *choosedLocation){
+        self.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:choosedLocation inManagedObjectContext:cdManager.appMOC];
+    };
+    
+    popupController = [[STPopupController alloc] initWithRootViewController:locationPickerVC];
+    popupController.containerView.layer.cornerRadius = 4;
+    [popupController presentInViewController:self];
 }
 
-- (void)asyncAddRouteOverlays{
-    [myMapView removeOverlays:myMapView.overlays];
-    maxDistance = 500;
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        if (addedAnnotationsWithIndex.count >= 2) {
-            // 记录距离信息
-            NSMutableArray *distanceArray = [NSMutableArray new];
-            totalDistance = 0;
-            __block CLLocationCoordinate2D lastCoordinate;
-            // 添加 MKOverlays
-            
-            //NSMutableArray <MKPolyline *> *polylinesToAdd = [NSMutableArray new];
-            GCRoutePolylineManager *rpManager = [GCRoutePolylineManager defaultManager];
-            
-            [addedAnnotationsWithIndex enumerateObjectsUsingBlock:^(EverywhereMKAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                if (idx > 0){
-                    GCRoutePolyline *foundedRP = [rpManager fetchRoutePolylineWithSource:lastCoordinate destination:obj.coordinate];
-                    __block CLLocationDistance subDistance;
-                    if (foundedRP) {
-                        NSLog(@"foundedRP : %@",foundedRP);
-                        //subDistance = foundedRP.routeDistance;
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [myMapView addOverlay:foundedRP.polyline];
-                        });
-                        
-                    }else{
-                        MKMapItem *lastMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:lastCoordinate addressDictionary:nil]];
-                        MKMapItem *currentMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:obj.coordinate addressDictionary:nil]];
-                        
-                        MKDirectionsRequest *directionsRequest = [MKDirectionsRequest new];
-                        [directionsRequest setSource:lastMapItem];
-                        [directionsRequest setDestination:currentMapItem];
-                        
-                        MKDirections *directions = [[MKDirections alloc] initWithRequest:directionsRequest];
-                        [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse * _Nullable response, NSError * _Nullable error) {
-                            MKRoute *route = response.routes.firstObject;
-                            
-                            subDistance = route.distance;
-                            
-                            
-                            MKPolyline *routePolyline = route.polyline;
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                if(routePolyline) [myMapView addOverlay:routePolyline];
-                            });
-                            
-                            if (routePolyline){
-                                GCRoutePolyline *newRP = [GCRoutePolyline newRoutePolyline:routePolyline source:lastCoordinate destination:obj.coordinate];
-                                newRP.routeDistance = subDistance;
-                                NSLog(@"newRP : %@",newRP);
-                                [rpManager addRoutePolyline:newRP];
-                            }
-                            
-                            [NSThread sleepForTimeInterval:0.5];
-                        }];
-
-                    }
-                    
-                    if (maxDistance < subDistance) maxDistance = subDistance;
-                    totalDistance += subDistance;
-                    [distanceArray addObject:[NSNumber numberWithDouble:subDistance]];
-                    
-                    
-                }else{
-                    lastCoordinate = obj.coordinate;
-                }
-                
-            }];// 结束循环
-            
-            NSString *total;
-            NSString *totalString = NSLocalizedString(@"Total:", @"总行程:");
-            if (totalDistance >=1000) {
-                total = [NSString stringWithFormat:@"%@ %.2f km",totalString,totalDistance/1000];
-            }else{
-                total = [NSString stringWithFormat:@"%@ %.0f m",totalString,totalDistance];
-            }
-            NSLog(@"%@",total);
-            
-        }
-
-    });
-    
-}
-
-- (void)moveMapView{
-    /*
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self asyncAddRouteOverlays];
-    });
-    */
-    
-    if (settingManager.mapShowMode == MapShowModeLocation){
-        maxDistance = settingManager.nearestDistanceForLocation * 4.0;
-    }
-    
-    // 移动地图到第一个点
-    if (addedAnnotationsWithIndex.count > 0) {
-        EverywhereMKAnnotation *firstAnnotation = addedAnnotationsWithIndex.firstObject;
-        MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(firstAnnotation.coordinate, maxDistance, maxDistance);
-        [myMapView setRegion:showRegion animated:YES];
-        [myMapView selectAnnotation:firstAnnotation animated:YES];
-    }
-}
-
-#pragma mark - Navigation Bar
+#pragma mark Navigation Bar
 
 - (void)initNaviBar{
     
@@ -621,7 +428,7 @@
     return resultLocation;
 }
 
-#pragma mark - Location Info Bar
+#pragma mark Location Info Bar
 
 - (void)initLocationInfoBar{
     locationInfoBarHeight = 150;
@@ -636,10 +443,10 @@
 }
 
 - (void)swipeUp:(UISwipeGestureRecognizer *)sender{
-    [self hideInfoBar];
+    [self hideLocationInfoBar];
 }
 
-- (void)showInfoBar{
+- (void)showLocationInfoBar{
     placemarkInfoBar.hidden = YES;
     [UIView animateKeyframesWithDuration:1
                                    delay:0
@@ -659,7 +466,7 @@
 
 }
 
-- (void)hideInfoBar{
+- (void)hideLocationInfoBar{
     [UIView animateKeyframesWithDuration:1
                                    delay:0
                                  options:UIViewKeyframeAnimationOptionBeginFromCurrentState
@@ -678,32 +485,63 @@
 
 }
 
-#pragma mark - Placemark Info Bar
+#pragma mark Placemark Info Bar
 
 - (void)initPlacemarkInfoBar{
     placemarkInfoBarHeight = 80;
     placemarkInfoBar = [PlacemarkInfoBar newAutoLayoutView];
     [self.view addSubview:placemarkInfoBar];
-    [placemarkInfoBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 5, 5, 5) excludingEdge:ALEdgeBottom];
+    [placemarkInfoBar autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:mapShowModeBar withOffset:10];
+    [placemarkInfoBar autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+    [placemarkInfoBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
     [placemarkInfoBar autoSetDimension:ALDimensionHeight toSize:placemarkInfoBarHeight];
     [placemarkInfoBar setBackgroundColor:[[UIColor grayColor] colorWithAlphaComponent:0.6]];
     placemarkInfoBar.hidden = YES;
+    
+    [self updatePlacemarkInfoBar];
 }
 
-#pragma mark - Menu
+- (void)updatePlacemarkInfoBar{
+    // 更新统计信息
+    NSDictionary <NSString *,NSArray<NSString *> *> *placemarkDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:self.assetInfoArray];
+    placemarkInfoBar.countryCount = placemarkDictionary[kCountryArray].count;
+    placemarkInfoBar.administrativeAreaCount = placemarkDictionary[kAdministrativeAreaArray].count;
+    placemarkInfoBar.localityCount = placemarkDictionary[kLocalityArray].count;
+    placemarkInfoBar.subLocalityCount = placemarkDictionary[kSubLocalityArray].count;
+    placemarkInfoBar.thoroughfareCount = placemarkDictionary[kThoroughfareArray].count;
+    
+    switch (settingManager.mapShowMode) {
+        case 0:{
+            placemarkInfoBar.totalTitle = NSLocalizedString(@"Distance", @"");
+            placemarkInfoBar.totalDistance = totalDistance;
+        }
+            break;
+        case 1:{
+            placemarkInfoBar.totalTitle = NSLocalizedString(@"Area", @"");
+            totalArea = addedAnnotationsWithIndex.count * M_PI * sqrt(settingManager.nearestDistanceForLocation);
+            placemarkInfoBar.totalArea = totalArea;
+        }
+            break;
+        default:
+            break;
+    }
 
-- (void)initMenu{
-    UIButton *datePickerBtn = [UIButton newAutoLayoutView];
-    [datePickerBtn primaryStyle];
-    [datePickerBtn setTitle:@"DatePicker" forState:UIControlStateNormal];
-    [datePickerBtn autoSetDimensionsToSize:CGSizeMake(100, 40)];
-    datePickerBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    [datePickerBtn addTarget:self action:@selector(showDatePicker:) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:datePickerBtn];
+}
+
+#pragma mark Vertical Accessories
+
+- (void)initVerticalAccessories{
     
-    [datePickerBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:80];
-    [datePickerBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
+    UIButton *placemarkInfoBarBtn = [UIButton newAutoLayoutView];
+    [placemarkInfoBarBtn setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
+    placemarkInfoBarBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    [placemarkInfoBarBtn addTarget:self action:@selector(showHidePlacemarkInfoBar:) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:placemarkInfoBarBtn];
+    [placemarkInfoBarBtn autoSetDimensionsToSize:CGSizeMake(40, 40)];
+    [placemarkInfoBarBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:80];
+    [placemarkInfoBarBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
     
+    /*
     UIButton *placemarkInfoBtn = [UIButton newAutoLayoutView];
     [placemarkInfoBtn primaryStyle];
     [placemarkInfoBtn setTitle:@"PlaceInfo" forState:UIControlStateNormal];
@@ -714,35 +552,289 @@
     
     [placemarkInfoBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:80];
     [placemarkInfoBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:180];
+     */
 }
 
-- (void)showDatePicker:(id)sender{
-    placemarkInfoBar.hidden = YES;
-    
-    CalendarVC *calendarVC = [CalendarVC new];
-    calendarVC.contentSizeInPopup = CGSizeMake(300, 400);
-    calendarVC.landscapeContentSizeInPopup = CGSizeMake(400, 200);
-    calendarVC.dateRangeDidChangeHandler = ^(NSDate *choosedStartDate,NSDate *choosedEndDate){
-        settingManager.mapShowMode = MapShowModeMoment;
-        startDate = choosedStartDate;
-        endDate = choosedEndDate;
-        self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:startDate toEndDate:endDate inManagedObjectContext:cdManager.appMOC];
-    };
-    popupController = [[STPopupController alloc] initWithRootViewController:calendarVC];
-    popupController.containerView.layer.cornerRadius = 4;
-    [popupController presentInViewController:self];
-}
-
-- (void)showPlacemarkInfoBar:(id)sender{
+- (void)showHidePlacemarkInfoBar:(UIButton *)sender{
     placemarkInfoBar.hidden = !placemarkInfoBar.hidden;
     
-    NSDictionary *placemarkDic = [PHAssetInfo placemarkInfoFromAssetInfos:self.assetInfoArray];
-    placemarkInfoBar.countryCount = [placemarkDic[kCountryCount] integerValue];
-    placemarkInfoBar.administrativeAreaCount = [placemarkDic[kAdministrativeAreaCount] integerValue];
-    placemarkInfoBar.localityCount = [placemarkDic[kLocalityCount] integerValue];
-    placemarkInfoBar.subLocalityCount = [placemarkDic[kSubLocalityCount] integerValue];
-    placemarkInfoBar.thoroughfareCount = [placemarkDic[kThoroughfareCount] integerValue];
-    placemarkInfoBar.totalDistance = totalDistance;
+    
+}
+
+#pragma mark PopupController
+
+- (void)initPopupController{
+    [STPopupNavigationBar appearance].barTintColor = [UIColor colorWithRed:0.20 green:0.60 blue:0.86 alpha:1.0];
+    [STPopupNavigationBar appearance].tintColor = [UIColor whiteColor];
+    [STPopupNavigationBar appearance].barStyle = UIBarStyleDefault;
+    [STPopupNavigationBar appearance].titleTextAttributes = @{ NSFontAttributeName: [UIFont fontWithName:@"Cochin" size:18],
+                                                               NSForegroundColorAttributeName: [UIColor whiteColor] };
+    
+    [[UIBarButtonItem appearanceWhenContainedIn:[STPopupNavigationBar class], nil] setTitleTextAttributes:@{ NSFontAttributeName:[UIFont fontWithName:@"Cochin" size:17] } forState:UIControlStateNormal];
+}
+
+#pragma mark - Init Data
+
+- (void)initData{
+    NSDate *now = [NSDate date];
+    
+    switch (settingManager.dateMode) {
+        case DateModeDay:{
+            startDate = [now dateAtStartOfToday];
+            endDate = [now dateAtEndOfToday];
+        }
+            break;
+        case DateModeWeek:{
+            startDate = [now dateAtStartOfThisWeek];
+            endDate = [now dateAtEndOfThisWeek];
+        }
+            break;
+        case DateModeMonth:{
+            startDate = [now dateAtStartOfThisMonth];
+            endDate = [now dateAtEndOfThisMonth];
+        }
+            break;
+        case DateModeYear:{
+            startDate = [now dateAtStartOfThisYear];
+            endDate = [now dateAtEndOfThisYear];
+        }
+            break;
+        case DateModeAll:{
+            startDate = nil;
+            endDate = nil;
+        }
+            break;
+        default:{
+            startDate = [now dateAtStartOfThisMonth];
+            endDate = [now dateAtEndOfThisMonth];
+        }
+            break;
+    }
+    
+    switch (settingManager.mapShowMode) {
+        case MapShowModeMoment:
+            self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:startDate toEndDate:endDate inManagedObjectContext:cdManager.appMOC];
+            break;
+        case MapShowModeLocation:
+            self.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:settingManager.defaultPlacemark inManagedObjectContext:cdManager.appMOC];
+            break;
+        default:
+            break;
+    }
+    
+}
+
+#pragma mark - Add Annotations And Overlays
+
+- (void)addAnnotations{
+    // 清理数组
+    addedAnnotationsWithIndex = nil;
+    NSMutableArray <EverywhereMKAnnotation *> *annotationsToAdd = [NSMutableArray new];
+    
+    // 添加 MKAnnotations
+    [myMapView removeAnnotations:myMapView.annotations];
+    
+    [self.assetsArray enumerateObjectsUsingBlock:^(NSArray<PHAsset *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        PHAsset *asset = obj.firstObject;
+        NSMutableArray *ids = [NSMutableArray new];
+        [obj enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [ids addObject:obj.localIdentifier];
+        }];
+        EverywhereMKAnnotation *anno = [EverywhereMKAnnotation new];
+        anno.location = asset.location;
+        anno.annotationTitle = [asset.creationDate stringWithDefaultFormat];
+        anno.assetLocalIdentifiers = ids;
+        [annotationsToAdd addObject:anno];
+        [myMapView addAnnotation:anno];
+    }];
+    
+    if (!annotationsToAdd || !annotationsToAdd.count) return;
+    //[myMapView addAnnotations:annotationsToAdd];
+    addedAnnotationsWithIndex = annotationsToAdd;
+}
+
+- (void)addLineOverlays{
+    [myMapView removeOverlays:myMapView.overlays];
+    maxDistance = 500;
+    if (addedAnnotationsWithIndex.count >= 2) {
+        // 记录距离信息
+        NSMutableArray *distanceArray = [NSMutableArray new];
+        totalDistance = 0;
+        
+        // 添加 MKOverlays
+        
+        NSMutableArray <MKPolyline *> *polylinesToAdd = [NSMutableArray new];
+        NSMutableArray <MKPolygon *> *polygonsToAdd = [NSMutableArray new];
+        __block CLLocationCoordinate2D lastCoordinate;
+        [addedAnnotationsWithIndex enumerateObjectsUsingBlock:^(EverywhereMKAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (idx >= 1) {
+                CLLocationCoordinate2D points[2];
+                points[0] = lastCoordinate;
+                points[1] = obj.coordinate;
+                MKPolyline *polyline = [MKPolyline polylineWithCoordinates:points count:2];
+                polyline.title = [NSString stringWithFormat:@"MKPolyline : %lu",(unsigned long)idx];
+                [polylinesToAdd addObject:polyline];
+                
+                CLLocationDistance subDistance = MKMetersBetweenMapPoints(MKMapPointForCoordinate(lastCoordinate), MKMapPointForCoordinate(obj.coordinate));
+                if (maxDistance < subDistance) maxDistance = subDistance;
+                totalDistance += subDistance;
+                [distanceArray addObject:[NSNumber numberWithDouble:subDistance]];
+                
+                MKMapPoint start_MP = MKMapPointForCoordinate(lastCoordinate);
+                MKMapPoint end_MP = MKMapPointForCoordinate(obj.coordinate);
+                
+                MKMapPoint x_MP,y_MP,z_MP;
+                CLLocationDistance arrowLength = subDistance;
+                
+                double z_radian = atan2(end_MP.x - start_MP.x, end_MP.y - start_MP.y);
+                z_MP.x = end_MP.x - arrowLength * 0.75 * sin(z_radian);
+                z_MP.y = end_MP.y - arrowLength * 0.75 * cos(z_radian);
+                
+                double arrowRadian = 90.0 / 360.0 * M_2_PI;
+                x_MP.x = end_MP.x - arrowLength * sin(z_radian - arrowRadian);
+                x_MP.y = end_MP.y - arrowLength * cos(z_radian - arrowRadian);
+                y_MP.x = end_MP.x - arrowLength * sin(z_radian + arrowRadian);
+                y_MP.y = end_MP.y - arrowLength * cos(z_radian + arrowRadian);
+                
+                MKMapPoint mapPoint[4] = {z_MP,x_MP,end_MP,y_MP};
+                MKPolygon *polygon = [MKPolygon polygonWithPoints:mapPoint count:4];
+                [polygonsToAdd addObject:polygon];
+                
+                
+                lastCoordinate = obj.coordinate;
+            }else{
+                lastCoordinate = obj.coordinate;
+            }
+        }];
+        
+        //NSLog(@"%@",overlaysToAdd);
+        [myMapView addOverlays:polylinesToAdd];
+        [myMapView addOverlays:polygonsToAdd];
+    }
+}
+
+- (void)addCircleOverlays{
+    [myMapView removeOverlays:myMapView.overlays];
+    
+    if (addedAnnotationsWithIndex.count >= 1) {
+        
+        // 添加 MKOverlays
+        
+        NSMutableArray <MKCircle *> *circlesToAdd = [NSMutableArray new];
+        
+        [addedAnnotationsWithIndex enumerateObjectsUsingBlock:^(EverywhereMKAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            MKCircle *circle = [MKCircle circleWithCenterCoordinate:obj.coordinate radius:settingManager.nearestDistanceForLocation / 2.0];
+            if (circle) [circlesToAdd addObject:circle];
+        }];
+        
+        [myMapView addOverlays:circlesToAdd];
+    }
+}
+
+- (void)asyncAddRouteOverlays{
+    [myMapView removeOverlays:myMapView.overlays];
+    maxDistance = 500;
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        if (addedAnnotationsWithIndex.count >= 2) {
+            // 记录距离信息
+            NSMutableArray *distanceArray = [NSMutableArray new];
+            totalDistance = 0;
+            __block CLLocationCoordinate2D lastCoordinate;
+            // 添加 MKOverlays
+            
+            //NSMutableArray <MKPolyline *> *polylinesToAdd = [NSMutableArray new];
+            GCRoutePolylineManager *rpManager = [GCRoutePolylineManager defaultManager];
+            
+            [addedAnnotationsWithIndex enumerateObjectsUsingBlock:^(EverywhereMKAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                if (idx > 0){
+                    GCRoutePolyline *foundedRP = [rpManager fetchRoutePolylineWithSource:lastCoordinate destination:obj.coordinate];
+                    __block CLLocationDistance subDistance;
+                    if (foundedRP) {
+                        NSLog(@"foundedRP : %@",foundedRP);
+                        //subDistance = foundedRP.routeDistance;
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [myMapView addOverlay:foundedRP.polyline];
+                        });
+                        
+                    }else{
+                        MKMapItem *lastMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:lastCoordinate addressDictionary:nil]];
+                        MKMapItem *currentMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:obj.coordinate addressDictionary:nil]];
+                        
+                        MKDirectionsRequest *directionsRequest = [MKDirectionsRequest new];
+                        [directionsRequest setSource:lastMapItem];
+                        [directionsRequest setDestination:currentMapItem];
+                        
+                        MKDirections *directions = [[MKDirections alloc] initWithRequest:directionsRequest];
+                        [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse * _Nullable response, NSError * _Nullable error) {
+                            MKRoute *route = response.routes.firstObject;
+                            
+                            subDistance = route.distance;
+                            
+                            
+                            MKPolyline *routePolyline = route.polyline;
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                if(routePolyline) [myMapView addOverlay:routePolyline];
+                            });
+                            
+                            if (routePolyline){
+                                GCRoutePolyline *newRP = [GCRoutePolyline newRoutePolyline:routePolyline source:lastCoordinate destination:obj.coordinate];
+                                newRP.routeDistance = subDistance;
+                                NSLog(@"newRP : %@",newRP);
+                                [rpManager addRoutePolyline:newRP];
+                            }
+                            
+                            [NSThread sleepForTimeInterval:0.5];
+                        }];
+                        
+                    }
+                    
+                    if (maxDistance < subDistance) maxDistance = subDistance;
+                    totalDistance += subDistance;
+                    [distanceArray addObject:[NSNumber numberWithDouble:subDistance]];
+                    
+                    
+                }else{
+                    lastCoordinate = obj.coordinate;
+                }
+                
+            }];// 结束循环
+            
+            NSString *total;
+            NSString *totalString = NSLocalizedString(@"Total:", @"总行程:");
+            if (totalDistance >=1000) {
+                total = [NSString stringWithFormat:@"%@ %.2f km",totalString,totalDistance/1000];
+            }else{
+                total = [NSString stringWithFormat:@"%@ %.0f m",totalString,totalDistance];
+            }
+            NSLog(@"%@",total);
+            
+        }
+        
+    });
+    
+}
+
+- (void)updateVisualViewAfterAddAnnotationsAndOverlays{
+    /*
+     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+     [self asyncAddRouteOverlays];
+     });
+     */
+    
+    [self updatePlacemarkInfoBar];
+    
+    if (settingManager.mapShowMode == MapShowModeLocation){
+        maxDistance = settingManager.nearestDistanceForLocation * 4.0;
+    }
+    
+    // 移动地图到第一个点
+    if (addedAnnotationsWithIndex.count > 0) {
+        EverywhereMKAnnotation *firstAnnotation = addedAnnotationsWithIndex.firstObject;
+        MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(firstAnnotation.coordinate, maxDistance, maxDistance);
+        [myMapView setRegion:showRegion animated:YES];
+        [myMapView selectAnnotation:firstAnnotation animated:YES];
+    }
 }
 
 #pragma mark - MKMapViewDelegate
@@ -822,15 +914,15 @@
         
         PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:cdManager.appMOC];
         if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
-        if (locationInfoBarIsHidden) [self showInfoBar];
-        else [self hideInfoBar];
+        if (locationInfoBarIsHidden) [self showLocationInfoBar];
+        else [self hideLocationInfoBar];
         
-        [self updateInfoBarWithAssetInfo:assetInfo];
+        [self updateLocationInfoBarWithAssetInfo:assetInfo];
     }
     
 }
 
-- (void)updateInfoBarWithAssetInfo:(PHAssetInfo *)assetInfo{
+- (void)updateLocationInfoBarWithAssetInfo:(PHAssetInfo *)assetInfo{
     locationInfoBar.latitude = [assetInfo.latitude_Coordinate_Location doubleValue];
     locationInfoBar.longitude = [assetInfo.longitude_Coordinate_Location doubleValue];
     locationInfoBar.horizontalAccuracy = [assetInfo.horizontalAccuracy_Location doubleValue];
@@ -876,7 +968,7 @@
     EverywhereMKAnnotation *anno = (EverywhereMKAnnotation *)view.annotation;
     PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:cdManager.appMOC];
     if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
-    [self updateInfoBarWithAssetInfo:assetInfo];
+    [self updateLocationInfoBarWithAssetInfo:assetInfo];
 }
 
 - (void)setCurrentAnnotationIndex:(NSInteger)currentAnnotationIndex{

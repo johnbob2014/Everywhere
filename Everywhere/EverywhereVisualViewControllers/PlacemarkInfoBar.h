@@ -17,5 +17,8 @@
 @property (assign,nonatomic) NSUInteger subLocalityCount;
 @property (assign,nonatomic) NSUInteger thoroughfareCount;
 @property (assign,nonatomic) NSUInteger subThoroughfareCount;
+
+@property (strong,nonatomic) NSString *totalTitle;
 @property (assign,nonatomic) double totalDistance;
+@property (assign,nonatomic) double totalArea;
 @end

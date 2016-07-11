@@ -9,16 +9,6 @@
 #import "PHAssetInfo.h"
 @import Photos;
 
-#pragma mark - Placemark键
-
-#define kCountryCount @"kCountryCount"
-#define kAdministrativeAreaCount @"kAdministrativeAreaCount"
-#define kSubAdministrativeAreaCount @"kSubAdministrativeAreaCount"
-#define kLocalityCount @"kLocalityCount"
-#define kSubLocalityCount @"kSubLocalityCount"
-#define kThoroughfareCount @"kThoroughfareCount"
-#define kSubThoroughfareCount @"kSubThoroughfareCount"
-
 #pragma mark - PHAssetInfo+Assistant
 #define EntityName_PHAssetInfo @"PHAssetInfo"
 @interface PHAssetInfo (Assistant)
@@ -76,6 +66,6 @@
 /**
  统计 指定实例集合的 Placemark信息 - PHAssetInfo+Assistant
  */
-+ (NSDictionary <NSString *,NSNumber *> *)placemarkInfoFromAssetInfos:(NSArray <PHAssetInfo *> *)assetInfoArray;
++ (NSDictionary <NSString *,NSArray <NSString *> *> *)placemarkInfoFromAssetInfos:(NSArray <PHAssetInfo *> *)assetInfoArray;
 
 @end

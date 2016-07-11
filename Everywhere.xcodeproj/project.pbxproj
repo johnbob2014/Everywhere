@@ -58,6 +58,9 @@
 		4BD51FCC1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FCB1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m */; };
 		4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */; };
 		4BE88A9F1D332B38009501CE /* EverywhereSettingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE88A9E1D332B38009501CE /* EverywhereSettingManager.m */; };
+		4BE88AA21D333A46009501CE /* MapShowModeBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE88AA11D333A46009501CE /* MapShowModeBar.m */; };
+		4BFA4EB31D33791A007DDA87 /* LocationPickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */; };
+		4BFA4EB61D33982A007DDA87 /* DatePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA4EB51D33982A007DDA87 /* DatePickerVC.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -159,6 +162,12 @@
 		4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereCoreDataManager.m; path = EverywhereCoreData/EverywhereCoreDataManager.m; sourceTree = "<group>"; };
 		4BE88A9D1D332B38009501CE /* EverywhereSettingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereSettingManager.h; path = EverywhereModels/EverywhereSettingManager.h; sourceTree = "<group>"; };
 		4BE88A9E1D332B38009501CE /* EverywhereSettingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereSettingManager.m; path = EverywhereModels/EverywhereSettingManager.m; sourceTree = "<group>"; };
+		4BE88AA01D333A46009501CE /* MapShowModeBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapShowModeBar.h; path = EverywhereVisualViewControllers/MapShowModeBar.h; sourceTree = "<group>"; };
+		4BE88AA11D333A46009501CE /* MapShowModeBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapShowModeBar.m; path = EverywhereVisualViewControllers/MapShowModeBar.m; sourceTree = "<group>"; };
+		4BFA4EB11D33791A007DDA87 /* LocationPickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationPickerVC.h; path = EverywhereVisualViewControllers/LocationPickerVC.h; sourceTree = "<group>"; };
+		4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationPickerVC.m; path = EverywhereVisualViewControllers/LocationPickerVC.m; sourceTree = "<group>"; };
+		4BFA4EB41D33982A007DDA87 /* DatePickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DatePickerVC.h; path = EverywhereVisualViewControllers/DatePickerVC.h; sourceTree = "<group>"; };
+		4BFA4EB51D33982A007DDA87 /* DatePickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatePickerVC.m; path = EverywhereVisualViewControllers/DatePickerVC.m; sourceTree = "<group>"; };
 		6C5CC4DC43B9922DBD449DFF /* Pods-Everywhere.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Everywhere.release.xcconfig"; path = "Pods/Target Support Files/Pods-Everywhere/Pods-Everywhere.release.xcconfig"; sourceTree = "<group>"; };
 		8CB0F045B4429E7E7F66F602 /* Pods-Everywhere.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Everywhere.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Everywhere/Pods-Everywhere.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -290,6 +299,10 @@
 			children = (
 				1EC3138D1D27FC4800A2C301 /* CalendarVC.h */,
 				1EC3138E1D27FC4800A2C301 /* CalendarVC.m */,
+				4BFA4EB41D33982A007DDA87 /* DatePickerVC.h */,
+				4BFA4EB51D33982A007DDA87 /* DatePickerVC.m */,
+				4BFA4EB11D33791A007DDA87 /* LocationPickerVC.h */,
+				4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */,
 				1E5A54161D28FE0F0056CF46 /* AssetsMapProVC.h */,
 				1E5A54171D28FE0F0056CF46 /* AssetsMapProVC.m */,
 				4B27FDC61D2CAB5500067683 /* AssetDetailVC.h */,
@@ -298,6 +311,8 @@
 				1E41FD201D2AB66100E1A5B9 /* LocationInfoBar.m */,
 				1E63B77A1D2E9D90003E355B /* PlacemarkInfoBar.h */,
 				1E63B77B1D2E9D90003E355B /* PlacemarkInfoBar.m */,
+				4BE88AA01D333A46009501CE /* MapShowModeBar.h */,
+				4BE88AA11D333A46009501CE /* MapShowModeBar.m */,
 			);
 			name = EverywhereVisualViewControllers;
 			sourceTree = "<group>";
@@ -611,9 +626,12 @@
 				1EB047181D2BFF8100298422 /* TNRectangularRadioButton.m in Sources */,
 				1E41FD211D2AB66100E1A5B9 /* LocationInfoBar.m in Sources */,
 				4B001CD41D21002700DF7287 /* CTPImageBrowserVC.m in Sources */,
+				4BFA4EB31D33791A007DDA87 /* LocationPickerVC.m in Sources */,
 				4BD51FC91D2B47B900F18244 /* PHAssetInfo.m in Sources */,
+				4BE88AA21D333A46009501CE /* MapShowModeBar.m in Sources */,
 				4B27FDC81D2CAB5500067683 /* AssetDetailVC.m in Sources */,
 				4B3AF9CB1D2F3E70009BD545 /* GCPolyline.m in Sources */,
+				4BFA4EB61D33982A007DDA87 /* DatePickerVC.m in Sources */,
 				1E2848031D1ADDB900189A83 /* Everywhere.xcdatamodeld in Sources */,
 				1EB047161D2BFF8100298422 /* TNRadioButtonData.m in Sources */,
 				4B3AF9CC1D2F3E70009BD545 /* GCRoutePolyline.m in Sources */,

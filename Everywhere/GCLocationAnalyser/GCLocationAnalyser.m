@@ -126,7 +126,7 @@
     
     NSArray <NSArray *> *next = [GCLocationAnalyser divideLocationsOutOfOrderToArray:idArrayRest nearestDistance:nearestDistance];
     if (next.count > 0) [returnMD addObjectsFromArray:next];
-    NSLog(@"%3ld,%@",(long)next.count,NSStringFromSelector(_cmd));
+    //NSLog(@"%3ld,%@",(long)next.count,NSStringFromSelector(_cmd));
     return returnMD;
 }
 

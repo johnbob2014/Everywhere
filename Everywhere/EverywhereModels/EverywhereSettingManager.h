@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "AssetsMapProVC.h"
 
 @interface EverywhereSettingManager : NSObject
 

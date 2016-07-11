@@ -21,12 +21,12 @@
 
 - (MapShowMode)mapShowMode{
     MapShowMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"mapShowMode"];
-    if (!mode) mode = MapShowModeLocation;
     return mode;
 }
 
 - (void)setMapShowMode:(MapShowMode)mapShowMode{
     [[NSUserDefaults standardUserDefaults] setInteger:mapShowMode forKey:@"mapShowMode"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (CLLocationDistance)nearestDistanceForMoment{
@@ -37,6 +37,7 @@
 
 - (void)setNearestDistanceForMoment:(CLLocationDistance)nearestDistanceForMoment{
     [[NSUserDefaults standardUserDefaults] setDouble:nearestDistanceForMoment forKey:@"nearestDistanceForMoment"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (CLLocationDistance)nearestDistanceForLocation{
@@ -47,16 +48,17 @@
 
 - (void)setNearestDistanceForLocation:(CLLocationDistance)nearestDistanceForLocation{
     [[NSUserDefaults standardUserDefaults] setDouble:nearestDistanceForLocation forKey:@"nearestDistanceForLocation"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (DateMode)dateMode{
     DateMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"dateMode"];
-    if (!mode) mode = DateModeMonth;
     return mode;
 }
 
 - (void)setDateMode:(DateMode)dateMode{
     [[NSUserDefaults standardUserDefaults] setInteger:dateMode forKey:@"dateMode"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (NSString *)defaultPlacemark{
@@ -67,6 +69,7 @@
 
 - (void)setDefaultPlacemark:(NSString *)defaultPlacemark{
     [[NSUserDefaults standardUserDefaults] setValue:defaultPlacemark forKey:@"defaultPlacemark"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end

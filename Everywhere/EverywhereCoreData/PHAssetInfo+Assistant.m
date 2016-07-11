@@ -184,7 +184,7 @@
     
 }
 
-+ (NSDictionary <NSString *,NSNumber *> *)placemarkInfoFromAssetInfos:(NSArray <PHAssetInfo *> *)assetInfoArray{
++ (NSDictionary <NSString *,NSArray<NSString *> *> *)placemarkInfoFromAssetInfos:(NSArray <PHAssetInfo *> *)assetInfoArray{
     NSMutableArray <NSString *> *country_Placemark = [NSMutableArray new];
     NSMutableArray <NSString *> *administrativeArea_Placemark = [NSMutableArray new];
     NSMutableArray <NSString *> *subAdministrativeArea_Placemark = [NSMutableArray new];
@@ -217,13 +217,13 @@
         }
     }];
     
-    return @{kCountryCount:@(country_Placemark.count),
-             kAdministrativeAreaCount:@(administrativeArea_Placemark.count),
-             kSubAdministrativeAreaCount:@(subAdministrativeArea_Placemark.count),
-             kLocalityCount:@(locality_Placemark.count),
-             kSubLocalityCount:@(subLocality_Placemark.count),
-             kThoroughfareCount:@(thoroughfare_Placemark.count),
-             kSubThoroughfareCount:@(subThoroughfare_Placemark.count)};
+    return @{kCountryArray:country_Placemark,
+             kAdministrativeAreaArray:administrativeArea_Placemark,
+             kSubAdministrativeAreaArray:subAdministrativeArea_Placemark,
+             kLocalityArray:locality_Placemark,
+             kSubLocalityArray:subLocality_Placemark,
+             kThoroughfareArray:thoroughfare_Placemark,
+             kSubThoroughfareArray:subThoroughfare_Placemark};
 }
 
 @end

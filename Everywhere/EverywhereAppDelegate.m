@@ -53,8 +53,12 @@
     // 更新刷新时间
     cdManager.lastUpdateDate = [NSDate date];
     
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
+    
     AssetsMapProVC *vc = [AssetsMapProVC new];
+    //[vc prefersStatusBarHidden];
     self.window.rootViewController = vc;
+    self.window.tintColor = [UIColor grayColor];
     [self.window makeKeyAndVisible];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
