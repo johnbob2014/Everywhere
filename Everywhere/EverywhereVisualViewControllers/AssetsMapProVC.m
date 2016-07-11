@@ -12,7 +12,10 @@
 #import "AssetsMapProVC.h"
 @import Photos;
 @import MapKit;
+
 #import "EverywhereMKAnnotation.h"
+#import "EverywhereSettingManager.h"
+
 #import "NSDate+Assistant.h"
 #import "UIView+AutoLayout.h"
 #import "PHAsset+Assistant.h"
@@ -37,8 +40,9 @@
 #import "GCRoutePolylineManager.h"
 
 @interface AssetsMapProVC () <MKMapViewDelegate,UIGestureRecognizerDelegate>
-@property (assign,nonatomic) MapShowMode mapShowMode;
-@property (assign,nonatomic) CLLocationDistance nearestDistance;
+//@property (assign,nonatomic) MapShowMode mapShowMode;
+//@property (assign,nonatomic) CLLocationDistance nearestDistanceForMoment;
+//@property (assign,nonatomic) CLLocationDistance nearestDistanceForLocation;
 @property (strong,nonatomic) NSArray <PHAssetInfo *> *assetInfoArray;
 @property (strong,nonatomic) NSArray <PHAsset *> *assetArray;
 @property (strong,nonatomic) NSArray <NSArray <PHAsset *> *> *assetsArray;
@@ -75,6 +79,7 @@
     
     GCPhotoManager *photoManager;
     EverywhereCoreDataManager *cdManager;
+    EverywhereSettingManager *settingManager;
     
     __block CLLocationDistance maxDistance;
     __block CLLocationDistance totalDistance;
@@ -93,37 +98,45 @@
         }];
         
         PHFetchOptions *options = [PHFetchOptions new];
-        switch (self.mapShowMode) {
-            case MapShowModeMoment:
-                options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
-                break;
-            case MapShowModeLocation:
-                options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
-                break;
-            default:
-                break;
-        }
-        
-        PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:assetIDArry options:options];
-        //CLLocation *loc;
-        //loc.coordinate.longitude
+        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+        PHFetchResult <PHAsset *> *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:assetIDArry options:options];
         self.assetArray = (NSArray <PHAsset *> *)fetchResult;
-        
-        switch (self.mapShowMode) {
-            case MapShowModeMoment:
-                self.assetsArray = [GCLocationAnalyser divideLocationsInOrderToArray:self.assetArray nearestDistance:self.nearestDistance];
-                break;
-            case MapShowModeLocation:
-                self.assetsArray = [GCLocationAnalyser divideLocationsOutOfOrderToArray:self.assetArray nearestDistance:self.nearestDistance*100];
-                break;
-            default:
-                break;
-        }
-
-        
-        // 如果地图已经初始化，才进行更新
-        if (myMapView) [self addAnnotationsAndOverlays];
     }
+}
+
+- (void)setAssetArray:(NSArray<PHAsset *> *)assetArray{
+    _assetArray = assetArray;
+    switch (settingManager.mapShowMode) {
+        case MapShowModeMoment:
+            self.assetsArray = [GCLocationAnalyser divideLocationsInOrderToArray:self.assetArray nearestDistance:settingManager.nearestDistanceForMoment];
+            break;
+        case MapShowModeLocation:
+            self.assetsArray = [GCLocationAnalyser divideLocationsOutOfOrderToArray:self.assetArray nearestDistance:settingManager.nearestDistanceForLocation];
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)setAssetsArray:(NSArray<NSArray<PHAsset *> *> *)assetsArray{
+    _assetsArray = assetsArray;
+    
+    [self addAnnotations];
+    
+    switch (settingManager.mapShowMode) {
+        case MapShowModeMoment:
+            [self addLineOverlays];
+            break;
+        case MapShowModeLocation:
+            [self addCircleOverlays];
+            break;
+        default:
+            break;
+    }
+    
+    // 如果地图已经初始化，才进行更新
+    if (myMapView) [self moveMapView];
+    
 }
 
 #pragma mark - Life Cycle
@@ -131,13 +144,9 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     
-    self.mapShowMode = MapShowModeLocation;
-    self.nearestDistance = 200;
-    
     photoManager = [GCPhotoManager defaultManager];
     cdManager = [EverywhereCoreDataManager defaultManager];
-    
-    [self initData];
+    settingManager = [EverywhereSettingManager defaultManager];
     
     [self initPopupController];
     
@@ -145,13 +154,14 @@
     
     [self initNaviBar];
     
-    [self addAnnotationsAndOverlays];
-    
     [self initLocationInfoBar];
     
     [self initPlacemarkInfoBar];
 
     [self initMenu];
+    
+    [self initData];
+    
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
@@ -175,14 +185,48 @@
 
 - (void)initData{
     NSDate *now = [NSDate date];
+    
+    switch (settingManager.dateMode) {
+        case DateModeDay:{
+            startDate = [now dateAtStartOfToday];
+            endDate = [now dateAtEndOfToday];
+        }
+            break;
+        case DateModeWeek:{
+            startDate = [now dateAtStartOfThisWeek];
+            endDate = [now dateAtEndOfThisWeek];
+        }
+            break;
+        case DateModeMonth:{
+            startDate = [now dateAtStartOfThisMonth];
+            endDate = [now dateAtEndOfThisMonth];
+        }
+            break;
+        case DateModeYear:{
+            startDate = [now dateAtStartOfThisYear];
+            endDate = [now dateAtEndOfThisYear];
+        }
+            break;
+        case DateModeAll:{
+            startDate = nil;
+            endDate = nil;
+        }
+            break;
+        default:{
+            startDate = [now dateAtStartOfThisMonth];
+            endDate = [now dateAtEndOfThisMonth];
+        }
+            break;
+    }
+    
     startDate = [now dateAtStartOfThisYear];
     endDate = [now dateAtEndOfThisYear];
-    switch (self.mapShowMode) {
+    switch (settingManager.mapShowMode) {
         case MapShowModeMoment:
             self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:startDate toEndDate:endDate inManagedObjectContext:cdManager.appMOC];
             break;
         case MapShowModeLocation:
-            self.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:@"中国" inManagedObjectContext:cdManager.appMOC];
+            self.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:settingManager.defaultPlacemark inManagedObjectContext:cdManager.appMOC];
             break;
         default:
             break;
@@ -227,7 +271,7 @@
     return NO;
 }
 
-#pragma mark - initAnnotationsAndOverlays
+#pragma mark - addAnnotationsAndOverlays
 
 - (void)addAnnotations{
     // 清理数组
@@ -316,6 +360,27 @@
         }
 }
 
+- (void)addCircleOverlays{
+    [myMapView removeOverlays:myMapView.overlays];
+    maxDistance = 500;
+    if (addedAnnotationsWithIndex.count >= 2) {
+        // 记录距离信息
+        //NSMutableArray *distanceArray = [NSMutableArray new];
+        //totalDistance = 0;
+        
+        // 添加 MKOverlays
+        
+        NSMutableArray <MKCircle *> *circlesToAdd = [NSMutableArray new];
+        //__block CLLocationCoordinate2D lastCoordinate;
+        [addedAnnotationsWithIndex enumerateObjectsUsingBlock:^(EverywhereMKAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            MKCircle *circle = [MKCircle circleWithCenterCoordinate:obj.coordinate radius:settingManager.nearestDistanceForLocation / 2.0];
+            if (circle) [circlesToAdd addObject:circle];
+        }];
+        
+        [myMapView addOverlays:circlesToAdd];
+    }
+}
+
 - (void)asyncAddRouteOverlays{
     [myMapView removeOverlays:myMapView.overlays];
     maxDistance = 500;
@@ -400,16 +465,16 @@
     
 }
 
-- (void)addAnnotationsAndOverlays{
-    [self addAnnotations];
-    
-    if (self.mapShowMode == MapShowModeMoment) [self addLineOverlays];
-    
+- (void)moveMapView{
     /*
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self asyncAddRouteOverlays];
     });
     */
+    
+    if (settingManager.mapShowMode == MapShowModeLocation){
+        maxDistance = settingManager.nearestDistanceForLocation * 4.0;
+    }
     
     // 移动地图到第一个点
     if (addedAnnotationsWithIndex.count > 0) {
@@ -658,7 +723,7 @@
     calendarVC.contentSizeInPopup = CGSizeMake(300, 400);
     calendarVC.landscapeContentSizeInPopup = CGSizeMake(400, 200);
     calendarVC.dateRangeDidChangeHandler = ^(NSDate *choosedStartDate,NSDate *choosedEndDate){
-        self.mapShowMode = MapShowModeMoment;
+        settingManager.mapShowMode = MapShowModeMoment;
         startDate = choosedStartDate;
         endDate = choosedEndDate;
         self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:startDate toEndDate:endDate inManagedObjectContext:cdManager.appMOC];
@@ -788,8 +853,14 @@
         polygonRenderer.strokeColor = [[UIColor brownColor] colorWithAlphaComponent:0.6];
         //polygonRenderer.fillColor = [[UIColor cyanColor] colorWithAlphaComponent:0.4];
         return polygonRenderer;
-        
-    }else{
+    }else if ([overlay isKindOfClass:[MKCircle class]]){
+        MKCircleRenderer *circleRenderer = [[MKCircleRenderer alloc] initWithCircle:overlay];
+        circleRenderer.lineWidth = 1;
+        circleRenderer.fillColor = [[UIColor cyanColor] colorWithAlphaComponent:0.4];
+        circleRenderer.strokeColor = [[UIColor cyanColor] colorWithAlphaComponent:0.6];
+        return circleRenderer;
+    }
+    else{
         return nil;
     }
 }
