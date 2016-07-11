@@ -397,6 +397,9 @@
             [myMapView setCenterCoordinate:ida.coordinate animated:YES];
             [myMapView selectAnnotation:ida animated:YES];
         }
+        if (index == addedAnnotationsWithIndex.count) {
+            [self playButtonPressed:playButton];
+        }
     }
 }
 
@@ -888,6 +891,7 @@
 - (void)imageViewTapGR:(UITapGestureRecognizer *)sender{
     AssetDetailVC *showVC = [AssetDetailVC new];
     showVC.edgesForExtendedLayout = UIRectEdgeNone;
+    showVC.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     EverywhereMKAnnotation *annotation = myMapView.selectedAnnotations.firstObject;
     showVC.assetLocalIdentifiers = annotation.assetLocalIdentifiers;
     
@@ -896,13 +900,17 @@
     [self.navigationController presentViewController:showVC animated:YES completion:nil];
      */
     
-    showVC.contentSizeInPopup = CGSizeMake(300, 400);
-    showVC.landscapeContentSizeInPopup = CGSizeMake(400,200);
+    /*
+    showVC.contentSizeInPopup = CGSizeMake(ScreenWidth,ScreenHeight - 40);
+    showVC.landscapeContentSizeInPopup = CGSizeMake(ScreenHeight,ScreenWidth);
     popupController = [[STPopupController alloc] initWithRootViewController:showVC];
     popupController.style = STPopupStyleFormSheet;
     popupController.transitionStyle = STPopupTransitionStyleFade;
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
+     */
+    
+    [self presentViewController:showVC animated:YES completion:nil];
 }
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{

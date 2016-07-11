@@ -28,4 +28,22 @@
     return requestImage;
 }
 
++ (AVPlayerItem *)playItemForVideoAsset:(PHAsset *)videoAsset{
+    
+    __block AVPlayerItem *returnItem = nil;
+    
+    if (videoAsset.mediaType == PHAssetMediaTypeVideo) {
+        PHVideoRequestOptions *options = [PHVideoRequestOptions new];
+        options.version = PHVideoRequestOptionsVersionOriginal;
+        options.deliveryMode = PHVideoRequestOptionsDeliveryModeFastFormat;
+        
+        [[PHImageManager defaultManager] requestPlayerItemForVideo:videoAsset options:options resultHandler:^(AVPlayerItem * _Nullable playerItem, NSDictionary * _Nullable info) {
+            returnItem = playerItem;
+        }];
+        
+        [NSThread sleepForTimeInterval:0.5];
+    }
+    
+    return returnItem;
+}
 @end

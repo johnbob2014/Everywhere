@@ -6,10 +6,13 @@
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#import <Photos/Photos.h>
+@import Photos;
+@import AVKit;
 
 @interface PHAsset (Assistant)
 
 + (UIImage *)synchronousFetchUIImageFromPHAsset:(PHAsset *)asset targetSize:(CGSize)targetSize;
+
++ (AVPlayerItem *)playItemForVideoAsset:(PHAsset *)videoAsset;
 
 @end
