@@ -17,6 +17,10 @@
 @property (assign,nonatomic) CLLocationDistance nearestDistanceForLocation;
 
 @property (assign,nonatomic) DateMode dateMode;
+
+@property (assign,nonatomic) LocationMode locationMode;
 @property (strong,nonatomic) NSString *defaultPlacemark;
+
+@property (assign,nonatomic) NSTimeInterval playTimeInterval;
 
 @end

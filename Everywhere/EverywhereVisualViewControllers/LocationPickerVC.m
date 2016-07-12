@@ -28,11 +28,11 @@
                        NSLocalizedString(@"Prov.", @""),
                        NSLocalizedString(@"State", @"")];
     
-    currentGroupArray = self.placemarkInfoDictionary[kLocalityArray];
-    self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[2],(unsigned long)currentGroupArray.count];
+    //currentGroupArray = self.placemarkInfoDictionary[kLocalityArray];
+    //self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[self.initLocationMode],(unsigned long)currentGroupArray.count];
     
     groupSeg = [[UISegmentedControl alloc] initWithItems:groupNameArray];
-    groupSeg.selectedSegmentIndex = 2;
+    groupSeg.selectedSegmentIndex = self.initLocationMode;
     [groupSeg addTarget:self action:@selector(segValueChanged:) forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:groupSeg];
     groupSeg.translatesAutoresizingMaskIntoConstraints = NO;
@@ -45,31 +45,37 @@
     [self.view addSubview:myTableView];
     [myTableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 10, 10, 10) excludingEdge:ALEdgeTop];
     [myTableView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:groupSeg withOffset:10];
+    
+    [self updateDataSource:self.initLocationMode];
 }
 
 - (void)segValueChanged:(UISegmentedControl *)sender{
-    switch (sender.selectedSegmentIndex) {
-        case 0:{
+    [self updateDataSource:sender.selectedSegmentIndex];
+}
+
+- (void)updateDataSource:(LocationMode)locationMode{
+    switch (locationMode) {
+        case LocationModeThoroughfare:{
             currentGroupArray = self.placemarkInfoDictionary[kThoroughfareArray];
             self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[0],(unsigned long)currentGroupArray.count];
         }
             break;
-        case 1:{
+        case LocationModeSubLocality:{
             currentGroupArray = self.placemarkInfoDictionary[kSubLocalityArray];
             self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[1],(unsigned long)currentGroupArray.count];
         }
             break;
-        case 2:{
+        case LocationModeLocality:{
             currentGroupArray = self.placemarkInfoDictionary[kLocalityArray];
             self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[2],(unsigned long)currentGroupArray.count];
         }
             break;
-        case 3:{
+        case LocationModeAdministrativeArea:{
             currentGroupArray = self.placemarkInfoDictionary[kAdministrativeAreaArray];
             self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[3],(unsigned long)currentGroupArray.count];
         }
             break;
-        case 4:{
+        case LocationModeCountry:{
             currentGroupArray = self.placemarkInfoDictionary[kCountryArray];
             self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[4],(unsigned long)currentGroupArray.count];
         }

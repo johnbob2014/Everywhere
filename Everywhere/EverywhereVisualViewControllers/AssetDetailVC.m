@@ -38,7 +38,7 @@
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseInOut
                          animations:^{
-                             imageView.image = [PHAsset synchronousFetchUIImageFromPHAsset:currentAsset targetSize:PHImageManagerMaximumSize];
+                             imageView.image = [currentAsset synchronousFetchUIImageAtTargetSize:PHImageManagerMaximumSize];
                          }
                          completion:^(BOOL finished) {
                              self.title = [NSString stringWithFormat:@"%ld / %ld",currentIndex + 1,assetArray.count];
@@ -47,7 +47,7 @@
         
         if (currentAsset.mediaType == PHAssetMediaTypeVideo) {
             playButton.hidden = NO;
-            playerItem = [PHAsset playItemForVideoAsset:currentAsset];
+            playerItem = [currentAsset synchronousFetchAVPlayerItem];
         }else if (currentAsset.mediaType == PHAssetMediaTypeImage){
             playButton.hidden = YES;
         }

@@ -107,8 +107,7 @@
                                                 NSLocalizedString(@"Week", @""),
                                                 NSLocalizedString(@"Month", @""),
                                                 NSLocalizedString(@"Year", @""),
-                                                NSLocalizedString(@"All", @""),
-                                                NSLocalizedString(@"Range", @"")];
+                                                NSLocalizedString(@"All", @"")];
     dateModeSeg = [[UISegmentedControl alloc] initWithItems:dateModeNameArray];
     dateModeSeg.selectedSegmentIndex = [EverywhereSettingManager defaultManager].dateMode;
     [dateModeSeg addTarget:self action:@selector(segValueChanged:) forControlEvents:UIControlEventValueChanged];

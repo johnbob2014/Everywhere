@@ -51,7 +51,7 @@
 }
 
 -(void)downloadImage:(NSURL *)url withDownLoadImageCompletionBlock:(DownLoadImageCompletionBlock)completionBlock{
-    __weak CTPImageView *weakSelf=self;
+    //__weak CTPImageView *weakSelf=self;
     /*
     [SDImageCache sharedImageCache].shouldCacheImagesInMemory=NO;
     [self sd_setImageWithURL:url

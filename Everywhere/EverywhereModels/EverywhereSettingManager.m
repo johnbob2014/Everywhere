@@ -61,14 +61,35 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (LocationMode)locationMode{
+    LocationMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"locationMode"];
+    return mode;
+}
+
+- (void)setLocationMode:(LocationMode)locationMode{
+    [[NSUserDefaults standardUserDefaults] setInteger:locationMode forKey:@"locationMode"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (NSString *)defaultPlacemark{
     NSString *placemark = [[NSUserDefaults standardUserDefaults] stringForKey:@"defaultPlacemark"];
-    if (!placemark) placemark = @"中国";
+    if (!placemark) placemark = @",";
     return placemark;
 }
 
 - (void)setDefaultPlacemark:(NSString *)defaultPlacemark{
     [[NSUserDefaults standardUserDefaults] setValue:defaultPlacemark forKey:@"defaultPlacemark"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (NSTimeInterval)playTimeInterval{
+    NSTimeInterval playTI = [[NSUserDefaults standardUserDefaults] doubleForKey:@"playTimeInterval"];
+    if (!playTI || playTI == 0) playTI = 2;
+    return playTI;
+}
+
+- (void)setPlayTimeInterval:(NSTimeInterval)playTimeInterval{
+    [[NSUserDefaults standardUserDefaults] setDouble:playTimeInterval forKey:@"playTimeInterval"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

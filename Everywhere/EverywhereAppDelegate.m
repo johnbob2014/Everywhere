@@ -88,6 +88,7 @@
                 //[assetArrayWithLocations addObject:obj];
                 PHAssetInfo *info = [PHAssetInfo newAssetInfoWithPHAsset:obj inManagedObjectContext:cdManager.appMOC];
                 addPhotosCount++;
+                NSLog(@"%@",info.localIdentifier);
             }
         }
     }];

@@ -29,6 +29,7 @@
 - (void)setMapShowMode:(MapShowMode)mapShowMode{
     _mapShowMode = mapShowMode;
     self.modeSeg.selectedSegmentIndex = mapShowMode;
+    [self mapShowModeValueChanged:self.modeSeg];
 }
 
 - (void)setInfo:(NSString *)info{
@@ -61,7 +62,10 @@
         [self addSubview:leftView];
         
         self.datePickerBtn = [UIButton newAutoLayoutView];
-        [self.datePickerBtn setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Calendar"] forState:UIControlStateNormal];
+        self.datePickerBtn.enabled = self.mapShowMode == MapShowModeMoment ? YES : NO;
+        [self.datePickerBtn setImage:[UIImage imageNamed:@"IcoMoon_Calendar"] forState:UIControlStateNormal];
+        [self.datePickerBtn setImage:[UIImage imageNamed:@"IcoMoon_Unlink"] forState:UIControlStateDisabled];
+        [self.datePickerBtn setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Background"] forState:UIControlStateNormal];
         [self.datePickerBtn addTarget:self action:@selector(datePickerBtnTouchDown:) forControlEvents:UIControlEventTouchDown];
         [leftView addSubview:self.datePickerBtn];
         
@@ -70,7 +74,10 @@
         [self addSubview:rightView];
         
         self.locationPickerBtn = [UIButton newAutoLayoutView];
-        [self.locationPickerBtn setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Dribble3"] forState:UIControlStateNormal];
+        self.locationPickerBtn.enabled = self.mapShowMode == MapShowModeLocation ? YES : NO;
+        [self.locationPickerBtn setImage:[UIImage imageNamed:@"IcoMoon_Dribble3"] forState:UIControlStateNormal];
+        [self.locationPickerBtn setImage:[UIImage imageNamed:@"IcoMoon_Unlink"] forState:UIControlStateDisabled];
+        [self.locationPickerBtn setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Background"] forState:UIControlStateNormal];
         [self.locationPickerBtn addTarget:self action:@selector(locationPickerBtnTouchDown:) forControlEvents:UIControlEventTouchDown];
         [rightView addSubview:self.locationPickerBtn];
     }
@@ -79,6 +86,13 @@
 
 - (void)mapShowModeValueChanged:(UISegmentedControl *)sender{
     if (self.mapShowModeChangedHandler) self.mapShowModeChangedHandler(sender);
+    if (sender.selectedSegmentIndex == 0) {
+        self.datePickerBtn.enabled = YES;
+        self.locationPickerBtn.enabled = NO;
+    }else{
+        self.datePickerBtn.enabled = NO;
+        self.locationPickerBtn.enabled = YES;
+    }
     self.infoLabel.text = [NSLocalizedString(@"MomentMode LocationMode",@"") componentsSeparatedByString:@" "][sender.selectedSegmentIndex];
 }
 
@@ -102,9 +116,12 @@
     [middleView autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:leftView withOffset:10];
     [middleView autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:rightView withOffset:-10];
     
+    [self.datePickerBtn autoSetDimensionsToSize:CGSizeMake(40, 40)];
     [self.datePickerBtn autoCenterInSuperview];
+    [self.locationPickerBtn autoSetDimensionsToSize:CGSizeMake(40, 40)];
     [self.locationPickerBtn autoCenterInSuperview];
     [self.modeSeg autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(5, 5, 0, 5) excludingEdge:ALEdgeBottom];
     [self.infoLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
+    
 }
 @end

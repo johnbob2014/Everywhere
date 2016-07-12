@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void(^LocationDidChangeHandler)(NSString *newLocation);
+typedef void(^LocationDidChangeHandler)(NSString *choosedLocation);
 
 @interface LocationPickerVC : UIViewController
 @property (strong,nonatomic) NSDictionary <NSString *,NSArray <NSString *> *> *placemarkInfoDictionary;
 @property (copy,nonatomic) LocationDidChangeHandler locationDidChangeHandler;
+
+@property (assign,nonatomic) LocationMode initLocationMode;
 @end

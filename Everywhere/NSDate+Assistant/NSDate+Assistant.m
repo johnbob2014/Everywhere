@@ -10,8 +10,8 @@
 
 static const NSTimeInterval TI_MINUTE = 60;
 static const NSTimeInterval TI_HOUR = 3600;
-static const NSTimeInterval TI_DAY = 86400;
-static const NSTimeInterval TI_WEEK = 604800;
+//static const NSTimeInterval TI_DAY = 86400;
+//static const NSTimeInterval TI_WEEK = 604800;
 
 static const NSInteger BIG_MONTH[7] = {1,3,5,7,8,10,12};
 

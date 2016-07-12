@@ -24,16 +24,6 @@
 		1E74C30A1D268377000A9790 /* VCFloatingActionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E74C3071D268377000A9790 /* VCFloatingActionButton.m */; };
 		1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */; };
 		1E9D5D441D1E8F2D00E8B630 /* Everywhere.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */; };
-		1EB047111D2BFF8100298422 /* TNCircularRadioButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB046FE1D2BFF8100298422 /* TNCircularRadioButton.m */; };
-		1EB047121D2BFF8100298422 /* TNCircularRadioButtonData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB047001D2BFF8100298422 /* TNCircularRadioButtonData.m */; };
-		1EB047131D2BFF8100298422 /* TNImageRadioButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB047021D2BFF8100298422 /* TNImageRadioButton.m */; };
-		1EB047141D2BFF8100298422 /* TNImageRadioButtonData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB047041D2BFF8100298422 /* TNImageRadioButtonData.m */; };
-		1EB047151D2BFF8100298422 /* TNRadioButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB047061D2BFF8100298422 /* TNRadioButton.m */; };
-		1EB047161D2BFF8100298422 /* TNRadioButtonData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB047081D2BFF8100298422 /* TNRadioButtonData.m */; };
-		1EB047171D2BFF8100298422 /* TNRadioButtonGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB0470B1D2BFF8100298422 /* TNRadioButtonGroup.m */; };
-		1EB047181D2BFF8100298422 /* TNRectangularRadioButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB0470E1D2BFF8100298422 /* TNRectangularRadioButton.m */; };
-		1EB047191D2BFF8100298422 /* TNRectangularRadioButtonData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB047101D2BFF8100298422 /* TNRectangularRadioButtonData.m */; };
-		1EC3138F1D27FC4800A2C301 /* CalendarVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EC3138E1D27FC4800A2C301 /* CalendarVC.m */; };
 		1EEA79511D2791A0002B6291 /* EverywhereMKAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEA79501D2791A0002B6291 /* EverywhereMKAnnotation.m */; };
 		2A6563BC8BBF2B5997748106 /* libPods-Everywhere.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E9CF64AE7F289869F003D6F /* libPods-Everywhere.a */; };
 		4B001CD41D21002700DF7287 /* CTPImageBrowserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CCD1D21002700DF7287 /* CTPImageBrowserVC.m */; };
@@ -42,6 +32,7 @@
 		4B001CD71D21002700DF7287 /* CTPWaitingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CD31D21002700DF7287 /* CTPWaitingView.m */; };
 		4B001CDE1D2125FC00DF7287 /* CLPlacemark+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CDD1D2125FC00DF7287 /* CLPlacemark+Assistant.m */; };
 		4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */; };
+		4B216FEF1D347DCA003DCDBC /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B216FED1D347DCA003DCDBC /* Info.plist */; };
 		4B27FDC31D2CA12000067683 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4B27FDBE1D2CA12000067683 /* FontAwesome.ttf */; };
 		4B27FDC41D2CA12000067683 /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B27FDC01D2CA12000067683 /* NSString+FontAwesome.m */; };
 		4B27FDC51D2CA12000067683 /* UIButton+Bootstrap.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B27FDC21D2CA12000067683 /* UIButton+Bootstrap.m */; };
@@ -59,6 +50,7 @@
 		4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */; };
 		4BE88A9F1D332B38009501CE /* EverywhereSettingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE88A9E1D332B38009501CE /* EverywhereSettingManager.m */; };
 		4BE88AA21D333A46009501CE /* MapShowModeBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE88AA11D333A46009501CE /* MapShowModeBar.m */; };
+		4BF513091D348870009565EF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4BF5130B1D348870009565EF /* Localizable.strings */; };
 		4BFA4EB31D33791A007DDA87 /* LocationPickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */; };
 		4BFA4EB61D33982A007DDA87 /* DatePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA4EB51D33982A007DDA87 /* DatePickerVC.m */; };
 /* End PBXBuildFile section */
@@ -71,7 +63,6 @@
 		1E2848021D1ADDB900189A83 /* Everywhere.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Everywhere.xcdatamodel; sourceTree = "<group>"; };
 		1E2848041D1ADDB900189A83 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1E2848071D1ADDB900189A83 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		1E2848091D1ADDB900189A83 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1E2848131D1ADEC300189A83 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		1E2848151D1ADF6700189A83 /* Everywhere.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Everywhere.entitlements; sourceTree = "<group>"; };
 		1E2848161D1ADFF400189A83 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -93,28 +84,6 @@
 		1E9D5D401D1E2AFE00E8B630 /* WGS84TOGCJ02.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WGS84TOGCJ02.h; path = WGS84TOGCJ02/WGS84TOGCJ02.h; sourceTree = "<group>"; };
 		1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WGS84TOGCJ02.m; path = WGS84TOGCJ02/WGS84TOGCJ02.m; sourceTree = "<group>"; };
 		1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Everywhere.rtf; sourceTree = "<group>"; };
-		1EB046FD1D2BFF8100298422 /* TNCircularRadioButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TNCircularRadioButton.h; sourceTree = "<group>"; };
-		1EB046FE1D2BFF8100298422 /* TNCircularRadioButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TNCircularRadioButton.m; sourceTree = "<group>"; };
-		1EB046FF1D2BFF8100298422 /* TNCircularRadioButtonData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TNCircularRadioButtonData.h; sourceTree = "<group>"; };
-		1EB047001D2BFF8100298422 /* TNCircularRadioButtonData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TNCircularRadioButtonData.m; sourceTree = "<group>"; };
-		1EB047011D2BFF8100298422 /* TNImageRadioButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TNImageRadioButton.h; sourceTree = "<group>"; };
-		1EB047021D2BFF8100298422 /* TNImageRadioButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TNImageRadioButton.m; sourceTree = "<group>"; };
-		1EB047031D2BFF8100298422 /* TNImageRadioButtonData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TNImageRadioButtonData.h; sourceTree = "<group>"; };
-		1EB047041D2BFF8100298422 /* TNImageRadioButtonData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TNImageRadioButtonData.m; sourceTree = "<group>"; };
-		1EB047051D2BFF8100298422 /* TNRadioButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TNRadioButton.h; sourceTree = "<group>"; };
-		1EB047061D2BFF8100298422 /* TNRadioButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TNRadioButton.m; sourceTree = "<group>"; };
-		1EB047071D2BFF8100298422 /* TNRadioButtonData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TNRadioButtonData.h; sourceTree = "<group>"; };
-		1EB047081D2BFF8100298422 /* TNRadioButtonData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TNRadioButtonData.m; sourceTree = "<group>"; };
-		1EB047091D2BFF8100298422 /* TNRadioButtonDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TNRadioButtonDelegate.h; sourceTree = "<group>"; };
-		1EB0470A1D2BFF8100298422 /* TNRadioButtonGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TNRadioButtonGroup.h; sourceTree = "<group>"; };
-		1EB0470B1D2BFF8100298422 /* TNRadioButtonGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TNRadioButtonGroup.m; sourceTree = "<group>"; };
-		1EB0470C1D2BFF8100298422 /* TNRadioButtonGroupProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TNRadioButtonGroupProtocol.h; sourceTree = "<group>"; };
-		1EB0470D1D2BFF8100298422 /* TNRectangularRadioButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TNRectangularRadioButton.h; sourceTree = "<group>"; };
-		1EB0470E1D2BFF8100298422 /* TNRectangularRadioButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TNRectangularRadioButton.m; sourceTree = "<group>"; };
-		1EB0470F1D2BFF8100298422 /* TNRectangularRadioButtonData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TNRectangularRadioButtonData.h; sourceTree = "<group>"; };
-		1EB047101D2BFF8100298422 /* TNRectangularRadioButtonData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TNRectangularRadioButtonData.m; sourceTree = "<group>"; };
-		1EC3138D1D27FC4800A2C301 /* CalendarVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CalendarVC.h; path = EverywhereVisualViewControllers/CalendarVC.h; sourceTree = "<group>"; };
-		1EC3138E1D27FC4800A2C301 /* CalendarVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CalendarVC.m; path = EverywhereVisualViewControllers/CalendarVC.m; sourceTree = "<group>"; };
 		1EEA794F1D2791A0002B6291 /* EverywhereMKAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereMKAnnotation.h; path = EverywhereModels/EverywhereMKAnnotation.h; sourceTree = "<group>"; };
 		1EEA79501D2791A0002B6291 /* EverywhereMKAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereMKAnnotation.m; path = EverywhereModels/EverywhereMKAnnotation.m; sourceTree = "<group>"; };
 		4B001CCB1D21002700DF7287 /* CTPImageBrowserConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTPImageBrowserConfig.h; sourceTree = "<group>"; };
@@ -131,6 +100,8 @@
 		4B0620771D2CE36C00545FCE /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		4B0D09261D23C94D0047D7E0 /* PHAsset+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PHAsset+Assistant.h"; path = "PHAsset+Assistant/PHAsset+Assistant.h"; sourceTree = "<group>"; };
 		4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PHAsset+Assistant.m"; path = "PHAsset+Assistant/PHAsset+Assistant.m"; sourceTree = "<group>"; };
+		4B216FF01D347DE2003DCDBC /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
+		4B216FF41D347F7D003DCDBC /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.storyboard"; sourceTree = "<group>"; };
 		4B27FDBE1D2CA12000067683 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
 		4B27FDBF1D2CA12000067683 /* NSString+FontAwesome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+FontAwesome.h"; sourceTree = "<group>"; };
 		4B27FDC01D2CA12000067683 /* NSString+FontAwesome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+FontAwesome.m"; sourceTree = "<group>"; };
@@ -164,6 +135,9 @@
 		4BE88A9E1D332B38009501CE /* EverywhereSettingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereSettingManager.m; path = EverywhereModels/EverywhereSettingManager.m; sourceTree = "<group>"; };
 		4BE88AA01D333A46009501CE /* MapShowModeBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapShowModeBar.h; path = EverywhereVisualViewControllers/MapShowModeBar.h; sourceTree = "<group>"; };
 		4BE88AA11D333A46009501CE /* MapShowModeBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapShowModeBar.m; path = EverywhereVisualViewControllers/MapShowModeBar.m; sourceTree = "<group>"; };
+		4BF513061D3487C9009565EF /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "zh-Hans"; path = "zh-Hans.lproj/Info.plist"; sourceTree = "<group>"; };
+		4BF5130A1D348870009565EF /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		4BF5130C1D348872009565EF /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		4BFA4EB11D33791A007DDA87 /* LocationPickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationPickerVC.h; path = EverywhereVisualViewControllers/LocationPickerVC.h; sourceTree = "<group>"; };
 		4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationPickerVC.m; path = EverywhereVisualViewControllers/LocationPickerVC.m; sourceTree = "<group>"; };
 		4BFA4EB41D33982A007DDA87 /* DatePickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DatePickerVC.h; path = EverywhereVisualViewControllers/DatePickerVC.h; sourceTree = "<group>"; };
@@ -214,11 +188,12 @@
 				1EEA794A1D279047002B6291 /* EverywhereVisualViewControllers */,
 				1E2848151D1ADF6700189A83 /* Everywhere.entitlements */,
 				1E2848011D1ADDB900189A83 /* Everywhere.xcdatamodeld */,
-				1E2847F61D1ADDB900189A83 /* main.m */,
-				1E2848091D1ADDB900189A83 /* Info.plist */,
 				1E2847F81D1ADDB900189A83 /* EverywhereAppDelegate.h */,
 				1E2847F91D1ADDB900189A83 /* EverywhereAppDelegate.m */,
 				4B0620771D2CE36C00545FCE /* PrefixHeader.pch */,
+				4BF5130B1D348870009565EF /* Localizable.strings */,
+				4B216FED1D347DCA003DCDBC /* Info.plist */,
+				1E2847F61D1ADDB900189A83 /* main.m */,
 				1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */,
 				1E2848041D1ADDB900189A83 /* Assets.xcassets */,
 				1E2848061D1ADDB900189A83 /* LaunchScreen.storyboard */,
@@ -267,38 +242,9 @@
 			name = WGS84TOGCJ02;
 			sourceTree = "<group>";
 		};
-		1EB046FC1D2BFF8100298422 /* TNRadioButtonGroup */ = {
-			isa = PBXGroup;
-			children = (
-				1EB046FD1D2BFF8100298422 /* TNCircularRadioButton.h */,
-				1EB046FE1D2BFF8100298422 /* TNCircularRadioButton.m */,
-				1EB046FF1D2BFF8100298422 /* TNCircularRadioButtonData.h */,
-				1EB047001D2BFF8100298422 /* TNCircularRadioButtonData.m */,
-				1EB047011D2BFF8100298422 /* TNImageRadioButton.h */,
-				1EB047021D2BFF8100298422 /* TNImageRadioButton.m */,
-				1EB047031D2BFF8100298422 /* TNImageRadioButtonData.h */,
-				1EB047041D2BFF8100298422 /* TNImageRadioButtonData.m */,
-				1EB047051D2BFF8100298422 /* TNRadioButton.h */,
-				1EB047061D2BFF8100298422 /* TNRadioButton.m */,
-				1EB047071D2BFF8100298422 /* TNRadioButtonData.h */,
-				1EB047081D2BFF8100298422 /* TNRadioButtonData.m */,
-				1EB047091D2BFF8100298422 /* TNRadioButtonDelegate.h */,
-				1EB0470A1D2BFF8100298422 /* TNRadioButtonGroup.h */,
-				1EB0470B1D2BFF8100298422 /* TNRadioButtonGroup.m */,
-				1EB0470C1D2BFF8100298422 /* TNRadioButtonGroupProtocol.h */,
-				1EB0470D1D2BFF8100298422 /* TNRectangularRadioButton.h */,
-				1EB0470E1D2BFF8100298422 /* TNRectangularRadioButton.m */,
-				1EB0470F1D2BFF8100298422 /* TNRectangularRadioButtonData.h */,
-				1EB047101D2BFF8100298422 /* TNRectangularRadioButtonData.m */,
-			);
-			path = TNRadioButtonGroup;
-			sourceTree = "<group>";
-		};
 		1EEA794A1D279047002B6291 /* EverywhereVisualViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				1EC3138D1D27FC4800A2C301 /* CalendarVC.h */,
-				1EC3138E1D27FC4800A2C301 /* CalendarVC.m */,
 				4BFA4EB41D33982A007DDA87 /* DatePickerVC.h */,
 				4BFA4EB51D33982A007DDA87 /* DatePickerVC.m */,
 				4BFA4EB11D33791A007DDA87 /* LocationPickerVC.h */,
@@ -433,7 +379,6 @@
 			children = (
 				1E74C3021D268377000A9790 /* VCFloatingActionButton */,
 				4B001CCA1D21002700DF7287 /* CTPImageBrowser */,
-				1EB046FC1D2BFF8100298422 /* TNRadioButtonGroup */,
 				1E9D5D3F1D1E2ADB00E8B630 /* WGS84TOGCJ02 */,
 				4B3AF9BC1D2F3E70009BD545 /* GCLocationAnalyser */,
 				4B3AF9BF1D2F3E70009BD545 /* GCPhotoManager */,
@@ -534,6 +479,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 1E2847E91D1ADDB900189A83;
 			productRefGroup = 1E2847F31D1ADDB900189A83 /* Products */;
@@ -552,6 +498,8 @@
 			files = (
 				1E74C3091D268377000A9790 /* floatTableViewCell.xib in Resources */,
 				1E9D5D441D1E8F2D00E8B630 /* Everywhere.rtf in Resources */,
+				4B216FEF1D347DCA003DCDBC /* Info.plist in Resources */,
+				4BF513091D348870009565EF /* Localizable.strings in Resources */,
 				1E2848081D1ADDB900189A83 /* LaunchScreen.storyboard in Resources */,
 				1E2848051D1ADDB900189A83 /* Assets.xcassets in Resources */,
 				4B27FDC31D2CA12000067683 /* FontAwesome.ttf in Resources */,
@@ -616,14 +564,11 @@
 				4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */,
 				4B30E2A81D24A999002C2DE7 /* NSDate+Assistant.m in Sources */,
 				4BE88A9F1D332B38009501CE /* EverywhereSettingManager.m in Sources */,
-				1EB047121D2BFF8100298422 /* TNCircularRadioButtonData.m in Sources */,
 				1E74C3081D268377000A9790 /* floatTableViewCell.m in Sources */,
 				4B3AF9C91D2F3E70009BD545 /* GCLocationAnalyser.m in Sources */,
 				4BD51FC81D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m in Sources */,
-				1EB047131D2BFF8100298422 /* TNImageRadioButton.m in Sources */,
 				1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */,
 				4B27FDC41D2CA12000067683 /* NSString+FontAwesome.m in Sources */,
-				1EB047181D2BFF8100298422 /* TNRectangularRadioButton.m in Sources */,
 				1E41FD211D2AB66100E1A5B9 /* LocationInfoBar.m in Sources */,
 				4B001CD41D21002700DF7287 /* CTPImageBrowserVC.m in Sources */,
 				4BFA4EB31D33791A007DDA87 /* LocationPickerVC.m in Sources */,
@@ -633,28 +578,21 @@
 				4B3AF9CB1D2F3E70009BD545 /* GCPolyline.m in Sources */,
 				4BFA4EB61D33982A007DDA87 /* DatePickerVC.m in Sources */,
 				1E2848031D1ADDB900189A83 /* Everywhere.xcdatamodeld in Sources */,
-				1EB047161D2BFF8100298422 /* TNRadioButtonData.m in Sources */,
 				4B3AF9CC1D2F3E70009BD545 /* GCRoutePolyline.m in Sources */,
 				4B001CD61D21002700DF7287 /* CTPMultiImage.m in Sources */,
 				1E63B77C1D2E9D90003E355B /* PlacemarkInfoBar.m in Sources */,
 				4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */,
 				1E2847FA1D1ADDB900189A83 /* EverywhereAppDelegate.m in Sources */,
-				1EB047171D2BFF8100298422 /* TNRadioButtonGroup.m in Sources */,
 				1E74C30A1D268377000A9790 /* VCFloatingActionButton.m in Sources */,
 				1E5A54181D28FE0F0056CF46 /* AssetsMapProVC.m in Sources */,
 				4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */,
 				4B27FDC51D2CA12000067683 /* UIButton+Bootstrap.m in Sources */,
-				1EC3138F1D27FC4800A2C301 /* CalendarVC.m in Sources */,
 				4B001CD51D21002700DF7287 /* CTPImageView.m in Sources */,
 				4B001CD71D21002700DF7287 /* CTPWaitingView.m in Sources */,
-				1EB047111D2BFF8100298422 /* TNCircularRadioButton.m in Sources */,
 				4BD51FCC1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m in Sources */,
 				1EEA79511D2791A0002B6291 /* EverywhereMKAnnotation.m in Sources */,
 				1E2847F71D1ADDB900189A83 /* main.m in Sources */,
-				1EB047141D2BFF8100298422 /* TNImageRadioButtonData.m in Sources */,
-				1EB047191D2BFF8100298422 /* TNRectangularRadioButtonData.m in Sources */,
 				4B3AF9CA1D2F3E70009BD545 /* GCPhotoManager.m in Sources */,
-				1EB047151D2BFF8100298422 /* TNRadioButton.m in Sources */,
 				4B3AF9CD1D2F3E70009BD545 /* GCRoutePolylineManager.m in Sources */,
 				4B001CDE1D2125FC00DF7287 /* CLPlacemark+Assistant.m in Sources */,
 				1E65218D1D28BFB500F41860 /* UIFont+Assistant.m in Sources */,
@@ -668,8 +606,27 @@
 			isa = PBXVariantGroup;
 			children = (
 				1E2848071D1ADDB900189A83 /* Base */,
+				4B216FF41D347F7D003DCDBC /* zh-Hans */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		4B216FED1D347DCA003DCDBC /* Info.plist */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4B216FF01D347DE2003DCDBC /* Base */,
+				4BF513061D3487C9009565EF /* zh-Hans */,
+			);
+			name = Info.plist;
+			sourceTree = "<group>";
+		};
+		4BF5130B1D348870009565EF /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4BF5130A1D348870009565EF /* Base */,
+				4BF5130C1D348872009565EF /* zh-Hans */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

@@ -14,6 +14,8 @@
 
 #endif /* PrefixHeader_pch */
 
+#define WEAKSELF(weakSelf)  __weak __typeof (&*self)weakSelf = self;
+
 #import "UIView+AutoLayout.h"
 #import "UIButton+Bootstrap.h"
 
@@ -31,6 +33,7 @@
 #import "PHAssetInfo.h"
 #import "LocationInfoBar.h"
 
+
 typedef NS_ENUM(NSInteger, MapShowMode) {
     MapShowModeMoment = 0,      // 时刻模式
     MapShowModeLocation         // 地点模式
@@ -44,6 +47,17 @@ typedef NS_ENUM(NSInteger, DateMode) {
     DateModeAll,
     DateModeRange
 };
+
+typedef NS_ENUM(NSInteger, LocationMode) {
+    LocationModeThoroughfare = 0,
+    LocationModeSubLocality,
+    LocationModeLocality,
+    LocationModeAdministrativeArea,
+    LocationModeCountry,
+    LocationModeAll
+};
+
+#define NOW [NSDate date]
 
 #pragma mark - Placemark键
 

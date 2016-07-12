@@ -8,8 +8,6 @@
 
 #import "PlacemarkInfoBar.h"
 
-//#define superViewWidth self.superview.bounds.size.width
-
 #pragma mark - CellView
 
 @interface CellView : UIView
@@ -17,12 +15,13 @@
 @property (strong,nonatomic) NSString *cellTitle;
 @property (strong,nonatomic) UILabel *cellInfoLabel;
 @property (strong,nonatomic) UILabel *cellTitleLabel;
+@property (assign,nonatomic) BOOL pinInfoLabelToTop;
 @end
 
 @implementation CellView
 
 - (instancetype)init{
-    //NSLog(@"CellView : %@",NSStringFromSelector(_cmd));
+    
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
@@ -53,51 +52,21 @@
 }
 
 - (void)layoutSubviews{
+    [self.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [obj autoRemoveConstraintsAffectingView];
+    }];
     
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        //[self.cellInfoLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-        //[self.cellInfoLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
-        
-        
-    });
-    /*
+    // cellTitleLabel
     [self.cellTitleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
-    [self.cellInfoLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-    [self.cellInfoLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    */
     
-    //[self.cellInfoLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
-    [self.cellTitleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
-    [self.cellInfoLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [self.cellInfoLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:self withOffset:self.cellTitleLabel.frame.size.height];
-    
-    /*
-    [self.cellInfoLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
-    [self.cellInfoLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
-    [self.cellInfoLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.cellTitleLabel withOffset:5 relation:NSLayoutRelationGreaterThanOrEqual];
-    */
-    
-    /*
-    CGRect infoRect = self.cellInfoLabel.frame;
-    infoRect.origin.x = 0;
-    infoRect.origin.y = 0;
-    self.cellInfoLabel.frame = infoRect;
-    
-    CGRect titleRect = self.cellTitleLabel.frame;
-    titleRect.origin.x = 0;
-    titleRect.origin.y = self.frame.size.height - titleRect.size.height;
-    self.cellTitleLabel.frame = titleRect;
-    */
-    
-    /*
-    self.cellInfoLabel.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height * 0.3);
-    self.cellTitleLabel.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y + self.frame.size.height * 0.3, self.frame.size.width, self.frame.size.height * 0.1);
-    */
-    
-    //self.cellInfoLabel.frame = CGPointMake(0, 0);
-    //NSLog(@"\ncell          : %@\ncellInfoLabel : %@",NSStringFromCGPoint(self.frame.origin),NSStringFromCGRect(self.cellInfoLabel.frame));
-    //NSLog(@"\ncellInfoLabel : %@\ncellTitleLabel : %@",NSStringFromCGPoint(self.cellInfoLabel.frame.origin),NSStringFromCGPoint(self.cellTitleLabel.frame.origin));
+    // cellInfoLabel
+    if (self.pinInfoLabelToTop) {
+        [self.cellInfoLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
+    }else{
+        [self.cellInfoLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
+        [self.cellInfoLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:self.cellTitleLabel.bounds.size.height];
+    }
+
 }
 
 - (void)setCellInfo:(NSString *)cellInfo{
@@ -165,6 +134,7 @@
         // 里程/面积
         totalCell = [CellView newAutoLayoutView];
         totalCell.cellInfoLabel.numberOfLines = 0;
+        totalCell.pinInfoLabelToTop = YES;
         [self addSubview:totalCell];
 
     }
@@ -175,15 +145,8 @@
 #define cellWidthRate 0.14
 
 - (void)layoutSubviews{
-    //NSLog(@"%@",NSStringFromSelector(_cmd));
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        
-        
-    });
-    
     [self.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [obj removeConstraints:obj.constraints];
+        [obj autoRemoveConstraintsAffectingView];
     }];
     
     float blankBetweenCellView = (self.bounds.size.width * (1 - cellWidthRate*5 - 0.22) - blankToSuper * 2) / 5.0;
@@ -267,7 +230,7 @@
     if (totalArea >=1000*1000) {
         totalString = [NSString stringWithFormat:@"%.2f k㎡",totalArea/(1000.0*1000.0)];
     }else{
-        totalString = [NSString stringWithFormat:@"%.0f ",totalArea];
+        totalString = [NSString stringWithFormat:@"%.0f ㎡",totalArea];
     }
     totalCell.cellInfo = totalString;
 }
