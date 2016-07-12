@@ -576,35 +576,79 @@
 
 #pragma mark Vertical Accessories Bar
 
+#define VerticalViewHeight 240.0
+
 - (void)initVerticalAccessoriesBar{
     
-    UIView *verticalView = [UIView newAutoLayoutView];
-    verticalView.backgroundColor = [UIColor grayColor];
-    [self.view addSubview:verticalView];
-    [verticalView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
-    [verticalView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
-    [verticalView autoSetDimensionsToSize:CGSizeMake(50, 200)];
+    UIView *leftVerticalView = [UIView newAutoLayoutView];
+    leftVerticalView.backgroundColor = [UIColor grayColor];
+    [self.view addSubview:leftVerticalView];
+    [leftVerticalView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+    [leftVerticalView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
+    [leftVerticalView autoSetDimensionsToSize:CGSizeMake(50, VerticalViewHeight)];
     
+    UIButton *showShareVCBtn = [UIButton newAutoLayoutView];
+    [showShareVCBtn setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
+    showShareVCBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    [showShareVCBtn addTarget:self action:@selector(showShareVC) forControlEvents:UIControlEventTouchDown];
+    [leftVerticalView addSubview:showShareVCBtn];
+
     UIButton *showHideMapShowModeBarBtn = [UIButton newAutoLayoutView];
     [showHideMapShowModeBarBtn setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
     showHideMapShowModeBarBtn.translatesAutoresizingMaskIntoConstraints = NO;
     [showHideMapShowModeBarBtn addTarget:self action:@selector(showHideMapShowModeBar) forControlEvents:UIControlEventTouchDown];
-    [verticalView addSubview:showHideMapShowModeBarBtn];
+    [leftVerticalView addSubview:showHideMapShowModeBarBtn];
     
     UIButton *showHidePlacemarkInfoBarBtn = [UIButton newAutoLayoutView];
     [showHidePlacemarkInfoBarBtn setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
     showHidePlacemarkInfoBarBtn.translatesAutoresizingMaskIntoConstraints = NO;
     [showHidePlacemarkInfoBarBtn addTarget:self action:@selector(showHidePlacemarkInfoBar) forControlEvents:UIControlEventTouchDown];
-    [verticalView addSubview:showHidePlacemarkInfoBarBtn];
+    [leftVerticalView addSubview:showHidePlacemarkInfoBarBtn];
     
     UIButton *showHideNaviBarBtn = [UIButton newAutoLayoutView];
     [showHideNaviBarBtn setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
     showHideNaviBarBtn.translatesAutoresizingMaskIntoConstraints = NO;
     [showHideNaviBarBtn addTarget:self action:@selector(showHideNaviBar) forControlEvents:UIControlEventTouchDown];
-    [verticalView addSubview:showHideNaviBarBtn];
+    [leftVerticalView addSubview:showHideNaviBarBtn];
     
-    [verticalView.subviews autoDistributeViewsAlongAxis:ALAxisVertical withFixedSize:44 insetSpacing:YES alignment:NSLayoutFormatAlignAllLeft];
+    [leftVerticalView.subviews autoDistributeViewsAlongAxis:ALAxisVertical withFixedSize:44 insetSpacing:YES alignment:NSLayoutFormatAlignAllLeft];
     
+    UIView *rightVerticalView = [UIView newAutoLayoutView];
+    rightVerticalView.backgroundColor = [UIColor grayColor];
+    [self.view addSubview:rightVerticalView];
+    [rightVerticalView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
+    [rightVerticalView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
+    [rightVerticalView autoSetDimensionsToSize:CGSizeMake(50, VerticalViewHeight)];
+    
+    UIView *swipeScaleBackgroundView = [UIView newAutoLayoutView];
+    swipeScaleBackgroundView.backgroundColor = [UIColor brownColor];
+    
+    UIView *swipeScaleView = [UIView newAutoLayoutView];
+    swipeScaleView.backgroundColor = [UIColor clearColor];
+    UISwipeGestureRecognizer *swipeUpGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeScaleViewSwipeUp:)];
+    swipeUpGR.direction = UISwipeGestureRecognizerDirectionUp;
+    [swipeScaleView addGestureRecognizer:swipeUpGR];
+    UISwipeGestureRecognizer *swipeDownGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeScaleViewSwipeDown:)];
+    swipeDownGR.direction = UISwipeGestureRecognizerDirectionDown;
+    [swipeScaleView addGestureRecognizer:swipeDownGR];
+    
+    [swipeScaleBackgroundView addSubview:swipeScaleView];
+    [swipeScaleView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+
+    [rightVerticalView addSubview:swipeScaleBackgroundView];
+    [swipeScaleBackgroundView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
+    [swipeScaleBackgroundView autoMatchDimension:ALDimensionHeight toDimension:ALDimensionHeight ofView:rightVerticalView withMultiplier:(VerticalViewHeight - 50.0)/VerticalViewHeight];
+    
+    UIButton *showSettingsVCBtn = [UIButton newAutoLayoutView];
+    [showSettingsVCBtn setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
+    showSettingsVCBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    [showSettingsVCBtn addTarget:self action:@selector(showSettingsVC:) forControlEvents:UIControlEventTouchDown];
+    [rightVerticalView addSubview:showSettingsVCBtn];
+    [showSettingsVCBtn autoSetDimensionsToSize:CGSizeMake(44, 44)];
+    [showSettingsVCBtn autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [showSettingsVCBtn autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
+
+
     //[self.view addSubview:showHidePlacemarkInfoBarBtn];
     //[showHidePlacemarkInfoBarBtn autoSetDimensionsToSize:CGSizeMake(40, 40)];
     //[showHidePlacemarkInfoBarBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:80];
@@ -624,25 +668,49 @@
      */
 }
 
+- (void)showShareVC{
+    
+}
+
 - (void)showHideMapShowModeBar{
     [UIView animateWithDuration:0.3 animations:^{
-        mapShowModeBar.hidden = !mapShowModeBar.hidden;
+        mapShowModeBar.alpha = (mapShowModeBar.alpha == 1) ? 0 : 1;
     }];
     
 }
 
 - (void)showHidePlacemarkInfoBar{
     [UIView animateWithDuration:0.3 animations:^{
-        placemarkInfoBar.hidden = !placemarkInfoBar.hidden;
+        placemarkInfoBar.alpha = (placemarkInfoBar.alpha == 1) ? 0 : 1;
     }];
     
 }
 
 - (void)showHideNaviBar{
     [UIView animateWithDuration:0.3 animations:^{
-        naviBar.hidden = !naviBar.hidden;
+        naviBar.alpha = (naviBar.alpha == 1) ? 0 : 1;
     }];
     
+}
+
+- (void)showSettingsVC:(id)sender{
+    
+}
+
+- (void)swipeScaleViewSwipeUp:(UISwipeGestureRecognizer *)sender{
+    float mapViewScaleRate = self.settingManager.mapViewScaleRate;
+    MKCoordinateRegion oldRegion = self.myMapView.region;
+    MKCoordinateSpan newSpan = MKCoordinateSpanMake(oldRegion.span.latitudeDelta / mapViewScaleRate, oldRegion.span.longitudeDelta / mapViewScaleRate);
+    MKCoordinateRegion newRegion = MKCoordinateRegionMake(oldRegion.center, newSpan);
+    [self.myMapView setRegion:newRegion animated:YES];
+}
+
+- (void)swipeScaleViewSwipeDown:(UISwipeGestureRecognizer *)sender{
+    float mapViewScaleRate = self.settingManager.mapViewScaleRate;
+    MKCoordinateRegion oldRegion = self.myMapView.region;
+    MKCoordinateSpan newSpan = MKCoordinateSpanMake(oldRegion.span.latitudeDelta * mapViewScaleRate, oldRegion.span.longitudeDelta * mapViewScaleRate);
+    MKCoordinateRegion newRegion = MKCoordinateRegionMake(oldRegion.center, newSpan);
+    [self.myMapView setRegion:newRegion animated:YES];
 }
 
 #pragma mark PopupController

@@ -23,4 +23,6 @@
 
 @property (assign,nonatomic) NSTimeInterval playTimeInterval;
 
+@property (assign,nonatomic) float mapViewScaleRate;
+
 @end

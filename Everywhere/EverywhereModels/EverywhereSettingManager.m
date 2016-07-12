@@ -93,4 +93,15 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (float)mapViewScaleRate{
+    float mapViewScaleRate = [[NSUserDefaults standardUserDefaults] floatForKey:@"mapViewScaleRate"];
+    if (mapViewScaleRate == 0) mapViewScaleRate = 2.0;
+    return mapViewScaleRate;
+}
+
+- (void)setMapViewScaleRate:(float)mapViewScaleRate{
+    [[NSUserDefaults standardUserDefaults] setFloat:mapViewScaleRate forKey:@"mapViewScaleRate"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 @end
