@@ -97,8 +97,10 @@
 
 - (void)setAssetInfoArray:(NSArray<PHAssetInfo *> *)assetInfoArray{
     _assetInfoArray = assetInfoArray;
+    
     [self updateMapShowModeBar];
-        // 只有当存在照片数据的时候，才更新视图
+    currentAnnotationIndexLabel.text = @"";
+    
     if (assetInfoArray.count > 0) {
         NSMutableArray *assetIDArry = [NSMutableArray new];
         [assetInfoArray enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -171,7 +173,7 @@
     // PlacemarkInfoBar 位于 MapShowModeBar 下方10
     [self initPlacemarkInfoBar];
     
-    [self initVerticalAccessories];
+    [self initVerticalAccessoriesBar];
 
     [self initPopupController];
     
@@ -337,46 +339,54 @@
     
     firstButton = [UIButton newAutoLayoutView];
     [firstButton setTitle:@"⏪" forState:UIControlStateNormal];
+    firstButton.titleLabel.font = [UIFont bodyFontWithSizeMultiplier:2.0];
     [firstButton addTarget:self action:@selector(firstButtonPressed:) forControlEvents:UIControlEventTouchDown];
     [naviBar addSubview:firstButton];
     [firstButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
-    [firstButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+    [firstButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    //[firstButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
     
     previousButton = [UIButton newAutoLayoutView];
     [previousButton setTitle:@"⬅️" forState:UIControlStateNormal];
+    previousButton.titleLabel.font = [UIFont bodyFontWithSizeMultiplier:2.0];
     [previousButton addTarget:self action:@selector(previousButtonPressed:) forControlEvents:UIControlEventTouchDown];
     [naviBar addSubview:previousButton];
     [previousButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:firstButton withOffset:30 relation:NSLayoutRelationLessThanOrEqual];
-    [previousButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+    [previousButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
     
     playButton = [UIButton newAutoLayoutView];
     [playButton setTitle:@"▶️" forState:UIControlStateNormal];
+    playButton.titleLabel.font = [UIFont bodyFontWithSizeMultiplier:2.0];
     [playButton addTarget:self action:@selector(playButtonPressed:) forControlEvents:UIControlEventTouchDown];
     [naviBar addSubview:playButton];
     [playButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:previousButton withOffset:30 relation:NSLayoutRelationLessThanOrEqual];
-    [playButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+    [playButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
     
     nextButton = [UIButton newAutoLayoutView];
     [nextButton setTitle:@"➡️" forState:UIControlStateNormal];
+    nextButton.titleLabel.font = [UIFont bodyFontWithSizeMultiplier:2.0];
     [nextButton addTarget:self action:@selector(nextButtonPressed:) forControlEvents:UIControlEventTouchDown];
     [naviBar addSubview:nextButton];
     [nextButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:playButton withOffset:30 relation:NSLayoutRelationLessThanOrEqual];
-    [nextButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+    [nextButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
     
     lastButton = [UIButton newAutoLayoutView];
     [lastButton setTitle:@"⏩" forState:UIControlStateNormal];
+    lastButton.titleLabel.font = [UIFont bodyFontWithSizeMultiplier:2.0];
     [lastButton addTarget:self action:@selector(lastButtonPressed:) forControlEvents:UIControlEventTouchDown];
     [naviBar addSubview:lastButton];
     [lastButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:nextButton withOffset:30 relation:NSLayoutRelationLessThanOrEqual];
-    [lastButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+    [lastButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
     
     currentAnnotationIndexLabel = [UILabel newAutoLayoutView];
     currentAnnotationIndexLabel.textColor = [UIColor whiteColor];
     [naviBar addSubview:currentAnnotationIndexLabel];
     [currentAnnotationIndexLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
-    [currentAnnotationIndexLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:lastButton];
+    [currentAnnotationIndexLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
     [currentAnnotationIndexLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:lastButton withOffset:10 relation:NSLayoutRelationGreaterThanOrEqual];
+    
     self.currentAnnotationIndex = 0;
+    
     isPlaying = NO;
 }
 
@@ -564,18 +574,41 @@
 
 }
 
-#pragma mark Vertical Accessories
+#pragma mark Vertical Accessories Bar
 
-- (void)initVerticalAccessories{
+- (void)initVerticalAccessoriesBar{
     
-    UIButton *placemarkInfoBarBtn = [UIButton newAutoLayoutView];
-    [placemarkInfoBarBtn setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
-    placemarkInfoBarBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    [placemarkInfoBarBtn addTarget:self action:@selector(showHidePlacemarkInfoBar:) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:placemarkInfoBarBtn];
-    [placemarkInfoBarBtn autoSetDimensionsToSize:CGSizeMake(40, 40)];
-    [placemarkInfoBarBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:80];
-    [placemarkInfoBarBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
+    UIView *verticalView = [UIView newAutoLayoutView];
+    verticalView.backgroundColor = [UIColor grayColor];
+    [self.view addSubview:verticalView];
+    [verticalView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
+    [verticalView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
+    [verticalView autoSetDimensionsToSize:CGSizeMake(50, 200)];
+    
+    UIButton *showHideMapShowModeBarBtn = [UIButton newAutoLayoutView];
+    [showHideMapShowModeBarBtn setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
+    showHideMapShowModeBarBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    [showHideMapShowModeBarBtn addTarget:self action:@selector(showHideMapShowModeBar) forControlEvents:UIControlEventTouchDown];
+    [verticalView addSubview:showHideMapShowModeBarBtn];
+    
+    UIButton *showHidePlacemarkInfoBarBtn = [UIButton newAutoLayoutView];
+    [showHidePlacemarkInfoBarBtn setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
+    showHidePlacemarkInfoBarBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    [showHidePlacemarkInfoBarBtn addTarget:self action:@selector(showHidePlacemarkInfoBar) forControlEvents:UIControlEventTouchDown];
+    [verticalView addSubview:showHidePlacemarkInfoBarBtn];
+    
+    UIButton *showHideNaviBarBtn = [UIButton newAutoLayoutView];
+    [showHideNaviBarBtn setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
+    showHideNaviBarBtn.translatesAutoresizingMaskIntoConstraints = NO;
+    [showHideNaviBarBtn addTarget:self action:@selector(showHideNaviBar) forControlEvents:UIControlEventTouchDown];
+    [verticalView addSubview:showHideNaviBarBtn];
+    
+    [verticalView.subviews autoDistributeViewsAlongAxis:ALAxisVertical withFixedSize:44 insetSpacing:YES alignment:NSLayoutFormatAlignAllLeft];
+    
+    //[self.view addSubview:showHidePlacemarkInfoBarBtn];
+    //[showHidePlacemarkInfoBarBtn autoSetDimensionsToSize:CGSizeMake(40, 40)];
+    //[showHidePlacemarkInfoBarBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:80];
+    //[showHidePlacemarkInfoBarBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
     
     /*
     UIButton *placemarkInfoBtn = [UIButton newAutoLayoutView];
@@ -591,9 +624,24 @@
      */
 }
 
-- (void)showHidePlacemarkInfoBar:(UIButton *)sender{
-    placemarkInfoBar.hidden = !placemarkInfoBar.hidden;
+- (void)showHideMapShowModeBar{
+    [UIView animateWithDuration:0.3 animations:^{
+        mapShowModeBar.hidden = !mapShowModeBar.hidden;
+    }];
     
+}
+
+- (void)showHidePlacemarkInfoBar{
+    [UIView animateWithDuration:0.3 animations:^{
+        placemarkInfoBar.hidden = !placemarkInfoBar.hidden;
+    }];
+    
+}
+
+- (void)showHideNaviBar{
+    [UIView animateWithDuration:0.3 animations:^{
+        naviBar.hidden = !naviBar.hidden;
+    }];
     
 }
 
@@ -1014,7 +1062,12 @@
 
 - (void)setCurrentAnnotationIndex:(NSInteger)currentAnnotationIndex{
     _currentAnnotationIndex = currentAnnotationIndex;
-    currentAnnotationIndexLabel.text = [NSString stringWithFormat:@"%ld / %ld",currentAnnotationIndex + 1,(unsigned long)addedAnnotationsWithIndex.count];
+    if (addedAnnotationsWithIndex.count > 0){
+        currentAnnotationIndexLabel.text = [NSString stringWithFormat:@"%ld / %ld",(unsigned long)(currentAnnotationIndex + 1),(unsigned long)addedAnnotationsWithIndex.count];
+    }else{
+        currentAnnotationIndexLabel.text = @"";
+    }
+    
     
     /*
      if (currentAnnotationIndex == 0) {

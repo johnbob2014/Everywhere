@@ -65,7 +65,7 @@
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
     //NSLog(@"%@",NSStringFromSelector(_cmd));
     self.currentImageIndex=(scrollView.contentOffset.x+self.view.bounds.size.width*0.5)/self.view.bounds.size.width;
-    self.imageIndexLabel.text=[NSString stringWithFormat:@"%ld/%ld", self.currentImageIndex + 1, (long)self.imageCount];
+    self.imageIndexLabel.text=[NSString stringWithFormat:@"%ld/%ld", (unsigned long)(self.currentImageIndex + 1), (long)self.imageCount];
     
     // 有过缩放的图片在拖动一定距离后清除缩放
     CTPImageView *currentIV=scrollView.subviews[self.currentImageIndex];

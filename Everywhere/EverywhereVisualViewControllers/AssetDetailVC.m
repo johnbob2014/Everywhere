@@ -41,7 +41,7 @@
                              imageView.image = [currentAsset synchronousFetchUIImageAtTargetSize:PHImageManagerMaximumSize];
                          }
                          completion:^(BOOL finished) {
-                             self.title = [NSString stringWithFormat:@"%ld / %ld",currentIndex + 1,assetArray.count];
+                             self.title = [NSString stringWithFormat:@"%lu / %lu",(unsigned long)(currentIndex + 1),(unsigned long)assetArray.count];
                          }];
         
         
