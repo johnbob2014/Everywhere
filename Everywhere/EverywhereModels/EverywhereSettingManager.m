@@ -29,25 +29,25 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (CLLocationDistance)nearestDistanceForMoment{
-    CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"nearestDistanceForMoment"];
+- (CLLocationDistance)mergedDistanceForMoment{
+    CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"mergedDistanceForMoment"];
     if (!distance || distance == 0) distance = 200;
     return distance;
 }
 
-- (void)setNearestDistanceForMoment:(CLLocationDistance)nearestDistanceForMoment{
-    [[NSUserDefaults standardUserDefaults] setDouble:nearestDistanceForMoment forKey:@"nearestDistanceForMoment"];
+- (void)setMergedDistanceForMoment:(CLLocationDistance)mergedDistanceForMoment{
+    [[NSUserDefaults standardUserDefaults] setDouble:mergedDistanceForMoment forKey:@"mergedDistanceForMoment"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (CLLocationDistance)nearestDistanceForLocation{
-    CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"nearestDistanceForLocation"];
+- (CLLocationDistance)mergedDistanceForLocation{
+    CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"mergedDistanceForLocation"];
     if (!distance || distance == 0) distance = 20000;
     return distance;
 }
 
-- (void)setNearestDistanceForLocation:(CLLocationDistance)nearestDistanceForLocation{
-    [[NSUserDefaults standardUserDefaults] setDouble:nearestDistanceForLocation forKey:@"nearestDistanceForLocation"];
+- (void)setMergedDistanceForLocation:(CLLocationDistance)mergedDistanceForLocation{
+    [[NSUserDefaults standardUserDefaults] setDouble:mergedDistanceForLocation forKey:@"mergedDistanceForLocation"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

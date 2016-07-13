@@ -13,8 +13,8 @@
 + (instancetype)defaultManager;
 
 @property (assign,nonatomic) MapShowMode mapShowMode;
-@property (assign,nonatomic) CLLocationDistance nearestDistanceForMoment;
-@property (assign,nonatomic) CLLocationDistance nearestDistanceForLocation;
+@property (assign,nonatomic) CLLocationDistance mergedDistanceForMoment;
+@property (assign,nonatomic) CLLocationDistance mergedDistanceForLocation;
 
 @property (assign,nonatomic) DateMode dateMode;
 

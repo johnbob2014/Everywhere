@@ -11,10 +11,10 @@
 
 @implementation GCLocationAnalyser
 
-+ (NSDictionary <CLLocation *,NSArray *> *)divideLocationsInOrderToDictionary:(NSArray <id<GCLocationAnalyserProtocol>> *)idArray nearestDistance:(CLLocationDistance)nearestDistance{
++ (NSDictionary <CLLocation *,NSArray *> *)divideLocationsInOrderToDictionary:(NSArray <id<GCLocationAnalyserProtocol>> *)idArray mergedDistance:(CLLocationDistance)mergedDistance{
     
-    if (!nearestDistance) nearestDistance = CLLocationDistanceMax;
-    if (!idArray || !idArray.count || nearestDistance < 0) return nil;
+    if (!mergedDistance) mergedDistance = CLLocationDistanceMax;
+    if (!idArray || !idArray.count || mergedDistance < 0) return nil;
     
     __block CLLocation *keyLocation = idArray.firstObject.location;
     if (idArray.count == 1) return @{keyLocation:idArray};
@@ -28,7 +28,7 @@
         if (idx > 0) {
             CLLocationDistance currentDistance = fabs(MKMetersBetweenMapPoints(MKMapPointForCoordinate(lastId.location.coordinate), MKMapPointForCoordinate(obj.location.coordinate)));
             //NSLog(@"%.2f",currentDistance);
-            if (currentDistance < nearestDistance) {
+            if (currentDistance < mergedDistance) {
                 [tempArray addObject:obj];
             }else{
                 //NSLog(@"%@",tempArray);
@@ -57,10 +57,10 @@
     return returnMD;
 }
 
-+ (NSArray <NSArray *> *)divideLocationsInOrderToArray:(NSArray <id<GCLocationAnalyserProtocol>> *)idArray nearestDistance:(CLLocationDistance)nearestDistance{
++ (NSArray <NSArray *> *)divideLocationsInOrderToArray:(NSArray <id<GCLocationAnalyserProtocol>> *)idArray mergedDistance:(CLLocationDistance)mergedDistance{
     
-    if (!nearestDistance) nearestDistance = CLLocationDistanceMax;
-    if (!idArray || !idArray.count || nearestDistance < 0) return nil;
+    if (!mergedDistance) mergedDistance = CLLocationDistanceMax;
+    if (!idArray || !idArray.count || mergedDistance < 0) return nil;
     
     __block CLLocation *keyLocation = idArray.firstObject.location;
     if (idArray.count == 1) return @[idArray];
@@ -75,7 +75,7 @@
             //CLLocationDistance currentDistance = fabs(MKMetersBetweenMapPoints(MKMapPointForCoordinate(lastId.location.coordinate), MKMapPointForCoordinate(obj.location.coordinate)));
             CLLocationDistance currentDistance = fabs([lastId.location distanceFromLocation:obj.location]);
             //NSLog(@"%.2f",currentDistance);
-            if (currentDistance < nearestDistance) {
+            if (currentDistance < mergedDistance) {
                 [tempArray addObject:obj];
             }else{
                 //NSLog(@"%@",tempArray);
@@ -99,10 +99,10 @@
     return returnMD;
 }
 
-+ (NSArray <NSArray *> *)divideLocationsOutOfOrderToArray:(NSArray <id<GCLocationAnalyserProtocol>> *)idArray nearestDistance:(CLLocationDistance)nearestDistance{
++ (NSArray <NSArray *> *)divideLocationsOutOfOrderToArray:(NSArray <id<GCLocationAnalyserProtocol>> *)idArray mergedDistance:(CLLocationDistance)mergedDistance{
     
-    if (!nearestDistance) nearestDistance = CLLocationDistanceMax;
-    if (!idArray || !idArray.count || nearestDistance < 0) return nil;
+    if (!mergedDistance) mergedDistance = CLLocationDistanceMax;
+    if (!idArray || !idArray.count || mergedDistance < 0) return nil;
     
     //__block CLLocation *keyLocation = idArray.firstObject.location;
     if (idArray.count == 1) return @[idArray];
@@ -116,7 +116,7 @@
     for (NSUInteger i = 1; i < idArray.count; i++) {
         id<GCLocationAnalyserProtocol> currentId = idArray[i];
         CLLocationDistance currentDistance = fabs([lastId.location distanceFromLocation:currentId.location]);
-        if (currentDistance < nearestDistance) {
+        if (currentDistance < mergedDistance) {
             [tempArray addObject:currentId];
         }else{
             [idArrayRest addObject:currentId];
@@ -124,7 +124,7 @@
     }
     [returnMD addObject:tempArray];
     
-    NSArray <NSArray *> *next = [GCLocationAnalyser divideLocationsOutOfOrderToArray:idArrayRest nearestDistance:nearestDistance];
+    NSArray <NSArray *> *next = [GCLocationAnalyser divideLocationsOutOfOrderToArray:idArrayRest mergedDistance:mergedDistance];
     if (next.count > 0) [returnMD addObjectsFromArray:next];
     //NSLog(@"%3ld,%@",(long)next.count,NSStringFromSelector(_cmd));
     return returnMD;

@@ -11,6 +11,13 @@
 #import "RETableViewManager.h"
 #import "InAppPurchaseVC.h"
 #import "AboutVC.h"
+
+#define NumberAndDecimal @"0123456789.\n"
+#define Number @"0123456789\n"
+#define kAlphaNum @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\n"
+typedef BOOL (^OnChangeCharacterInRange)(RETextItem *item, NSRange range, NSString *replacementString);
+
+#import "EverywhereSettingManager.h"
 //#import "WXApi.h"
 
 const NSString *APP_DOWNLOAD_URL=@"https://itunes.apple.com/app/id1072387063";
@@ -27,6 +34,8 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 @property (nonatomic,strong) NSString *shareTitle;
 @property (nonatomic,strong) NSString *shareDescription;
 
+@property (nonatomic,strong) EverywhereSettingManager *settingManager;
+
 @end
 
 @implementation SettingVC
@@ -36,6 +45,8 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    self.settingManager = [EverywhereSettingManager defaultManager];
     
     self.shareTitle=NSLocalizedString(@"中国那么大，我要去看看", @"");
     self.shareDescription=NSLocalizedString(@"提供原创、超清、经典、唯美的景点图片，带你走进三山五岳、烟雨江南，陪你踏遍大江南北、万里河山。", @"");
@@ -58,6 +69,8 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 }
 
 -(void)initSettingUI{
+    NSString *tempString;
+    
     UITableView *settingTableView=[[UITableView alloc]initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     settingTableView.translatesAutoresizingMaskIntoConstraints=NO;
     //settingTableView.delegate=self;
@@ -72,10 +85,6 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     
     self.reTVManager=[[RETableViewManager alloc]initWithTableView:self.settingTableView delegate:self];
     
-    //选项
-    RETableViewSection *optionSection=[RETableViewSection sectionWithHeaderTitle:@"选项"];
-    //[optionSection setHeaderHeight:30];
-    
     REBoolItem *useCellularDataItem=[REBoolItem itemWithTitle:NSLocalizedString(@"🌐 使用蜂窝移动数据", @"") value:YES switchValueChangeHandler:^(REBoolItem *item) {
         //[SceneryModel sharedModel].canUseCellularData=item.value;
     }];
@@ -86,8 +95,37 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         [item deselectRowAnimated:YES];
         
     }];
-    [optionSection addItemsFromArray:@[useCellularDataItem,catchHDItem,clearCatchItem]];
     
+    //时刻模式
+    RETableViewSection *momentModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"MomentMode", @"时刻模式")];
+    //[optionSection setHeaderHeight:30];
+    
+    tempString = [NSString stringWithFormat:@"%.f",self.settingManager.mergedDistanceForMoment];
+    RETextItem *mergedDistanceForMomentItem = [RETextItem itemWithTitle:NSLocalizedString(@"mergedDistanceForMoment",@"") value:tempString placeholder:@""];
+    mergedDistanceForMomentItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
+    mergedDistanceForMomentItem.onEndEditing = ^(RETextItem *item){
+        NSLog(@"%@",item.value);
+        self.settingManager.mergedDistanceForMoment = [item.value doubleValue];
+    };
+
+    //mergedDistanceForMomentItem. = NSTextAlignmentRight;
+    
+    [momentModeSection addItemsFromArray:@[mergedDistanceForMomentItem]];
+    
+    //地址模式
+    RETableViewSection *locationModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"LocationMode", @"地址模式")];
+    //[optionSection setHeaderHeight:30];
+    
+    tempString = [NSString stringWithFormat:@"%.f",self.settingManager.mergedDistanceForLocation];
+    RETextItem *mergedDistanceForLocationItem = [RETextItem itemWithTitle:NSLocalizedString(@"mergedDistanceForLocation",@"") value:tempString placeholder:@""];
+    mergedDistanceForLocationItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
+    mergedDistanceForLocationItem.onEndEditing = ^(RETextItem *item){
+        NSLog(@"%@",item.value);
+        self.settingManager.mergedDistanceForLocation = [item.value doubleValue];
+    };
+    //mergedDistanceForLocationItem.textAlignment = NSTextAlignmentRight;
+    [locationModeSection addItemsFromArray:@[mergedDistanceForLocationItem]];
+
     //购买
     NSInteger purchasedCoins=[[NSUserDefaults standardUserDefaults] integerForKey:@"purchasedCoins"];
     //    id coins=[[NSUserDefaults standardUserDefaults] objectForKey:@"purchasedCoins"];
@@ -143,7 +181,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         [self.navigationController pushViewController:aboutVC animated:YES];
     }]];
     
-    [self.reTVManager addSectionsFromArray:@[optionSection,purchaseSection,shareSection,aboutSection]];
+    [self.reTVManager addSectionsFromArray:@[momentModeSection,locationModeSection,purchaseSection,shareSection,aboutSection]];
 }
 
 /*
@@ -212,5 +250,21 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     }
 }
 
+-(OnChangeCharacterInRange)createLimitInputBlockWithAllowedString:(NSString *)string{
+    OnChangeCharacterInRange block=^(RETextItem *item, NSRange range, NSString *replacementString){
+        NSString *allowedString=string;
+        NSCharacterSet *forbidenCharacterSet=[[NSCharacterSet characterSetWithCharactersInString:allowedString] invertedSet];
+        NSArray *filteredArray=[replacementString componentsSeparatedByCharactersInSet:forbidenCharacterSet];
+        NSString *filteredString=[filteredArray componentsJoinedByString:@""];
+        
+        if (![replacementString isEqualToString:filteredString]) {
+            NSLog(@"The character 【%@】 is not allowed!",replacementString);
+        }
+        
+        return [replacementString isEqualToString:filteredString];
+    };
+    
+    return block;
+}
 
 @end

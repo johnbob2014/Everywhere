@@ -52,6 +52,24 @@ UIEdgeInsets UIEdgeInsetsMake (
         [addlabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
         [addlabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:20];
         self.addressLabel = addlabel;
+        
+        /*
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        imageView.contentMode = UIViewContentModeScaleAspectFill;
+        imageView.userInteractionEnabled = YES;
+        UITapGestureRecognizer *imageViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapGR:)];
+        [imageView addGestureRecognizer:imageViewTapGR];
+        
+        UIButton *badgeButton = [UIButton newAutoLayoutView];
+        badgeButton.userInteractionEnabled = NO;
+        [badgeButton setBackgroundImage:[UIImage imageNamed:@"badge"] forState:UIControlStateNormal];
+        [badgeButton setTitle:@"0" forState:UIControlStateNormal];
+        badgeButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
+        [imageView addSubview:badgeButton];
+        [badgeButton autoSetDimensionsToSize:CGSizeMake(20, 20)];
+        [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
+        [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+         */
 
     }
     return self;
@@ -78,17 +96,17 @@ UIEdgeInsets UIEdgeInsetsMake (
     double minuteFloor = floor(minutes);
     double seconds = (minutes - minuteFloor) * 60.0;
     double secondFloor = floor(seconds);
-    NSString *dmsString = [NSString stringWithFormat:@"%.0f°%0.f‘%.0f“",degreeFloor,minuteFloor,secondFloor];
+    NSString *dmsString = [NSString stringWithFormat:@"%.0f°%0.f'%.0f''",degreeFloor,minuteFloor,secondFloor];
     return dmsString;
 }
 
 -(void)updateCoordinateLabel{
     NSMutableString *ma = [NSMutableString new];
-    [ma appendString:self.latitude > 0 ? NSLocalizedString(@"N : ", @""):NSLocalizedString(@"S : ", @"")];
+    [ma appendString:self.latitude > 0 ? NSLocalizedString(@"N. ", @""):NSLocalizedString(@"S. ", @"")];
     [ma appendString:[LocationInfoBar dmsStringWithDegrees:self.latitude]];
     [ma appendFormat:@" (%.4f°)",fabs(self.latitude)];
     [ma appendFormat:@"\n"];
-    [ma appendString:self.longitude > 0 ? NSLocalizedString(@"E : ", @""):NSLocalizedString(@"W : ", @"")];
+    [ma appendString:self.longitude > 0 ? NSLocalizedString(@"E. ", @""):NSLocalizedString(@"W. ", @"")];
     [ma appendString:[LocationInfoBar dmsStringWithDegrees:self.longitude]];
     [ma appendFormat:@" (%.4f°)",fabs(self.longitude)];
     self.coordinateLabel.text = ma;

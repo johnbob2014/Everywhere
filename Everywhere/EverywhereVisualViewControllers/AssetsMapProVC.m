@@ -43,8 +43,8 @@
 
 @interface AssetsMapProVC () <MKMapViewDelegate,UIGestureRecognizerDelegate>
 //@property (assign,nonatomic) MapShowMode mapShowMode;
-//@property (assign,nonatomic) CLLocationDistance nearestDistanceForMoment;
-//@property (assign,nonatomic) CLLocationDistance nearestDistanceForLocation;
+//@property (assign,nonatomic) CLLocationDistance mergedDistanceForMoment;
+//@property (assign,nonatomic) CLLocationDistance mergedDistanceForLocation;
 @property (strong,nonatomic) NSArray <PHAssetInfo *> *assetInfoArray;
 @property (strong,nonatomic) NSArray <PHAsset *> *assetArray;
 @property (strong,nonatomic) NSArray <NSArray <PHAsset *> *> *assetsArray;
@@ -121,10 +121,10 @@
     _assetArray = assetArray;
     switch (self.settingManager.mapShowMode) {
         case MapShowModeMoment:
-            self.assetsArray = [GCLocationAnalyser divideLocationsInOrderToArray:(NSArray <id<GCLocationAnalyserProtocol>> *)assetArray nearestDistance:self.settingManager.nearestDistanceForMoment];
+            self.assetsArray = [GCLocationAnalyser divideLocationsInOrderToArray:(NSArray <id<GCLocationAnalyserProtocol>> *)assetArray mergedDistance:self.settingManager.mergedDistanceForMoment];
             break;
         case MapShowModeLocation:
-            self.assetsArray = [GCLocationAnalyser divideLocationsOutOfOrderToArray:(NSArray <id<GCLocationAnalyserProtocol>> *)assetArray nearestDistance:self.settingManager.nearestDistanceForLocation];
+            self.assetsArray = [GCLocationAnalyser divideLocationsOutOfOrderToArray:(NSArray <id<GCLocationAnalyserProtocol>> *)assetArray mergedDistance:self.settingManager.mergedDistanceForLocation];
             break;
         default:
             break;
@@ -180,13 +180,18 @@
     
 }
 
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    self.assetInfoArray = self.assetInfoArray;
+}
+
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
     if(toInterfaceOrientation == UIInterfaceOrientationPortrait || toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown){
         locationInfoBarHeight = 150;
-        locationInfoBar.frame = CGRectMake(0, -locationInfoBarHeight, ScreenWidth , locationInfoBarHeight);
+        locationInfoBar.frame = CGRectMake(5, -locationInfoBarHeight - 40, ScreenWidth - 10 , locationInfoBarHeight);
     }else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight){
         locationInfoBarHeight = 90;
-        locationInfoBar.frame = CGRectMake(0, -locationInfoBarHeight, ScreenHeight , locationInfoBarHeight);
+        locationInfoBar.frame = CGRectMake(5, -locationInfoBarHeight - 40, ScreenHeight - 10, locationInfoBarHeight);
     }
 }
 
@@ -479,31 +484,38 @@
 
 - (void)initLocationInfoBar{
     locationInfoBarHeight = 150;
-    locationInfoBar = [[LocationInfoBar alloc] initWithFrame:CGRectMake(0, -locationInfoBarHeight, ScreenWidth , locationInfoBarHeight)];
+    locationInfoBar = [[LocationInfoBar alloc] initWithFrame:CGRectMake(5, -locationInfoBarHeight - 40, ScreenWidth - 10, locationInfoBarHeight)];
     [self.view addSubview:locationInfoBar];
     [locationInfoBar setBackgroundColor:[[UIColor grayColor] colorWithAlphaComponent:0.6]];
     locationInfoBarIsHidden = YES;
     
-    UISwipeGestureRecognizer *swipeUpGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeUp:)];
+    UISwipeGestureRecognizer *swipeUpGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(locationInfoBarSwipeUp:)];
     swipeUpGR.direction = UISwipeGestureRecognizerDirectionUp;
     [locationInfoBar addGestureRecognizer:swipeUpGR];
 }
 
-- (void)swipeUp:(UISwipeGestureRecognizer *)sender{
+- (void)locationInfoBarSwipeUp:(UISwipeGestureRecognizer *)sender{
     [self hideLocationInfoBar];
 }
 
 - (void)showLocationInfoBar{
-    placemarkInfoBar.hidden = YES;
+    
+    if (mapShowModeBar.alpha || placemarkInfoBar.alpha) {
+        [UIView animateWithDuration:0.2 animations:^{
+            mapShowModeBar.alpha = 0;
+            placemarkInfoBar.alpha = 0;
+        }];
+    }
+    
     [UIView animateKeyframesWithDuration:1
                                    delay:0
                                  options:UIViewKeyframeAnimationOptionBeginFromCurrentState
                               animations:^{
                                   [UIView addKeyframeWithRelativeStartTime:0 relativeDuration:0.4 animations:^{
-                                      locationInfoBar.frame = CGRectMake(0, 20 + 10, ScreenWidth, locationInfoBarHeight);
+                                      locationInfoBar.frame = CGRectMake(5, 20 + 10, ScreenWidth - 10, locationInfoBarHeight);
                                   }];
                                   [UIView addKeyframeWithRelativeStartTime:0.4 relativeDuration:0.3 animations:^{
-                                      locationInfoBar.frame = CGRectMake(0, 20, ScreenWidth, locationInfoBarHeight);
+                                      locationInfoBar.frame = CGRectMake(5, 20, ScreenWidth - 10, locationInfoBarHeight);
                                   }];
                                   
                               }
@@ -519,17 +531,21 @@
                                  options:UIViewKeyframeAnimationOptionBeginFromCurrentState
                               animations:^{
                                   [UIView addKeyframeWithRelativeStartTime:0 relativeDuration:0.3 animations:^{
-                                      locationInfoBar.frame = CGRectMake(0, 20 + 10, ScreenWidth, locationInfoBarHeight);
+                                      locationInfoBar.frame = CGRectMake(5, 20 + 10, ScreenWidth - 10, locationInfoBarHeight);
                                   }];
                                   [UIView addKeyframeWithRelativeStartTime:0.3 relativeDuration:0.4 animations:^{
-                                      locationInfoBar.frame = CGRectMake(0, -locationInfoBarHeight, ScreenWidth , locationInfoBarHeight);
+                                      locationInfoBar.frame = CGRectMake(5, -locationInfoBarHeight, ScreenWidth - 10, locationInfoBarHeight);
                                   }];
                                   
                               }
                               completion:^(BOOL finished) {
                                   locationInfoBarIsHidden = YES;
+                                  [UIView animateWithDuration:0.2 animations:^{
+                                      mapShowModeBar.alpha = 1;
+                                      placemarkInfoBar.alpha = 1;
+                                  }];
                               }];
-
+    
 }
 
 #pragma mark Placemark Info Bar
@@ -566,7 +582,7 @@
             break;
         case 1:{
             placemarkInfoBar.totalTitle = NSLocalizedString(@"Area", @"");
-            totalArea = addedAnnotationsWithIndex.count * M_PI * pow(self.settingManager.nearestDistanceForLocation,2);
+            totalArea = addedAnnotationsWithIndex.count * M_PI * pow(self.settingManager.mergedDistanceForLocation,2);
             placemarkInfoBar.totalArea = totalArea;
         }
             break;
@@ -839,21 +855,29 @@
     [self.myMapView removeAnnotations:self.myMapView.annotations];
     
     [self.assetsArray enumerateObjectsUsingBlock:^(NSArray<PHAsset *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        PHAsset *asset = obj.firstObject;
+        EverywhereMKAnnotation *anno = [EverywhereMKAnnotation new];
+        PHAsset *firstAsset = obj.firstObject;
+        PHAsset *lastAsset = obj.lastObject;
+        anno.location = firstAsset.location;
+        
+        if (self.settingManager.mapShowMode == MapShowModeMoment) {
+            anno.annotationTitle = [firstAsset.creationDate stringWithDefaultFormat];
+        }else{
+            anno.annotationTitle = [NSString stringWithFormat:@"%@ ~ %@",[firstAsset.creationDate stringWithFormat:@"yyyy-MM-dd"],[lastAsset.creationDate stringWithFormat:@"yyyy-MM-dd"]];
+        }
+        
         NSMutableArray *ids = [NSMutableArray new];
         [obj enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [ids addObject:obj.localIdentifier];
         }];
-        EverywhereMKAnnotation *anno = [EverywhereMKAnnotation new];
-        anno.location = asset.location;
-        anno.annotationTitle = [asset.creationDate stringWithDefaultFormat];
         anno.assetLocalIdentifiers = ids;
+        
         [annotationsToAdd addObject:anno];
-        [self.myMapView addAnnotation:anno];
+        //[self.myMapView addAnnotation:anno];
     }];
     
     if (!annotationsToAdd || !annotationsToAdd.count) return;
-    //[self.myMapView addAnnotations:annotationsToAdd];
+    [self.myMapView addAnnotations:annotationsToAdd];
     addedAnnotationsWithIndex = annotationsToAdd;
 }
 
@@ -927,7 +951,7 @@
         NSMutableArray <MKCircle *> *circlesToAdd = [NSMutableArray new];
         
         [addedAnnotationsWithIndex enumerateObjectsUsingBlock:^(EverywhereMKAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            MKCircle *circle = [MKCircle circleWithCenterCoordinate:obj.coordinate radius:self.settingManager.nearestDistanceForLocation / 2.0];
+            MKCircle *circle = [MKCircle circleWithCenterCoordinate:obj.coordinate radius:self.settingManager.mergedDistanceForLocation / 2.0];
             if (circle) [circlesToAdd addObject:circle];
         }];
         
@@ -1029,7 +1053,7 @@
     [self updatePlacemarkInfoBar];
     
     if (self.settingManager.mapShowMode == MapShowModeLocation){
-        maxDistance = self.settingManager.nearestDistanceForLocation * 4.0;
+        maxDistance = self.settingManager.mergedDistanceForLocation * 4.0;
     }
     
     // 移动地图到第一个点
@@ -1077,9 +1101,13 @@
         [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
         [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
         
+        //pinAV.image = imageView.image;
         pinAV.leftCalloutAccessoryView = imageView;
         pinAV.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
         return pinAV;
+        
+        //MKAnnotationView *annoView = (MKAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"annoView"];
+        
     }else if([annotation isKindOfClass:[MKUserLocation class]]){
         MKAnnotationView *view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"userLocation"];
         view.canShowCallout = NO;

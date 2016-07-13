@@ -24,4 +24,7 @@
 @property (strong,nonatomic) NSString *address;
 @property (strong,nonatomic) UILabel *addressLabel;
 
+@property (strong,nonatomic) UIImageView *imageView;
+
+
 @end
