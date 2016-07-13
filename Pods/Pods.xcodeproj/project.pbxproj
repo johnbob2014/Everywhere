@@ -7,66 +7,221 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0528C3367FCA3B4AAEDC555C96520FD3 /* JTCalendarDayView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7959C6EC6ECEB019B4C2B8750CFAE69E /* JTCalendarDayView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		09EF9593BEFE8076642BDAF465470F89 /* JTCalendarSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = E65CDFFFB2DAD77722DC923A5EEA8FF7 /* JTCalendarSettings.m */; };
-		0E330EE7DC1E1266DAC29510C553CF55 /* JTCalendarManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 347855CC268417836A815CC2C8623049 /* JTCalendarManager.m */; };
-		0FB0AF668D6FCCACCD066E3C19618288 /* JTVerticalCalendarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 08B50780D1482D05E624536AD15DCDA9 /* JTVerticalCalendarView.m */; };
-		10CD137E4CDFCD5819F196C6FD3485D4 /* JTHorizontalCalendarView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE5CD8955827242C419839E42C1F19EB /* JTHorizontalCalendarView.m */; };
-		1D1147AEC7E665BED21D80587C63EA71 /* JTCalendarWeekDay.h in Headers */ = {isa = PBXBuildFile; fileRef = 781CB0CED90ABD3DE98A0764073EBDBC /* JTCalendarWeekDay.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1F1FE08B1A94FCC6FA9ABE61581F243A /* JTCalendarPageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5580A606983E9118E4B1667074445FAC /* JTCalendarPageView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		327CC78692961B5A7106D39D23CAF155 /* STPopupLeftBarItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 309A70A34B5E0E62DE601325BC72FC7A /* STPopupLeftBarItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		01C00D70A86767152240D9B4BA2520B3 /* RETableViewItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 22A922B94C3ED4DC59C645A7BC205CB3 /* RETableViewItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0528C3367FCA3B4AAEDC555C96520FD3 /* JTCalendarDayView.h in Headers */ = {isa = PBXBuildFile; fileRef = 090337E92052DEAC5154E576029AE218 /* JTCalendarDayView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0686F69869984C5B3E9EF03834E330C3 /* UIButtonBarArrowRight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8A20F98600CA363959EE5C75620EF8BE /* UIButtonBarArrowRight@2x.png */; };
+		079DA13F950019FFB07A27F103E80E2B /* REValidation-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C9E954488548DC22ED4ED472B35C1AB7 /* REValidation-dummy.m */; };
+		096363544378D6634782A0CEA7CABC79 /* RETableViewBoolCell.h in Headers */ = {isa = PBXBuildFile; fileRef = B0B426F522CEAEDD53411D3F00551F71 /* RETableViewBoolCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		09EF9593BEFE8076642BDAF465470F89 /* JTCalendarSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 3234ADB0E974146DA8E06C3F573B97A5 /* JTCalendarSettings.m */; };
+		0D6F593EFF8F3A916474EC0126D7CB89 /* RETableViewPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F9478198605AAFD28B00D9BEFA3D386 /* RETableViewPickerCell.m */; };
+		0E03F3D1274250FBD79DCD1769D48826 /* RETableViewFloatCell.h in Headers */ = {isa = PBXBuildFile; fileRef = C6CC89CC20C8D1FBA1C788FFE6D8A756 /* RETableViewFloatCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0E330EE7DC1E1266DAC29510C553CF55 /* JTCalendarManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7334B7ADFD4887E3668FE80658654CD8 /* JTCalendarManager.m */; };
+		0FB0AF668D6FCCACCD066E3C19618288 /* JTVerticalCalendarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 196C6C2C81F082DA26DE17BBAAAFA04F /* JTVerticalCalendarView.m */; };
+		10CD137E4CDFCD5819F196C6FD3485D4 /* JTHorizontalCalendarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 541DC5D4221D0DAA170D7D3FB9221E8E /* JTHorizontalCalendarView.m */; };
+		13C652AF2237CA258730CC6000858246 /* RETableViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D5406058BA3E52A1506BB9B6796082E3 /* RETableViewManager.m */; };
+		15AE4EFDF2B38C12CF84E62ECE18C906 /* REActionBar.h in Headers */ = {isa = PBXBuildFile; fileRef = 36610E64D33851EDF6E956DAA17A3077 /* REActionBar.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		178E8541B3F74BDBB00C950098D457C7 /* RELongTextItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CBBF2412ECD098591F812A2A833ABDBF /* RELongTextItem.m */; };
+		19302EAD332AA8386B6E7926AC2FDFC2 /* RETableViewTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C39D5D50E6DE08E0BA16A0AA27472459 /* RETableViewTextCell.m */; };
+		1A90928D62E926CDEDACCE71596B90E0 /* REDateTimeItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 2510A5E1EE72C25170B1DB5BB51F64BE /* REDateTimeItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1CEC67D9D40B6B8307DFF0A71A51BC40 /* RETableViewCellStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = 88C37250523A1A9999CE31F2FF06A491 /* RETableViewCellStyle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1D1147AEC7E665BED21D80587C63EA71 /* JTCalendarWeekDay.h in Headers */ = {isa = PBXBuildFile; fileRef = B91686E4C9BE760C1B16761033935AB7 /* JTCalendarWeekDay.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1F1FE08B1A94FCC6FA9ABE61581F243A /* JTCalendarPageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C4FCA6EE804085E30E0F57D5A98BCCE /* JTCalendarPageView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1F9D0ABB9AA45FE880C97943A11CECA9 /* Card_Back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3154C6EE3BF864577A5BE9107B203B5D /* Card_Back@2x.png */; };
+		2035E7D7D6A8B526B39FA9A2C57A4583 /* RETableViewSegmentedCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E278012DFE09FB9CE38BC17F8392B2C /* RETableViewSegmentedCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		213503D7DC1C379ABBC3E6EF1653709F /* RETableViewInlinePickerCell.h in Headers */ = {isa = PBXBuildFile; fileRef = FBC00C9894C0F0E958205DCFA0F8CE2F /* RETableViewInlinePickerCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2289616C1CC7156D50416102445058B1 /* RETableViewOptionCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8ABB6624D381F2CB5391DB4336B3D0 /* RETableViewOptionCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2B4E6428CE62E590B99373F26F878EBC /* RELengthValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 52625746868AA7D5B354391F3E46BBB0 /* RELengthValidator.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		2D701D8C4F2B634247E5004F8469F1A6 /* Card_Visa@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50446F0FC7EB7A236C7A00400257ACF7 /* Card_Visa@2x.png */; };
+		2E91EADC13C9B59123B8C6F9963BF993 /* NSString+RENumberFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = C8AC164CA78C8D73142007E8FF9A5FAC /* NSString+RENumberFormat.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		30E917345D07300C8B3CE1F4AF01A1C6 /* RENumberItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 21CAB78B30CDF17D851101FBDB1BF886 /* RENumberItem.m */; };
 		329D0A799D9DD2AB0ACDBAD7CC206215 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */; };
-		382C4C19629155EDA7D0186475BCC04A /* JTCalendar-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AFB55B19D521208997499EEB68C086F /* JTCalendar-dummy.m */; };
-		3B0937526EF2C2D45E292C73CD7EBC42 /* JTCalendarDay.h in Headers */ = {isa = PBXBuildFile; fileRef = 621632710277E9C9A02D2F4124E777AC /* JTCalendarDay.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		3E0FD51A1522DEA316D2AC75704460D0 /* JTVerticalCalendarView.h in Headers */ = {isa = PBXBuildFile; fileRef = 35E6C638234A9314EA023703530A8167 /* JTVerticalCalendarView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		442C8B3A54F78E4376BB67A47BDF0B55 /* UIViewController+STPopup.h in Headers */ = {isa = PBXBuildFile; fileRef = 70E91A6093B73CC1066615F96DEC12B3 /* UIViewController+STPopup.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4949573B6A967C93A9D060D656AEF3D7 /* STPopupController.m in Sources */ = {isa = PBXBuildFile; fileRef = B505B3123BA0561F50CB05A82B127A6A /* STPopupController.m */; };
-		4DCEE102AAEF72CE38E475188BA7CE47 /* JTCalendarPage.h in Headers */ = {isa = PBXBuildFile; fileRef = 1DABC8105AA837DD191B74C388743489 /* JTCalendarPage.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4FC25108739F9E0C7259776D97A1336A /* JTCalendarWeekView.m in Sources */ = {isa = PBXBuildFile; fileRef = 02074F6113B22C940C06838398B16EC9 /* JTCalendarWeekView.m */; };
-		50B5320A8060BAFF68DEA0AEAD09DDE0 /* JTCalendarWeekDayView.h in Headers */ = {isa = PBXBuildFile; fileRef = 754FEA8315ED70DD33A04D3BF5F07A29 /* JTCalendarWeekDayView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5295530DC9D21F509F493367B5CBF0F9 /* STPopupNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F228F76CFA4E191B82487A5083F7C4F /* STPopupNavigationBar.m */; };
-		52DC668B0B68A66B0FA6187EAB904AF2 /* JTCalendarWeekView.h in Headers */ = {isa = PBXBuildFile; fileRef = 9CC6E7D249ACF67E68BA8289C6C3EFE9 /* JTCalendarWeekView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		56817EDF817762843F04249DB39FBEDC /* JTCalendarMenuView.h in Headers */ = {isa = PBXBuildFile; fileRef = 4237ADC0DC2A6FA08B797ECBEC31B818 /* JTCalendarMenuView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		56E57075B7E9918AAE1FC3C152BB4124 /* JTHorizontalCalendarView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B408C3A492F5E08D3BAC00FE667FAF6 /* JTHorizontalCalendarView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5939FA30BD11B334E75DE208F89482C2 /* JTCalendar.h in Headers */ = {isa = PBXBuildFile; fileRef = 21AF56402A562610B3E345C37B95C474 /* JTCalendar.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5C378E9457D6A5632634E072AD14CECD /* JTCalendarWeek.h in Headers */ = {isa = PBXBuildFile; fileRef = 1453C4CAA3AD7B83A7B4C84CAF814942 /* JTCalendarWeek.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		65D13D4E0D034836C35C629BED24DB25 /* JTDateHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E7657327E5E49C92AA1383EC4DC17B8 /* JTDateHelper.m */; };
-		67CF939ADF7F27345C861D28E57EB29E /* JTCalendarMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 93623C44C301A55AC2A87D3BD0EB7CA5 /* JTCalendarMenuView.m */; };
-		683F036CCC6BC4948C9312E420B5214E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */; };
-		6C8DE5C21114CFC91B5F829D6975A85B /* STPopup.h in Headers */ = {isa = PBXBuildFile; fileRef = 86043E81BA344FE2FF9FF8D419CCD30D /* STPopup.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6D797980E69D19629DC395537E245912 /* JTCalendarScrollManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D66F2D4AA8EE11446C337835298C38BE /* JTCalendarScrollManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C0D0094A799BC387C6F579826349EE /* JTContent.h in Headers */ = {isa = PBXBuildFile; fileRef = D1686942AB1CB0571DB69397C3EDACF5 /* JTContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		78108C0C0349E286C4DBD1F0F8158820 /* JTCalendarScrollManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 307AA17503E2BA721E2EC0A936DA284C /* JTCalendarScrollManager.m */; };
-		85A33D486B9C51FCBD8653FD28A53F09 /* JTCalendarDelegateManager.h in Headers */ = {isa = PBXBuildFile; fileRef = C48D4A34CA595952CE5EE8186D586C98 /* JTCalendarDelegateManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		89341C2F668C46B2A8913248EC3C30D2 /* UIResponder+STPopup.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D258AEF92A7B0E86521FD167EF55E94 /* UIResponder+STPopup.m */; };
-		8DDDA12A4DB4B647F2F15ADA76E25677 /* JTCalendarSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C91AE72DC89531DC5C563DA45E99FD3 /* JTCalendarSettings.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		99253DC7829CA8D9874F0E0AA7A9AE2F /* JTCalendarDayView.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B047931B1E4B172DC5337113016852 /* JTCalendarDayView.m */; };
-		A0A8FACCEB7D1F11AB6C7E1F5D0CA52A /* STPopupNavigationBar.h in Headers */ = {isa = PBXBuildFile; fileRef = EAF668F5AD841518A3C17CF4015F7775 /* STPopupNavigationBar.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A533E321EE9E3F2ADE0381B6FAA16C80 /* STPopupController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D28B2EE40B5499B7109BC6BC7AB371F /* STPopupController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A54F14447F9A26EEBBC08FAD71F60D05 /* JTCalendarDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = DBB43BF361A7FE3EC8418B42632E3280 /* JTCalendarDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A61D96D89F1DE6FCE162C38DB51C22F3 /* JTCalendarPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 29272D0A1F3D94B99FCF65F51C7863BF /* JTCalendarPageView.m */; };
-		A91C5A65426633EF9E9A8E80832CD896 /* UIResponder+STPopup.h in Headers */ = {isa = PBXBuildFile; fileRef = 9384A53D65B13EF004FEB989BDD2C2CB /* UIResponder+STPopup.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		AA41C6AD136CA0438F9924E41334E9DE /* JTMenu.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C6C886A1D0B69017260D44124BBDC16 /* JTMenu.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B39FD48C40F2AB6768E1A882CB38DF42 /* Pods-Everywhere-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D36FA489620339648E06B02504E73 /* Pods-Everywhere-dummy.m */; };
-		C57162716AFEEEE60EA1CA5944DA747A /* UIViewController+STPopup.m in Sources */ = {isa = PBXBuildFile; fileRef = 34818BC5F9A30D427DFC3E99107C176C /* UIViewController+STPopup.m */; };
-		C7A68641A6946885A5884955838B7DFF /* JTCalendarManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 4DCE72FF9415FB40D82C3C854012135C /* JTCalendarManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CCBB5B8D13DB00EA96A942E966D16C7D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */; };
-		D0D1D8260732EFA47EA8F3F6DFFA518F /* JTDateHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = BB3F780938BC99DB9C7D4C55F4F95CB8 /* JTDateHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D3D29E390B4B407CCD220B4F0842AD14 /* JTCalendarDelegateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 09F214EE169910F28D4F33F947E2686F /* JTCalendarDelegateManager.m */; };
-		E946CEFC565F73C21AAB808A66D6BAD8 /* STPopupLeftBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B086A64A52A9A9AF103B069B770A0B /* STPopupLeftBarItem.m */; };
-		EB244A1717AE69784B9B2E0E45EFED77 /* JTCalendarWeekDayView.m in Sources */ = {isa = PBXBuildFile; fileRef = B843C77B4D9F02F080BD073BA04498C6 /* JTCalendarWeekDayView.m */; };
-		ECE3E42CE820946B8483275F9460111D /* STPopup-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A3BFA1E23040848DD8ED3793986CEEE /* STPopup-dummy.m */; };
+		33C27A84ADA1682F0D78E0B31DE5762C /* REValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DCC02F7EC6FEFEDF9A42691D7E1AE6B /* REValidator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		342F92D3054F0586229E5C9EF32F7D2E /* REInlineDatePickerItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 54C63E679938475B3CB6563AACEDF82D /* REInlineDatePickerItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		345444457FB0E9EC2CF4A5B27699128E /* REInlinePickerItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AF3540337505E4BE9E2F17E75D4A7745 /* REInlinePickerItem.m */; };
+		377345B06C958B487822256F8F48DDD2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */; };
+		382C4C19629155EDA7D0186475BCC04A /* JTCalendar-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C8E902B74A76AB349663E9159046AD7 /* JTCalendar-dummy.m */; };
+		3B0937526EF2C2D45E292C73CD7EBC42 /* JTCalendarDay.h in Headers */ = {isa = PBXBuildFile; fileRef = E0256DE97A21B34A3936AC6E18ABE177 /* JTCalendarDay.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3BCC89A41A92ED7BA07191C841B13EA3 /* REPlaceholderTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = DB128117ED50A6E0174EE552131C1225 /* REPlaceholderTextView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3C61921B913B9DF235CB1C8588B964DD /* RELengthValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = B3AD3FAF4F93D53307291E0D2FDA2FD1 /* RELengthValidator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3D9A5CACBE102D3B550995EBCFF6C6B8 /* RETableViewOptionsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6459B6432BFE2B92D3EEF6FE49DF557E /* RETableViewOptionsController.m */; };
+		3E0FD51A1522DEA316D2AC75704460D0 /* JTVerticalCalendarView.h in Headers */ = {isa = PBXBuildFile; fileRef = D592B49315B37164ACA9CFDBAB3CC085 /* JTVerticalCalendarView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3EE92FAFC365F902FFD760AEF2213983 /* Card_Amex@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 95698C9A84867CAA14C3257F430AEB58 /* Card_Amex@2x.png */; };
+		3F31552FDF27EACEC2294C4A43BD89EC /* REEmailValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEDDDD2D92ACF5EB0DA39F86CA1F3C0 /* REEmailValidator.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		409230612B3FF3A721E0E5783A904413 /* RETableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9828B0E87A6C2E910FBAF0BDC1CB6237 /* RETableViewCell.m */; };
+		40C49195770F6F30BC464C9DB2B417AE /* STPopupNavigationBar.h in Headers */ = {isa = PBXBuildFile; fileRef = 735BD602E9D04576B09A75124D2826CC /* STPopupNavigationBar.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		41671641F20B6A1FA66D753BC88956B6 /* NSString+RETableViewManagerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = AC469CF101EE0BC157CBD73DBF226A1C /* NSString+RETableViewManagerAdditions.m */; };
+		467F075673E592B6FA7DA8CCF70656ED /* UIResponder+STPopup.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C4388AAFD71DCEEE75CD3BDB121C6B0 /* UIResponder+STPopup.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		47DA8BB8E1130B9541351CCC28AB2215 /* RETableViewFloatCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FE90E0A3E3FFA95DAC0BA824EC8BAA30 /* RETableViewFloatCell.m */; };
+		49191FCB1DF1C9F82156D491EE79A59F /* Card_Visa.png in Resources */ = {isa = PBXBuildFile; fileRef = 706A648A03C152C4C850DF42F93F4400 /* Card_Visa.png */; };
+		4BF21716C9EA49561925EA89CE870F49 /* RETableViewCellStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = AF59E9A87D8FB292BD845BBCF0164CBF /* RETableViewCellStyle.m */; };
+		4DCEE102AAEF72CE38E475188BA7CE47 /* JTCalendarPage.h in Headers */ = {isa = PBXBuildFile; fileRef = CFC3C055D57F88DBF20D479E737FFD6C /* JTCalendarPage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4E48846AD4C2D36BCD06C08613A06C24 /* Pods-Everywhere-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B91D36FA489620339648E06B02504E73 /* Pods-Everywhere-dummy.m */; };
+		4FC25108739F9E0C7259776D97A1336A /* JTCalendarWeekView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F0851765A495DA9DA8B0366171AC27 /* JTCalendarWeekView.m */; };
+		50B5320A8060BAFF68DEA0AEAD09DDE0 /* JTCalendarWeekDayView.h in Headers */ = {isa = PBXBuildFile; fileRef = BA153F334D916F01C4D8D6C8F841786B /* JTCalendarWeekDayView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		52C3DBD12C9480409E444B74A745FFAB /* REBoolItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 116443395363E88E670DB0B425A2F389 /* REBoolItem.m */; };
+		52DC668B0B68A66B0FA6187EAB904AF2 /* JTCalendarWeekView.h in Headers */ = {isa = PBXBuildFile; fileRef = 8747BCCF5F42369D71EFAC649D5A146F /* JTCalendarWeekView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		56817EDF817762843F04249DB39FBEDC /* JTCalendarMenuView.h in Headers */ = {isa = PBXBuildFile; fileRef = C6A2FC8ECD3F235E70126758F3C9D3E5 /* JTCalendarMenuView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		56E57075B7E9918AAE1FC3C152BB4124 /* JTHorizontalCalendarView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A7989EB8F02AED1D1219E0FB6090BAE /* JTHorizontalCalendarView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		57496E2031D877F07B261DBADDB8291F /* RETableViewPickerCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 7462BACD3B4514DE0D21E0FEEE11534F /* RETableViewPickerCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		59398F4CFC562DFED009904C74A882F6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */; };
+		5939FA30BD11B334E75DE208F89482C2 /* JTCalendar.h in Headers */ = {isa = PBXBuildFile; fileRef = 53F485C8F1CB153201D1100B4F6D8024 /* JTCalendar.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5B8FBE97F4F805E89367B6C32DF1912B /* RETableViewManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 89FEA2AB14DB8AEF7376A3C714BDE80F /* RETableViewManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5C378E9457D6A5632634E072AD14CECD /* JTCalendarWeek.h in Headers */ = {isa = PBXBuildFile; fileRef = 69B60CB49504F05D836664CE6261A742 /* JTCalendarWeek.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6037BDD4CFFAD794D2F13A86256CA273 /* RETableViewCreditCardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2427FC718288B779E3C7DCAC69A0B42A /* RETableViewCreditCardCell.m */; };
+		65D13D4E0D034836C35C629BED24DB25 /* JTDateHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A9B13A72053C9DDE34536B0A87348A74 /* JTDateHelper.m */; };
+		67CF939ADF7F27345C861D28E57EB29E /* JTCalendarMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = DDF93A5F712038D2541482D6CEA2F55A /* JTCalendarMenuView.m */; };
+		6A9CA9128A94B2BB0BA3F80468C1F2E3 /* RETableViewCreditCardCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5C5BFCBFFD63BE020598188012B376EB /* RETableViewCreditCardCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6AE223E6C2FD00291F217DBDB8303C2B /* STPopupNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EE87F981D9E3E9B41D534F23C5B526A /* STPopupNavigationBar.m */; };
+		6D797980E69D19629DC395537E245912 /* JTCalendarScrollManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 5FA11CDB82B1480F9543DADF5138CD4C /* JTCalendarScrollManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6E19D9E8E2182F4837E69EEF76425835 /* RETableViewInlinePickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 41743D20CE40D8817E9AD112AEC9D4A4 /* RETableViewInlinePickerCell.m */; };
+		6FFB7F0B665C48F5F215CC45B60C5956 /* STPopupLeftBarItem.h in Headers */ = {isa = PBXBuildFile; fileRef = FBA89C243F3888F72AC9C77027F542F2 /* STPopupLeftBarItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		71C0D0094A799BC387C6F579826349EE /* JTContent.h in Headers */ = {isa = PBXBuildFile; fileRef = 715684CAF4B97E1BFB75366070AE969B /* JTContent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		74C3BBBC9840DF04B586D1E3486D892B /* REFloatItem.m in Sources */ = {isa = PBXBuildFile; fileRef = D1665D70BCED9FEA16EA81232108F907 /* REFloatItem.m */; };
+		78108C0C0349E286C4DBD1F0F8158820 /* JTCalendarScrollManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 227BBCE11952BC3134F809EB75356D9E /* JTCalendarScrollManager.m */; };
+		788D3A16FC7409BF02E2F6256479BC85 /* RENumberItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 0E1F17E5AA5F34A19462ED229085878F /* RENumberItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7C2DF9C8D38BC79A98665672ACD56EB6 /* RETableViewDateTimeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A855D72070AE8E14C0B8BE5BB37B56B /* RETableViewDateTimeCell.m */; };
+		7D2EA5AFC64E9B5D0D37D95EFB05B04C /* REValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 99BB13CF817958199F56E28BBF39F01C /* REValidator.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		7D630FD67E64F3485D3E57083139950A /* RETableViewOptionsController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CA4D87FC903BD0261F23510F021550A /* RETableViewOptionsController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7E7198F785199226E66D55C0880F7F64 /* STPopupLeftBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6786689EB19015848504D10923292E1F /* STPopupLeftBarItem.m */; };
+		812138CD172B0032D2797092AFDAAB7B /* UIViewController+STPopup.h in Headers */ = {isa = PBXBuildFile; fileRef = AA0A9888023333CA13053342069A8E7D /* UIViewController+STPopup.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		85A33D486B9C51FCBD8653FD28A53F09 /* JTCalendarDelegateManager.h in Headers */ = {isa = PBXBuildFile; fileRef = AF586C21B06CF277FE1472E8F0A51820 /* JTCalendarDelegateManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8650AF7FD1EE25D814F74773BD7A4AA2 /* Card_Discover.png in Resources */ = {isa = PBXBuildFile; fileRef = 760AE5EA9119AEBEACFE70299A1A1936 /* Card_Discover.png */; };
+		8723BCD4BE7C5E09DE997A3C9D12241C /* REPickerItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 94FF39AFF2682CA6E1461DECC7D91500 /* REPickerItem.m */; };
+		89A927BCD06BCAED5AAF87FBFE00E131 /* Ribbon_Expired.png in Resources */ = {isa = PBXBuildFile; fileRef = C5428F36D973439BE5FBB5679C31D5C5 /* Ribbon_Expired.png */; };
+		8DDDA12A4DB4B647F2F15ADA76E25677 /* JTCalendarSettings.h in Headers */ = {isa = PBXBuildFile; fileRef = CAEE627BE188E4A8102775C63F8A5A51 /* JTCalendarSettings.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8E9FD9685CE9DD77371E8E0FD2FD92DC /* REPickerItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 5026299394BD83D4C0BC0AF9699C5327 /* REPickerItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		94311F176A406A4A9B500E21829E746B /* REMultipleChoiceItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6BF4C40D058D1C58CDDEA54D1A20351F /* REMultipleChoiceItem.m */; };
+		9619229C012BFA9070F4C90A2FC0BC7D /* UIButtonBarArrowRight.png in Resources */ = {isa = PBXBuildFile; fileRef = 7ED7103EE21601D9CD75F45AE618743F /* UIButtonBarArrowRight.png */; };
+		96938CD601A9408B82E3E8CD6025446A /* Card_Discover@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D04396C48EAEBA3E980498D882257DA4 /* Card_Discover@2x.png */; };
+		9922E185B8C5F91565827EA04633D1BB /* Card_Back.png in Resources */ = {isa = PBXBuildFile; fileRef = D8F4800796E2319BF4CDBED7AB8EE66C /* Card_Back.png */; };
+		99253DC7829CA8D9874F0E0AA7A9AE2F /* JTCalendarDayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CA9737E7E71A05CBB3D5D135C57646A /* JTCalendarDayView.m */; };
+		9E0287318522400A2B69550A9CF52B62 /* REFormattedNumberField.m in Sources */ = {isa = PBXBuildFile; fileRef = A8F90A82ECA7E686F7DD451D89A4708D /* REFormattedNumberField.m */; };
+		9EDAEE0F45A699A68DC28C66AC808066 /* RETableViewTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = CDB9588A4964ADF661F7B06DBF071B43 /* RETableViewTextCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A030B61521045626DCEA5D36212B257A /* RETableViewManager-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = E39767523FA6D39B3CFF0C2762DAD751 /* RETableViewManager-dummy.m */; };
+		A15AB0C096DD645230BFF9F63BC022D3 /* REValidation.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A8A12B6C2545140E394B80F4235E085 /* REValidation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A3145914B6CF62CF869F6B9BC0B59DA3 /* REPresenceValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 2BC7A3461CF9927ECDF8FD89E044C62F /* REPresenceValidator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A3232C48A6AC57EF3AC7DCE143D174FD /* NSString+RENumberFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E4726D403421AA87F595FF1A7D2635A /* NSString+RENumberFormat.m */; };
+		A4A85B60C29456B81D274C0298A9595D /* UIButtonBarArrowLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = CF40BC5488B724C2CEEA9F472EB435D7 /* UIButtonBarArrowLeft.png */; };
+		A54F14447F9A26EEBBC08FAD71F60D05 /* JTCalendarDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A4AF0683261821FA4AC10801AB15DA /* JTCalendarDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A61D96D89F1DE6FCE162C38DB51C22F3 /* JTCalendarPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1588BF39F286503EF4F035CBD443BB99 /* JTCalendarPageView.m */; };
+		A70FD9EE475B5CC644FB35E967FB3603 /* Card_Mastercard@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A6C6445CEAE90839D3EB27F46E5FC823 /* Card_Mastercard@2x.png */; };
+		AA41C6AD136CA0438F9924E41334E9DE /* JTMenu.h in Headers */ = {isa = PBXBuildFile; fileRef = 43BFF0A46C418883BA958486DF73DBCF /* JTMenu.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AC52C1651DCC19DDD866731819021325 /* REURLValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 2692CE65704392E224084BFC705CC35D /* REURLValidator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AC88FF6AB680A808D9DBF2AF825E2F82 /* RERadioItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8917D46DA37236A65232B0F6ABE35206 /* RERadioItem.m */; };
+		ACCAA85864C3E5EF6CC17974E7159A1A /* STPopupController.h in Headers */ = {isa = PBXBuildFile; fileRef = 6F46BB0E83A691F4FE243ED4EC0E07A8 /* STPopupController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ACEB99F082ACDB56B38C213133CD04C8 /* REFormattedNumberField.h in Headers */ = {isa = PBXBuildFile; fileRef = 26AF2D18A6DDFEFDC487FFE0A6D64002 /* REFormattedNumberField.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AEEA42692650165D3C7BF1CEAAF0792B /* Card_Stack.png in Resources */ = {isa = PBXBuildFile; fileRef = F7F0A616E89146DE57E53F7FE34F50D8 /* Card_Stack.png */; };
+		B1043FD21D0BB64798D4E294FC87BADC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */; };
+		B272C3EC5E508B255CB31CFF35329E47 /* RETableViewBoolCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8573E478FD20F8BDE85D7772211B9100 /* RETableViewBoolCell.m */; };
+		B29CA961FBE49C8502EC79803CAE5A32 /* NSError+REValidation.h in Headers */ = {isa = PBXBuildFile; fileRef = 3E85DAA9CEAD6BE2BCC6C5F13CED13F1 /* NSError+REValidation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B3E9EEF1C671B742E9EB837B8B6721FD /* REDateTimeItem.m in Sources */ = {isa = PBXBuildFile; fileRef = EDF8EE32DFA3DA6BDC6B9ED0A8052C8F /* REDateTimeItem.m */; };
+		B89B321BA755C269808BA000AC91F525 /* STPopupController.m in Sources */ = {isa = PBXBuildFile; fileRef = 58CFD5268334145F7842CEAA87871A91 /* STPopupController.m */; };
+		B92C5836A07DB62502648F9F35EB3E4B /* RETableViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 04611A3F1C0112902AE6C7081F94E412 /* RETableViewItem.m */; };
+		BA722F44318765BE6C10441C8F031C4E /* RETableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = E1BD4391C1073F27DFA2C30D3E5FEFDD /* RETableViewCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BC486D1A60D73AA7B0FF527FAF313D61 /* RETableViewLongTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = D1B291432213BD50AF0774497F5B5E15 /* RETableViewLongTextCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BD23389D39E9505BEB7BC45FBB60CA31 /* RETableViewInlineDatePickerCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 16A4EBE7F12C9EDFDDE7E204DCE25471 /* RETableViewInlineDatePickerCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BECF66DFE8CA18B169320A20DB21E853 /* RETableViewSection.h in Headers */ = {isa = PBXBuildFile; fileRef = 32A38D07F54B373F5C55A8683CD983B5 /* RETableViewSection.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C0D3BF3C56691228C736B21789A52146 /* NSBundle+RETableViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 422E8A40D59BB82BA1FBC2AA9A364658 /* NSBundle+RETableViewManager.m */; };
+		C13BDED9B5B5E1F5124227BF7509969A /* RECreditCardItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A8ED0BFD45681F803F2CE8DD4AF90E6 /* RECreditCardItem.m */; };
+		C3060C8A64852CABD2CBC155EC1295EA /* RETableViewNumberCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6C6C0C0262B355BF8112928C7927C4 /* RETableViewNumberCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C35550799650E5E13B6B7CD488849EB2 /* RETableViewInlineDatePickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B18B071A521FA27AD4F2B03C14C74FE /* RETableViewInlineDatePickerCell.m */; };
+		C37D7192A9823195E62C36E4DD7D32C1 /* REValidation.m in Sources */ = {isa = PBXBuildFile; fileRef = 506C5443CB8D0E206EB52CDF7E5045A8 /* REValidation.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		C63CC2855C0799EAA190517628F6E75F /* REActionBar.m in Sources */ = {isa = PBXBuildFile; fileRef = E5982CE80B49F5110F56871D14C8DCAE /* REActionBar.m */; };
+		C7A68641A6946885A5884955838B7DFF /* JTCalendarManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 997A0A83BB9D354779E3B66279346FEB /* JTCalendarManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C839DF620A0E6B12ED7160EB769EC76F /* NSError+REValidation.m in Sources */ = {isa = PBXBuildFile; fileRef = 170653E3B5C1324E49494F71B4716EC7 /* NSError+REValidation.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		C93E4761BD9BF84157006D7F8AA99388 /* RESegmentedItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ACE19793382513623E63902BC5C860 /* RESegmentedItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB0B0FABBF80DF634DBBF3188258940F /* RETableViewLongTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF11FF1E48559B3F3A60260D7DE2477C /* RETableViewLongTextCell.m */; };
+		D0289CA5425B26A28CB60687A6785B2A /* UIViewController+STPopup.m in Sources */ = {isa = PBXBuildFile; fileRef = B7F9C37E3FBF7D6132B5B7C3E5553CF9 /* UIViewController+STPopup.m */; };
+		D0D1D8260732EFA47EA8F3F6DFFA518F /* JTDateHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B69741A2FBD6DBB26B98A3B74F5982D /* JTDateHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D222A286F2ABF45054F0731DD8DFD672 /* RESegmentedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AD0EBD47DD3305F45D65D81AD7EA779E /* RESegmentedItem.m */; };
+		D3D29E390B4B407CCD220B4F0842AD14 /* JTCalendarDelegateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 44295A00B97245BF4D599B2FAA05ACC6 /* JTCalendarDelegateManager.m */; };
+		D3FD550E2EB1E69E82104F82694DE116 /* RECreditCardItem.h in Headers */ = {isa = PBXBuildFile; fileRef = BCD42AF4106C94121CF41143DFD74BC0 /* RECreditCardItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D84A1C87B36A514B3C1013D26B4FE6B7 /* REMultipleChoiceItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 5C9599060A48F45FD1352E1659C76638 /* REMultipleChoiceItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D8DC6C514C4B8F5BD4DB0A52269930D1 /* RERadioItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 5FD64EA1D810765E6705DEB83F09B514 /* RERadioItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DA99E19DB7BEE1EDFFF9F92C49932EC0 /* REEmailValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = F715CCCC5CAA52CCBA20BF39B41F6033 /* REEmailValidator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DB1817D17BEA71B1140D15B288576E36 /* REURLValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DB4D3E589DBFDE663697063882B00A /* REURLValidator.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		DE36F7BB2597FA80773A31CE0B9DC0E3 /* RETableViewOptionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9AC3EA8F0C2C1E59649253D3785B7E90 /* RETableViewOptionCell.m */; };
+		E1DE6048E52D9155AA11E27C51D0E7A0 /* RELongTextItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 81BCC19545AAE7A2CA521222774786E6 /* RELongTextItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E246CA7B71CA39526DA26810B3E5F4A6 /* RETextItem.m in Sources */ = {isa = PBXBuildFile; fileRef = EEB6BA3585D197DB7B63ADB391A01646 /* RETextItem.m */; };
+		E254A0331DA9DD20D24E194248EB1A0C /* Card_Mastercard.png in Resources */ = {isa = PBXBuildFile; fileRef = E3CFDC33B4B49673F1271D46C7764F30 /* Card_Mastercard.png */; };
+		E2F3830F08C2A90F032AD7539EB5B317 /* UIButtonBarArrowLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0823A09CAE22ACD7E5D56A2F93427 /* UIButtonBarArrowLeft@2x.png */; };
+		E342A8B49345FB5E24FA3294042A7E64 /* STPopup.h in Headers */ = {isa = PBXBuildFile; fileRef = D69B92EC5C9BB48C32F7AFB1B16DCCBE /* STPopup.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E654B51FA168A2E8C735FD90ACDE0785 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */; };
+		E6AFF2211975984CE458817F423B1BA4 /* NSBundle+RETableViewManager.h in Headers */ = {isa = PBXBuildFile; fileRef = AC2AB8F26C0687E662170CDF82ECE8AC /* NSBundle+RETableViewManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E6B92F5FFECF1ED86C852AFAE09DA40B /* REInlinePickerItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 5E663CA2E0854A788AE7804F713D2C2D /* REInlinePickerItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77A0497ECA77ECA6E8C6BA520C69FB1 /* Transparent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A1B0C7CF8ABAAD02B60281642FCE481C /* Transparent@2x.png */; };
+		EA2B7B3FBCFB556D59BD47D64A6F97D5 /* RETextItem.h in Headers */ = {isa = PBXBuildFile; fileRef = B5FB662317EA38A01D31045ED1EAFEE9 /* RETextItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		EA8B803BC129221F4043B57752C9D5A5 /* Ribbon_Expired@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 388580580EE0763E70C3DA3D92DC2F46 /* Ribbon_Expired@2x.png */; };
+		EAC6DD4D823CB49E760CEB9AEAA44EB2 /* UIResponder+STPopup.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C9BECC343B5BD79620A949F8430CA2 /* UIResponder+STPopup.m */; };
+		EB244A1717AE69784B9B2E0E45EFED77 /* JTCalendarWeekDayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 93BE41A5B4195585CC40473B0DBC785B /* JTCalendarWeekDayView.m */; };
+		F07F11A1266CFFB3805A3A2B3A17636E /* REFormattedNumberField-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C09CA5DB4D4A73DD9FC33136CCA1BE98 /* REFormattedNumberField-dummy.m */; };
+		F0C1DD702D80A6CEEBD325622FB540B3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */; };
+		F0E1ED4D2C4DB13711F8E294A81EB4B0 /* RETableViewSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 249821B868C942C93CB355081145F195 /* RETableViewSection.m */; };
+		F1A298498050700C9909F4D72D347337 /* NSString+RETableViewManagerAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A6BEAC7C097172A2108FCE534EA0905 /* NSString+RETableViewManagerAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F42A4472D9FE8F249A54384B6A5D1136 /* REFloatItem.h in Headers */ = {isa = PBXBuildFile; fileRef = C0A3BC1E0A6DDC6841BA35F3AE739EBF /* REFloatItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F471D4B5C4D948F2B9AE45A2732C150A /* REPresenceValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = A435EA656F2EC564F375FCC09B2E0BE6 /* REPresenceValidator.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		F50076A3A4503C481B8111E948688B64 /* RETableViewDateTimeCell.h in Headers */ = {isa = PBXBuildFile; fileRef = C73E313F6171CE341D371D050AE46276 /* RETableViewDateTimeCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F59179D4383F74C55EBDBD77DBAF4330 /* STPopup-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = F2D1EFA86CB327F55894F7074491B159 /* STPopup-dummy.m */; };
+		F5A390E548A548439BE1DD6E39CD32BD /* REPlaceholderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6B7434B0BE851A859C9779FCC2BE6C /* REPlaceholderTextView.m */; };
+		F5BC3C25CDC7D3AE20A6365AE309CA09 /* REInlineDatePickerItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7414EF196AF541394520918153313238 /* REInlineDatePickerItem.m */; };
+		F81515465651A68979F099F648947254 /* RETableViewNumberCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FD6E34189F9ACA81FC9FED81ADB73FC0 /* RETableViewNumberCell.m */; };
+		F99C1B5C8235544B7D14822D4B07B77C /* REBoolItem.h in Headers */ = {isa = PBXBuildFile; fileRef = E136BBC7E42AE95AA3B1C270FF295C27 /* REBoolItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F9F0453807688B402B05D5BBAFC92321 /* Card_Stack@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2806F6942DACE21CD0FE79E3F00257A2 /* Card_Stack@2x.png */; };
+		FB147E66814A37BC6EADA265DD153111 /* Card_Amex.png in Resources */ = {isa = PBXBuildFile; fileRef = 0CC6FA1D824F4A18B18A30E9CDB5185A /* Card_Amex.png */; };
+		FF877064065C33151B6C0FA00788E350 /* RETableViewSegmentedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECA301FB92E291CE38BA43DD6207DEC /* RETableViewSegmentedCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		80C6ACDDCF58C6FD27B4E4F01C2CFA3E /* PBXContainerItemProxy */ = {
+		26F326025D9FEA52DD67C532ECA535EE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 405A251F9B571B76D06113556EBD85D7;
+			remoteGlobalIDString = 941F10A81C143F9A2433AEAB33E7C888;
+			remoteInfo = REValidation;
+		};
+		2717E845D53994A16E63AA32D911EA48 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 136F4B3A5485663719D53444AB43BDD4;
+			remoteInfo = RETableViewManager;
+		};
+		28E2E3C151572211F2CCDC0F74AB570B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 229CD270F050B5A404A1DA64917E1947;
+			remoteInfo = REFormattedNumberField;
+		};
+		310B968389164F47E2BD57F8ABB61FF4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 941F10A81C143F9A2433AEAB33E7C888;
+			remoteInfo = REValidation;
+		};
+		4C10EFE813C74AB1A1E20078C36E34D6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B117A9C24F73BBDCB3D5FC18C215703;
 			remoteInfo = STPopup;
 		};
-		DC36A860E4B775FF588A08C5A21AEBD1 /* PBXContainerItemProxy */ = {
+		72A1A29951652B1BFFE5FC2CD15C4B89 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 229CD270F050B5A404A1DA64917E1947;
+			remoteInfo = REFormattedNumberField;
+		};
+		A07C17468BDDE7E26E1913F43DA9402C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9F7DA8D66487FF9CE2410CEE4CCFC72B;
+			remoteInfo = "RETableViewManager-RETableViewManager";
+		};
+		DC399B2780B3BB736B20B075B5AB23FA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
@@ -76,70 +231,215 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		02074F6113B22C940C06838398B16EC9 /* JTCalendarWeekView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarWeekView.m; path = JTCalendar/Views/JTCalendarWeekView.m; sourceTree = "<group>"; };
-		08B50780D1482D05E624536AD15DCDA9 /* JTVerticalCalendarView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTVerticalCalendarView.m; path = JTCalendar/Views/JTVerticalCalendarView.m; sourceTree = "<group>"; };
-		09F214EE169910F28D4F33F947E2686F /* JTCalendarDelegateManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarDelegateManager.m; path = JTCalendar/Managers/JTCalendarDelegateManager.m; sourceTree = "<group>"; };
-		0AFB55B19D521208997499EEB68C086F /* JTCalendar-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "JTCalendar-dummy.m"; sourceTree = "<group>"; };
-		0B39A307DCC54B10281A590377F002F5 /* JTCalendar-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "JTCalendar-prefix.pch"; sourceTree = "<group>"; };
-		0D258AEF92A7B0E86521FD167EF55E94 /* UIResponder+STPopup.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIResponder+STPopup.m"; path = "STPopup/UIResponder+STPopup.m"; sourceTree = "<group>"; };
-		1453C4CAA3AD7B83A7B4C84CAF814942 /* JTCalendarWeek.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarWeek.h; path = JTCalendar/Protocols/JTCalendarWeek.h; sourceTree = "<group>"; };
+		04611A3F1C0112902AE6C7081F94E412 /* RETableViewItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewItem.m; path = RETableViewManager/RETableViewItem.m; sourceTree = "<group>"; };
+		04DB4D3E589DBFDE663697063882B00A /* REURLValidator.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = REURLValidator.m; path = REValidation/Validators/REURLValidator.m; sourceTree = "<group>"; };
+		090337E92052DEAC5154E576029AE218 /* JTCalendarDayView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarDayView.h; path = JTCalendar/Views/JTCalendarDayView.h; sourceTree = "<group>"; };
+		09B625EBFE628828A6944A99685E4C22 /* libREValidation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libREValidation.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A6BEAC7C097172A2108FCE534EA0905 /* NSString+RETableViewManagerAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "NSString+RETableViewManagerAdditions.h"; path = "RETableViewManager/NSString+RETableViewManagerAdditions.h"; sourceTree = "<group>"; };
+		0CC6FA1D824F4A18B18A30E9CDB5185A /* Card_Amex.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = Card_Amex.png; path = RETableViewManager/Resources/Card_Amex.png; sourceTree = "<group>"; };
+		0E1F17E5AA5F34A19462ED229085878F /* RENumberItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RENumberItem.h; path = RETableViewManager/Items/RENumberItem.h; sourceTree = "<group>"; };
+		0EE87F981D9E3E9B41D534F23C5B526A /* STPopupNavigationBar.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = STPopupNavigationBar.m; path = STPopup/STPopupNavigationBar.m; sourceTree = "<group>"; };
+		116443395363E88E670DB0B425A2F389 /* REBoolItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = REBoolItem.m; path = RETableViewManager/Items/REBoolItem.m; sourceTree = "<group>"; };
+		1588BF39F286503EF4F035CBD443BB99 /* JTCalendarPageView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarPageView.m; path = JTCalendar/Views/JTCalendarPageView.m; sourceTree = "<group>"; };
 		163587189F9A443BC5D5830B17682D2D /* Pods-Everywhere-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Everywhere-resources.sh"; sourceTree = "<group>"; };
-		1DABC8105AA837DD191B74C388743489 /* JTCalendarPage.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarPage.h; path = JTCalendar/Protocols/JTCalendarPage.h; sourceTree = "<group>"; };
-		21AF56402A562610B3E345C37B95C474 /* JTCalendar.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendar.h; path = JTCalendar/JTCalendar.h; sourceTree = "<group>"; };
-		29272D0A1F3D94B99FCF65F51C7863BF /* JTCalendarPageView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarPageView.m; path = JTCalendar/Views/JTCalendarPageView.m; sourceTree = "<group>"; };
+		16A4EBE7F12C9EDFDDE7E204DCE25471 /* RETableViewInlineDatePickerCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewInlineDatePickerCell.h; path = RETableViewManager/Cells/RETableViewInlineDatePickerCell.h; sourceTree = "<group>"; };
+		170653E3B5C1324E49494F71B4716EC7 /* NSError+REValidation.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "NSError+REValidation.m"; path = "REValidation/NSError+REValidation.m"; sourceTree = "<group>"; };
+		196C6C2C81F082DA26DE17BBAAAFA04F /* JTVerticalCalendarView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTVerticalCalendarView.m; path = JTCalendar/Views/JTVerticalCalendarView.m; sourceTree = "<group>"; };
+		1A7989EB8F02AED1D1219E0FB6090BAE /* JTHorizontalCalendarView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTHorizontalCalendarView.h; path = JTCalendar/Views/JTHorizontalCalendarView.h; sourceTree = "<group>"; };
+		1B69741A2FBD6DBB26B98A3B74F5982D /* JTDateHelper.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTDateHelper.h; path = JTCalendar/JTDateHelper.h; sourceTree = "<group>"; };
+		1C6C6C0C0262B355BF8112928C7927C4 /* RETableViewNumberCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewNumberCell.h; path = RETableViewManager/Cells/RETableViewNumberCell.h; sourceTree = "<group>"; };
+		21CAB78B30CDF17D851101FBDB1BF886 /* RENumberItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RENumberItem.m; path = RETableViewManager/Items/RENumberItem.m; sourceTree = "<group>"; };
+		21F0D6A45B29B9AAE86D42BBF58E974D /* REFormattedNumberField.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = REFormattedNumberField.xcconfig; sourceTree = "<group>"; };
+		227BBCE11952BC3134F809EB75356D9E /* JTCalendarScrollManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarScrollManager.m; path = JTCalendar/Managers/JTCalendarScrollManager.m; sourceTree = "<group>"; };
+		22A922B94C3ED4DC59C645A7BC205CB3 /* RETableViewItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewItem.h; path = RETableViewManager/RETableViewItem.h; sourceTree = "<group>"; };
+		2427FC718288B779E3C7DCAC69A0B42A /* RETableViewCreditCardCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewCreditCardCell.m; path = RETableViewManager/Cells/RETableViewCreditCardCell.m; sourceTree = "<group>"; };
+		249821B868C942C93CB355081145F195 /* RETableViewSection.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewSection.m; path = RETableViewManager/RETableViewSection.m; sourceTree = "<group>"; };
+		2510A5E1EE72C25170B1DB5BB51F64BE /* REDateTimeItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = REDateTimeItem.h; path = RETableViewManager/Items/REDateTimeItem.h; sourceTree = "<group>"; };
+		2692CE65704392E224084BFC705CC35D /* REURLValidator.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = REURLValidator.h; path = REValidation/Validators/REURLValidator.h; sourceTree = "<group>"; };
+		26AF2D18A6DDFEFDC487FFE0A6D64002 /* REFormattedNumberField.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = REFormattedNumberField.h; path = REFormattedNumberField/REFormattedNumberField.h; sourceTree = "<group>"; };
+		2806F6942DACE21CD0FE79E3F00257A2 /* Card_Stack@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "Card_Stack@2x.png"; path = "RETableViewManager/Resources/Card_Stack@2x.png"; sourceTree = "<group>"; };
+		2BC7A3461CF9927ECDF8FD89E044C62F /* REPresenceValidator.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = REPresenceValidator.h; path = REValidation/Validators/REPresenceValidator.h; sourceTree = "<group>"; };
+		2C8ABB6624D381F2CB5391DB4336B3D0 /* RETableViewOptionCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewOptionCell.h; path = RETableViewManager/Cells/RETableViewOptionCell.h; sourceTree = "<group>"; };
+		2C8E902B74A76AB349663E9159046AD7 /* JTCalendar-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "JTCalendar-dummy.m"; sourceTree = "<group>"; };
+		2CA9737E7E71A05CBB3D5D135C57646A /* JTCalendarDayView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarDayView.m; path = JTCalendar/Views/JTCalendarDayView.m; sourceTree = "<group>"; };
+		2DCC02F7EC6FEFEDF9A42691D7E1AE6B /* REValidator.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = REValidator.h; path = REValidation/REValidator.h; sourceTree = "<group>"; };
 		2DF7F89F2CE3D9D1EAEBF516C549B149 /* Pods-Everywhere.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Everywhere.debug.xcconfig"; sourceTree = "<group>"; };
-		307AA17503E2BA721E2EC0A936DA284C /* JTCalendarScrollManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarScrollManager.m; path = JTCalendar/Managers/JTCalendarScrollManager.m; sourceTree = "<group>"; };
-		309A70A34B5E0E62DE601325BC72FC7A /* STPopupLeftBarItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = STPopupLeftBarItem.h; path = STPopup/STPopupLeftBarItem.h; sourceTree = "<group>"; };
-		347855CC268417836A815CC2C8623049 /* JTCalendarManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarManager.m; path = JTCalendar/JTCalendarManager.m; sourceTree = "<group>"; };
-		34818BC5F9A30D427DFC3E99107C176C /* UIViewController+STPopup.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+STPopup.m"; path = "STPopup/UIViewController+STPopup.m"; sourceTree = "<group>"; };
-		35E6C638234A9314EA023703530A8167 /* JTVerticalCalendarView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTVerticalCalendarView.h; path = JTCalendar/Views/JTVerticalCalendarView.h; sourceTree = "<group>"; };
-		3D28B2EE40B5499B7109BC6BC7AB371F /* STPopupController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = STPopupController.h; path = STPopup/STPopupController.h; sourceTree = "<group>"; };
-		3DC3D7BB7B727AA658830DFC609DD267 /* JTCalendar.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = JTCalendar.xcconfig; sourceTree = "<group>"; };
-		3F228F76CFA4E191B82487A5083F7C4F /* STPopupNavigationBar.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = STPopupNavigationBar.m; path = STPopup/STPopupNavigationBar.m; sourceTree = "<group>"; };
-		4237ADC0DC2A6FA08B797ECBEC31B818 /* JTCalendarMenuView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarMenuView.h; path = JTCalendar/Views/JTCalendarMenuView.h; sourceTree = "<group>"; };
-		4C6C886A1D0B69017260D44124BBDC16 /* JTMenu.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTMenu.h; path = JTCalendar/Protocols/JTMenu.h; sourceTree = "<group>"; };
-		4DCE72FF9415FB40D82C3C854012135C /* JTCalendarManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarManager.h; path = JTCalendar/JTCalendarManager.h; sourceTree = "<group>"; };
-		5580A606983E9118E4B1667074445FAC /* JTCalendarPageView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarPageView.h; path = JTCalendar/Views/JTCalendarPageView.h; sourceTree = "<group>"; };
+		3154C6EE3BF864577A5BE9107B203B5D /* Card_Back@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "Card_Back@2x.png"; path = "RETableViewManager/Resources/Card_Back@2x.png"; sourceTree = "<group>"; };
+		3234ADB0E974146DA8E06C3F573B97A5 /* JTCalendarSettings.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarSettings.m; path = JTCalendar/JTCalendarSettings.m; sourceTree = "<group>"; };
+		32A38D07F54B373F5C55A8683CD983B5 /* RETableViewSection.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewSection.h; path = RETableViewManager/RETableViewSection.h; sourceTree = "<group>"; };
+		36610E64D33851EDF6E956DAA17A3077 /* REActionBar.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = REActionBar.h; path = RETableViewManager/REActionBar.h; sourceTree = "<group>"; };
+		388580580EE0763E70C3DA3D92DC2F46 /* Ribbon_Expired@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "Ribbon_Expired@2x.png"; path = "RETableViewManager/Resources/Ribbon_Expired@2x.png"; sourceTree = "<group>"; };
+		3A8A12B6C2545140E394B80F4235E085 /* REValidation.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = REValidation.h; path = REValidation/REValidation.h; sourceTree = "<group>"; };
+		3C4FCA6EE804085E30E0F57D5A98BCCE /* JTCalendarPageView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarPageView.h; path = JTCalendar/Views/JTCalendarPageView.h; sourceTree = "<group>"; };
+		3E85DAA9CEAD6BE2BCC6C5F13CED13F1 /* NSError+REValidation.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "NSError+REValidation.h"; path = "REValidation/NSError+REValidation.h"; sourceTree = "<group>"; };
+		403A93F6221B43FE41394383FBA3FDE6 /* REValidation-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "REValidation-prefix.pch"; sourceTree = "<group>"; };
+		41743D20CE40D8817E9AD112AEC9D4A4 /* RETableViewInlinePickerCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewInlinePickerCell.m; path = RETableViewManager/Cells/RETableViewInlinePickerCell.m; sourceTree = "<group>"; };
+		41ACE19793382513623E63902BC5C860 /* RESegmentedItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RESegmentedItem.h; path = RETableViewManager/Items/RESegmentedItem.h; sourceTree = "<group>"; };
+		422E8A40D59BB82BA1FBC2AA9A364658 /* NSBundle+RETableViewManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "NSBundle+RETableViewManager.m"; path = "RETableViewManager/NSBundle+RETableViewManager.m"; sourceTree = "<group>"; };
+		43BFF0A46C418883BA958486DF73DBCF /* JTMenu.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTMenu.h; path = JTCalendar/Protocols/JTMenu.h; sourceTree = "<group>"; };
+		44295A00B97245BF4D599B2FAA05ACC6 /* JTCalendarDelegateManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarDelegateManager.m; path = JTCalendar/Managers/JTCalendarDelegateManager.m; sourceTree = "<group>"; };
+		4B18B071A521FA27AD4F2B03C14C74FE /* RETableViewInlineDatePickerCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewInlineDatePickerCell.m; path = RETableViewManager/Cells/RETableViewInlineDatePickerCell.m; sourceTree = "<group>"; };
+		5026299394BD83D4C0BC0AF9699C5327 /* REPickerItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = REPickerItem.h; path = RETableViewManager/Items/REPickerItem.h; sourceTree = "<group>"; };
+		50446F0FC7EB7A236C7A00400257ACF7 /* Card_Visa@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "Card_Visa@2x.png"; path = "RETableViewManager/Resources/Card_Visa@2x.png"; sourceTree = "<group>"; };
+		506C5443CB8D0E206EB52CDF7E5045A8 /* REValidation.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = REValidation.m; path = REValidation/REValidation.m; sourceTree = "<group>"; };
+		52625746868AA7D5B354391F3E46BBB0 /* RELengthValidator.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RELengthValidator.m; path = REValidation/Validators/RELengthValidator.m; sourceTree = "<group>"; };
+		53F485C8F1CB153201D1100B4F6D8024 /* JTCalendar.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendar.h; path = JTCalendar/JTCalendar.h; sourceTree = "<group>"; };
+		541DC5D4221D0DAA170D7D3FB9221E8E /* JTHorizontalCalendarView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTHorizontalCalendarView.m; path = JTCalendar/Views/JTHorizontalCalendarView.m; sourceTree = "<group>"; };
+		54C63E679938475B3CB6563AACEDF82D /* REInlineDatePickerItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = REInlineDatePickerItem.h; path = RETableViewManager/Items/REInlineDatePickerItem.h; sourceTree = "<group>"; };
+		58CFD5268334145F7842CEAA87871A91 /* STPopupController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = STPopupController.m; path = STPopup/STPopupController.m; sourceTree = "<group>"; };
 		5934BB50D5A0480FE089678877AE40DA /* Pods-Everywhere-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Everywhere-acknowledgements.markdown"; sourceTree = "<group>"; };
-		5A3BFA1E23040848DD8ED3793986CEEE /* STPopup-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "STPopup-dummy.m"; sourceTree = "<group>"; };
-		5B408C3A492F5E08D3BAC00FE667FAF6 /* JTHorizontalCalendarView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTHorizontalCalendarView.h; path = JTCalendar/Views/JTHorizontalCalendarView.h; sourceTree = "<group>"; };
-		5E7657327E5E49C92AA1383EC4DC17B8 /* JTDateHelper.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTDateHelper.m; path = JTCalendar/JTDateHelper.m; sourceTree = "<group>"; };
+		59A4AF0683261821FA4AC10801AB15DA /* JTCalendarDelegate.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarDelegate.h; path = JTCalendar/JTCalendarDelegate.h; sourceTree = "<group>"; };
+		5C5BFCBFFD63BE020598188012B376EB /* RETableViewCreditCardCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewCreditCardCell.h; path = RETableViewManager/Cells/RETableViewCreditCardCell.h; sourceTree = "<group>"; };
+		5C9599060A48F45FD1352E1659C76638 /* REMultipleChoiceItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = REMultipleChoiceItem.h; path = RETableViewManager/Items/REMultipleChoiceItem.h; sourceTree = "<group>"; };
+		5E663CA2E0854A788AE7804F713D2C2D /* REInlinePickerItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = REInlinePickerItem.h; path = RETableViewManager/Items/REInlinePickerItem.h; sourceTree = "<group>"; };
+		5FA11CDB82B1480F9543DADF5138CD4C /* JTCalendarScrollManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarScrollManager.h; path = JTCalendar/Managers/JTCalendarScrollManager.h; sourceTree = "<group>"; };
+		5FD64EA1D810765E6705DEB83F09B514 /* RERadioItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RERadioItem.h; path = RETableViewManager/Items/RERadioItem.h; sourceTree = "<group>"; };
 		6054F3A418F05F0C0CEADB1471F39ABE /* Pods-Everywhere-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Everywhere-acknowledgements.plist"; sourceTree = "<group>"; };
-		621632710277E9C9A02D2F4124E777AC /* JTCalendarDay.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarDay.h; path = JTCalendar/Protocols/JTCalendarDay.h; sourceTree = "<group>"; };
-		70E91A6093B73CC1066615F96DEC12B3 /* UIViewController+STPopup.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIViewController+STPopup.h"; path = "STPopup/UIViewController+STPopup.h"; sourceTree = "<group>"; };
-		741B1FBEFC69EDFBB0833E30F63E9CB4 /* libSTPopup.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSTPopup.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		754FEA8315ED70DD33A04D3BF5F07A29 /* JTCalendarWeekDayView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarWeekDayView.h; path = JTCalendar/Views/JTCalendarWeekDayView.h; sourceTree = "<group>"; };
-		781CB0CED90ABD3DE98A0764073EBDBC /* JTCalendarWeekDay.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarWeekDay.h; path = JTCalendar/Protocols/JTCalendarWeekDay.h; sourceTree = "<group>"; };
-		7959C6EC6ECEB019B4C2B8750CFAE69E /* JTCalendarDayView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarDayView.h; path = JTCalendar/Views/JTCalendarDayView.h; sourceTree = "<group>"; };
-		86043E81BA344FE2FF9FF8D419CCD30D /* STPopup.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = STPopup.h; path = STPopup/STPopup.h; sourceTree = "<group>"; };
-		8C91AE72DC89531DC5C563DA45E99FD3 /* JTCalendarSettings.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarSettings.h; path = JTCalendar/JTCalendarSettings.h; sourceTree = "<group>"; };
-		8F4AD9CB4E4653F346097E16B41BAB1D /* STPopup.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = STPopup.xcconfig; sourceTree = "<group>"; };
-		8FB4F7CC4C2336018037F3D8DF6A6A9B /* STPopup-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "STPopup-prefix.pch"; sourceTree = "<group>"; };
-		93623C44C301A55AC2A87D3BD0EB7CA5 /* JTCalendarMenuView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarMenuView.m; path = JTCalendar/Views/JTCalendarMenuView.m; sourceTree = "<group>"; };
-		9384A53D65B13EF004FEB989BDD2C2CB /* UIResponder+STPopup.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIResponder+STPopup.h"; path = "STPopup/UIResponder+STPopup.h"; sourceTree = "<group>"; };
+		6459B6432BFE2B92D3EEF6FE49DF557E /* RETableViewOptionsController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewOptionsController.m; path = RETableViewManager/RETableViewOptionsController.m; sourceTree = "<group>"; };
+		6786689EB19015848504D10923292E1F /* STPopupLeftBarItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = STPopupLeftBarItem.m; path = STPopup/STPopupLeftBarItem.m; sourceTree = "<group>"; };
+		69B60CB49504F05D836664CE6261A742 /* JTCalendarWeek.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarWeek.h; path = JTCalendar/Protocols/JTCalendarWeek.h; sourceTree = "<group>"; };
+		6A855D72070AE8E14C0B8BE5BB37B56B /* RETableViewDateTimeCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewDateTimeCell.m; path = RETableViewManager/Cells/RETableViewDateTimeCell.m; sourceTree = "<group>"; };
+		6BF4C40D058D1C58CDDEA54D1A20351F /* REMultipleChoiceItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = REMultipleChoiceItem.m; path = RETableViewManager/Items/REMultipleChoiceItem.m; sourceTree = "<group>"; };
+		6C4388AAFD71DCEEE75CD3BDB121C6B0 /* UIResponder+STPopup.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIResponder+STPopup.h"; path = "STPopup/UIResponder+STPopup.h"; sourceTree = "<group>"; };
+		6F46BB0E83A691F4FE243ED4EC0E07A8 /* STPopupController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = STPopupController.h; path = STPopup/STPopupController.h; sourceTree = "<group>"; };
+		6F9478198605AAFD28B00D9BEFA3D386 /* RETableViewPickerCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewPickerCell.m; path = RETableViewManager/Cells/RETableViewPickerCell.m; sourceTree = "<group>"; };
+		706A648A03C152C4C850DF42F93F4400 /* Card_Visa.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = Card_Visa.png; path = RETableViewManager/Resources/Card_Visa.png; sourceTree = "<group>"; };
+		715684CAF4B97E1BFB75366070AE969B /* JTContent.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTContent.h; path = JTCalendar/Protocols/JTContent.h; sourceTree = "<group>"; };
+		7334B7ADFD4887E3668FE80658654CD8 /* JTCalendarManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarManager.m; path = JTCalendar/JTCalendarManager.m; sourceTree = "<group>"; };
+		735BD602E9D04576B09A75124D2826CC /* STPopupNavigationBar.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = STPopupNavigationBar.h; path = STPopup/STPopupNavigationBar.h; sourceTree = "<group>"; };
+		7414EF196AF541394520918153313238 /* REInlineDatePickerItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = REInlineDatePickerItem.m; path = RETableViewManager/Items/REInlineDatePickerItem.m; sourceTree = "<group>"; };
+		7462BACD3B4514DE0D21E0FEEE11534F /* RETableViewPickerCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewPickerCell.h; path = RETableViewManager/Cells/RETableViewPickerCell.h; sourceTree = "<group>"; };
+		74D7A00E325DF2123777E9DB979A6FAA /* JTCalendar-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "JTCalendar-prefix.pch"; sourceTree = "<group>"; };
+		760AE5EA9119AEBEACFE70299A1A1936 /* Card_Discover.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = Card_Discover.png; path = RETableViewManager/Resources/Card_Discover.png; sourceTree = "<group>"; };
+		7AB521C58924B62E3D0F1853CC59E3F3 /* libRETableViewManager.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRETableViewManager.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E278012DFE09FB9CE38BC17F8392B2C /* RETableViewSegmentedCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewSegmentedCell.h; path = RETableViewManager/Cells/RETableViewSegmentedCell.h; sourceTree = "<group>"; };
+		7ED7103EE21601D9CD75F45AE618743F /* UIButtonBarArrowRight.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = UIButtonBarArrowRight.png; path = RETableViewManager/Resources/UIButtonBarArrowRight.png; sourceTree = "<group>"; };
+		81BCC19545AAE7A2CA521222774786E6 /* RELongTextItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RELongTextItem.h; path = RETableViewManager/Items/RELongTextItem.h; sourceTree = "<group>"; };
+		840A67AD5D207783AAE291A2ADF08C0B /* STPopup-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "STPopup-prefix.pch"; sourceTree = "<group>"; };
+		8573E478FD20F8BDE85D7772211B9100 /* RETableViewBoolCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewBoolCell.m; path = RETableViewManager/Cells/RETableViewBoolCell.m; sourceTree = "<group>"; };
+		8747BCCF5F42369D71EFAC649D5A146F /* JTCalendarWeekView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarWeekView.h; path = JTCalendar/Views/JTCalendarWeekView.h; sourceTree = "<group>"; };
+		88C37250523A1A9999CE31F2FF06A491 /* RETableViewCellStyle.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewCellStyle.h; path = RETableViewManager/RETableViewCellStyle.h; sourceTree = "<group>"; };
+		8917D46DA37236A65232B0F6ABE35206 /* RERadioItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RERadioItem.m; path = RETableViewManager/Items/RERadioItem.m; sourceTree = "<group>"; };
+		89FEA2AB14DB8AEF7376A3C714BDE80F /* RETableViewManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewManager.h; path = RETableViewManager/RETableViewManager.h; sourceTree = "<group>"; };
+		8A20F98600CA363959EE5C75620EF8BE /* UIButtonBarArrowRight@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "UIButtonBarArrowRight@2x.png"; path = "RETableViewManager/Resources/UIButtonBarArrowRight@2x.png"; sourceTree = "<group>"; };
+		8A8ED0BFD45681F803F2CE8DD4AF90E6 /* RECreditCardItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RECreditCardItem.m; path = RETableViewManager/Items/RECreditCardItem.m; sourceTree = "<group>"; };
+		8B3908650FB5293929739B0A81FD711D /* JTCalendar.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = JTCalendar.xcconfig; sourceTree = "<group>"; };
+		8CA4D87FC903BD0261F23510F021550A /* RETableViewOptionsController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewOptionsController.h; path = RETableViewManager/RETableViewOptionsController.h; sourceTree = "<group>"; };
+		8E4726D403421AA87F595FF1A7D2635A /* NSString+RENumberFormat.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "NSString+RENumberFormat.m"; path = "REFormattedNumberField/NSString+RENumberFormat.m"; sourceTree = "<group>"; };
+		8FA424F0D8F3E373B74FC27EF097856F /* RETableViewManager.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RETableViewManager.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		91C9BECC343B5BD79620A949F8430CA2 /* UIResponder+STPopup.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIResponder+STPopup.m"; path = "STPopup/UIResponder+STPopup.m"; sourceTree = "<group>"; };
 		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		961B391E47B59EDCBF7601A7BAEF82F5 /* libJTCalendar.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libJTCalendar.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		9CC6E7D249ACF67E68BA8289C6C3EFE9 /* JTCalendarWeekView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarWeekView.h; path = JTCalendar/Views/JTCalendarWeekView.h; sourceTree = "<group>"; };
-		A1B047931B1E4B172DC5337113016852 /* JTCalendarDayView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarDayView.m; path = JTCalendar/Views/JTCalendarDayView.m; sourceTree = "<group>"; };
-		B505B3123BA0561F50CB05A82B127A6A /* STPopupController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = STPopupController.m; path = STPopup/STPopupController.m; sourceTree = "<group>"; };
-		B843C77B4D9F02F080BD073BA04498C6 /* JTCalendarWeekDayView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarWeekDayView.m; path = JTCalendar/Views/JTCalendarWeekDayView.m; sourceTree = "<group>"; };
+		93BE41A5B4195585CC40473B0DBC785B /* JTCalendarWeekDayView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarWeekDayView.m; path = JTCalendar/Views/JTCalendarWeekDayView.m; sourceTree = "<group>"; };
+		94FF39AFF2682CA6E1461DECC7D91500 /* REPickerItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = REPickerItem.m; path = RETableViewManager/Items/REPickerItem.m; sourceTree = "<group>"; };
+		95698C9A84867CAA14C3257F430AEB58 /* Card_Amex@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "Card_Amex@2x.png"; path = "RETableViewManager/Resources/Card_Amex@2x.png"; sourceTree = "<group>"; };
+		9828B0E87A6C2E910FBAF0BDC1CB6237 /* RETableViewCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewCell.m; path = RETableViewManager/RETableViewCell.m; sourceTree = "<group>"; };
+		997A0A83BB9D354779E3B66279346FEB /* JTCalendarManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarManager.h; path = JTCalendar/JTCalendarManager.h; sourceTree = "<group>"; };
+		99BB13CF817958199F56E28BBF39F01C /* REValidator.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = REValidator.m; path = REValidation/REValidator.m; sourceTree = "<group>"; };
+		9AC3EA8F0C2C1E59649253D3785B7E90 /* RETableViewOptionCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewOptionCell.m; path = RETableViewManager/Cells/RETableViewOptionCell.m; sourceTree = "<group>"; };
+		A1B0C7CF8ABAAD02B60281642FCE481C /* Transparent@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "Transparent@2x.png"; path = "RETableViewManager/Resources/Transparent@2x.png"; sourceTree = "<group>"; };
+		A3B0823A09CAE22ACD7E5D56A2F93427 /* UIButtonBarArrowLeft@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "UIButtonBarArrowLeft@2x.png"; path = "RETableViewManager/Resources/UIButtonBarArrowLeft@2x.png"; sourceTree = "<group>"; };
+		A435EA656F2EC564F375FCC09B2E0BE6 /* REPresenceValidator.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = REPresenceValidator.m; path = REValidation/Validators/REPresenceValidator.m; sourceTree = "<group>"; };
+		A6C6445CEAE90839D3EB27F46E5FC823 /* Card_Mastercard@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "Card_Mastercard@2x.png"; path = "RETableViewManager/Resources/Card_Mastercard@2x.png"; sourceTree = "<group>"; };
+		A8F90A82ECA7E686F7DD451D89A4708D /* REFormattedNumberField.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = REFormattedNumberField.m; path = REFormattedNumberField/REFormattedNumberField.m; sourceTree = "<group>"; };
+		A9B13A72053C9DDE34536B0A87348A74 /* JTDateHelper.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTDateHelper.m; path = JTCalendar/JTDateHelper.m; sourceTree = "<group>"; };
+		AA0A9888023333CA13053342069A8E7D /* UIViewController+STPopup.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIViewController+STPopup.h"; path = "STPopup/UIViewController+STPopup.h"; sourceTree = "<group>"; };
+		AC2AB8F26C0687E662170CDF82ECE8AC /* NSBundle+RETableViewManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "NSBundle+RETableViewManager.h"; path = "RETableViewManager/NSBundle+RETableViewManager.h"; sourceTree = "<group>"; };
+		AC469CF101EE0BC157CBD73DBF226A1C /* NSString+RETableViewManagerAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "NSString+RETableViewManagerAdditions.m"; path = "RETableViewManager/NSString+RETableViewManagerAdditions.m"; sourceTree = "<group>"; };
+		AD0EBD47DD3305F45D65D81AD7EA779E /* RESegmentedItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RESegmentedItem.m; path = RETableViewManager/Items/RESegmentedItem.m; sourceTree = "<group>"; };
+		AF3540337505E4BE9E2F17E75D4A7745 /* REInlinePickerItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = REInlinePickerItem.m; path = RETableViewManager/Items/REInlinePickerItem.m; sourceTree = "<group>"; };
+		AF586C21B06CF277FE1472E8F0A51820 /* JTCalendarDelegateManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarDelegateManager.h; path = JTCalendar/Managers/JTCalendarDelegateManager.h; sourceTree = "<group>"; };
+		AF59E9A87D8FB292BD845BBCF0164CBF /* RETableViewCellStyle.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewCellStyle.m; path = RETableViewManager/RETableViewCellStyle.m; sourceTree = "<group>"; };
+		B0B426F522CEAEDD53411D3F00551F71 /* RETableViewBoolCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewBoolCell.h; path = RETableViewManager/Cells/RETableViewBoolCell.h; sourceTree = "<group>"; };
+		B3AD3FAF4F93D53307291E0D2FDA2FD1 /* RELengthValidator.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RELengthValidator.h; path = REValidation/Validators/RELengthValidator.h; sourceTree = "<group>"; };
+		B3FCF4DFB851EA5DD48ED14295C884A9 /* RETableViewManager-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RETableViewManager-prefix.pch"; sourceTree = "<group>"; };
+		B5FB662317EA38A01D31045ED1EAFEE9 /* RETextItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETextItem.h; path = RETableViewManager/Items/RETextItem.h; sourceTree = "<group>"; };
+		B7F9C37E3FBF7D6132B5B7C3E5553CF9 /* UIViewController+STPopup.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+STPopup.m"; path = "STPopup/UIViewController+STPopup.m"; sourceTree = "<group>"; };
+		B91686E4C9BE760C1B16761033935AB7 /* JTCalendarWeekDay.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarWeekDay.h; path = JTCalendar/Protocols/JTCalendarWeekDay.h; sourceTree = "<group>"; };
 		B91D36FA489620339648E06B02504E73 /* Pods-Everywhere-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Everywhere-dummy.m"; sourceTree = "<group>"; };
-		BB3F780938BC99DB9C7D4C55F4F95CB8 /* JTDateHelper.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTDateHelper.h; path = JTCalendar/JTDateHelper.h; sourceTree = "<group>"; };
-		C48D4A34CA595952CE5EE8186D586C98 /* JTCalendarDelegateManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarDelegateManager.h; path = JTCalendar/Managers/JTCalendarDelegateManager.h; sourceTree = "<group>"; };
-		C6E61C973D8A64D5FE93597343271969 /* libPods-Everywhere.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Everywhere.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C9B086A64A52A9A9AF103B069B770A0B /* STPopupLeftBarItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = STPopupLeftBarItem.m; path = STPopup/STPopupLeftBarItem.m; sourceTree = "<group>"; };
+		BA153F334D916F01C4D8D6C8F841786B /* JTCalendarWeekDayView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarWeekDayView.h; path = JTCalendar/Views/JTCalendarWeekDayView.h; sourceTree = "<group>"; };
+		BCD42AF4106C94121CF41143DFD74BC0 /* RECreditCardItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RECreditCardItem.h; path = RETableViewManager/Items/RECreditCardItem.h; sourceTree = "<group>"; };
+		BF11FF1E48559B3F3A60260D7DE2477C /* RETableViewLongTextCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewLongTextCell.m; path = RETableViewManager/Cells/RETableViewLongTextCell.m; sourceTree = "<group>"; };
+		C09CA5DB4D4A73DD9FC33136CCA1BE98 /* REFormattedNumberField-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "REFormattedNumberField-dummy.m"; sourceTree = "<group>"; };
+		C0A3BC1E0A6DDC6841BA35F3AE739EBF /* REFloatItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = REFloatItem.h; path = RETableViewManager/Items/REFloatItem.h; sourceTree = "<group>"; };
+		C39D5D50E6DE08E0BA16A0AA27472459 /* RETableViewTextCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewTextCell.m; path = RETableViewManager/Cells/RETableViewTextCell.m; sourceTree = "<group>"; };
+		C5428F36D973439BE5FBB5679C31D5C5 /* Ribbon_Expired.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = Ribbon_Expired.png; path = RETableViewManager/Resources/Ribbon_Expired.png; sourceTree = "<group>"; };
+		C6A2FC8ECD3F235E70126758F3C9D3E5 /* JTCalendarMenuView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarMenuView.h; path = JTCalendar/Views/JTCalendarMenuView.h; sourceTree = "<group>"; };
+		C6CC89CC20C8D1FBA1C788FFE6D8A756 /* RETableViewFloatCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewFloatCell.h; path = RETableViewManager/Cells/RETableViewFloatCell.h; sourceTree = "<group>"; };
+		C73E313F6171CE341D371D050AE46276 /* RETableViewDateTimeCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewDateTimeCell.h; path = RETableViewManager/Cells/RETableViewDateTimeCell.h; sourceTree = "<group>"; };
+		C75EB80CF49C7C0D1B3AAB1062B83CD9 /* REValidation.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = REValidation.xcconfig; sourceTree = "<group>"; };
+		C8522FA53A69CCAE3DB19C371FC55A26 /* libSTPopup.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSTPopup.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		C8AC164CA78C8D73142007E8FF9A5FAC /* NSString+RENumberFormat.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "NSString+RENumberFormat.h"; path = "REFormattedNumberField/NSString+RENumberFormat.h"; sourceTree = "<group>"; };
+		C9E954488548DC22ED4ED472B35C1AB7 /* REValidation-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "REValidation-dummy.m"; sourceTree = "<group>"; };
+		CAEE627BE188E4A8102775C63F8A5A51 /* JTCalendarSettings.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarSettings.h; path = JTCalendar/JTCalendarSettings.h; sourceTree = "<group>"; };
+		CB2430AE307E758AA417202F14FDCE98 /* STPopup.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = STPopup.xcconfig; sourceTree = "<group>"; };
+		CB6B7434B0BE851A859C9779FCC2BE6C /* REPlaceholderTextView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = REPlaceholderTextView.m; path = RETableViewManager/REPlaceholderTextView.m; sourceTree = "<group>"; };
+		CBBF2412ECD098591F812A2A833ABDBF /* RELongTextItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RELongTextItem.m; path = RETableViewManager/Items/RELongTextItem.m; sourceTree = "<group>"; };
+		CDB9588A4964ADF661F7B06DBF071B43 /* RETableViewTextCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewTextCell.h; path = RETableViewManager/Cells/RETableViewTextCell.h; sourceTree = "<group>"; };
 		CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		D1686942AB1CB0571DB69397C3EDACF5 /* JTContent.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTContent.h; path = JTCalendar/Protocols/JTContent.h; sourceTree = "<group>"; };
+		CECA301FB92E291CE38BA43DD6207DEC /* RETableViewSegmentedCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewSegmentedCell.m; path = RETableViewManager/Cells/RETableViewSegmentedCell.m; sourceTree = "<group>"; };
+		CF40BC5488B724C2CEEA9F472EB435D7 /* UIButtonBarArrowLeft.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = UIButtonBarArrowLeft.png; path = RETableViewManager/Resources/UIButtonBarArrowLeft.png; sourceTree = "<group>"; };
+		CFC3C055D57F88DBF20D479E737FFD6C /* JTCalendarPage.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarPage.h; path = JTCalendar/Protocols/JTCalendarPage.h; sourceTree = "<group>"; };
+		D04396C48EAEBA3E980498D882257DA4 /* Card_Discover@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "Card_Discover@2x.png"; path = "RETableViewManager/Resources/Card_Discover@2x.png"; sourceTree = "<group>"; };
+		D0C73F712CFCA378AA37DEB17435D52A /* REFormattedNumberField-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "REFormattedNumberField-prefix.pch"; sourceTree = "<group>"; };
+		D1665D70BCED9FEA16EA81232108F907 /* REFloatItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = REFloatItem.m; path = RETableViewManager/Items/REFloatItem.m; sourceTree = "<group>"; };
+		D1B291432213BD50AF0774497F5B5E15 /* RETableViewLongTextCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewLongTextCell.h; path = RETableViewManager/Cells/RETableViewLongTextCell.h; sourceTree = "<group>"; };
+		D373316B348CE58A798B63227E551E13 /* ResourceBundle-RETableViewManager-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "ResourceBundle-RETableViewManager-Info.plist"; sourceTree = "<group>"; };
 		D45FFB03C1F0DA2C333AC176EF0847AC /* Pods-Everywhere-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Everywhere-frameworks.sh"; sourceTree = "<group>"; };
-		D66F2D4AA8EE11446C337835298C38BE /* JTCalendarScrollManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarScrollManager.h; path = JTCalendar/Managers/JTCalendarScrollManager.h; sourceTree = "<group>"; };
-		DBB43BF361A7FE3EC8418B42632E3280 /* JTCalendarDelegate.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarDelegate.h; path = JTCalendar/JTCalendarDelegate.h; sourceTree = "<group>"; };
-		E65CDFFFB2DAD77722DC923A5EEA8FF7 /* JTCalendarSettings.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarSettings.m; path = JTCalendar/JTCalendarSettings.m; sourceTree = "<group>"; };
-		EAF668F5AD841518A3C17CF4015F7775 /* STPopupNavigationBar.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = STPopupNavigationBar.h; path = STPopup/STPopupNavigationBar.h; sourceTree = "<group>"; };
+		D5406058BA3E52A1506BB9B6796082E3 /* RETableViewManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewManager.m; path = RETableViewManager/RETableViewManager.m; sourceTree = "<group>"; };
+		D592B49315B37164ACA9CFDBAB3CC085 /* JTVerticalCalendarView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTVerticalCalendarView.h; path = JTCalendar/Views/JTVerticalCalendarView.h; sourceTree = "<group>"; };
+		D69B92EC5C9BB48C32F7AFB1B16DCCBE /* STPopup.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = STPopup.h; path = STPopup/STPopup.h; sourceTree = "<group>"; };
+		D7F8237DC4015BFB688EDB45B58B1822 /* RETableViewManager.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = RETableViewManager.xcconfig; sourceTree = "<group>"; };
+		D8F4800796E2319BF4CDBED7AB8EE66C /* Card_Back.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = Card_Back.png; path = RETableViewManager/Resources/Card_Back.png; sourceTree = "<group>"; };
+		DB128117ED50A6E0174EE552131C1225 /* REPlaceholderTextView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = REPlaceholderTextView.h; path = RETableViewManager/REPlaceholderTextView.h; sourceTree = "<group>"; };
+		DCEDDDD2D92ACF5EB0DA39F86CA1F3C0 /* REEmailValidator.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = REEmailValidator.m; path = REValidation/Validators/REEmailValidator.m; sourceTree = "<group>"; };
+		DDF93A5F712038D2541482D6CEA2F55A /* JTCalendarMenuView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarMenuView.m; path = JTCalendar/Views/JTCalendarMenuView.m; sourceTree = "<group>"; };
+		E0256DE97A21B34A3936AC6E18ABE177 /* JTCalendarDay.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = JTCalendarDay.h; path = JTCalendar/Protocols/JTCalendarDay.h; sourceTree = "<group>"; };
+		E136BBC7E42AE95AA3B1C270FF295C27 /* REBoolItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = REBoolItem.h; path = RETableViewManager/Items/REBoolItem.h; sourceTree = "<group>"; };
+		E1BD4391C1073F27DFA2C30D3E5FEFDD /* RETableViewCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewCell.h; path = RETableViewManager/RETableViewCell.h; sourceTree = "<group>"; };
+		E39767523FA6D39B3CFF0C2762DAD751 /* RETableViewManager-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "RETableViewManager-dummy.m"; sourceTree = "<group>"; };
+		E3CFDC33B4B49673F1271D46C7764F30 /* Card_Mastercard.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = Card_Mastercard.png; path = RETableViewManager/Resources/Card_Mastercard.png; sourceTree = "<group>"; };
+		E5982CE80B49F5110F56871D14C8DCAE /* REActionBar.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = REActionBar.m; path = RETableViewManager/REActionBar.m; sourceTree = "<group>"; };
+		E9F0851765A495DA9DA8B0366171AC27 /* JTCalendarWeekView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTCalendarWeekView.m; path = JTCalendar/Views/JTCalendarWeekView.m; sourceTree = "<group>"; };
+		EDF8EE32DFA3DA6BDC6B9ED0A8052C8F /* REDateTimeItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = REDateTimeItem.m; path = RETableViewManager/Items/REDateTimeItem.m; sourceTree = "<group>"; };
+		EEB6BA3585D197DB7B63ADB391A01646 /* RETextItem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETextItem.m; path = RETableViewManager/Items/RETextItem.m; sourceTree = "<group>"; };
+		F2AB553B726B424B98E932FDC67F3F5F /* libJTCalendar.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libJTCalendar.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		F2D1EFA86CB327F55894F7074491B159 /* STPopup-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "STPopup-dummy.m"; sourceTree = "<group>"; };
+		F715CCCC5CAA52CCBA20BF39B41F6033 /* REEmailValidator.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = REEmailValidator.h; path = REValidation/Validators/REEmailValidator.h; sourceTree = "<group>"; };
+		F7F0A616E89146DE57E53F7FE34F50D8 /* Card_Stack.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = Card_Stack.png; path = RETableViewManager/Resources/Card_Stack.png; sourceTree = "<group>"; };
+		FB93D24E89866490F580D5A967CE2DC7 /* libREFormattedNumberField.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libREFormattedNumberField.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FBA89C243F3888F72AC9C77027F542F2 /* STPopupLeftBarItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = STPopupLeftBarItem.h; path = STPopup/STPopupLeftBarItem.h; sourceTree = "<group>"; };
+		FBC00C9894C0F0E958205DCFA0F8CE2F /* RETableViewInlinePickerCell.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RETableViewInlinePickerCell.h; path = RETableViewManager/Cells/RETableViewInlinePickerCell.h; sourceTree = "<group>"; };
+		FD6E34189F9ACA81FC9FED81ADB73FC0 /* RETableViewNumberCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewNumberCell.m; path = RETableViewManager/Cells/RETableViewNumberCell.m; sourceTree = "<group>"; };
 		FD7A1E5E91CFA233608CA67156C5B780 /* Pods-Everywhere.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Everywhere.release.xcconfig"; sourceTree = "<group>"; };
-		FE5CD8955827242C419839E42C1F19EB /* JTHorizontalCalendarView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = JTHorizontalCalendarView.m; path = JTCalendar/Views/JTHorizontalCalendarView.m; sourceTree = "<group>"; };
+		FE83ED7CE7AE6CB79B96B4D9D1B892E9 /* libPods-Everywhere.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Everywhere.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FE90E0A3E3FFA95DAC0BA824EC8BAA30 /* RETableViewFloatCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = RETableViewFloatCell.m; path = RETableViewManager/Cells/RETableViewFloatCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		061CD674EAF10BD0E188E5A66F157E37 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B1043FD21D0BB64798D4E294FC87BADC /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1AC0DEFFF7D08FDEE615BB0B4842B466 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F0C1DD702D80A6CEEBD325622FB540B3 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B1D36EF87DA01C6D715E20E3B0BD9ED /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E654B51FA168A2E8C735FD90ACDE0785 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3A157FC54B6D2FAEEB284F08C1FAAB4F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -148,31 +448,57 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3BBE305063F929D73220913C605E4F5E /* Frameworks */ = {
+		9EDDE9CEB7733C7406D6E244F7F22B3D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				683F036CCC6BC4948C9312E420B5214E /* Foundation.framework in Frameworks */,
+				377345B06C958B487822256F8F48DDD2 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D39233662B3D854008992467A72BCEF6 /* Frameworks */ = {
+		A85999AAD91B85455972AE15827B5863 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CCBB5B8D13DB00EA96A942E966D16C7D /* Foundation.framework in Frameworks */,
+				59398F4CFC562DFED009904C74A882F6 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EBA5665CFCA57B10E08C435AD80BA85A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		151C39CDBC2D9B241D68D105858395BA /* Support Files */ = {
+		0DCDF713CF0F6E48D373B47A4C4F6DFF /* STPopup */ = {
 			isa = PBXGroup;
 			children = (
-				8F4AD9CB4E4653F346097E16B41BAB1D /* STPopup.xcconfig */,
-				5A3BFA1E23040848DD8ED3793986CEEE /* STPopup-dummy.m */,
-				8FB4F7CC4C2336018037F3D8DF6A6A9B /* STPopup-prefix.pch */,
+				D69B92EC5C9BB48C32F7AFB1B16DCCBE /* STPopup.h */,
+				6F46BB0E83A691F4FE243ED4EC0E07A8 /* STPopupController.h */,
+				58CFD5268334145F7842CEAA87871A91 /* STPopupController.m */,
+				FBA89C243F3888F72AC9C77027F542F2 /* STPopupLeftBarItem.h */,
+				6786689EB19015848504D10923292E1F /* STPopupLeftBarItem.m */,
+				735BD602E9D04576B09A75124D2826CC /* STPopupNavigationBar.h */,
+				0EE87F981D9E3E9B41D534F23C5B526A /* STPopupNavigationBar.m */,
+				6C4388AAFD71DCEEE75CD3BDB121C6B0 /* UIResponder+STPopup.h */,
+				91C9BECC343B5BD79620A949F8430CA2 /* UIResponder+STPopup.m */,
+				AA0A9888023333CA13053342069A8E7D /* UIViewController+STPopup.h */,
+				B7F9C37E3FBF7D6132B5B7C3E5553CF9 /* UIViewController+STPopup.m */,
+				13871714FCB67E7AFF4923E5DEB03F7E /* Support Files */,
+			);
+			path = STPopup;
+			sourceTree = "<group>";
+		};
+		13871714FCB67E7AFF4923E5DEB03F7E /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				CB2430AE307E758AA417202F14FDCE98 /* STPopup.xcconfig */,
+				F2D1EFA86CB327F55894F7074491B159 /* STPopup-dummy.m */,
+				840A67AD5D207783AAE291A2ADF08C0B /* STPopup-prefix.pch */,
 			);
 			name = "Support Files";
 			path = "../Target Support Files/STPopup";
@@ -193,6 +519,20 @@
 			path = "Target Support Files/Pods-Everywhere";
 			sourceTree = "<group>";
 		};
+		33BE1C2027EC380178F79A944F30FC9E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F2AB553B726B424B98E932FDC67F3F5F /* libJTCalendar.a */,
+				FE83ED7CE7AE6CB79B96B4D9D1B892E9 /* libPods-Everywhere.a */,
+				FB93D24E89866490F580D5A967CE2DC7 /* libREFormattedNumberField.a */,
+				7AB521C58924B62E3D0F1853CC59E3F3 /* libRETableViewManager.a */,
+				09B625EBFE628828A6944A99685E4C22 /* libREValidation.a */,
+				C8522FA53A69CCAE3DB19C371FC55A26 /* libSTPopup.a */,
+				8FA424F0D8F3E373B74FC27EF097856F /* RETableViewManager.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		3DCAB2B7CDE207B3958B6CB957FCC758 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -201,34 +541,79 @@
 			name = iOS;
 			sourceTree = "<group>";
 		};
-		4D9699866342C4557743737E591690B2 /* STPopup */ = {
+		418BCA37ECAAE2D85746487A618948FB /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				86043E81BA344FE2FF9FF8D419CCD30D /* STPopup.h */,
-				3D28B2EE40B5499B7109BC6BC7AB371F /* STPopupController.h */,
-				B505B3123BA0561F50CB05A82B127A6A /* STPopupController.m */,
-				309A70A34B5E0E62DE601325BC72FC7A /* STPopupLeftBarItem.h */,
-				C9B086A64A52A9A9AF103B069B770A0B /* STPopupLeftBarItem.m */,
-				EAF668F5AD841518A3C17CF4015F7775 /* STPopupNavigationBar.h */,
-				3F228F76CFA4E191B82487A5083F7C4F /* STPopupNavigationBar.m */,
-				9384A53D65B13EF004FEB989BDD2C2CB /* UIResponder+STPopup.h */,
-				0D258AEF92A7B0E86521FD167EF55E94 /* UIResponder+STPopup.m */,
-				70E91A6093B73CC1066615F96DEC12B3 /* UIViewController+STPopup.h */,
-				34818BC5F9A30D427DFC3E99107C176C /* UIViewController+STPopup.m */,
-				151C39CDBC2D9B241D68D105858395BA /* Support Files */,
-			);
-			path = STPopup;
-			sourceTree = "<group>";
-		};
-		551D7DF134C13FF86A0E20F0763F5CEB /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				3DC3D7BB7B727AA658830DFC609DD267 /* JTCalendar.xcconfig */,
-				0AFB55B19D521208997499EEB68C086F /* JTCalendar-dummy.m */,
-				0B39A307DCC54B10281A590377F002F5 /* JTCalendar-prefix.pch */,
+				21F0D6A45B29B9AAE86D42BBF58E974D /* REFormattedNumberField.xcconfig */,
+				C09CA5DB4D4A73DD9FC33136CCA1BE98 /* REFormattedNumberField-dummy.m */,
+				D0C73F712CFCA378AA37DEB17435D52A /* REFormattedNumberField-prefix.pch */,
 			);
 			name = "Support Files";
-			path = "../Target Support Files/JTCalendar";
+			path = "../Target Support Files/REFormattedNumberField";
+			sourceTree = "<group>";
+		};
+		5A49528F03AE923204CC4FC82B7ABEBF /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				D373316B348CE58A798B63227E551E13 /* ResourceBundle-RETableViewManager-Info.plist */,
+				D7F8237DC4015BFB688EDB45B58B1822 /* RETableViewManager.xcconfig */,
+				E39767523FA6D39B3CFF0C2762DAD751 /* RETableViewManager-dummy.m */,
+				B3FCF4DFB851EA5DD48ED14295C884A9 /* RETableViewManager-prefix.pch */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/RETableViewManager";
+			sourceTree = "<group>";
+		};
+		6C4D52FE8223B18238DC9F8CCDFE989A /* JTCalendar */ = {
+			isa = PBXGroup;
+			children = (
+				53F485C8F1CB153201D1100B4F6D8024 /* JTCalendar.h */,
+				E0256DE97A21B34A3936AC6E18ABE177 /* JTCalendarDay.h */,
+				090337E92052DEAC5154E576029AE218 /* JTCalendarDayView.h */,
+				2CA9737E7E71A05CBB3D5D135C57646A /* JTCalendarDayView.m */,
+				59A4AF0683261821FA4AC10801AB15DA /* JTCalendarDelegate.h */,
+				AF586C21B06CF277FE1472E8F0A51820 /* JTCalendarDelegateManager.h */,
+				44295A00B97245BF4D599B2FAA05ACC6 /* JTCalendarDelegateManager.m */,
+				997A0A83BB9D354779E3B66279346FEB /* JTCalendarManager.h */,
+				7334B7ADFD4887E3668FE80658654CD8 /* JTCalendarManager.m */,
+				C6A2FC8ECD3F235E70126758F3C9D3E5 /* JTCalendarMenuView.h */,
+				DDF93A5F712038D2541482D6CEA2F55A /* JTCalendarMenuView.m */,
+				CFC3C055D57F88DBF20D479E737FFD6C /* JTCalendarPage.h */,
+				3C4FCA6EE804085E30E0F57D5A98BCCE /* JTCalendarPageView.h */,
+				1588BF39F286503EF4F035CBD443BB99 /* JTCalendarPageView.m */,
+				5FA11CDB82B1480F9543DADF5138CD4C /* JTCalendarScrollManager.h */,
+				227BBCE11952BC3134F809EB75356D9E /* JTCalendarScrollManager.m */,
+				CAEE627BE188E4A8102775C63F8A5A51 /* JTCalendarSettings.h */,
+				3234ADB0E974146DA8E06C3F573B97A5 /* JTCalendarSettings.m */,
+				69B60CB49504F05D836664CE6261A742 /* JTCalendarWeek.h */,
+				B91686E4C9BE760C1B16761033935AB7 /* JTCalendarWeekDay.h */,
+				BA153F334D916F01C4D8D6C8F841786B /* JTCalendarWeekDayView.h */,
+				93BE41A5B4195585CC40473B0DBC785B /* JTCalendarWeekDayView.m */,
+				8747BCCF5F42369D71EFAC649D5A146F /* JTCalendarWeekView.h */,
+				E9F0851765A495DA9DA8B0366171AC27 /* JTCalendarWeekView.m */,
+				715684CAF4B97E1BFB75366070AE969B /* JTContent.h */,
+				1B69741A2FBD6DBB26B98A3B74F5982D /* JTDateHelper.h */,
+				A9B13A72053C9DDE34536B0A87348A74 /* JTDateHelper.m */,
+				1A7989EB8F02AED1D1219E0FB6090BAE /* JTHorizontalCalendarView.h */,
+				541DC5D4221D0DAA170D7D3FB9221E8E /* JTHorizontalCalendarView.m */,
+				43BFF0A46C418883BA958486DF73DBCF /* JTMenu.h */,
+				D592B49315B37164ACA9CFDBAB3CC085 /* JTVerticalCalendarView.h */,
+				196C6C2C81F082DA26DE17BBAAAFA04F /* JTVerticalCalendarView.m */,
+				ED25BE0E15DEE5D0234D04524AAF26CE /* Support Files */,
+			);
+			path = JTCalendar;
+			sourceTree = "<group>";
+		};
+		7BC5FCCEA6864461F07C54CC7F895323 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				6C4D52FE8223B18238DC9F8CCDFE989A /* JTCalendar */,
+				8D957C7A84A2FFECB3D896557E1FAC81 /* REFormattedNumberField */,
+				BB7B0E3B967E08E84304809097EF9E85 /* RETableViewManager */,
+				7FCBAFA89ACF34B4DA6EA6209BA5C6D4 /* REValidation */,
+				0DCDF713CF0F6E48D373B47A4C4F6DFF /* STPopup */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		7DB346D0F39D3F0E887471402A8071AB = {
@@ -236,10 +621,70 @@
 			children = (
 				93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */,
 				BC3CA7F9E30CC8F7E2DD044DD34432FC /* Frameworks */,
-				F95A180C8FDCAC76C1D93AC54D8DB63A /* Pods */,
-				B3FCC9250946294DBD48BE31266BFC3A /* Products */,
+				7BC5FCCEA6864461F07C54CC7F895323 /* Pods */,
+				33BE1C2027EC380178F79A944F30FC9E /* Products */,
 				A7BF245263011EC49F8142052E00F5DF /* Targets Support Files */,
 			);
+			sourceTree = "<group>";
+		};
+		7FCBAFA89ACF34B4DA6EA6209BA5C6D4 /* REValidation */ = {
+			isa = PBXGroup;
+			children = (
+				3E85DAA9CEAD6BE2BCC6C5F13CED13F1 /* NSError+REValidation.h */,
+				170653E3B5C1324E49494F71B4716EC7 /* NSError+REValidation.m */,
+				F715CCCC5CAA52CCBA20BF39B41F6033 /* REEmailValidator.h */,
+				DCEDDDD2D92ACF5EB0DA39F86CA1F3C0 /* REEmailValidator.m */,
+				B3AD3FAF4F93D53307291E0D2FDA2FD1 /* RELengthValidator.h */,
+				52625746868AA7D5B354391F3E46BBB0 /* RELengthValidator.m */,
+				2BC7A3461CF9927ECDF8FD89E044C62F /* REPresenceValidator.h */,
+				A435EA656F2EC564F375FCC09B2E0BE6 /* REPresenceValidator.m */,
+				2692CE65704392E224084BFC705CC35D /* REURLValidator.h */,
+				04DB4D3E589DBFDE663697063882B00A /* REURLValidator.m */,
+				3A8A12B6C2545140E394B80F4235E085 /* REValidation.h */,
+				506C5443CB8D0E206EB52CDF7E5045A8 /* REValidation.m */,
+				2DCC02F7EC6FEFEDF9A42691D7E1AE6B /* REValidator.h */,
+				99BB13CF817958199F56E28BBF39F01C /* REValidator.m */,
+				F17DE98445315820B731FBE8F7190FE3 /* Support Files */,
+			);
+			path = REValidation;
+			sourceTree = "<group>";
+		};
+		8D957C7A84A2FFECB3D896557E1FAC81 /* REFormattedNumberField */ = {
+			isa = PBXGroup;
+			children = (
+				C8AC164CA78C8D73142007E8FF9A5FAC /* NSString+RENumberFormat.h */,
+				8E4726D403421AA87F595FF1A7D2635A /* NSString+RENumberFormat.m */,
+				26AF2D18A6DDFEFDC487FFE0A6D64002 /* REFormattedNumberField.h */,
+				A8F90A82ECA7E686F7DD451D89A4708D /* REFormattedNumberField.m */,
+				418BCA37ECAAE2D85746487A618948FB /* Support Files */,
+			);
+			path = REFormattedNumberField;
+			sourceTree = "<group>";
+		};
+		933E8BE33EB533A4A562219235D87C4A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				0CC6FA1D824F4A18B18A30E9CDB5185A /* Card_Amex.png */,
+				95698C9A84867CAA14C3257F430AEB58 /* Card_Amex@2x.png */,
+				D8F4800796E2319BF4CDBED7AB8EE66C /* Card_Back.png */,
+				3154C6EE3BF864577A5BE9107B203B5D /* Card_Back@2x.png */,
+				760AE5EA9119AEBEACFE70299A1A1936 /* Card_Discover.png */,
+				D04396C48EAEBA3E980498D882257DA4 /* Card_Discover@2x.png */,
+				E3CFDC33B4B49673F1271D46C7764F30 /* Card_Mastercard.png */,
+				A6C6445CEAE90839D3EB27F46E5FC823 /* Card_Mastercard@2x.png */,
+				F7F0A616E89146DE57E53F7FE34F50D8 /* Card_Stack.png */,
+				2806F6942DACE21CD0FE79E3F00257A2 /* Card_Stack@2x.png */,
+				706A648A03C152C4C850DF42F93F4400 /* Card_Visa.png */,
+				50446F0FC7EB7A236C7A00400257ACF7 /* Card_Visa@2x.png */,
+				C5428F36D973439BE5FBB5679C31D5C5 /* Ribbon_Expired.png */,
+				388580580EE0763E70C3DA3D92DC2F46 /* Ribbon_Expired@2x.png */,
+				A1B0C7CF8ABAAD02B60281642FCE481C /* Transparent@2x.png */,
+				CF40BC5488B724C2CEEA9F472EB435D7 /* UIButtonBarArrowLeft.png */,
+				A3B0823A09CAE22ACD7E5D56A2F93427 /* UIButtonBarArrowLeft@2x.png */,
+				7ED7103EE21601D9CD75F45AE618743F /* UIButtonBarArrowRight.png */,
+				8A20F98600CA363959EE5C75620EF8BE /* UIButtonBarArrowRight@2x.png */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		A7BF245263011EC49F8142052E00F5DF /* Targets Support Files */ = {
@@ -250,14 +695,83 @@
 			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
-		B3FCC9250946294DBD48BE31266BFC3A /* Products */ = {
+		BB7B0E3B967E08E84304809097EF9E85 /* RETableViewManager */ = {
 			isa = PBXGroup;
 			children = (
-				961B391E47B59EDCBF7601A7BAEF82F5 /* libJTCalendar.a */,
-				C6E61C973D8A64D5FE93597343271969 /* libPods-Everywhere.a */,
-				741B1FBEFC69EDFBB0833E30F63E9CB4 /* libSTPopup.a */,
+				AC2AB8F26C0687E662170CDF82ECE8AC /* NSBundle+RETableViewManager.h */,
+				422E8A40D59BB82BA1FBC2AA9A364658 /* NSBundle+RETableViewManager.m */,
+				0A6BEAC7C097172A2108FCE534EA0905 /* NSString+RETableViewManagerAdditions.h */,
+				AC469CF101EE0BC157CBD73DBF226A1C /* NSString+RETableViewManagerAdditions.m */,
+				36610E64D33851EDF6E956DAA17A3077 /* REActionBar.h */,
+				E5982CE80B49F5110F56871D14C8DCAE /* REActionBar.m */,
+				E136BBC7E42AE95AA3B1C270FF295C27 /* REBoolItem.h */,
+				116443395363E88E670DB0B425A2F389 /* REBoolItem.m */,
+				BCD42AF4106C94121CF41143DFD74BC0 /* RECreditCardItem.h */,
+				8A8ED0BFD45681F803F2CE8DD4AF90E6 /* RECreditCardItem.m */,
+				2510A5E1EE72C25170B1DB5BB51F64BE /* REDateTimeItem.h */,
+				EDF8EE32DFA3DA6BDC6B9ED0A8052C8F /* REDateTimeItem.m */,
+				C0A3BC1E0A6DDC6841BA35F3AE739EBF /* REFloatItem.h */,
+				D1665D70BCED9FEA16EA81232108F907 /* REFloatItem.m */,
+				54C63E679938475B3CB6563AACEDF82D /* REInlineDatePickerItem.h */,
+				7414EF196AF541394520918153313238 /* REInlineDatePickerItem.m */,
+				5E663CA2E0854A788AE7804F713D2C2D /* REInlinePickerItem.h */,
+				AF3540337505E4BE9E2F17E75D4A7745 /* REInlinePickerItem.m */,
+				81BCC19545AAE7A2CA521222774786E6 /* RELongTextItem.h */,
+				CBBF2412ECD098591F812A2A833ABDBF /* RELongTextItem.m */,
+				5C9599060A48F45FD1352E1659C76638 /* REMultipleChoiceItem.h */,
+				6BF4C40D058D1C58CDDEA54D1A20351F /* REMultipleChoiceItem.m */,
+				0E1F17E5AA5F34A19462ED229085878F /* RENumberItem.h */,
+				21CAB78B30CDF17D851101FBDB1BF886 /* RENumberItem.m */,
+				5026299394BD83D4C0BC0AF9699C5327 /* REPickerItem.h */,
+				94FF39AFF2682CA6E1461DECC7D91500 /* REPickerItem.m */,
+				DB128117ED50A6E0174EE552131C1225 /* REPlaceholderTextView.h */,
+				CB6B7434B0BE851A859C9779FCC2BE6C /* REPlaceholderTextView.m */,
+				5FD64EA1D810765E6705DEB83F09B514 /* RERadioItem.h */,
+				8917D46DA37236A65232B0F6ABE35206 /* RERadioItem.m */,
+				41ACE19793382513623E63902BC5C860 /* RESegmentedItem.h */,
+				AD0EBD47DD3305F45D65D81AD7EA779E /* RESegmentedItem.m */,
+				B0B426F522CEAEDD53411D3F00551F71 /* RETableViewBoolCell.h */,
+				8573E478FD20F8BDE85D7772211B9100 /* RETableViewBoolCell.m */,
+				E1BD4391C1073F27DFA2C30D3E5FEFDD /* RETableViewCell.h */,
+				9828B0E87A6C2E910FBAF0BDC1CB6237 /* RETableViewCell.m */,
+				88C37250523A1A9999CE31F2FF06A491 /* RETableViewCellStyle.h */,
+				AF59E9A87D8FB292BD845BBCF0164CBF /* RETableViewCellStyle.m */,
+				5C5BFCBFFD63BE020598188012B376EB /* RETableViewCreditCardCell.h */,
+				2427FC718288B779E3C7DCAC69A0B42A /* RETableViewCreditCardCell.m */,
+				C73E313F6171CE341D371D050AE46276 /* RETableViewDateTimeCell.h */,
+				6A855D72070AE8E14C0B8BE5BB37B56B /* RETableViewDateTimeCell.m */,
+				C6CC89CC20C8D1FBA1C788FFE6D8A756 /* RETableViewFloatCell.h */,
+				FE90E0A3E3FFA95DAC0BA824EC8BAA30 /* RETableViewFloatCell.m */,
+				16A4EBE7F12C9EDFDDE7E204DCE25471 /* RETableViewInlineDatePickerCell.h */,
+				4B18B071A521FA27AD4F2B03C14C74FE /* RETableViewInlineDatePickerCell.m */,
+				FBC00C9894C0F0E958205DCFA0F8CE2F /* RETableViewInlinePickerCell.h */,
+				41743D20CE40D8817E9AD112AEC9D4A4 /* RETableViewInlinePickerCell.m */,
+				22A922B94C3ED4DC59C645A7BC205CB3 /* RETableViewItem.h */,
+				04611A3F1C0112902AE6C7081F94E412 /* RETableViewItem.m */,
+				D1B291432213BD50AF0774497F5B5E15 /* RETableViewLongTextCell.h */,
+				BF11FF1E48559B3F3A60260D7DE2477C /* RETableViewLongTextCell.m */,
+				89FEA2AB14DB8AEF7376A3C714BDE80F /* RETableViewManager.h */,
+				D5406058BA3E52A1506BB9B6796082E3 /* RETableViewManager.m */,
+				1C6C6C0C0262B355BF8112928C7927C4 /* RETableViewNumberCell.h */,
+				FD6E34189F9ACA81FC9FED81ADB73FC0 /* RETableViewNumberCell.m */,
+				2C8ABB6624D381F2CB5391DB4336B3D0 /* RETableViewOptionCell.h */,
+				9AC3EA8F0C2C1E59649253D3785B7E90 /* RETableViewOptionCell.m */,
+				8CA4D87FC903BD0261F23510F021550A /* RETableViewOptionsController.h */,
+				6459B6432BFE2B92D3EEF6FE49DF557E /* RETableViewOptionsController.m */,
+				7462BACD3B4514DE0D21E0FEEE11534F /* RETableViewPickerCell.h */,
+				6F9478198605AAFD28B00D9BEFA3D386 /* RETableViewPickerCell.m */,
+				32A38D07F54B373F5C55A8683CD983B5 /* RETableViewSection.h */,
+				249821B868C942C93CB355081145F195 /* RETableViewSection.m */,
+				7E278012DFE09FB9CE38BC17F8392B2C /* RETableViewSegmentedCell.h */,
+				CECA301FB92E291CE38BA43DD6207DEC /* RETableViewSegmentedCell.m */,
+				CDB9588A4964ADF661F7B06DBF071B43 /* RETableViewTextCell.h */,
+				C39D5D50E6DE08E0BA16A0AA27472459 /* RETableViewTextCell.m */,
+				B5FB662317EA38A01D31045ED1EAFEE9 /* RETextItem.h */,
+				EEB6BA3585D197DB7B63ADB391A01646 /* RETextItem.m */,
+				933E8BE33EB533A4A562219235D87C4A /* Resources */,
+				5A49528F03AE923204CC4FC82B7ABEBF /* Support Files */,
 			);
-			name = Products;
+			path = RETableViewManager;
 			sourceTree = "<group>";
 		};
 		BC3CA7F9E30CC8F7E2DD044DD34432FC /* Frameworks */ = {
@@ -268,58 +782,109 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		C309B76E67005170D8F9CA099F0BE6B2 /* JTCalendar */ = {
+		ED25BE0E15DEE5D0234D04524AAF26CE /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				21AF56402A562610B3E345C37B95C474 /* JTCalendar.h */,
-				621632710277E9C9A02D2F4124E777AC /* JTCalendarDay.h */,
-				7959C6EC6ECEB019B4C2B8750CFAE69E /* JTCalendarDayView.h */,
-				A1B047931B1E4B172DC5337113016852 /* JTCalendarDayView.m */,
-				DBB43BF361A7FE3EC8418B42632E3280 /* JTCalendarDelegate.h */,
-				C48D4A34CA595952CE5EE8186D586C98 /* JTCalendarDelegateManager.h */,
-				09F214EE169910F28D4F33F947E2686F /* JTCalendarDelegateManager.m */,
-				4DCE72FF9415FB40D82C3C854012135C /* JTCalendarManager.h */,
-				347855CC268417836A815CC2C8623049 /* JTCalendarManager.m */,
-				4237ADC0DC2A6FA08B797ECBEC31B818 /* JTCalendarMenuView.h */,
-				93623C44C301A55AC2A87D3BD0EB7CA5 /* JTCalendarMenuView.m */,
-				1DABC8105AA837DD191B74C388743489 /* JTCalendarPage.h */,
-				5580A606983E9118E4B1667074445FAC /* JTCalendarPageView.h */,
-				29272D0A1F3D94B99FCF65F51C7863BF /* JTCalendarPageView.m */,
-				D66F2D4AA8EE11446C337835298C38BE /* JTCalendarScrollManager.h */,
-				307AA17503E2BA721E2EC0A936DA284C /* JTCalendarScrollManager.m */,
-				8C91AE72DC89531DC5C563DA45E99FD3 /* JTCalendarSettings.h */,
-				E65CDFFFB2DAD77722DC923A5EEA8FF7 /* JTCalendarSettings.m */,
-				1453C4CAA3AD7B83A7B4C84CAF814942 /* JTCalendarWeek.h */,
-				781CB0CED90ABD3DE98A0764073EBDBC /* JTCalendarWeekDay.h */,
-				754FEA8315ED70DD33A04D3BF5F07A29 /* JTCalendarWeekDayView.h */,
-				B843C77B4D9F02F080BD073BA04498C6 /* JTCalendarWeekDayView.m */,
-				9CC6E7D249ACF67E68BA8289C6C3EFE9 /* JTCalendarWeekView.h */,
-				02074F6113B22C940C06838398B16EC9 /* JTCalendarWeekView.m */,
-				D1686942AB1CB0571DB69397C3EDACF5 /* JTContent.h */,
-				BB3F780938BC99DB9C7D4C55F4F95CB8 /* JTDateHelper.h */,
-				5E7657327E5E49C92AA1383EC4DC17B8 /* JTDateHelper.m */,
-				5B408C3A492F5E08D3BAC00FE667FAF6 /* JTHorizontalCalendarView.h */,
-				FE5CD8955827242C419839E42C1F19EB /* JTHorizontalCalendarView.m */,
-				4C6C886A1D0B69017260D44124BBDC16 /* JTMenu.h */,
-				35E6C638234A9314EA023703530A8167 /* JTVerticalCalendarView.h */,
-				08B50780D1482D05E624536AD15DCDA9 /* JTVerticalCalendarView.m */,
-				551D7DF134C13FF86A0E20F0763F5CEB /* Support Files */,
+				8B3908650FB5293929739B0A81FD711D /* JTCalendar.xcconfig */,
+				2C8E902B74A76AB349663E9159046AD7 /* JTCalendar-dummy.m */,
+				74D7A00E325DF2123777E9DB979A6FAA /* JTCalendar-prefix.pch */,
 			);
-			path = JTCalendar;
+			name = "Support Files";
+			path = "../Target Support Files/JTCalendar";
 			sourceTree = "<group>";
 		};
-		F95A180C8FDCAC76C1D93AC54D8DB63A /* Pods */ = {
+		F17DE98445315820B731FBE8F7190FE3 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				C309B76E67005170D8F9CA099F0BE6B2 /* JTCalendar */,
-				4D9699866342C4557743737E591690B2 /* STPopup */,
+				C75EB80CF49C7C0D1B3AAB1062B83CD9 /* REValidation.xcconfig */,
+				C9E954488548DC22ED4ED472B35C1AB7 /* REValidation-dummy.m */,
+				403A93F6221B43FE41394383FBA3FDE6 /* REValidation-prefix.pch */,
 			);
-			name = Pods;
+			name = "Support Files";
+			path = "../Target Support Files/REValidation";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		2F037F1EF955A3847F22C3935AD0900E /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B29CA961FBE49C8502EC79803CAE5A32 /* NSError+REValidation.h in Headers */,
+				DA99E19DB7BEE1EDFFF9F92C49932EC0 /* REEmailValidator.h in Headers */,
+				3C61921B913B9DF235CB1C8588B964DD /* RELengthValidator.h in Headers */,
+				A3145914B6CF62CF869F6B9BC0B59DA3 /* REPresenceValidator.h in Headers */,
+				AC52C1651DCC19DDD866731819021325 /* REURLValidator.h in Headers */,
+				A15AB0C096DD645230BFF9F63BC022D3 /* REValidation.h in Headers */,
+				33C27A84ADA1682F0D78E0B31DE5762C /* REValidator.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		55C5D2784A51274CF2C7CD8F5E17F451 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2E91EADC13C9B59123B8C6F9963BF993 /* NSString+RENumberFormat.h in Headers */,
+				ACEB99F082ACDB56B38C213133CD04C8 /* REFormattedNumberField.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A927C27C98C2250767CD0BCF33969824 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E6AFF2211975984CE458817F423B1BA4 /* NSBundle+RETableViewManager.h in Headers */,
+				F1A298498050700C9909F4D72D347337 /* NSString+RETableViewManagerAdditions.h in Headers */,
+				15AE4EFDF2B38C12CF84E62ECE18C906 /* REActionBar.h in Headers */,
+				F99C1B5C8235544B7D14822D4B07B77C /* REBoolItem.h in Headers */,
+				D3FD550E2EB1E69E82104F82694DE116 /* RECreditCardItem.h in Headers */,
+				1A90928D62E926CDEDACCE71596B90E0 /* REDateTimeItem.h in Headers */,
+				F42A4472D9FE8F249A54384B6A5D1136 /* REFloatItem.h in Headers */,
+				342F92D3054F0586229E5C9EF32F7D2E /* REInlineDatePickerItem.h in Headers */,
+				E6B92F5FFECF1ED86C852AFAE09DA40B /* REInlinePickerItem.h in Headers */,
+				E1DE6048E52D9155AA11E27C51D0E7A0 /* RELongTextItem.h in Headers */,
+				D84A1C87B36A514B3C1013D26B4FE6B7 /* REMultipleChoiceItem.h in Headers */,
+				788D3A16FC7409BF02E2F6256479BC85 /* RENumberItem.h in Headers */,
+				8E9FD9685CE9DD77371E8E0FD2FD92DC /* REPickerItem.h in Headers */,
+				3BCC89A41A92ED7BA07191C841B13EA3 /* REPlaceholderTextView.h in Headers */,
+				D8DC6C514C4B8F5BD4DB0A52269930D1 /* RERadioItem.h in Headers */,
+				C93E4761BD9BF84157006D7F8AA99388 /* RESegmentedItem.h in Headers */,
+				096363544378D6634782A0CEA7CABC79 /* RETableViewBoolCell.h in Headers */,
+				BA722F44318765BE6C10441C8F031C4E /* RETableViewCell.h in Headers */,
+				1CEC67D9D40B6B8307DFF0A71A51BC40 /* RETableViewCellStyle.h in Headers */,
+				6A9CA9128A94B2BB0BA3F80468C1F2E3 /* RETableViewCreditCardCell.h in Headers */,
+				F50076A3A4503C481B8111E948688B64 /* RETableViewDateTimeCell.h in Headers */,
+				0E03F3D1274250FBD79DCD1769D48826 /* RETableViewFloatCell.h in Headers */,
+				BD23389D39E9505BEB7BC45FBB60CA31 /* RETableViewInlineDatePickerCell.h in Headers */,
+				213503D7DC1C379ABBC3E6EF1653709F /* RETableViewInlinePickerCell.h in Headers */,
+				01C00D70A86767152240D9B4BA2520B3 /* RETableViewItem.h in Headers */,
+				BC486D1A60D73AA7B0FF527FAF313D61 /* RETableViewLongTextCell.h in Headers */,
+				5B8FBE97F4F805E89367B6C32DF1912B /* RETableViewManager.h in Headers */,
+				C3060C8A64852CABD2CBC155EC1295EA /* RETableViewNumberCell.h in Headers */,
+				2289616C1CC7156D50416102445058B1 /* RETableViewOptionCell.h in Headers */,
+				7D630FD67E64F3485D3E57083139950A /* RETableViewOptionsController.h in Headers */,
+				57496E2031D877F07B261DBADDB8291F /* RETableViewPickerCell.h in Headers */,
+				BECF66DFE8CA18B169320A20DB21E853 /* RETableViewSection.h in Headers */,
+				2035E7D7D6A8B526B39FA9A2C57A4583 /* RETableViewSegmentedCell.h in Headers */,
+				9EDAEE0F45A699A68DC28C66AC808066 /* RETableViewTextCell.h in Headers */,
+				EA2B7B3FBCFB556D59BD47D64A6F97D5 /* RETextItem.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B1657740A838E59960A1EB4BF7CF3772 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E342A8B49345FB5E24FA3294042A7E64 /* STPopup.h in Headers */,
+				ACCAA85864C3E5EF6CC17974E7159A1A /* STPopupController.h in Headers */,
+				6FFB7F0B665C48F5F215CC45B60C5956 /* STPopupLeftBarItem.h in Headers */,
+				40C49195770F6F30BC464C9DB2B417AE /* STPopupNavigationBar.h in Headers */,
+				467F075673E592B6FA7DA8CCF70656ED /* UIResponder+STPopup.h in Headers */,
+				812138CD172B0032D2797092AFDAAB7B /* UIViewController+STPopup.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BB6F8A0025DD096F4CB9E3326B8A7706 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -347,29 +912,74 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D8566B9CEB310C017878DC2AB55E48E5 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6C8DE5C21114CFC91B5F829D6975A85B /* STPopup.h in Headers */,
-				A533E321EE9E3F2ADE0381B6FAA16C80 /* STPopupController.h in Headers */,
-				327CC78692961B5A7106D39D23CAF155 /* STPopupLeftBarItem.h in Headers */,
-				A0A8FACCEB7D1F11AB6C7E1F5D0CA52A /* STPopupNavigationBar.h in Headers */,
-				A91C5A65426633EF9E9A8E80832CD896 /* UIResponder+STPopup.h in Headers */,
-				442C8B3A54F78E4376BB67A47BDF0B55 /* UIViewController+STPopup.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		405A251F9B571B76D06113556EBD85D7 /* STPopup */ = {
+		136F4B3A5485663719D53444AB43BDD4 /* RETableViewManager */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 326D42216BEF82BF9A99613E8C8A38CB /* Build configuration list for PBXNativeTarget "STPopup" */;
+			buildConfigurationList = 45F0532B950C6CF06DB621B12A3087B3 /* Build configuration list for PBXNativeTarget "RETableViewManager" */;
 			buildPhases = (
-				C828F112DFB33143CA67725C123745C5 /* Sources */,
-				3BBE305063F929D73220913C605E4F5E /* Frameworks */,
-				D8566B9CEB310C017878DC2AB55E48E5 /* Headers */,
+				FB2E7331272B0EBCBFA658C777F7B94A /* Sources */,
+				9EDDE9CEB7733C7406D6E244F7F22B3D /* Frameworks */,
+				A927C27C98C2250767CD0BCF33969824 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				64CD8577FC6B8156F84E8D05BF45614F /* PBXTargetDependency */,
+				66C21CAF67D6171AC0F33905CAAD4791 /* PBXTargetDependency */,
+				C0C9BAE31AB5A5E249A5574202CBCB9F /* PBXTargetDependency */,
+			);
+			name = RETableViewManager;
+			productName = RETableViewManager;
+			productReference = 7AB521C58924B62E3D0F1853CC59E3F3 /* libRETableViewManager.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		229CD270F050B5A404A1DA64917E1947 /* REFormattedNumberField */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AD1AF53A13A8BFEBCD5769F2DF3BBD1B /* Build configuration list for PBXNativeTarget "REFormattedNumberField" */;
+			buildPhases = (
+				B3B6F4BCA87FE3EC28560136CFD2D96B /* Sources */,
+				061CD674EAF10BD0E188E5A66F157E37 /* Frameworks */,
+				55C5D2784A51274CF2C7CD8F5E17F451 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = REFormattedNumberField;
+			productName = REFormattedNumberField;
+			productReference = FB93D24E89866490F580D5A967CE2DC7 /* libREFormattedNumberField.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		82419A112CD2946D796F702C1E4B8421 /* Pods-Everywhere */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9151488612011634B3DF1AAE743F19DD /* Build configuration list for PBXNativeTarget "Pods-Everywhere" */;
+			buildPhases = (
+				AAE678E5A26C53400A16102E501AF565 /* Sources */,
+				A85999AAD91B85455972AE15827B5863 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				80F7619A11410032D19432C95D7D9821 /* PBXTargetDependency */,
+				691E291F3877B84B19E00A647955E9DE /* PBXTargetDependency */,
+				B7B5FF075A11A70729C665D027C85E35 /* PBXTargetDependency */,
+				EF8D246514BDE9E4AA2557CA1B12656C /* PBXTargetDependency */,
+				3BF744027541E235D455B6CF015EE67A /* PBXTargetDependency */,
+			);
+			name = "Pods-Everywhere";
+			productName = "Pods-Everywhere";
+			productReference = FE83ED7CE7AE6CB79B96B4D9D1B892E9 /* libPods-Everywhere.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		8B117A9C24F73BBDCB3D5FC18C215703 /* STPopup */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4418E3360F7F3E5653BC4B1E5A92AC15 /* Build configuration list for PBXNativeTarget "STPopup" */;
+			buildPhases = (
+				F4D1AD05089B7D95427D6453080D5C75 /* Sources */,
+				2B1D36EF87DA01C6D715E20E3B0BD9ED /* Frameworks */,
+				B1657740A838E59960A1EB4BF7CF3772 /* Headers */,
 			);
 			buildRules = (
 			);
@@ -377,26 +987,42 @@
 			);
 			name = STPopup;
 			productName = STPopup;
-			productReference = 741B1FBEFC69EDFBB0833E30F63E9CB4 /* libSTPopup.a */;
+			productReference = C8522FA53A69CCAE3DB19C371FC55A26 /* libSTPopup.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		4620367CEC8BD8072B1FC9A441335B61 /* Pods-Everywhere */ = {
+		941F10A81C143F9A2433AEAB33E7C888 /* REValidation */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B98457B8C58BAF4E4C31EA46BF2A3F24 /* Build configuration list for PBXNativeTarget "Pods-Everywhere" */;
+			buildConfigurationList = 6B9C2B9AA7B18B7561E7EE78916463FF /* Build configuration list for PBXNativeTarget "REValidation" */;
 			buildPhases = (
-				6400BA2349A65B0BAFAFD000EA8A5418 /* Sources */,
-				D39233662B3D854008992467A72BCEF6 /* Frameworks */,
+				86C4E1C3B5F72ACD35D2AA296253A856 /* Sources */,
+				1AC0DEFFF7D08FDEE615BB0B4842B466 /* Frameworks */,
+				2F037F1EF955A3847F22C3935AD0900E /* Headers */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				B1B8884810C9FA285ED97A924A687A87 /* PBXTargetDependency */,
-				BB88158C3000836B238C31BE7A2F4B82 /* PBXTargetDependency */,
 			);
-			name = "Pods-Everywhere";
-			productName = "Pods-Everywhere";
-			productReference = C6E61C973D8A64D5FE93597343271969 /* libPods-Everywhere.a */;
+			name = REValidation;
+			productName = REValidation;
+			productReference = 09B625EBFE628828A6944A99685E4C22 /* libREValidation.a */;
 			productType = "com.apple.product-type.library.static";
+		};
+		9F7DA8D66487FF9CE2410CEE4CCFC72B /* RETableViewManager-RETableViewManager */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DA5DCD7756DDE8D493E1133A584F4D6F /* Build configuration list for PBXNativeTarget "RETableViewManager-RETableViewManager" */;
+			buildPhases = (
+				A26416DE27959109D78E1A5A38A67294 /* Sources */,
+				EBA5665CFCA57B10E08C435AD80BA85A /* Frameworks */,
+				F08CC3CEFB2CF685E1D4B9FA2786CF36 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "RETableViewManager-RETableViewManager";
+			productName = "RETableViewManager-RETableViewManager";
+			productReference = 8FA424F0D8F3E373B74FC27EF097856F /* RETableViewManager.bundle */;
+			productType = "com.apple.product-type.bundle";
 		};
 		C3AD7E342840A1BEA026D1D3A2D9C1A7 /* JTCalendar */ = {
 			isa = PBXNativeTarget;
@@ -412,7 +1038,7 @@
 			);
 			name = JTCalendar;
 			productName = JTCalendar;
-			productReference = 961B391E47B59EDCBF7601A7BAEF82F5 /* libJTCalendar.a */;
+			productReference = F2AB553B726B424B98E932FDC67F3F5F /* libJTCalendar.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -432,23 +1058,63 @@
 				en,
 			);
 			mainGroup = 7DB346D0F39D3F0E887471402A8071AB;
-			productRefGroup = B3FCC9250946294DBD48BE31266BFC3A /* Products */;
+			productRefGroup = 33BE1C2027EC380178F79A944F30FC9E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				C3AD7E342840A1BEA026D1D3A2D9C1A7 /* JTCalendar */,
-				4620367CEC8BD8072B1FC9A441335B61 /* Pods-Everywhere */,
-				405A251F9B571B76D06113556EBD85D7 /* STPopup */,
+				82419A112CD2946D796F702C1E4B8421 /* Pods-Everywhere */,
+				229CD270F050B5A404A1DA64917E1947 /* REFormattedNumberField */,
+				136F4B3A5485663719D53444AB43BDD4 /* RETableViewManager */,
+				9F7DA8D66487FF9CE2410CEE4CCFC72B /* RETableViewManager-RETableViewManager */,
+				941F10A81C143F9A2433AEAB33E7C888 /* REValidation */,
+				8B117A9C24F73BBDCB3D5FC18C215703 /* STPopup */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		F08CC3CEFB2CF685E1D4B9FA2786CF36 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FB147E66814A37BC6EADA265DD153111 /* Card_Amex.png in Resources */,
+				3EE92FAFC365F902FFD760AEF2213983 /* Card_Amex@2x.png in Resources */,
+				9922E185B8C5F91565827EA04633D1BB /* Card_Back.png in Resources */,
+				1F9D0ABB9AA45FE880C97943A11CECA9 /* Card_Back@2x.png in Resources */,
+				8650AF7FD1EE25D814F74773BD7A4AA2 /* Card_Discover.png in Resources */,
+				96938CD601A9408B82E3E8CD6025446A /* Card_Discover@2x.png in Resources */,
+				E254A0331DA9DD20D24E194248EB1A0C /* Card_Mastercard.png in Resources */,
+				A70FD9EE475B5CC644FB35E967FB3603 /* Card_Mastercard@2x.png in Resources */,
+				AEEA42692650165D3C7BF1CEAAF0792B /* Card_Stack.png in Resources */,
+				F9F0453807688B402B05D5BBAFC92321 /* Card_Stack@2x.png in Resources */,
+				49191FCB1DF1C9F82156D491EE79A59F /* Card_Visa.png in Resources */,
+				2D701D8C4F2B634247E5004F8469F1A6 /* Card_Visa@2x.png in Resources */,
+				89A927BCD06BCAED5AAF87FBFE00E131 /* Ribbon_Expired.png in Resources */,
+				EA8B803BC129221F4043B57752C9D5A5 /* Ribbon_Expired@2x.png in Resources */,
+				E77A0497ECA77ECA6E8C6BA520C69FB1 /* Transparent@2x.png in Resources */,
+				A4A85B60C29456B81D274C0298A9595D /* UIButtonBarArrowLeft.png in Resources */,
+				E2F3830F08C2A90F032AD7539EB5B317 /* UIButtonBarArrowLeft@2x.png in Resources */,
+				9619229C012BFA9070F4C90A2FC0BC7D /* UIButtonBarArrowRight.png in Resources */,
+				0686F69869984C5B3E9EF03834E330C3 /* UIButtonBarArrowRight@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
-		6400BA2349A65B0BAFAFD000EA8A5418 /* Sources */ = {
+		86C4E1C3B5F72ACD35D2AA296253A856 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B39FD48C40F2AB6768E1A882CB38DF42 /* Pods-Everywhere-dummy.m in Sources */,
+				C839DF620A0E6B12ED7160EB769EC76F /* NSError+REValidation.m in Sources */,
+				3F31552FDF27EACEC2294C4A43BD89EC /* REEmailValidator.m in Sources */,
+				2B4E6428CE62E590B99373F26F878EBC /* RELengthValidator.m in Sources */,
+				F471D4B5C4D948F2B9AE45A2732C150A /* REPresenceValidator.m in Sources */,
+				DB1817D17BEA71B1140D15B288576E36 /* REURLValidator.m in Sources */,
+				079DA13F950019FFB07A27F103E80E2B /* REValidation-dummy.m in Sources */,
+				C37D7192A9823195E62C36E4DD7D32C1 /* REValidation.m in Sources */,
+				7D2EA5AFC64E9B5D0D37D95EFB05B04C /* REValidator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -472,48 +1138,152 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C828F112DFB33143CA67725C123745C5 /* Sources */ = {
+		A26416DE27959109D78E1A5A38A67294 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ECE3E42CE820946B8483275F9460111D /* STPopup-dummy.m in Sources */,
-				4949573B6A967C93A9D060D656AEF3D7 /* STPopupController.m in Sources */,
-				E946CEFC565F73C21AAB808A66D6BAD8 /* STPopupLeftBarItem.m in Sources */,
-				5295530DC9D21F509F493367B5CBF0F9 /* STPopupNavigationBar.m in Sources */,
-				89341C2F668C46B2A8913248EC3C30D2 /* UIResponder+STPopup.m in Sources */,
-				C57162716AFEEEE60EA1CA5944DA747A /* UIViewController+STPopup.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AAE678E5A26C53400A16102E501AF565 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4E48846AD4C2D36BCD06C08613A06C24 /* Pods-Everywhere-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B3B6F4BCA87FE3EC28560136CFD2D96B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3232C48A6AC57EF3AC7DCE143D174FD /* NSString+RENumberFormat.m in Sources */,
+				F07F11A1266CFFB3805A3A2B3A17636E /* REFormattedNumberField-dummy.m in Sources */,
+				9E0287318522400A2B69550A9CF52B62 /* REFormattedNumberField.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F4D1AD05089B7D95427D6453080D5C75 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F59179D4383F74C55EBDBD77DBAF4330 /* STPopup-dummy.m in Sources */,
+				B89B321BA755C269808BA000AC91F525 /* STPopupController.m in Sources */,
+				7E7198F785199226E66D55C0880F7F64 /* STPopupLeftBarItem.m in Sources */,
+				6AE223E6C2FD00291F217DBDB8303C2B /* STPopupNavigationBar.m in Sources */,
+				EAC6DD4D823CB49E760CEB9AEAA44EB2 /* UIResponder+STPopup.m in Sources */,
+				D0289CA5425B26A28CB60687A6785B2A /* UIViewController+STPopup.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FB2E7331272B0EBCBFA658C777F7B94A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C0D3BF3C56691228C736B21789A52146 /* NSBundle+RETableViewManager.m in Sources */,
+				41671641F20B6A1FA66D753BC88956B6 /* NSString+RETableViewManagerAdditions.m in Sources */,
+				C63CC2855C0799EAA190517628F6E75F /* REActionBar.m in Sources */,
+				52C3DBD12C9480409E444B74A745FFAB /* REBoolItem.m in Sources */,
+				C13BDED9B5B5E1F5124227BF7509969A /* RECreditCardItem.m in Sources */,
+				B3E9EEF1C671B742E9EB837B8B6721FD /* REDateTimeItem.m in Sources */,
+				74C3BBBC9840DF04B586D1E3486D892B /* REFloatItem.m in Sources */,
+				F5BC3C25CDC7D3AE20A6365AE309CA09 /* REInlineDatePickerItem.m in Sources */,
+				345444457FB0E9EC2CF4A5B27699128E /* REInlinePickerItem.m in Sources */,
+				178E8541B3F74BDBB00C950098D457C7 /* RELongTextItem.m in Sources */,
+				94311F176A406A4A9B500E21829E746B /* REMultipleChoiceItem.m in Sources */,
+				30E917345D07300C8B3CE1F4AF01A1C6 /* RENumberItem.m in Sources */,
+				8723BCD4BE7C5E09DE997A3C9D12241C /* REPickerItem.m in Sources */,
+				F5A390E548A548439BE1DD6E39CD32BD /* REPlaceholderTextView.m in Sources */,
+				AC88FF6AB680A808D9DBF2AF825E2F82 /* RERadioItem.m in Sources */,
+				D222A286F2ABF45054F0731DD8DFD672 /* RESegmentedItem.m in Sources */,
+				B272C3EC5E508B255CB31CFF35329E47 /* RETableViewBoolCell.m in Sources */,
+				409230612B3FF3A721E0E5783A904413 /* RETableViewCell.m in Sources */,
+				4BF21716C9EA49561925EA89CE870F49 /* RETableViewCellStyle.m in Sources */,
+				6037BDD4CFFAD794D2F13A86256CA273 /* RETableViewCreditCardCell.m in Sources */,
+				7C2DF9C8D38BC79A98665672ACD56EB6 /* RETableViewDateTimeCell.m in Sources */,
+				47DA8BB8E1130B9541351CCC28AB2215 /* RETableViewFloatCell.m in Sources */,
+				C35550799650E5E13B6B7CD488849EB2 /* RETableViewInlineDatePickerCell.m in Sources */,
+				6E19D9E8E2182F4837E69EEF76425835 /* RETableViewInlinePickerCell.m in Sources */,
+				B92C5836A07DB62502648F9F35EB3E4B /* RETableViewItem.m in Sources */,
+				CB0B0FABBF80DF634DBBF3188258940F /* RETableViewLongTextCell.m in Sources */,
+				A030B61521045626DCEA5D36212B257A /* RETableViewManager-dummy.m in Sources */,
+				13C652AF2237CA258730CC6000858246 /* RETableViewManager.m in Sources */,
+				F81515465651A68979F099F648947254 /* RETableViewNumberCell.m in Sources */,
+				DE36F7BB2597FA80773A31CE0B9DC0E3 /* RETableViewOptionCell.m in Sources */,
+				3D9A5CACBE102D3B550995EBCFF6C6B8 /* RETableViewOptionsController.m in Sources */,
+				0D6F593EFF8F3A916474EC0126D7CB89 /* RETableViewPickerCell.m in Sources */,
+				F0E1ED4D2C4DB13711F8E294A81EB4B0 /* RETableViewSection.m in Sources */,
+				FF877064065C33151B6C0FA00788E350 /* RETableViewSegmentedCell.m in Sources */,
+				19302EAD332AA8386B6E7926AC2FDFC2 /* RETableViewTextCell.m in Sources */,
+				E246CA7B71CA39526DA26810B3E5F4A6 /* RETextItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		B1B8884810C9FA285ED97A924A687A87 /* PBXTargetDependency */ = {
+		3BF744027541E235D455B6CF015EE67A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = STPopup;
+			target = 8B117A9C24F73BBDCB3D5FC18C215703 /* STPopup */;
+			targetProxy = 4C10EFE813C74AB1A1E20078C36E34D6 /* PBXContainerItemProxy */;
+		};
+		64CD8577FC6B8156F84E8D05BF45614F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = REFormattedNumberField;
+			target = 229CD270F050B5A404A1DA64917E1947 /* REFormattedNumberField */;
+			targetProxy = 28E2E3C151572211F2CCDC0F74AB570B /* PBXContainerItemProxy */;
+		};
+		66C21CAF67D6171AC0F33905CAAD4791 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "RETableViewManager-RETableViewManager";
+			target = 9F7DA8D66487FF9CE2410CEE4CCFC72B /* RETableViewManager-RETableViewManager */;
+			targetProxy = A07C17468BDDE7E26E1913F43DA9402C /* PBXContainerItemProxy */;
+		};
+		691E291F3877B84B19E00A647955E9DE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = REFormattedNumberField;
+			target = 229CD270F050B5A404A1DA64917E1947 /* REFormattedNumberField */;
+			targetProxy = 72A1A29951652B1BFFE5FC2CD15C4B89 /* PBXContainerItemProxy */;
+		};
+		80F7619A11410032D19432C95D7D9821 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = JTCalendar;
 			target = C3AD7E342840A1BEA026D1D3A2D9C1A7 /* JTCalendar */;
-			targetProxy = DC36A860E4B775FF588A08C5A21AEBD1 /* PBXContainerItemProxy */;
+			targetProxy = DC399B2780B3BB736B20B075B5AB23FA /* PBXContainerItemProxy */;
 		};
-		BB88158C3000836B238C31BE7A2F4B82 /* PBXTargetDependency */ = {
+		B7B5FF075A11A70729C665D027C85E35 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = STPopup;
-			target = 405A251F9B571B76D06113556EBD85D7 /* STPopup */;
-			targetProxy = 80C6ACDDCF58C6FD27B4E4F01C2CFA3E /* PBXContainerItemProxy */;
+			name = RETableViewManager;
+			target = 136F4B3A5485663719D53444AB43BDD4 /* RETableViewManager */;
+			targetProxy = 2717E845D53994A16E63AA32D911EA48 /* PBXContainerItemProxy */;
+		};
+		C0C9BAE31AB5A5E249A5574202CBCB9F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = REValidation;
+			target = 941F10A81C143F9A2433AEAB33E7C888 /* REValidation */;
+			targetProxy = 26F326025D9FEA52DD67C532ECA535EE /* PBXContainerItemProxy */;
+		};
+		EF8D246514BDE9E4AA2557CA1B12656C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = REValidation;
+			target = 941F10A81C143F9A2433AEAB33E7C888 /* REValidation */;
+			targetProxy = 310B968389164F47E2BD57F8ABB61FF4 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		1328DBCB1275B8C27399F3EE66984AE4 /* Release */ = {
+		1D4B69E51157B0EA8AA9C14002764EB0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8F4AD9CB4E4653F346097E16B41BAB1D /* STPopup.xcconfig */;
+			baseConfigurationReference = CB2430AE307E758AA417202F14FDCE98 /* STPopup.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREFIX_HEADER = "Target Support Files/STPopup/STPopup-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PRIVATE_HEADERS_FOLDER_PATH = "";
@@ -522,11 +1292,11 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};
-			name = Release;
+			name = Debug;
 		};
 		2CAA608701ABCEF0014BAA422411580E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3DC3D7BB7B727AA658830DFC609DD267 /* JTCalendar.xcconfig */;
+			baseConfigurationReference = 8B3908650FB5293929739B0A81FD711D /* JTCalendar.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -534,6 +1304,27 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREFIX_HEADER = "Target Support Files/JTCalendar/JTCalendar-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		3ED93B946EA53AC80ABF5152749FD3BF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C75EB80CF49C7C0D1B3AAB1062B83CD9 /* REValidation.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/REValidation/REValidation-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
@@ -587,7 +1378,66 @@
 			};
 			name = Debug;
 		};
-		5D7489D8B8C3A827DA63786D5976E1DB /* Release */ = {
+		40AC25A32C2E7A140E93A304419A2431 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C75EB80CF49C7C0D1B3AAB1062B83CD9 /* REValidation.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/REValidation/REValidation-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		56BC9BD34EB4E2D92711EF9129FDE2C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2DF7F89F2CE3D9D1EAEBF516C549B149 /* Pods-Everywhere.debug.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MACH_O_TYPE = staticlib;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		5D950B8E37A99033F69E910FED7999EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D7F8237DC4015BFB688EDB45B58B1822 /* RETableViewManager.xcconfig */;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/RETableViewManager";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "Target Support Files/RETableViewManager/ResourceBundle-RETableViewManager-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = RETableViewManager;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		5E81D7BC84C6A9437BF9F1E85A6F84C4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FD7A1E5E91CFA233608CA67156C5B780 /* Pods-Everywhere.release.xcconfig */;
 			buildSettings = {
@@ -608,15 +1458,36 @@
 			};
 			name = Release;
 		};
-		9CEF890F0B708071AB32809FE2E712E8 /* Debug */ = {
+		6FC060F930AC72087F35A310C43DEFC0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8F4AD9CB4E4653F346097E16B41BAB1D /* STPopup.xcconfig */;
+			baseConfigurationReference = 21F0D6A45B29B9AAE86D42BBF58E974D /* REFormattedNumberField.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/REFormattedNumberField/REFormattedNumberField-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		891C421881A537052B6DD4BC1BDE856E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 21F0D6A45B29B9AAE86D42BBF58E974D /* REFormattedNumberField.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/STPopup/STPopup-prefix.pch";
+				GCC_PREFIX_HEADER = "Target Support Files/REFormattedNumberField/REFormattedNumberField-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_LDFLAGS = "";
@@ -631,13 +1502,93 @@
 		};
 		AA2561403183A26FA8C92AFB8FCC5A16 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3DC3D7BB7B727AA658830DFC609DD267 /* JTCalendar.xcconfig */;
+			baseConfigurationReference = 8B3908650FB5293929739B0A81FD711D /* JTCalendar.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREFIX_HEADER = "Target Support Files/JTCalendar/JTCalendar-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		B02C5D9AC1A12C0C92BE88D6BF441872 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D7F8237DC4015BFB688EDB45B58B1822 /* RETableViewManager.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/RETableViewManager/RETableViewManager-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		B6EF5A0C680A22EC84DF08D1FF077D06 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D7F8237DC4015BFB688EDB45B58B1822 /* RETableViewManager.xcconfig */;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/RETableViewManager";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "Target Support Files/RETableViewManager/ResourceBundle-RETableViewManager-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = RETableViewManager;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		D5799A78380489B9826C2AC0B2E52C49 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D7F8237DC4015BFB688EDB45B58B1822 /* RETableViewManager.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/RETableViewManager/RETableViewManager-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		E4208772C5E22091A66975CC6AA9BACA /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CB2430AE307E758AA417202F14FDCE98 /* STPopup.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/STPopup/STPopup-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "";
@@ -688,27 +1639,6 @@
 			};
 			name = Release;
 		};
-		F927E75B90F977B4F050132822211E47 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2DF7F89F2CE3D9D1EAEBF516C549B149 /* Pods-Everywhere.debug.xcconfig */;
-			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				MACH_O_TYPE = staticlib;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -721,11 +1651,29 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		326D42216BEF82BF9A99613E8C8A38CB /* Build configuration list for PBXNativeTarget "STPopup" */ = {
+		4418E3360F7F3E5653BC4B1E5A92AC15 /* Build configuration list for PBXNativeTarget "STPopup" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9CEF890F0B708071AB32809FE2E712E8 /* Debug */,
-				1328DBCB1275B8C27399F3EE66984AE4 /* Release */,
+				1D4B69E51157B0EA8AA9C14002764EB0 /* Debug */,
+				E4208772C5E22091A66975CC6AA9BACA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		45F0532B950C6CF06DB621B12A3087B3 /* Build configuration list for PBXNativeTarget "RETableViewManager" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D5799A78380489B9826C2AC0B2E52C49 /* Debug */,
+				B02C5D9AC1A12C0C92BE88D6BF441872 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6B9C2B9AA7B18B7561E7EE78916463FF /* Build configuration list for PBXNativeTarget "REValidation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3ED93B946EA53AC80ABF5152749FD3BF /* Debug */,
+				40AC25A32C2E7A140E93A304419A2431 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -739,11 +1687,29 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B98457B8C58BAF4E4C31EA46BF2A3F24 /* Build configuration list for PBXNativeTarget "Pods-Everywhere" */ = {
+		9151488612011634B3DF1AAE743F19DD /* Build configuration list for PBXNativeTarget "Pods-Everywhere" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F927E75B90F977B4F050132822211E47 /* Debug */,
-				5D7489D8B8C3A827DA63786D5976E1DB /* Release */,
+				56BC9BD34EB4E2D92711EF9129FDE2C3 /* Debug */,
+				5E81D7BC84C6A9437BF9F1E85A6F84C4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AD1AF53A13A8BFEBCD5769F2DF3BBD1B /* Build configuration list for PBXNativeTarget "REFormattedNumberField" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				891C421881A537052B6DD4BC1BDE856E /* Debug */,
+				6FC060F930AC72087F35A310C43DEFC0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DA5DCD7756DDE8D493E1133A584F4D6F /* Build configuration list for PBXNativeTarget "RETableViewManager-RETableViewManager" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5D950B8E37A99033F69E910FED7999EE /* Debug */,
+				B6EF5A0C680A22EC84DF08D1FF077D06 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -32,6 +32,7 @@
 #import "UIButton+Bootstrap.h"
 #import "MapShowModeBar.h"
 #import "LocationPickerVC.h"
+#import "SettingVC.h"
 
 #import "EverywhereCoreDataManager.h"
 #import "PHAssetInfo.h"
@@ -541,8 +542,9 @@
     [placemarkInfoBar autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
     [placemarkInfoBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
     [placemarkInfoBar autoSetDimension:ALDimensionHeight toSize:placemarkInfoBarHeight];
-    [placemarkInfoBar setBackgroundColor:[[UIColor grayColor] colorWithAlphaComponent:0.6]];
-    placemarkInfoBar.hidden = YES;
+    
+    // 设为隐藏
+    [self showHidePlacemarkInfoBar];
     
     [self updatePlacemarkInfoBar];
 }
@@ -564,7 +566,7 @@
             break;
         case 1:{
             placemarkInfoBar.totalTitle = NSLocalizedString(@"Area", @"");
-            totalArea = addedAnnotationsWithIndex.count * M_PI * sqrt(self.settingManager.nearestDistanceForLocation);
+            totalArea = addedAnnotationsWithIndex.count * M_PI * pow(self.settingManager.nearestDistanceForLocation,2);
             placemarkInfoBar.totalArea = totalArea;
         }
             break;
@@ -577,51 +579,92 @@
 #pragma mark Vertical Accessories Bar
 
 #define VerticalViewHeight 240.0
+#define ButtionSize CGSizeMake(44, 44)
 
 - (void)initVerticalAccessoriesBar{
     
     UIView *leftVerticalView = [UIView newAutoLayoutView];
-    leftVerticalView.backgroundColor = [UIColor grayColor];
+    leftVerticalView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:leftVerticalView];
     [leftVerticalView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
     [leftVerticalView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
-    [leftVerticalView autoSetDimensionsToSize:CGSizeMake(50, VerticalViewHeight)];
+    [leftVerticalView autoSetDimensionsToSize:CGSizeMake(44, VerticalViewHeight)];
     
-    UIButton *showShareVCBtn = [UIButton newAutoLayoutView];
-    [showShareVCBtn setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
-    showShareVCBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    [showShareVCBtn addTarget:self action:@selector(showShareVC) forControlEvents:UIControlEventTouchDown];
-    [leftVerticalView addSubview:showShareVCBtn];
+    UIButton *leftBtn1 = [UIButton newAutoLayoutView];
+    leftBtn1.alpha = 0.6;
+    [leftBtn1 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share_WBG"] forState:UIControlStateNormal];
+    leftBtn1.translatesAutoresizingMaskIntoConstraints = NO;
+    [leftBtn1 addTarget:self action:@selector(showShareVC) forControlEvents:UIControlEventTouchDown];
+    [leftVerticalView addSubview:leftBtn1];
+    [leftBtn1 autoSetDimensionsToSize:ButtionSize];
+    [leftBtn1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [leftBtn1 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
+    
 
-    UIButton *showHideMapShowModeBarBtn = [UIButton newAutoLayoutView];
-    [showHideMapShowModeBarBtn setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
-    showHideMapShowModeBarBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    [showHideMapShowModeBarBtn addTarget:self action:@selector(showHideMapShowModeBar) forControlEvents:UIControlEventTouchDown];
-    [leftVerticalView addSubview:showHideMapShowModeBarBtn];
+    UIButton *leftBtn2 = [UIButton newAutoLayoutView];
+    leftBtn2.alpha = 0.6;
+    [leftBtn2 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Glasses_WBG"] forState:UIControlStateNormal];
+    leftBtn2.translatesAutoresizingMaskIntoConstraints = NO;
+    [leftBtn2 addTarget:self action:@selector(showHideMapShowModeBar) forControlEvents:UIControlEventTouchDown];
+    [leftVerticalView addSubview:leftBtn2];
+    [leftBtn2 autoSetDimensionsToSize:ButtionSize];
+    [leftBtn2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [leftBtn2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn1 withOffset:15];
     
-    UIButton *showHidePlacemarkInfoBarBtn = [UIButton newAutoLayoutView];
-    [showHidePlacemarkInfoBarBtn setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
-    showHidePlacemarkInfoBarBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    [showHidePlacemarkInfoBarBtn addTarget:self action:@selector(showHidePlacemarkInfoBar) forControlEvents:UIControlEventTouchDown];
-    [leftVerticalView addSubview:showHidePlacemarkInfoBarBtn];
+    UIButton *leftBtn3 = [UIButton newAutoLayoutView];
+    leftBtn3.alpha = 0.6;
+    [leftBtn3 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_StatisticBar1_WBG"] forState:UIControlStateNormal];
+    leftBtn3.translatesAutoresizingMaskIntoConstraints = NO;
+    [leftBtn3 addTarget:self action:@selector(showHidePlacemarkInfoBar) forControlEvents:UIControlEventTouchDown];
+    [leftVerticalView addSubview:leftBtn3];
+    [leftBtn3 autoSetDimensionsToSize:ButtionSize];
+    [leftBtn3 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [leftBtn3 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn2 withOffset:15];
     
-    UIButton *showHideNaviBarBtn = [UIButton newAutoLayoutView];
-    [showHideNaviBarBtn setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
-    showHideNaviBarBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    [showHideNaviBarBtn addTarget:self action:@selector(showHideNaviBar) forControlEvents:UIControlEventTouchDown];
-    [leftVerticalView addSubview:showHideNaviBarBtn];
+    UIButton *leftBtn4 = [UIButton newAutoLayoutView];
+    leftBtn4.alpha = 0.6;
+    [leftBtn4 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Trophy_WBG"] forState:UIControlStateNormal];
+    leftBtn4.translatesAutoresizingMaskIntoConstraints = NO;
+    [leftBtn4 addTarget:self action:@selector(showHideNaviBar) forControlEvents:UIControlEventTouchDown];
+    [leftVerticalView addSubview:leftBtn4];
+    [leftBtn4 autoSetDimensionsToSize:ButtionSize];
+    [leftBtn4 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [leftBtn4 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn3 withOffset:15];
     
-    [leftVerticalView.subviews autoDistributeViewsAlongAxis:ALAxisVertical withFixedSize:44 insetSpacing:YES alignment:NSLayoutFormatAlignAllLeft];
+    //[leftVerticalView.subviews autoDistributeViewsAlongAxis:ALAxisVertical withFixedSize:44 insetSpacing:YES alignment:NSLayoutFormatAlignAllLeft];
     
     UIView *rightVerticalView = [UIView newAutoLayoutView];
-    rightVerticalView.backgroundColor = [UIColor grayColor];
+    rightVerticalView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:rightVerticalView];
     [rightVerticalView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
     [rightVerticalView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
-    [rightVerticalView autoSetDimensionsToSize:CGSizeMake(50, VerticalViewHeight)];
+    [rightVerticalView autoSetDimensionsToSize:CGSizeMake(44, VerticalViewHeight)];
     
+    UIButton *rightBtn1 = [UIButton newAutoLayoutView];
+    rightBtn1.alpha = 0.6;
+    [rightBtn1 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Setting_WBG"] forState:UIControlStateNormal];
+    rightBtn1.translatesAutoresizingMaskIntoConstraints = NO;
+    [rightBtn1 addTarget:self action:@selector(showSettingVC:) forControlEvents:UIControlEventTouchDown];
+    [rightVerticalView addSubview:rightBtn1];
+    [rightBtn1 autoSetDimensionsToSize:CGSizeMake(44, 44)];
+    [rightBtn1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [rightBtn1 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
+
     UIView *swipeScaleBackgroundView = [UIView newAutoLayoutView];
-    swipeScaleBackgroundView.backgroundColor = [UIColor brownColor];
+    swipeScaleBackgroundView.backgroundColor = [UIColor clearColor];//[[UIColor cyanColor] colorWithAlphaComponent:0.6];
+    [rightVerticalView addSubview:swipeScaleBackgroundView];
+    [swipeScaleBackgroundView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
+    [swipeScaleBackgroundView autoMatchDimension:ALDimensionHeight toDimension:ALDimensionHeight ofView:rightVerticalView withMultiplier:0.75];
+    
+    
+    UIImageView *swipeImageView = [UIImageView newAutoLayoutView];
+    swipeImageView.alpha = 0.6;
+    swipeImageView.image = [UIImage imageNamed:@"IcoMoon_SlideBar_Long"];
+    swipeImageView.contentMode = UIViewContentModeScaleAspectFit;
+    swipeImageView.layer.cornerRadius = 10.0;
+    [swipeScaleBackgroundView addSubview:swipeImageView];
+    [swipeImageView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+    
     
     UIView *swipeScaleView = [UIView newAutoLayoutView];
     swipeScaleView.backgroundColor = [UIColor clearColor];
@@ -631,24 +674,15 @@
     UISwipeGestureRecognizer *swipeDownGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeScaleViewSwipeDown:)];
     swipeDownGR.direction = UISwipeGestureRecognizerDirectionDown;
     [swipeScaleView addGestureRecognizer:swipeDownGR];
-    
+    UITapGestureRecognizer *doubleTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swipeScaleViewDoubleTap:)];
+    doubleTapGR.numberOfTapsRequired = 2;
+    [swipeScaleView addGestureRecognizer:doubleTapGR];
     [swipeScaleBackgroundView addSubview:swipeScaleView];
     [swipeScaleView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
 
-    [rightVerticalView addSubview:swipeScaleBackgroundView];
-    [swipeScaleBackgroundView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
-    [swipeScaleBackgroundView autoMatchDimension:ALDimensionHeight toDimension:ALDimensionHeight ofView:rightVerticalView withMultiplier:(VerticalViewHeight - 50.0)/VerticalViewHeight];
     
-    UIButton *showSettingsVCBtn = [UIButton newAutoLayoutView];
-    [showSettingsVCBtn setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
-    showSettingsVCBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    [showSettingsVCBtn addTarget:self action:@selector(showSettingsVC:) forControlEvents:UIControlEventTouchDown];
-    [rightVerticalView addSubview:showSettingsVCBtn];
-    [showSettingsVCBtn autoSetDimensionsToSize:CGSizeMake(44, 44)];
-    [showSettingsVCBtn autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [showSettingsVCBtn autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
-
-
+    
+    
     //[self.view addSubview:showHidePlacemarkInfoBarBtn];
     //[showHidePlacemarkInfoBarBtn autoSetDimensionsToSize:CGSizeMake(40, 40)];
     //[showHidePlacemarkInfoBarBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:80];
@@ -693,24 +727,42 @@
     
 }
 
-- (void)showSettingsVC:(id)sender{
-    
+- (void)showSettingVC:(id)sender{
+    SettingVC *settingVC = [SettingVC new];
+    settingVC.edgesForExtendedLayout = UIRectEdgeNone;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:settingVC];
+    nav.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)swipeScaleViewSwipeUp:(UISwipeGestureRecognizer *)sender{
-    float mapViewScaleRate = self.settingManager.mapViewScaleRate;
-    MKCoordinateRegion oldRegion = self.myMapView.region;
-    MKCoordinateSpan newSpan = MKCoordinateSpanMake(oldRegion.span.latitudeDelta / mapViewScaleRate, oldRegion.span.longitudeDelta / mapViewScaleRate);
-    MKCoordinateRegion newRegion = MKCoordinateRegionMake(oldRegion.center, newSpan);
-    [self.myMapView setRegion:newRegion animated:YES];
+    [self scaleMapView:1.0 / self.settingManager.mapViewScaleRate];
 }
 
 - (void)swipeScaleViewSwipeDown:(UISwipeGestureRecognizer *)sender{
-    float mapViewScaleRate = self.settingManager.mapViewScaleRate;
+    [self scaleMapView:self.settingManager.mapViewScaleRate];
+}
+
+- (void)swipeScaleViewDoubleTap:(UITapGestureRecognizer *)sender{
+    CGPoint tapPoint = [sender locationInView:sender.view];
+    if (tapPoint.y < sender.view.bounds.size.height / 2.0) {
+        [self scaleMapView:1.0 / (self.settingManager.mapViewScaleRate * 2.0)];
+    }else{
+        [self scaleMapView:self.settingManager.mapViewScaleRate * 2.0];
+    }
+}
+
+- (void)scaleMapView:(float)mapViewScaleRate{
     MKCoordinateRegion oldRegion = self.myMapView.region;
     MKCoordinateSpan newSpan = MKCoordinateSpanMake(oldRegion.span.latitudeDelta * mapViewScaleRate, oldRegion.span.longitudeDelta * mapViewScaleRate);
-    MKCoordinateRegion newRegion = MKCoordinateRegionMake(oldRegion.center, newSpan);
-    [self.myMapView setRegion:newRegion animated:YES];
+    
+    if (newSpan.latitudeDelta < 145.8 && newSpan.latitudeDelta > 0.0008) {
+        if (newSpan.latitudeDelta < 145.3 && newSpan.longitudeDelta > 0.0006) {
+            if(DEBUGMODE) NSLog(@"%@",NSStringFromCGPoint(CGPointMake(newSpan.latitudeDelta, newSpan.longitudeDelta)));
+            MKCoordinateRegion newRegion = MKCoordinateRegionMake(oldRegion.center, newSpan);
+            [self.myMapView setRegion:newRegion animated:YES];
+        }
+    }
 }
 
 #pragma mark PopupController
@@ -1163,6 +1215,11 @@
      lastButton.enabled = YES;
      }
      */
+}
+
+- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated{
+    MKCoordinateSpan newSpan = mapView.region.span;
+    NSLog(@"%@",NSStringFromCGPoint(CGPointMake(newSpan.latitudeDelta, newSpan.longitudeDelta)));
 }
 
 @end

@@ -32,6 +32,9 @@
 		4B001CD71D21002700DF7287 /* CTPWaitingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CD31D21002700DF7287 /* CTPWaitingView.m */; };
 		4B001CDE1D2125FC00DF7287 /* CLPlacemark+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CDD1D2125FC00DF7287 /* CLPlacemark+Assistant.m */; };
 		4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */; };
+		4B1D5E7F1D3645A70011552F /* SettingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1D5E7E1D3645A70011552F /* SettingVC.m */; };
+		4B1D5E821D3646210011552F /* InAppPurchaseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1D5E811D3646210011552F /* InAppPurchaseVC.m */; };
+		4B1D5E851D3646330011552F /* AboutVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1D5E841D3646330011552F /* AboutVC.m */; };
 		4B216FEF1D347DCA003DCDBC /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B216FED1D347DCA003DCDBC /* Info.plist */; };
 		4B27FDC31D2CA12000067683 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4B27FDBE1D2CA12000067683 /* FontAwesome.ttf */; };
 		4B27FDC41D2CA12000067683 /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B27FDC01D2CA12000067683 /* NSString+FontAwesome.m */; };
@@ -100,6 +103,12 @@
 		4B0620771D2CE36C00545FCE /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		4B0D09261D23C94D0047D7E0 /* PHAsset+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PHAsset+Assistant.h"; path = "PHAsset+Assistant/PHAsset+Assistant.h"; sourceTree = "<group>"; };
 		4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PHAsset+Assistant.m"; path = "PHAsset+Assistant/PHAsset+Assistant.m"; sourceTree = "<group>"; };
+		4B1D5E7D1D3645A70011552F /* SettingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingVC.h; path = EverywhereVisualViewControllers/SettingVC.h; sourceTree = "<group>"; };
+		4B1D5E7E1D3645A70011552F /* SettingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingVC.m; path = EverywhereVisualViewControllers/SettingVC.m; sourceTree = "<group>"; };
+		4B1D5E801D3646210011552F /* InAppPurchaseVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InAppPurchaseVC.h; sourceTree = "<group>"; };
+		4B1D5E811D3646210011552F /* InAppPurchaseVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InAppPurchaseVC.m; sourceTree = "<group>"; };
+		4B1D5E831D3646330011552F /* AboutVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutVC.h; sourceTree = "<group>"; };
+		4B1D5E841D3646330011552F /* AboutVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutVC.m; sourceTree = "<group>"; };
 		4B216FF01D347DE2003DCDBC /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
 		4B216FF41D347F7D003DCDBC /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.storyboard"; sourceTree = "<group>"; };
 		4B27FDBE1D2CA12000067683 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
@@ -253,6 +262,12 @@
 				1E5A54171D28FE0F0056CF46 /* AssetsMapProVC.m */,
 				4B27FDC61D2CAB5500067683 /* AssetDetailVC.h */,
 				4B27FDC71D2CAB5500067683 /* AssetDetailVC.m */,
+				4B1D5E7D1D3645A70011552F /* SettingVC.h */,
+				4B1D5E7E1D3645A70011552F /* SettingVC.m */,
+				4B1D5E831D3646330011552F /* AboutVC.h */,
+				4B1D5E841D3646330011552F /* AboutVC.m */,
+				4B1D5E801D3646210011552F /* InAppPurchaseVC.h */,
+				4B1D5E811D3646210011552F /* InAppPurchaseVC.m */,
 				1E41FD1F1D2AB66100E1A5B9 /* LocationInfoBar.h */,
 				1E41FD201D2AB66100E1A5B9 /* LocationInfoBar.m */,
 				1E63B77A1D2E9D90003E355B /* PlacemarkInfoBar.h */,
@@ -562,6 +577,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */,
+				4B1D5E821D3646210011552F /* InAppPurchaseVC.m in Sources */,
 				4B30E2A81D24A999002C2DE7 /* NSDate+Assistant.m in Sources */,
 				4BE88A9F1D332B38009501CE /* EverywhereSettingManager.m in Sources */,
 				1E74C3081D268377000A9790 /* floatTableViewCell.m in Sources */,
@@ -582,10 +598,12 @@
 				4B001CD61D21002700DF7287 /* CTPMultiImage.m in Sources */,
 				1E63B77C1D2E9D90003E355B /* PlacemarkInfoBar.m in Sources */,
 				4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */,
+				4B1D5E851D3646330011552F /* AboutVC.m in Sources */,
 				1E2847FA1D1ADDB900189A83 /* EverywhereAppDelegate.m in Sources */,
 				1E74C30A1D268377000A9790 /* VCFloatingActionButton.m in Sources */,
 				1E5A54181D28FE0F0056CF46 /* AssetsMapProVC.m in Sources */,
 				4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */,
+				4B1D5E7F1D3645A70011552F /* SettingVC.m in Sources */,
 				4B27FDC51D2CA12000067683 /* UIButton+Bootstrap.m in Sources */,
 				4B001CD51D21002700DF7287 /* CTPImageView.m in Sources */,
 				4B001CD71D21002700DF7287 /* CTPWaitingView.m in Sources */,

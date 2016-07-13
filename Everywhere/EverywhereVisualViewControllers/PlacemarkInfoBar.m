@@ -106,6 +106,8 @@
     //NSLog(@"PlacemarkInfoBar : %@",NSStringFromSelector(_cmd));
     self = [super init];
     if (self) {
+        self.backgroundColor = [[UIColor grayColor] colorWithAlphaComponent:0.6];
+        
         // 村镇街道
         thoroughfareCell = [CellView newAutoLayoutView];
         thoroughfareCell.cellTitle = NSLocalizedString(@"St.", @"");

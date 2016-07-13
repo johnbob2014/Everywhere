@@ -14,6 +14,26 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>REFormattedNumberField.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>RETableViewManager-RETableViewManager.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>RETableViewManager.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>REValidation.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>STPopup.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -22,12 +42,32 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>405A251F9B571B76D06113556EBD85D7</key>
+		<key>136F4B3A5485663719D53444AB43BDD4</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>4620367CEC8BD8072B1FC9A441335B61</key>
+		<key>229CD270F050B5A404A1DA64917E1947</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>82419A112CD2946D796F702C1E4B8421</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>8B117A9C24F73BBDCB3D5FC18C215703</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>941F10A81C143F9A2433AEAB33E7C888</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>9F7DA8D66487FF9CE2410CEE4CCFC72B</key>
 		<dict>
 			<key>primary</key>
 			<true/>

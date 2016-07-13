@@ -1,15 +1,24 @@
 PODS:
   - JTCalendar (2.1.7)
+  - REFormattedNumberField (1.1.6)
+  - RETableViewManager (1.7):
+    - REFormattedNumberField (~> 1.1.5)
+    - REValidation (~> 0.1.4)
+  - REValidation (0.1.4)
   - STPopup (1.7.0)
 
 DEPENDENCIES:
   - JTCalendar (~> 2.0)
+  - RETableViewManager
   - STPopup
 
 SPEC CHECKSUMS:
   JTCalendar: bc7f3086a4df02aa2e02ac4d505ef888cc2283a0
+  REFormattedNumberField: 70fc5fb1218ebd5ee9983820defd12806d5c6ec6
+  RETableViewManager: 0f24d796c42c0890d38c79cc9aeb3871e186726e
+  REValidation: 38c4de1be58455f8b00aab208ac80db316a66b7f
   STPopup: 36b45120f51ab3cdf7a10c1b9032b7fc8eef75ac
 
-PODFILE CHECKSUM: be816cf434af2d287dcdb83950f39244670303c7
+PODFILE CHECKSUM: 3ce81a6305a1b35c1cd772793f40cefd6b449fa6
 
 COCOAPODS: 1.0.0
