@@ -69,6 +69,14 @@ typedef NS_ENUM(NSInteger, LocationMode) {
     LocationModeAll
 };
 
+typedef NS_ENUM(NSInteger,ColorScheme){
+    ColorSchemeClassicGray = 0,
+    ColorSchemeForestGreen,
+    ColorSchemeFreshBlue,
+    ColorSchemeDeepBrown
+};
+
+
 #define NOW [NSDate date]
 
 #pragma mark - Placemark键

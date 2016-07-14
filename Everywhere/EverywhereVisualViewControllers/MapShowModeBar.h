@@ -20,4 +20,6 @@ typedef void(^ButtonTouchDownHandler)(UIButton *sender);
 @property (copy,nonatomic) ButtonTouchDownHandler datePickerTouchDownHandler;
 @property (copy,nonatomic) ButtonTouchDownHandler locaitonPickerTouchDownHandler;
 
+@property (copy,nonatomic) UIColor *contentViewBackgroundColor;
+
 @end

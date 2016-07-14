@@ -14,7 +14,11 @@
 #import "EverywhereCoreDataManager.h"
 #import "PHAssetInfo.h"
 
+#import "EverywhereSettingManager.h"
+
 #import "AssetsMapProVC.h"
+
+#import "WXApi.h"
 
 @interface EverywhereAppDelegate ()
 
@@ -23,6 +27,7 @@
 @implementation EverywhereAppDelegate{
     GCPhotoManager *photoManager;
     EverywhereCoreDataManager *cdManager;
+    EverywhereSettingManager *settingManager;
 }
 
 
@@ -41,6 +46,7 @@
     
     photoManager = [GCPhotoManager defaultManager];
     cdManager = [EverywhereCoreDataManager defaultManager];
+    settingManager = [EverywhereSettingManager defaultManager];
     
     if (!cdManager.lastUpdateDate) {
         // 首次加载照片数据
@@ -58,7 +64,8 @@
     AssetsMapProVC *vc = [AssetsMapProVC new];
     //[vc prefersStatusBarHidden];
     self.window.rootViewController = vc;
-    self.window.tintColor = [UIColor grayColor];
+    self.window.tintColor = settingManager.color;
+    ;
     [self.window makeKeyAndVisible];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{

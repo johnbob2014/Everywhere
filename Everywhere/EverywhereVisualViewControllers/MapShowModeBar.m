@@ -7,6 +7,7 @@
 //
 
 #import "MapShowModeBar.h"
+#import "EverywhereSettingManager.h"
 
 @interface MapShowModeBar ()
 @property (strong,nonatomic) UISegmentedControl *modeSeg;
@@ -43,7 +44,7 @@
         self.backgroundColor = [UIColor clearColor];
         
         middleView = [UIView newAutoLayoutView];
-        middleView.backgroundColor = [[UIColor grayColor] colorWithAlphaComponent:0.6];
+        
         [self addSubview:middleView];
         
         self.modeSeg = [[UISegmentedControl alloc] initWithItems:[NSLocalizedString(@"MomentMode LocationMode",@"") componentsSeparatedByString:@" "]];
@@ -58,7 +59,7 @@
         [middleView addSubview:self.infoLabel];
         
         leftView = [UIView newAutoLayoutView];
-        leftView.backgroundColor = [[UIColor grayColor] colorWithAlphaComponent:0.6];
+        
         [self addSubview:leftView];
         
         self.datePickerBtn = [UIButton newAutoLayoutView];
@@ -70,7 +71,7 @@
         [leftView addSubview:self.datePickerBtn];
         
         rightView = [UIView newAutoLayoutView];
-        rightView.backgroundColor = [[UIColor grayColor] colorWithAlphaComponent:0.6];
+        
         [self addSubview:rightView];
         
         self.locationPickerBtn = [UIButton newAutoLayoutView];
@@ -122,6 +123,11 @@
     [self.locationPickerBtn autoCenterInSuperview];
     [self.modeSeg autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(5, 5, 0, 5) excludingEdge:ALEdgeBottom];
     [self.infoLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
-    
+}
+
+- (void)setContentViewBackgroundColor:(UIColor *)contentViewBackgroundColor{
+    middleView.backgroundColor = contentViewBackgroundColor;
+    leftView.backgroundColor = contentViewBackgroundColor;
+    rightView.backgroundColor = contentViewBackgroundColor;
 }
 @end

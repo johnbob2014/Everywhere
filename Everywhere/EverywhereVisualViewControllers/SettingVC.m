@@ -85,6 +85,27 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     
     self.reTVManager=[[RETableViewManager alloc]initWithTableView:self.settingTableView delegate:self];
     
+    //
+    RETableViewSection *section1=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"section1", @"时刻模式")];
+    
+    // 主题颜色
+    NSArray *colorSchemeArray = @[@"Classic Gray",@"Forest Green",@"Fresh Blue",@"Deep Brown"];
+    NSString *currentCS = colorSchemeArray[self.settingManager.colorScheme];
+    REPickerItem *colorSchemePickerItem = [REPickerItem itemWithTitle:@"Color Scheme"
+                                                     value:@[currentCS]
+                                               placeholder:nil
+                                                   options:@[colorSchemeArray]];
+    colorSchemePickerItem.onChange = ^(REPickerItem *item){
+        ColorScheme newCS = [colorSchemeArray indexOfObject:item.value.firstObject];
+        self.settingManager.colorScheme = newCS;
+    };
+    
+    // Use inline picker in iOS 7
+    //
+    colorSchemePickerItem.inlinePicker = YES;
+    [section1 addItem:colorSchemePickerItem];
+    
+
     REBoolItem *useCellularDataItem=[REBoolItem itemWithTitle:NSLocalizedString(@"🌐 使用蜂窝移动数据", @"") value:YES switchValueChangeHandler:^(REBoolItem *item) {
         //[SceneryModel sharedModel].canUseCellularData=item.value;
     }];
@@ -181,7 +202,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         [self.navigationController pushViewController:aboutVC animated:YES];
     }]];
     
-    [self.reTVManager addSectionsFromArray:@[momentModeSection,locationModeSection,purchaseSection,shareSection,aboutSection]];
+    [self.reTVManager addSectionsFromArray:@[section1,momentModeSection,locationModeSection,purchaseSection,shareSection,aboutSection]];
 }
 
 /*

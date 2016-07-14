@@ -25,4 +25,7 @@
 
 @property (assign,nonatomic) float mapViewScaleRate;
 
+@property (assign,nonatomic) ColorScheme colorScheme;
+@property (strong,nonatomic,readonly) UIColor *color;
+
 @end

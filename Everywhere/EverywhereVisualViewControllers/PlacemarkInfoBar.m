@@ -7,6 +7,7 @@
 //
 
 #import "PlacemarkInfoBar.h"
+#import "EverywhereSettingManager.h"
 
 #pragma mark - CellView
 
@@ -106,7 +107,7 @@
     //NSLog(@"PlacemarkInfoBar : %@",NSStringFromSelector(_cmd));
     self = [super init];
     if (self) {
-        self.backgroundColor = [[UIColor grayColor] colorWithAlphaComponent:0.6];
+
         
         // 村镇街道
         thoroughfareCell = [CellView newAutoLayoutView];
@@ -217,24 +218,22 @@
 
 - (void)setTotalDistance:(double)totalDistance{
     _totalDistance = totalDistance;
-    NSString *totalString;
     if (totalDistance >=1000) {
-        totalString = [NSString stringWithFormat:@"%.2f km",totalDistance/1000.0];
+        self.totalString = [NSString stringWithFormat:@"%.2f km",totalDistance/1000.0];
     }else{
-        totalString = [NSString stringWithFormat:@"%.0f m",totalDistance];
+        self.totalString = [NSString stringWithFormat:@"%.0f m",totalDistance];
     }
-    totalCell.cellInfo = totalString;
+    totalCell.cellInfo = self.totalString;
 }
 
 - (void)setTotalArea:(double)totalArea{
     _totalArea = totalArea;
-    NSString *totalString;
     if (totalArea >=1000*1000) {
-        totalString = [NSString stringWithFormat:@"%.2f k㎡",totalArea/(1000.0*1000.0)];
+        self.totalString = [NSString stringWithFormat:@"%.2f k㎡",totalArea/(1000.0*1000.0)];
     }else{
-        totalString = [NSString stringWithFormat:@"%.0f ㎡",totalArea];
+        self.totalString = [NSString stringWithFormat:@"%.0f ㎡",totalArea];
     }
-    totalCell.cellInfo = totalString;
+    totalCell.cellInfo = self.totalString;
 }
 
 @end

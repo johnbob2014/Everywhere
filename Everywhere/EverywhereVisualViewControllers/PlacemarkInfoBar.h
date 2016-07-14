@@ -21,4 +21,5 @@
 @property (strong,nonatomic) NSString *totalTitle;
 @property (assign,nonatomic) double totalDistance;
 @property (assign,nonatomic) double totalArea;
+@property (strong,nonatomic) NSString *totalString;
 @end

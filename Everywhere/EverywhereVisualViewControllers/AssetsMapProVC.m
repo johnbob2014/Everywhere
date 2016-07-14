@@ -33,6 +33,8 @@
 #import "MapShowModeBar.h"
 #import "LocationPickerVC.h"
 #import "SettingVC.h"
+#import "ShareSnapShotVC.h"
+#import "ShareBar.h"
 
 #import "EverywhereCoreDataManager.h"
 #import "PHAssetInfo.h"
@@ -76,6 +78,8 @@
     PlacemarkInfoBar *placemarkInfoBar;
     float placemarkInfoBarHeight;
     BOOL placemarkInfoBarIsHidden;
+    
+    ShareBar *shareBar;
 
     UIView *naviBar;
     UIButton *firstButton;
@@ -84,10 +88,12 @@
     UIButton *nextButton;
     UIButton *lastButton;
     UILabel *currentAnnotationIndexLabel;
-    
     BOOL isPlaying;
     NSTimer *playTimer;
     
+    UIView *leftVerticalBar;
+    UIView *rightVerticalBar;
+    BOOL verticalBarIsHidden;
     
     __block CLLocationDistance maxDistance;
     __block CLLocationDistance totalDistance;
@@ -178,11 +184,26 @@
 
     [self initPopupController];
     
+    [self initShareBar];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.assetInfoArray = self.assetInfoArray;
+    
+    [self updateBarColor:self.settingManager.color];
+    
+    [self showVerticalBar];
+    mapShowModeBar.alpha = 1;
+    naviBar.alpha = 1;
+}
+
+- (void)updateBarColor:(UIColor *)newColor{
+    locationInfoBar.backgroundColor = newColor;
+    mapShowModeBar.contentViewBackgroundColor = newColor;
+    placemarkInfoBar.backgroundColor = newColor;
+    naviBar.backgroundColor = newColor;
+    shareBar.backgroundColor = newColor;
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
@@ -218,20 +239,33 @@
     
     UITapGestureRecognizer *mapViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mapViewTapGR:)];
     mapViewTapGR.delegate = self;
-    //[self.myMapView addGestureRecognizer:mapViewTapGR];
+    [self.myMapView addGestureRecognizer:mapViewTapGR];
     
     //NSLog(@"%@",self.myMapView.gestureRecognizers);
 }
 
 - (void)mapViewTapGR:(id)sender{
-    //NSLog(@"%@",NSStringFromSelector(_cmd));
-    //naviBar.hidden = ! naviBar.hidden;
+    if (verticalBarIsHidden) [self showVerticalBar];
+    else [self hideVerticalBar];
 }
 
+- (void)showVerticalBar{
+    leftVerticalBar.hidden = NO;
+    rightVerticalBar.hidden = NO;
+    verticalBarIsHidden = NO;
+}
+
+- (void)hideVerticalBar{
+    leftVerticalBar.hidden = YES;
+    rightVerticalBar.hidden = YES;
+    verticalBarIsHidden = YES;
+}
+/*
 //UIGestureRecognizerDelegate
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
     return NO;
 }
+*/
 
 #pragma mark ModeBar
 
@@ -297,10 +331,11 @@
     datePickerVC.contentSizeInPopup = CGSizeMake(300, 400);
     datePickerVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
     
-    __weak AssetsMapProVC *weakSelf = self;
+    WEAKSELF(weakSelf);
+    //__weak AssetsMapProVC *weakSelf = self;
     
     datePickerVC.dateModeChangedHandler = ^(DateMode choosedDateMode){
-        [EverywhereSettingManager defaultManager].dateMode = choosedDateMode;
+        weakSelf.settingManager.dateMode = choosedDateMode;
     };
     
     datePickerVC.dateRangeChangedHandler = ^(NSDate *choosedStartDate,NSDate *choosedEndDate){
@@ -323,6 +358,10 @@
     locationPickerVC.contentSizeInPopup = CGSizeMake(300, 400);
     locationPickerVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
     
+    locationPickerVC.locationModeDidChangeHandler = ^(LocationMode choosedLocationMode){
+        weakSelf.settingManager.locationMode = choosedLocationMode;
+    };
+    
     locationPickerVC.locationDidChangeHandler = ^(NSString *choosedLocation){
         weakSelf.placemarkName = choosedLocation;
         weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:choosedLocation inManagedObjectContext:weakSelf.cdManager.appMOC];
@@ -338,7 +377,7 @@
 - (void)initNaviBar{
     
     naviBar = [UIView newAutoLayoutView];
-    [naviBar setBackgroundColor:[[UIColor grayColor] colorWithAlphaComponent:0.6]];
+    
     [self.view addSubview:naviBar];
     [naviBar autoSetDimension:ALDimensionHeight toSize:44];
     [naviBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 5, 20, 5) excludingEdge:ALEdgeTop];
@@ -486,7 +525,6 @@
     locationInfoBarHeight = 150;
     locationInfoBar = [[LocationInfoBar alloc] initWithFrame:CGRectMake(5, -locationInfoBarHeight - 40, ScreenWidth - 10, locationInfoBarHeight)];
     [self.view addSubview:locationInfoBar];
-    [locationInfoBar setBackgroundColor:[[UIColor grayColor] colorWithAlphaComponent:0.6]];
     locationInfoBarIsHidden = YES;
     
     UISwipeGestureRecognizer *swipeUpGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(locationInfoBarSwipeUp:)];
@@ -599,19 +637,19 @@
 
 - (void)initVerticalAccessoriesBar{
     
-    UIView *leftVerticalView = [UIView newAutoLayoutView];
-    leftVerticalView.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:leftVerticalView];
-    [leftVerticalView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
-    [leftVerticalView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
-    [leftVerticalView autoSetDimensionsToSize:CGSizeMake(44, VerticalViewHeight)];
+    leftVerticalBar = [UIView newAutoLayoutView];
+    leftVerticalBar.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:leftVerticalBar];
+    [leftVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+    [leftVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
+    [leftVerticalBar autoSetDimensionsToSize:CGSizeMake(44, VerticalViewHeight)];
     
     UIButton *leftBtn1 = [UIButton newAutoLayoutView];
     leftBtn1.alpha = 0.6;
     [leftBtn1 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share_WBG"] forState:UIControlStateNormal];
     leftBtn1.translatesAutoresizingMaskIntoConstraints = NO;
     [leftBtn1 addTarget:self action:@selector(showShareVC) forControlEvents:UIControlEventTouchDown];
-    [leftVerticalView addSubview:leftBtn1];
+    [leftVerticalBar addSubview:leftBtn1];
     [leftBtn1 autoSetDimensionsToSize:ButtionSize];
     [leftBtn1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
     [leftBtn1 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
@@ -622,7 +660,7 @@
     [leftBtn2 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Glasses_WBG"] forState:UIControlStateNormal];
     leftBtn2.translatesAutoresizingMaskIntoConstraints = NO;
     [leftBtn2 addTarget:self action:@selector(showHideMapShowModeBar) forControlEvents:UIControlEventTouchDown];
-    [leftVerticalView addSubview:leftBtn2];
+    [leftVerticalBar addSubview:leftBtn2];
     [leftBtn2 autoSetDimensionsToSize:ButtionSize];
     [leftBtn2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
     [leftBtn2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn1 withOffset:15];
@@ -632,7 +670,7 @@
     [leftBtn3 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_StatisticBar1_WBG"] forState:UIControlStateNormal];
     leftBtn3.translatesAutoresizingMaskIntoConstraints = NO;
     [leftBtn3 addTarget:self action:@selector(showHidePlacemarkInfoBar) forControlEvents:UIControlEventTouchDown];
-    [leftVerticalView addSubview:leftBtn3];
+    [leftVerticalBar addSubview:leftBtn3];
     [leftBtn3 autoSetDimensionsToSize:ButtionSize];
     [leftBtn3 autoAlignAxisToSuperviewAxis:ALAxisVertical];
     [leftBtn3 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn2 withOffset:15];
@@ -642,35 +680,35 @@
     [leftBtn4 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Trophy_WBG"] forState:UIControlStateNormal];
     leftBtn4.translatesAutoresizingMaskIntoConstraints = NO;
     [leftBtn4 addTarget:self action:@selector(showHideNaviBar) forControlEvents:UIControlEventTouchDown];
-    [leftVerticalView addSubview:leftBtn4];
+    [leftVerticalBar addSubview:leftBtn4];
     [leftBtn4 autoSetDimensionsToSize:ButtionSize];
     [leftBtn4 autoAlignAxisToSuperviewAxis:ALAxisVertical];
     [leftBtn4 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn3 withOffset:15];
     
     //[leftVerticalView.subviews autoDistributeViewsAlongAxis:ALAxisVertical withFixedSize:44 insetSpacing:YES alignment:NSLayoutFormatAlignAllLeft];
     
-    UIView *rightVerticalView = [UIView newAutoLayoutView];
-    rightVerticalView.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:rightVerticalView];
-    [rightVerticalView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
-    [rightVerticalView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
-    [rightVerticalView autoSetDimensionsToSize:CGSizeMake(44, VerticalViewHeight)];
+    rightVerticalBar = [UIView newAutoLayoutView];
+    rightVerticalBar.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:rightVerticalBar];
+    [rightVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
+    [rightVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
+    [rightVerticalBar autoSetDimensionsToSize:CGSizeMake(44, VerticalViewHeight)];
     
     UIButton *rightBtn1 = [UIButton newAutoLayoutView];
     rightBtn1.alpha = 0.6;
     [rightBtn1 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Setting_WBG"] forState:UIControlStateNormal];
     rightBtn1.translatesAutoresizingMaskIntoConstraints = NO;
     [rightBtn1 addTarget:self action:@selector(showSettingVC:) forControlEvents:UIControlEventTouchDown];
-    [rightVerticalView addSubview:rightBtn1];
+    [rightVerticalBar addSubview:rightBtn1];
     [rightBtn1 autoSetDimensionsToSize:CGSizeMake(44, 44)];
     [rightBtn1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
     [rightBtn1 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
 
     UIView *swipeScaleBackgroundView = [UIView newAutoLayoutView];
     swipeScaleBackgroundView.backgroundColor = [UIColor clearColor];//[[UIColor cyanColor] colorWithAlphaComponent:0.6];
-    [rightVerticalView addSubview:swipeScaleBackgroundView];
+    [rightVerticalBar addSubview:swipeScaleBackgroundView];
     [swipeScaleBackgroundView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
-    [swipeScaleBackgroundView autoMatchDimension:ALDimensionHeight toDimension:ALDimensionHeight ofView:rightVerticalView withMultiplier:0.75];
+    [swipeScaleBackgroundView autoMatchDimension:ALDimensionHeight toDimension:ALDimensionHeight ofView:rightVerticalBar withMultiplier:0.75];
     
     
     UIImageView *swipeImageView = [UIImageView newAutoLayoutView];
@@ -719,7 +757,80 @@
 }
 
 - (void)showShareVC{
+    [self hideVerticalBar];
+    mapShowModeBar.alpha = 0;
+    placemarkInfoBar.alpha = 0;
+    naviBar.alpha = 0;
     
+    NSMutableString *ms = [NSMutableString new];
+    if (self.settingManager.mapShowMode == MapShowModeMoment) {
+        [ms appendFormat:@"%@~%@",[self.startDate stringWithFormat:@"yyyy-MM-dd"],[self.endDate stringWithFormat:@"yyyy-MM-dd"]];
+        [ms appendString:NSLocalizedString(@"My Footprints:", @"我的足迹遍布：")];
+        [ms appendFormat:@"\n%ld",(long)placemarkInfoBar.countryCount];
+        [ms appendString:NSLocalizedString(@"States,", @"xx个国家,")];
+        [ms appendFormat:@"%ld",(long)placemarkInfoBar.administrativeAreaCount];
+        [ms appendString:NSLocalizedString(@"AdministrativeAreas,", @"xx个省,")];
+        [ms appendFormat:@"%ld",(long)placemarkInfoBar.localityCount];
+        [ms appendString:NSLocalizedString(@"Localities,", @"xx个市,")];
+        [ms appendFormat:@"%ld",(long)placemarkInfoBar.subLocalityCount];
+        [ms appendString:NSLocalizedString(@"SubLocalities,", @"xx个县区,")];
+        [ms appendFormat:@"%ld",(long)placemarkInfoBar.thoroughfareCount];
+        [ms appendString:NSLocalizedString(@"Thoroughfares,", @"xx个村镇街道,")];
+    }else{
+        [ms appendFormat:@"%@",self.placemarkName];
+    }
+    [ms appendFormat:@"\n%@ : %@",placemarkInfoBar.totalTitle,placemarkInfoBar.totalString];
+    
+    shareBar.middleText = ms;
+    shareBar.alpha = 1;
+    /*
+    NSLog(@"%@",NSStringFromCGRect(self.view.frame));
+    UIView *resizableView = [self.view resizableSnapshotViewFromRect:CGRectMake(0, 0, 100, 100) afterScreenUpdates:YES withCapInsets:UIEdgeInsetsZero];
+    resizableView = [self.view snapshotViewAfterScreenUpdates:YES];
+    UIView *tv = self.view;
+    */
+    //NSLog(@"%@",NSStringFromCGRect(resizableView.frame));
+    //[self.view drawViewHierarchyInRect:self.view.frame afterScreenUpdates:YES];
+    //[self.view drawViewHierarchyInRect:CGRectMake(0, placemarkInfoBar.frame.origin.y, self.view.frame.size.width, naviBar.frame.origin.y - placemarkInfoBar.frame.origin.y) afterScreenUpdates:YES];
+
+    //float topHeight = placemarkInfoBar.frame.origin.y;
+    //float buttomHeight = ScreenHeight - naviBar.frame.origin.y;
+    
+
+    UIGraphicsBeginImageContext(CGSizeMake(ScreenWidth, ScreenHeight));
+    // CGContextRef contextRef = UIGraphicsGetCurrentContext();
+    
+    [self.view drawViewHierarchyInRect:self.view.frame afterScreenUpdates:YES];
+    
+    [shareBar drawViewHierarchyInRect:shareBar.frame afterScreenUpdates:YES];
+    
+    /*
+    UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, ScreenWidth, topHeight)];
+    [self.settingManager.color colorWithAlphaComponent:0.6];
+    [bezierPath fill];
+    
+    UIImage *qrCodeImage = [UIImage imageNamed:@"1133399709_100"];
+    [qrCodeImage drawInRect:CGRectMake(5, 5, 100, 100)];
+    
+    NSString *bottomString = @"用相册记录人生，用足迹丈量世界\n——相册地图";
+    NSDictionary *attributes = @{ NSFontAttributeName : [UIFont bodyFontWithSizeMultiplier:1.0],
+                                  NSStrokeColorAttributeName : [UIColor whiteColor],
+                                  NSStrokeWidthAttributeName : @(1.0)};
+    [bottomString drawAtPoint:CGPointMake(105, 5) withAttributes:attributes];
+    */
+     
+    UIImage *contentImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    ShareSnapShotVC *ssVC = [ShareSnapShotVC new];
+    ssVC.image = contentImage;
+    ssVC.contentSizeInPopup = CGSizeMake(300, 400);
+    ssVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
+
+    popupController = [[STPopupController alloc] initWithRootViewController:ssVC];
+    popupController.containerView.layer.cornerRadius = 4;
+    [popupController presentInViewController:self];
 }
 
 - (void)showHideMapShowModeBar{
@@ -791,6 +902,18 @@
                                                                NSForegroundColorAttributeName: [UIColor whiteColor] };
     
     [[UIBarButtonItem appearanceWhenContainedIn:[STPopupNavigationBar class], nil] setTitleTextAttributes:@{ NSFontAttributeName:[UIFont fontWithName:@"Cochin" size:17] } forState:UIControlStateNormal];
+}
+
+- (void)initShareBar{
+    shareBar = [ShareBar newAutoLayoutView];
+    shareBar.sideViewShrinkRate = 0.8;
+    shareBar.leftImage = [UIImage imageNamed:@"地球_300_300"];
+    shareBar.leftText = NSLocalizedString(@"AlbumMaps", @"相册地图");
+    shareBar.rightImage = [UIImage imageNamed:@"1133399709_300"];
+    shareBar.rightText = NSLocalizedString(@"ScanHere", @"扫描下载");
+    [self.view addSubview:shareBar];
+    [shareBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 5, 0, 5) excludingEdge:ALEdgeBottom];
+    [shareBar autoSetDimension:ALDimensionHeight toSize:150];
 }
 
 #pragma mark - Init Data

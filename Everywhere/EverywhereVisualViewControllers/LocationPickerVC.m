@@ -50,6 +50,7 @@
 }
 
 - (void)segValueChanged:(UISegmentedControl *)sender{
+    if (self.locationModeDidChangeHandler) self.locationModeDidChangeHandler(sender.selectedSegmentIndex);
     [self updateDataSource:sender.selectedSegmentIndex];
 }
 

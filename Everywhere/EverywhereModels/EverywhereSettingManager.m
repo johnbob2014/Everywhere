@@ -104,4 +104,35 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (ColorScheme)colorScheme{
+    ColorScheme aCS = [[NSUserDefaults standardUserDefaults] integerForKey:@"colorScheme"];
+    return aCS;
+}
+
+- (void)setColorScheme:(ColorScheme)colorScheme{
+    [[NSUserDefaults standardUserDefaults] setInteger:colorScheme forKey:@"colorScheme"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (UIColor *)color{
+    UIColor *resultColor = nil;
+    switch (self.colorScheme) {
+        case ColorSchemeClassicGray:
+            resultColor = [[UIColor grayColor] colorWithAlphaComponent:0.6];
+            break;
+        case ColorSchemeForestGreen:
+            resultColor = [[UIColor greenColor] colorWithAlphaComponent:0.6];
+            break;
+        case ColorSchemeFreshBlue:
+            resultColor = [[UIColor blueColor] colorWithAlphaComponent:0.6];
+            break;
+        case ColorSchemeDeepBrown:
+            resultColor = [[UIColor brownColor] colorWithAlphaComponent:0.6];
+            break;
+        default:
+            break;
+    }
+    return resultColor;
+}
+
 @end
