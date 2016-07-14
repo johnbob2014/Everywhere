@@ -55,7 +55,6 @@
         self.infoLabel = [UILabel newAutoLayoutView];
         self.infoLabel.textAlignment = NSTextAlignmentCenter;
         self.infoLabel.textColor = [UIColor whiteColor];
-        //self.infoLabel.font = [UIFont bodyFontWithSizeMultiplier:0.8];
         [middleView addSubview:self.infoLabel];
         
         leftView = [UIView newAutoLayoutView];
@@ -94,7 +93,7 @@
         self.datePickerBtn.enabled = NO;
         self.locationPickerBtn.enabled = YES;
     }
-    self.infoLabel.text = [NSLocalizedString(@"MomentMode LocationMode",@"") componentsSeparatedByString:@" "][sender.selectedSegmentIndex];
+    //self.infoLabel.text = [NSLocalizedString(@"MomentMode LocationMode",@"") componentsSeparatedByString:@" "][sender.selectedSegmentIndex];
 }
 
 - (void)datePickerBtnTouchDown:(UIButton *)sender{

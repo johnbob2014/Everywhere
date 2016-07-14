@@ -14,6 +14,12 @@ static const NSTimeInterval TI_DAY;
 static const NSTimeInterval TI_WEEK;
 
 @interface NSDate (Assistant)
+
+- (BOOL)isSameDay:(NSDate *)aDate;
+- (BOOL)isInSameWeek:(NSDate *)aDate;
+- (BOOL)isInSameMonth:(NSDate *)aDate;
+- (BOOL)isInSameYear:(NSDate *)aDate;
+
 - (NSDate *) dateAtStartOfToday;
 - (NSDate *) dateAtEndOfToday;
 - (NSDate *) dateAtStartOfThisWeek;
@@ -22,9 +28,6 @@ static const NSTimeInterval TI_WEEK;
 - (NSDate *) dateAtEndOfThisMonth;
 - (NSDate *) dateAtStartOfThisYear;
 - (NSDate *) dateAtEndOfThisYear;
-- (NSString *) stringWithDefaultFormat;
-- (NSString *) stringWithFormat: (NSString *) format;
-- (NSString *) stringWithDateStyle: (NSDateFormatterStyle) dateStyle timeStyle: (NSDateFormatterStyle) timeStyle;
 
 - (NSDate *) dateByAddingYears: (NSInteger) dYears;
 - (NSDate *) dateBySubtractingYears: (NSInteger) dYears;
@@ -38,4 +41,8 @@ static const NSTimeInterval TI_WEEK;
 - (NSDate *) dateBySubtractingMinutes: (NSInteger) dMinutes;
 - (NSDateComponents *) componentsWithOffsetFromDate: (NSDate *) aDate;
 
+- (NSString *) stringWithDefaultFormat;
+- (NSString *) stringWithFormat: (NSString *) format;
+- (NSString *) stringWithDateStyle: (NSDateFormatterStyle) dateStyle timeStyle: (NSDateFormatterStyle) timeStyle;
++ (NSString *) localizedStringWithFormat:(NSString *)format startDate:(NSDate *)startDate endDate:(NSDate *)endDate;
 @end

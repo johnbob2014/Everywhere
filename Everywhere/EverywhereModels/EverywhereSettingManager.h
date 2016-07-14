@@ -19,7 +19,7 @@
 @property (assign,nonatomic) DateMode dateMode;
 
 @property (assign,nonatomic) LocationMode locationMode;
-@property (strong,nonatomic) NSString *defaultPlacemark;
+@property (strong,nonatomic) NSString *lastPlacemark;
 
 @property (assign,nonatomic) NSTimeInterval playTimeInterval;
 

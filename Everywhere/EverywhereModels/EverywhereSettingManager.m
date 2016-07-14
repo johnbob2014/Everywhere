@@ -71,14 +71,14 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (NSString *)defaultPlacemark{
-    NSString *placemark = [[NSUserDefaults standardUserDefaults] stringForKey:@"defaultPlacemark"];
-    if (!placemark) placemark = @",";
+- (NSString *)lastPlacemark{
+    NSString *placemark = [[NSUserDefaults standardUserDefaults] stringForKey:@"lastPlacemark"];
+    if (!placemark) placemark = @"中国";
     return placemark;
 }
 
-- (void)setDefaultPlacemark:(NSString *)defaultPlacemark{
-    [[NSUserDefaults standardUserDefaults] setValue:defaultPlacemark forKey:@"defaultPlacemark"];
+- (void)setLasttPlacemark:(NSString *)lastPlacemark{
+    [[NSUserDefaults standardUserDefaults] setValue:lastPlacemark forKey:@"lastPlacemark"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

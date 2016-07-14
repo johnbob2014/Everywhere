@@ -47,6 +47,40 @@ static const NSInteger BIG_MONTH[7] = {1,3,5,7,8,10,12};
     return days;
 }
 
+#pragma mark - Comparing Dates
+
+- (BOOL)isSameDay:(NSDate *)aDate
+{
+    NSDateComponents *components1 = [[NSDate currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:self];
+    NSDateComponents *components2 = [[NSDate currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:aDate];
+    return ((components1.year == components2.year) &&
+            (components1.month == components2.month) &&
+            (components1.day == components2.day));
+}
+
+- (BOOL)isInSameWeek:(NSDate *)aDate
+{
+    NSDateComponents *components1 = [[NSDate currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitWeekOfYear fromDate:self];
+    NSDateComponents *components2 = [[NSDate currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitWeekOfYear fromDate:aDate];
+    return ((components1.year == components2.year) &&
+            (components1.weekOfYear == components2.weekOfYear));
+}
+
+- (BOOL)isInSameMonth:(NSDate *)aDate
+{
+    NSDateComponents *components1 = [[NSDate currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth fromDate:self];
+    NSDateComponents *components2 = [[NSDate currentCalendar] components:NSCalendarUnitYear|NSCalendarUnitMonth fromDate:aDate];
+    return ((components1.year == components2.year) &&
+            (components1.month == components2.month));
+}
+
+- (BOOL)isInSameYear:(NSDate *)aDate
+{
+    NSDateComponents *components1 = [[NSDate currentCalendar] components:NSCalendarUnitYear fromDate:self];
+    NSDateComponents *components2 = [[NSDate currentCalendar] components:NSCalendarUnitYear fromDate:aDate];
+    return (components1.year == components2.year);
+}
+
 #pragma mark - Adjusting Dates
 
 // Thaks, rsjohnson
@@ -210,4 +244,38 @@ static const NSInteger BIG_MONTH[7] = {1,3,5,7,8,10,12};
     return [formatter stringFromDate:self];
 }
 
++ (NSString *)localizedStringWithFormat:(NSString *)format startDate:(NSDate *)startDate endDate:(NSDate *)endDate{
+    if (!startDate || !endDate) return @" ";
+    if ([startDate isSameDay:endDate]){
+        if ([startDate isSameDay:[NSDate date]]) return NSLocalizedString(@"Today", @"今天");
+        else return [startDate stringWithFormat:format];
+    }
+    if ([startDate isInSameWeek:endDate]) {
+        if ([startDate isSameDay:[startDate dateAtStartOfThisWeek]]) {
+            if ([endDate isSameDay:[endDate dateAtEndOfThisWeek]]) {
+                return NSLocalizedString(@"This Week", @"本周");
+            }
+        }
+    }
+    if ([startDate isInSameMonth:endDate]) {
+        if ([startDate isSameDay:[startDate dateAtStartOfThisMonth]]) {
+            if ([endDate isSameDay:[endDate dateAtEndOfThisMonth]]) {
+                return NSLocalizedString(@"This Month", @"本月");
+            }
+        }
+    }
+    if ([startDate isInSameYear:endDate]) {
+        if ([startDate isSameDay:[startDate dateAtStartOfThisYear]]) {
+            if ([endDate isSameDay:[endDate dateAtEndOfThisYear]]) {
+                return NSLocalizedString(@"This Year", @"今年");
+            }
+        }
+    }
+    NSMutableString *ms = [NSMutableString new];
+    [ms appendString:NSLocalizedString(@"From ", @"从 ")];
+    [ms appendString:[startDate stringWithFormat:format]];
+    [ms appendString:NSLocalizedString(@" To ", @" 到 ")];
+    [ms appendString:[endDate stringWithFormat:format]];
+    return ms;
+}
 @end

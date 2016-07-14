@@ -19,5 +19,9 @@
 @property (strong,nonatomic) NSString *middleText;
 
 @property (assign,nonatomic) float sideViewShrinkRate;
+@property (strong,nonatomic) UIFont *middleFont;
+
+@property (strong,nonatomic) NSString *title;
+@property (strong,nonatomic) UIFont *titleFont;
 
 @end

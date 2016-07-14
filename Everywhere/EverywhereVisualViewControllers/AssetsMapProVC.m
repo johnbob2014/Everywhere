@@ -54,7 +54,7 @@
 
 @property (strong,nonatomic) NSDate *startDate;
 @property (strong,nonatomic) NSDate *endDate;
-@property (strong,nonatomic) NSString *placemarkName;
+@property (strong,nonatomic) NSString *lastPlacemark;
 
 @property (strong,nonatomic) GCPhotoManager *photoManager;
 @property (strong,nonatomic) EverywhereCoreDataManager *cdManager;
@@ -169,8 +169,6 @@
     
     [self initMapView];
     
-    [self initData];
-    
     [self initMapShowModeBar];
     
     [self initNaviBar];
@@ -181,6 +179,8 @@
     [self initPlacemarkInfoBar];
     
     [self initVerticalAccessoriesBar];
+    
+    [self initData];
 
     [self initPopupController];
     
@@ -196,6 +196,7 @@
     [self showVerticalBar];
     mapShowModeBar.alpha = 1;
     naviBar.alpha = 1;
+    shareBar.alpha = 0;
 }
 
 - (void)updateBarColor:(UIColor *)newColor{
@@ -281,25 +282,10 @@
     mapShowModeBar.mapShowModeChangedHandler = ^(UISegmentedControl *sender){
         // 记录当前地图模式
         weakSelf.settingManager.mapShowMode = sender.selectedSegmentIndex;
-        /*
-        switch (sender.selectedSegmentIndex) {
-            case MapShowModeMoment:{
-                weakSelf.startDate = [NOW dateAtStartOfToday];
-                weakSelf.endDate = [NOW dateAtEndOfToday];
-                weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:weakSelf.startDate toEndDate:weakSelf.endDate inManagedObjectContext:[EverywhereCoreDataManager defaultManager].appMOC];
-                
-            }
-                break;
-            case MapShowModeLocation:{
-                weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:@"," inManagedObjectContext:[EverywhereCoreDataManager defaultManager].appMOC];
-                weakSelf.placemarkName = NSLocalizedString(@"All Locations", @"所有地点");
-            }
-                break;
-            default:
-                break;
-        }
-        */
         weakSelf.assetInfoArray = nil;
+        weakSelf.startDate = nil;
+        weakSelf.endDate = nil;
+        weakSelf.lastPlacemark = @"";
         [weakSelf.myMapView removeAnnotations:weakSelf.myMapView.annotations];
         [weakSelf.myMapView removeOverlays:weakSelf.myMapView.overlays];
     };
@@ -316,10 +302,10 @@
 - (void)updateMapShowModeBar{
     switch (self.settingManager.mapShowMode) {
         case MapShowModeMoment:
-            mapShowModeBar.info = [[self.startDate stringWithFormat:@"yyyy-MM-dd ~ "] stringByAppendingString:[self.endDate stringWithFormat:@"yyyy-MM-dd"]];
+            mapShowModeBar.info = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate];
             break;
         case MapShowModeLocation:
-            mapShowModeBar.info = self.placemarkName;
+            mapShowModeBar.info = self.lastPlacemark;
             break;
         default:
             break;
@@ -363,7 +349,8 @@
     };
     
     locationPickerVC.locationDidChangeHandler = ^(NSString *choosedLocation){
-        weakSelf.placemarkName = choosedLocation;
+        weakSelf.settingManager.lastPlacemark = choosedLocation;
+        weakSelf.lastPlacemark = choosedLocation;
         weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:choosedLocation inManagedObjectContext:weakSelf.cdManager.appMOC];
     };
     
@@ -763,25 +750,42 @@
     naviBar.alpha = 0;
     
     NSMutableString *ms = [NSMutableString new];
+    
     if (self.settingManager.mapShowMode == MapShowModeMoment) {
-        [ms appendFormat:@"%@~%@",[self.startDate stringWithFormat:@"yyyy-MM-dd"],[self.endDate stringWithFormat:@"yyyy-MM-dd"]];
-        [ms appendString:NSLocalizedString(@"My Footprints:", @"我的足迹遍布：")];
-        [ms appendFormat:@"\n%ld",(long)placemarkInfoBar.countryCount];
-        [ms appendString:NSLocalizedString(@"States,", @"xx个国家,")];
-        [ms appendFormat:@"%ld",(long)placemarkInfoBar.administrativeAreaCount];
-        [ms appendString:NSLocalizedString(@"AdministrativeAreas,", @"xx个省,")];
-        [ms appendFormat:@"%ld",(long)placemarkInfoBar.localityCount];
-        [ms appendString:NSLocalizedString(@"Localities,", @"xx个市,")];
-        [ms appendFormat:@"%ld",(long)placemarkInfoBar.subLocalityCount];
-        [ms appendString:NSLocalizedString(@"SubLocalities,", @"xx个县区,")];
-        [ms appendFormat:@"%ld",(long)placemarkInfoBar.thoroughfareCount];
-        [ms appendString:NSLocalizedString(@"Thoroughfares,", @"xx个村镇街道,")];
+        [ms appendFormat:@"%@",[NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate]];
+        [ms appendString:NSLocalizedString(@" I have my footprints over ", @" 我的足迹遍布 ")];
     }else{
-        [ms appendFormat:@"%@",self.placemarkName];
+        [ms appendString:NSLocalizedString(@"I have been in ", @"我到过 ")];
+        [ms appendFormat:@"%@",self.lastPlacemark];
+        [ms appendString:NSLocalizedString(@" for ", @" 的 ")];
     }
-    [ms appendFormat:@"\n%@ : %@",placemarkInfoBar.totalTitle,placemarkInfoBar.totalString];
+    
+    if (placemarkInfoBar.countryCount) {
+        [ms appendFormat:@"%ld",(long)placemarkInfoBar.countryCount];
+        [ms appendString:NSLocalizedString(@" States,", @"xx个国家,")];
+    }
+    if (placemarkInfoBar.administrativeAreaCount) {
+        [ms appendFormat:@"%ld",(long)placemarkInfoBar.administrativeAreaCount];
+        [ms appendString:NSLocalizedString(@" AdministrativeAreas,", @"xx个省,")];
+    }
+    if (placemarkInfoBar.localityCount){
+        [ms appendFormat:@"%ld",(long)placemarkInfoBar.localityCount];
+        [ms appendString:NSLocalizedString(@" Localities,", @"xx个市,")];
+    }
+    if (placemarkInfoBar.subLocalityCount) {
+        [ms appendFormat:@"%ld",(long)placemarkInfoBar.subLocalityCount];
+        [ms appendString:NSLocalizedString(@" SubLocalities,", @"xx个县区,")];
+    }
+    if (placemarkInfoBar.thoroughfareCount) {
+        [ms appendFormat:@"%ld",(long)placemarkInfoBar.thoroughfareCount];
+        [ms appendString:NSLocalizedString(@" Thoroughfares", @"xx个村镇街道")];
+    }
+    
+    [ms appendString:NSLocalizedString(@"\nTotal ", @"\n总")];
+    [ms appendFormat:@"%@ %@",placemarkInfoBar.totalTitle,placemarkInfoBar.totalString];
     
     shareBar.middleText = ms;
+    shareBar.middleFont = [UIFont bodyFontWithSizeMultiplier:0.9];
     shareBar.alpha = 1;
     /*
     NSLog(@"%@",NSStringFromCGRect(self.view.frame));
@@ -797,12 +801,12 @@
     //float buttomHeight = ScreenHeight - naviBar.frame.origin.y;
     
 
-    UIGraphicsBeginImageContext(CGSizeMake(ScreenWidth, ScreenHeight));
+    UIGraphicsBeginImageContext(CGSizeMake(ScreenWidth, naviBar.frame.origin.y));
     // CGContextRef contextRef = UIGraphicsGetCurrentContext();
     
     [self.view drawViewHierarchyInRect:self.view.frame afterScreenUpdates:YES];
     
-    [shareBar drawViewHierarchyInRect:shareBar.frame afterScreenUpdates:YES];
+    //[shareBar drawViewHierarchyInRect:shareBar.frame afterScreenUpdates:YES];
     
     /*
     UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, ScreenWidth, topHeight)];
@@ -825,7 +829,7 @@
     
     ShareSnapShotVC *ssVC = [ShareSnapShotVC new];
     ssVC.image = contentImage;
-    ssVC.contentSizeInPopup = CGSizeMake(300, 400);
+    ssVC.contentSizeInPopup = CGSizeMake(ScreenWidth - 80, ScreenHeight - 100);
     ssVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
 
     popupController = [[STPopupController alloc] initWithRootViewController:ssVC];
@@ -904,13 +908,17 @@
     [[UIBarButtonItem appearanceWhenContainedIn:[STPopupNavigationBar class], nil] setTitleTextAttributes:@{ NSFontAttributeName:[UIFont fontWithName:@"Cochin" size:17] } forState:UIControlStateNormal];
 }
 
+#pragma mark Share Bar
+
 - (void)initShareBar{
     shareBar = [ShareBar newAutoLayoutView];
     shareBar.sideViewShrinkRate = 0.8;
+    shareBar.title =  @"用相册记录人生，用足迹丈量世界";
+    shareBar.titleFont = [UIFont bodyFontWithSizeMultiplier:1.0];
     shareBar.leftImage = [UIImage imageNamed:@"地球_300_300"];
     shareBar.leftText = NSLocalizedString(@"AlbumMaps", @"相册地图");
     shareBar.rightImage = [UIImage imageNamed:@"1133399709_300"];
-    shareBar.rightText = NSLocalizedString(@"ScanHere", @"扫描下载");
+    shareBar.rightText = NSLocalizedString(@"ScanToDL", @"扫描下载");
     [self.view addSubview:shareBar];
     [shareBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 5, 0, 5) excludingEdge:ALEdgeBottom];
     [shareBar autoSetDimension:ALDimensionHeight toSize:150];
@@ -919,47 +927,50 @@
 #pragma mark - Init Data
 
 - (void)initData{
-    NSDate *now = [NSDate date];
-    
-    switch (self.settingManager.dateMode) {
-        case DateModeDay:{
-            self.startDate = [now dateAtStartOfToday];
-            self.endDate = [now dateAtEndOfToday];
-        }
-            break;
-        case DateModeWeek:{
-            self.startDate = [now dateAtStartOfThisWeek];
-            self.endDate = [now dateAtEndOfThisWeek];
-        }
-            break;
-        case DateModeMonth:{
-            self.startDate = [now dateAtStartOfThisMonth];
-            self.endDate = [now dateAtEndOfThisMonth];
-        }
-            break;
-        case DateModeYear:{
-            self.startDate = [now dateAtStartOfThisYear];
-            self.endDate = [now dateAtEndOfThisYear];
-        }
-            break;
-        case DateModeAll:{
-            self.startDate = nil;
-            self.endDate = nil;
-        }
-            break;
-        default:{
-            self.startDate = [now dateAtStartOfThisMonth];
-            self.endDate = [now dateAtEndOfThisMonth];
-        }
-            break;
-    }
-    
     switch (self.settingManager.mapShowMode) {
-        case MapShowModeMoment:
+        case MapShowModeMoment:{
+            // 时刻模式初始化
+            switch (self.settingManager.dateMode) {
+                case DateModeDay:{
+                    self.startDate = [NOW dateAtStartOfToday];
+                    self.endDate = [NOW dateAtEndOfToday];
+                }
+                    break;
+                case DateModeWeek:{
+                    self.startDate = [NOW dateAtStartOfThisWeek];
+                    self.endDate = [NOW dateAtEndOfThisWeek];
+                }
+                    break;
+                case DateModeMonth:{
+                    self.startDate = [NOW dateAtStartOfThisMonth];
+                    self.endDate = [NOW dateAtEndOfThisMonth];
+                }
+                    break;
+                case DateModeYear:{
+                    self.startDate = [NOW dateAtStartOfThisYear];
+                    self.endDate = [NOW dateAtEndOfThisYear];
+                }
+                    break;
+                case DateModeAll:{
+                    self.startDate = nil;
+                    self.endDate = nil;
+                }
+                    break;
+                default:{
+                    self.startDate = [NOW dateAtStartOfThisMonth];
+                    self.endDate = [NOW dateAtEndOfThisMonth];
+                }
+                    break;
+            }
+
             self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:self.startDate toEndDate:self.endDate inManagedObjectContext:self.cdManager.appMOC];
+        }
             break;
-        case MapShowModeLocation:
-            self.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:self.settingManager.defaultPlacemark inManagedObjectContext:self.cdManager.appMOC];
+        case MapShowModeLocation:{
+            // 位置模式初始化
+            self.lastPlacemark = self.settingManager.lastPlacemark;
+            self.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:self.settingManager.lastPlacemark inManagedObjectContext:self.cdManager.appMOC];
+        }
             break;
         default:
             break;

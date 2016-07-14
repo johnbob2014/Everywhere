@@ -13,6 +13,7 @@
 @end
 
 @implementation ShareBar{
+    UILabel *titleLabel;
     UIView *leftView,*middleView,*rightView;
     UIImageView *leftIV,*rightIV;
     UILabel *leftLabel,*middleLabel,*rightLabel;
@@ -57,6 +58,10 @@
         middleLabel.textAlignment = NSTextAlignmentLeft;
         middleLabel.numberOfLines = 0;
         [middleView addSubview:middleLabel];
+        
+        titleLabel = [UILabel newAutoLayoutView];
+        titleLabel.textAlignment = NSTextAlignmentCenter;
+        [self addSubview:titleLabel];
     }
     return self;
 }
@@ -78,11 +83,13 @@
     [rightIV autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
     [rightIV autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:rightLabel withOffset:0];
     
-    [middleView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
+    [middleView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:20];
     [middleView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
     [middleView autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:leftView withOffset:10];
     [middleView autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:rightView withOffset:-10];
     [middleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+    
+    [titleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
 }
 
 - (void)setSideViewShrinkRate:(float)sideViewShrinkRate{
@@ -119,4 +126,18 @@
     middleLabel.text = middleText;
 }
 
+- (void)setMiddleFont:(UIFont *)middleFont{
+    _middleFont = middleFont;
+    middleLabel.font = middleFont;
+}
+
+- (void)setTitle:(NSString *)title{
+    _title = title;
+    titleLabel.text = title;
+}
+
+- (void)setTitleFont:(UIFont *)titleFont{
+    _titleFont = titleFont;
+    titleLabel.font = titleFont;
+}
 @end
