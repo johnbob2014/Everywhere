@@ -1,5 +1,5 @@
 //
-//  ShareSnapShotVC.h
+//  ShareVC.h
 //  Everywhere
 //
 //  Created by BobZhang on 16/7/14.
@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ShareSnapShotVC : UIViewController
+@interface ShareVC : UIViewController
+
 @property (strong,nonatomic) UIImage *image;
+@property (strong,nonatomic) NSString *webpageUrl;
+
 @end

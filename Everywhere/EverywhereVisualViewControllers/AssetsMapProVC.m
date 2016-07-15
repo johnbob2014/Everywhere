@@ -15,7 +15,7 @@
 
 #import "EverywhereMKAnnotation.h"
 #import "EverywhereSettingManager.h"
-
+#import "EverywhereShareMKAnnotation.h"
 #import "NSDate+Assistant.h"
 #import "UIView+AutoLayout.h"
 #import "PHAsset+Assistant.h"
@@ -33,7 +33,7 @@
 #import "MapShowModeBar.h"
 #import "LocationPickerVC.h"
 #import "SettingVC.h"
-#import "ShareSnapShotVC.h"
+#import "ShareVC.h"
 #import "ShareBar.h"
 
 #import "EverywhereCoreDataManager.h"
@@ -68,6 +68,7 @@
     
     
     NSArray <EverywhereMKAnnotation *> *addedAnnotationsWithIndex;
+    NSArray <EverywhereShareMKAnnotation *> *addedShareAnnotationsWithIndex;
     
     MapShowModeBar *mapShowModeBar;
     
@@ -584,9 +585,6 @@
     [placemarkInfoBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
     [placemarkInfoBar autoSetDimension:ALDimensionHeight toSize:placemarkInfoBarHeight];
     
-    // 设为隐藏
-    [self showHidePlacemarkInfoBar];
-    
     [self updatePlacemarkInfoBar];
 }
 
@@ -633,9 +631,9 @@
     
     UIButton *leftBtn1 = [UIButton newAutoLayoutView];
     leftBtn1.alpha = 0.6;
-    [leftBtn1 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share_WBG"] forState:UIControlStateNormal];
+    [leftBtn1 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Setting_WBG"] forState:UIControlStateNormal];
     leftBtn1.translatesAutoresizingMaskIntoConstraints = NO;
-    [leftBtn1 addTarget:self action:@selector(showShareVC) forControlEvents:UIControlEventTouchDown];
+    [leftBtn1 addTarget:self action:@selector(showSettingVC) forControlEvents:UIControlEventTouchDown];
     [leftVerticalBar addSubview:leftBtn1];
     [leftBtn1 autoSetDimensionsToSize:ButtionSize];
     [leftBtn1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
@@ -679,24 +677,33 @@
     [self.view addSubview:rightVerticalBar];
     [rightVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
     [rightVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
-    [rightVerticalBar autoSetDimensionsToSize:CGSizeMake(44, VerticalViewHeight)];
+    [rightVerticalBar autoSetDimensionsToSize:CGSizeMake(44, VerticalViewHeight + 54)];
     
     UIButton *rightBtn1 = [UIButton newAutoLayoutView];
     rightBtn1.alpha = 0.6;
-    [rightBtn1 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Setting_WBG"] forState:UIControlStateNormal];
+    [rightBtn1 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share_WBG"] forState:UIControlStateNormal];
     rightBtn1.translatesAutoresizingMaskIntoConstraints = NO;
-    [rightBtn1 addTarget:self action:@selector(showSettingVC:) forControlEvents:UIControlEventTouchDown];
+    [rightBtn1 addTarget:self action:@selector(showShareVCForSnapShot) forControlEvents:UIControlEventTouchDown];
     [rightVerticalBar addSubview:rightBtn1];
     [rightBtn1 autoSetDimensionsToSize:CGSizeMake(44, 44)];
     [rightBtn1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
     [rightBtn1 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
+    
+    UIButton *rightBtn2 = [UIButton newAutoLayoutView];
+    rightBtn2.alpha = 0.6;
+    [rightBtn2 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share2_WBG"] forState:UIControlStateNormal];
+    rightBtn2.translatesAutoresizingMaskIntoConstraints = NO;
+    [rightBtn2 addTarget:self action:@selector(showShareVCForTrack) forControlEvents:UIControlEventTouchDown];
+    [rightVerticalBar addSubview:rightBtn2];
+    [rightBtn2 autoSetDimensionsToSize:CGSizeMake(44, 44)];
+    [rightBtn2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [rightBtn2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:rightBtn1 withOffset:10];
 
     UIView *swipeScaleBackgroundView = [UIView newAutoLayoutView];
     swipeScaleBackgroundView.backgroundColor = [UIColor clearColor];//[[UIColor cyanColor] colorWithAlphaComponent:0.6];
     [rightVerticalBar addSubview:swipeScaleBackgroundView];
     [swipeScaleBackgroundView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
     [swipeScaleBackgroundView autoMatchDimension:ALDimensionHeight toDimension:ALDimensionHeight ofView:rightVerticalBar withMultiplier:0.75];
-    
     
     UIImageView *swipeImageView = [UIImageView newAutoLayoutView];
     swipeImageView.alpha = 0.6;
@@ -721,29 +728,9 @@
     [swipeScaleBackgroundView addSubview:swipeScaleView];
     [swipeScaleView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
 
-    
-    
-    
-    //[self.view addSubview:showHidePlacemarkInfoBarBtn];
-    //[showHidePlacemarkInfoBarBtn autoSetDimensionsToSize:CGSizeMake(40, 40)];
-    //[showHidePlacemarkInfoBarBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:80];
-    //[showHidePlacemarkInfoBarBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
-    
-    /*
-    UIButton *placemarkInfoBtn = [UIButton newAutoLayoutView];
-    [placemarkInfoBtn primaryStyle];
-    [placemarkInfoBtn setTitle:@"PlaceInfo" forState:UIControlStateNormal];
-    [placemarkInfoBtn autoSetDimensionsToSize:CGSizeMake(100, 40)];
-    placemarkInfoBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    [placemarkInfoBtn addTarget:self action:@selector(showPlacemarkInfoBar:) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:placemarkInfoBtn];
-    
-    [placemarkInfoBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:80];
-    [placemarkInfoBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:180];
-     */
 }
 
-- (void)showShareVC{
+- (void)showShareVCForSnapShot{
     [self hideVerticalBar];
     mapShowModeBar.alpha = 0;
     placemarkInfoBar.alpha = 0;
@@ -785,56 +772,76 @@
     [ms appendFormat:@"%@ %@",placemarkInfoBar.totalTitle,placemarkInfoBar.totalString];
     
     shareBar.middleText = ms;
+    // 设置字体大小
     shareBar.middleFont = [UIFont bodyFontWithSizeMultiplier:0.9];
+    // 显示出来，以便进行截图
     shareBar.alpha = 1;
-    /*
-    NSLog(@"%@",NSStringFromCGRect(self.view.frame));
-    UIView *resizableView = [self.view resizableSnapshotViewFromRect:CGRectMake(0, 0, 100, 100) afterScreenUpdates:YES withCapInsets:UIEdgeInsetsZero];
-    resizableView = [self.view snapshotViewAfterScreenUpdates:YES];
-    UIView *tv = self.view;
-    */
-    //NSLog(@"%@",NSStringFromCGRect(resizableView.frame));
-    //[self.view drawViewHierarchyInRect:self.view.frame afterScreenUpdates:YES];
-    //[self.view drawViewHierarchyInRect:CGRectMake(0, placemarkInfoBar.frame.origin.y, self.view.frame.size.width, naviBar.frame.origin.y - placemarkInfoBar.frame.origin.y) afterScreenUpdates:YES];
 
-    //float topHeight = placemarkInfoBar.frame.origin.y;
-    //float buttomHeight = ScreenHeight - naviBar.frame.origin.y;
-    
-
-    UIGraphicsBeginImageContext(CGSizeMake(ScreenWidth, naviBar.frame.origin.y));
-    // CGContextRef contextRef = UIGraphicsGetCurrentContext();
+    UIGraphicsBeginImageContext(CGSizeMake(ScreenWidth, naviBar.frame.origin.y + naviBar.frame.size.height));
     
     [self.view drawViewHierarchyInRect:self.view.frame afterScreenUpdates:YES];
     
-    //[shareBar drawViewHierarchyInRect:shareBar.frame afterScreenUpdates:YES];
-    
-    /*
-    UIBezierPath *bezierPath = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, ScreenWidth, topHeight)];
-    [self.settingManager.color colorWithAlphaComponent:0.6];
-    [bezierPath fill];
-    
-    UIImage *qrCodeImage = [UIImage imageNamed:@"1133399709_100"];
-    [qrCodeImage drawInRect:CGRectMake(5, 5, 100, 100)];
-    
-    NSString *bottomString = @"用相册记录人生，用足迹丈量世界\n——相册地图";
-    NSDictionary *attributes = @{ NSFontAttributeName : [UIFont bodyFontWithSizeMultiplier:1.0],
-                                  NSStrokeColorAttributeName : [UIColor whiteColor],
-                                  NSStrokeWidthAttributeName : @(1.0)};
-    [bottomString drawAtPoint:CGPointMake(105, 5) withAttributes:attributes];
-    */
-     
     UIImage *contentImage = UIGraphicsGetImageFromCurrentImageContext();
     
     UIGraphicsEndImageContext();
     
-    ShareSnapShotVC *ssVC = [ShareSnapShotVC new];
+    ShareVC *ssVC = [ShareVC new];
     ssVC.image = contentImage;
-    ssVC.contentSizeInPopup = CGSizeMake(ScreenWidth - 80, ScreenHeight - 100);
-    ssVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
+    ssVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.8, ScreenHeight * 0.85);
+    ssVC.landscapeContentSizeInPopup = CGSizeMake(ScreenHeight * 0.85, ScreenWidth * 0.8);
 
     popupController = [[STPopupController alloc] initWithRootViewController:ssVC];
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
+}
+
+- (void)showShareVCForTrack{
+    if (addedShareAnnotationsWithIndex.count < 2) return;
+    
+    NSData *trackData = [NSKeyedArchiver archivedDataWithRootObject:addedShareAnnotationsWithIndex];
+    //NSString *trackURL = [[NSString alloc] initWithData:trackData encoding:NSNonLossyASCIIStringEncoding];
+    NSString *trackString = [trackData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+    //NSLog(@"trackURL (length:%ld) :\n%@",trackString.length,trackString);
+    
+    if (trackString.length > 10*1024*8) {
+        NSLog(@"TrackURL is too Long!");
+        return;
+    }
+    
+    NSString *appendedString = [NSString stringWithFormat:@"%@://AlbumMaps/track/",WXAppID];
+    trackString = [appendedString stringByAppendingString:trackString];
+    
+    ShareVC *ssVC = [ShareVC new];
+    ssVC.webpageUrl = trackString;
+    ssVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.8, ScreenHeight * 0.45);
+    ssVC.landscapeContentSizeInPopup = CGSizeMake(ScreenHeight * 0.45, ScreenWidth * 0.8);
+    
+    popupController = [[STPopupController alloc] initWithRootViewController:ssVC];
+    popupController.containerView.layer.cornerRadius = 4;
+    [popupController presentInViewController:self];
+    
+    //[self receiveTrackString:trackString];
+}
+
+- (void)receiveTrackString:(NSString *)trackString{
+    NSString *appendedString = [NSString stringWithFormat:@"%@://AlbumMaps/track/",WXAppID];
+    trackString = [trackString stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:appendedString]];
+    
+    // For iOS9
+    trackString = [trackString stringByReplacingOccurrencesOfString:@"%0D%0A" withString:@"\n"];
+    // For iOS8
+    trackString = [trackString stringByReplacingOccurrencesOfString:@"%20" withString:@"\n"];
+    
+    NSLog(@"received trackString:\n%@",trackString);
+    NSData *trackData = [[NSData alloc] initWithBase64EncodedString:trackString options:NSDataBase64DecodingIgnoreUnknownCharacters];
+    addedShareAnnotationsWithIndex = [NSKeyedUnarchiver unarchiveObjectWithData:trackData];
+    
+    NSLog(@"received shareAnnotation count : %lu",(unsigned long)addedShareAnnotationsWithIndex.count);
+    
+    [self.myMapView removeAnnotations:self.myMapView.annotations];
+    [self.myMapView addAnnotations:addedShareAnnotationsWithIndex];
+    [self addLineOverlaysPro:addedShareAnnotationsWithIndex];
+    [self updateVisualViewAfterAddAnnotationsAndOverlays];
 }
 
 - (void)showHideMapShowModeBar{
@@ -858,7 +865,7 @@
     
 }
 
-- (void)showSettingVC:(id)sender{
+- (void)showSettingVC{
     SettingVC *settingVC = [SettingVC new];
     settingVC.edgesForExtendedLayout = UIRectEdgeNone;
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:settingVC];
@@ -920,8 +927,9 @@
     shareBar.rightImage = [UIImage imageNamed:@"1133399709_300"];
     shareBar.rightText = NSLocalizedString(@"ScanToDL", @"扫描下载");
     [self.view addSubview:shareBar];
-    [shareBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 5, 0, 5) excludingEdge:ALEdgeBottom];
+    [shareBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(5, 5, 0, 5) excludingEdge:ALEdgeBottom];
     [shareBar autoSetDimension:ALDimensionHeight toSize:150];
+    //[shareBar autoMatchDimension:ALDimensionHeight toDimension:ALDimensionHeight ofView:self.view withMultiplier:0.2];
 }
 
 #pragma mark - Init Data
@@ -983,8 +991,9 @@
 - (void)addAnnotations{
     // 清理数组
     addedAnnotationsWithIndex = nil;
+    addedShareAnnotationsWithIndex = nil;
     NSMutableArray <EverywhereMKAnnotation *> *annotationsToAdd = [NSMutableArray new];
-    
+    NSMutableArray <EverywhereShareMKAnnotation *> *shareAnnotationsToAdd = [NSMutableArray new];
     // 添加 MKAnnotations
     [self.myMapView removeAnnotations:self.myMapView.annotations];
     
@@ -1008,11 +1017,78 @@
         
         [annotationsToAdd addObject:anno];
         //[self.myMapView addAnnotation:anno];
+        
+        EverywhereShareMKAnnotation *shareAnno = [EverywhereShareMKAnnotation new];
+        shareAnno.annotationCoordinate = firstAsset.location.coordinate;
+        shareAnno.annotationDate = firstAsset.creationDate;
+        [shareAnnotationsToAdd addObject:shareAnno];
     }];
     
     if (!annotationsToAdd || !annotationsToAdd.count) return;
     [self.myMapView addAnnotations:annotationsToAdd];
+    
     addedAnnotationsWithIndex = annotationsToAdd;
+    addedShareAnnotationsWithIndex = shareAnnotationsToAdd;
+}
+
+- (void)addLineOverlaysPro:(NSArray <id<MKAnnotation>> *)annotationArray{
+    [self.myMapView removeOverlays:self.myMapView.overlays];
+    maxDistance = 500;
+    if (annotationArray.count >= 2) {
+        // 记录距离信息
+        NSMutableArray *distanceArray = [NSMutableArray new];
+        totalDistance = 0;
+        
+        // 添加 MKOverlays
+        
+        NSMutableArray <MKPolyline *> *polylinesToAdd = [NSMutableArray new];
+        NSMutableArray <MKPolygon *> *polygonsToAdd = [NSMutableArray new];
+        __block CLLocationCoordinate2D lastCoordinate;
+        [annotationArray enumerateObjectsUsingBlock:^(id<MKAnnotation> _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (idx >= 1) {
+                CLLocationCoordinate2D points[2];
+                points[0] = lastCoordinate;
+                points[1] = obj.coordinate;
+                MKPolyline *polyline = [MKPolyline polylineWithCoordinates:points count:2];
+                polyline.title = [NSString stringWithFormat:@"MKPolyline : %lu",(unsigned long)idx];
+                [polylinesToAdd addObject:polyline];
+                
+                CLLocationDistance subDistance = MKMetersBetweenMapPoints(MKMapPointForCoordinate(lastCoordinate), MKMapPointForCoordinate(obj.coordinate));
+                if (maxDistance < subDistance) maxDistance = subDistance;
+                totalDistance += subDistance;
+                [distanceArray addObject:[NSNumber numberWithDouble:subDistance]];
+                
+                MKMapPoint start_MP = MKMapPointForCoordinate(lastCoordinate);
+                MKMapPoint end_MP = MKMapPointForCoordinate(obj.coordinate);
+                
+                MKMapPoint x_MP,y_MP,z_MP;
+                CLLocationDistance arrowLength = subDistance;
+                
+                double z_radian = atan2(end_MP.x - start_MP.x, end_MP.y - start_MP.y);
+                z_MP.x = end_MP.x - arrowLength * 0.75 * sin(z_radian);
+                z_MP.y = end_MP.y - arrowLength * 0.75 * cos(z_radian);
+                
+                double arrowRadian = 90.0 / 360.0 * M_2_PI;
+                x_MP.x = end_MP.x - arrowLength * sin(z_radian - arrowRadian);
+                x_MP.y = end_MP.y - arrowLength * cos(z_radian - arrowRadian);
+                y_MP.x = end_MP.x - arrowLength * sin(z_radian + arrowRadian);
+                y_MP.y = end_MP.y - arrowLength * cos(z_radian + arrowRadian);
+                
+                MKMapPoint mapPoint[4] = {z_MP,x_MP,end_MP,y_MP};
+                MKPolygon *polygon = [MKPolygon polygonWithPoints:mapPoint count:4];
+                [polygonsToAdd addObject:polygon];
+                
+                
+                lastCoordinate = obj.coordinate;
+            }else{
+                lastCoordinate = obj.coordinate;
+            }
+        }];
+        
+        //NSLog(@"%@",overlaysToAdd);
+        [self.myMapView addOverlays:polylinesToAdd];
+        [self.myMapView addOverlays:polygonsToAdd];
+    }
 }
 
 - (void)addLineOverlays{
@@ -1242,6 +1318,18 @@
         
         //MKAnnotationView *annoView = (MKAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"annoView"];
         
+    }else if ([annotation isKindOfClass:[EverywhereShareMKAnnotation class]]){
+        MKPinAnnotationView *pinAV = (MKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"pinAV"];
+        if (!pinAV) pinAV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pinAV"];
+        
+        pinAV.animatesDrop = NO;
+        
+        pinAV.pinColor = MKPinAnnotationColorRed;
+        
+        pinAV.canShowCallout = YES;
+        
+        return pinAV;
+
     }else if([annotation isKindOfClass:[MKUserLocation class]]){
         MKAnnotationView *view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"userLocation"];
         view.canShowCallout = NO;
@@ -1279,16 +1367,20 @@
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
     if ([view isKindOfClass:[MKPinAnnotationView class]]) {
         //NSLog(@"calloutAccessoryControlTapped:");
+        if ([view.annotation isKindOfClass:[EverywhereMKAnnotation class]]) {
+            EverywhereMKAnnotation *anno = (EverywhereMKAnnotation *)view.annotation;
+            
+            PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:self.cdManager.appMOC];
+            if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
+            if (locationInfoBarIsHidden) [self showLocationInfoBar];
+            else [self hideLocationInfoBar];
+            
+            [self updateLocationInfoBarWithAssetInfo:assetInfo];
+        }else if ([view.annotation isKindOfClass:[EverywhereShareMKAnnotation class]]){
+            
+        }
         
         
-        EverywhereMKAnnotation *anno = (EverywhereMKAnnotation *)view.annotation;
-        
-        PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:self.cdManager.appMOC];
-        if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
-        if (locationInfoBarIsHidden) [self showLocationInfoBar];
-        else [self hideLocationInfoBar];
-        
-        [self updateLocationInfoBarWithAssetInfo:assetInfo];
     }
     
 }
@@ -1334,12 +1426,16 @@
 }
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view{
-    self.currentAnnotationIndex = [addedAnnotationsWithIndex indexOfObject:view.annotation];
-    
-    EverywhereMKAnnotation *anno = (EverywhereMKAnnotation *)view.annotation;
-    PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:self.cdManager.appMOC];
-    if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
-    [self updateLocationInfoBarWithAssetInfo:assetInfo];
+    if ([view.annotation isKindOfClass:[EverywhereMKAnnotation class]]) {
+        self.currentAnnotationIndex = [addedAnnotationsWithIndex indexOfObject:view.annotation];
+        
+        EverywhereMKAnnotation *anno = (EverywhereMKAnnotation *)view.annotation;
+        PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:self.cdManager.appMOC];
+        if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
+        [self updateLocationInfoBarWithAssetInfo:assetInfo];
+    }else if ([view.annotation isKindOfClass:[EverywhereShareMKAnnotation class]]){
+        
+    }
 }
 
 - (void)setCurrentAnnotationIndex:(NSInteger)currentAnnotationIndex{

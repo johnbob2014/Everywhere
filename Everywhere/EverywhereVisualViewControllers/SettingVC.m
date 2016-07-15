@@ -18,7 +18,7 @@
 typedef BOOL (^OnChangeCharacterInRange)(RETextItem *item, NSRange range, NSString *replacementString);
 
 #import "EverywhereSettingManager.h"
-//#import "WXApi.h"
+#import "WXApi.h"
 
 const NSString *APP_DOWNLOAD_URL=@"https://itunes.apple.com/app/id1072387063";
 const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/ChinaSceneryIntroduction.html";
@@ -205,71 +205,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     [self.reTVManager addSectionsFromArray:@[section1,momentModeSection,locationModeSection,purchaseSection,shareSection,aboutSection]];
 }
 
-/*
-#pragma mark - WeChat
--(void)sendToWXscene:(enum WXScene)scene{
-    if([WXApi isWXAppInstalled]&&[WXApi isWXAppSupportApi]){
-        //NSLog(@"Session or Timeline");
-        WXWebpageObject *webpageObject=[WXWebpageObject alloc];
-        webpageObject.webpageUrl=[APP_INTRODUCTION_URL copy];
-        
-        //UIImage *desImage = [[UIImage alloc] initWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@""]]];
-        UIImage *sourceImage=[UIImage imageNamed:@"China's Scenery-150*150.jpg"];
-        //NSLog(@"%0.f",sourceImage.size.width);
-        //UIImage *thumbImage = [GM thumbImageFromImage:sourceImage limitSize:CGSizeMake(150, 150)];
-        NSData *imageData=UIImageJPEGRepresentation(sourceImage, 0.5);// UIImageJPEGRepresentation(sourceImage);
-        
-        WXMediaMessage *mediaMessage=[WXMediaMessage alloc];
-        mediaMessage.title=self.shareTitle;
-        mediaMessage.description=self.shareDescription;
-        mediaMessage.mediaObject=webpageObject;
-        mediaMessage.thumbData=imageData;
-        //NSLog(@"%@",mediaMessage);
-        
-        SendMessageToWXReq *req=[SendMessageToWXReq new];
-        req.message=mediaMessage;
-        req.bText=NO;
-        req.scene=scene;
-        //NSLog(@"%@",req);
-        BOOL succeeded=[WXApi sendReq:req];
-        NSLog(@"%d",succeeded);
-    }else{
-        NSLog(@"微信被禁用");
-    }
-    //纯文本消息
-    //    if([WXApi isWXAppInstalled]&&[WXApi isWXAppSupportApi]){
-    //        NSLog(@"Timeline");
-    //        SendMessageToWXReq *req=[SendMessageToWXReq new];
-    //        req.text=@"玩转贷款";
-    //        req.bText=YES;
-    //        req.scene=WXSceneTimeline;
-    //        [WXApi sendReq:req];
-    //    }
-    //
-    
-}
-
-#pragma mark - WeChat Delegate
--(void)onResp:(BaseResp *)resp{
-    if([resp isKindOfClass:[SendMessageToWXResp class]])
-    {
-        NSString *strTitle = [NSString stringWithFormat:@"发送媒体消息结果"];
-        NSString *strMsg = [NSString stringWithFormat:@"errcode:%d", resp.errCode];
-        NSLog(@"%@:\n%@",strTitle,strMsg);
-    }
-}
-*/
-#pragma mark - Navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"showInAppPurchase"]) {
-        InAppPurchaseVC *inVC=segue.destinationViewController;
-        inVC.productIndex=self.productIndex;
-        inVC.transactionType=TransactionTypePurchase;
-    }else if ([segue.identifier isEqualToString:@"showAbout"]){
-        AboutVC *aboutVC=segue.destinationViewController;
-        aboutVC.title=@"关于";
-    }
-}
+#pragma mark - RE Block
 
 -(OnChangeCharacterInRange)createLimitInputBlockWithAllowedString:(NSString *)string{
     OnChangeCharacterInRange block=^(RETextItem *item, NSRange range, NSString *replacementString){

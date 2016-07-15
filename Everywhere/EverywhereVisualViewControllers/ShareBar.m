@@ -85,11 +85,12 @@
     
     [middleView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:20];
     [middleView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
-    [middleView autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:leftView withOffset:10];
-    [middleView autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:rightView withOffset:-10];
+    [middleView autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:leftView];
+    [middleView autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:rightView];
     [middleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
     
-    [titleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
+    // 距父视图顶部3
+    [titleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(3, 0, 0, 0) excludingEdge:ALEdgeBottom];
 }
 
 - (void)setSideViewShrinkRate:(float)sideViewShrinkRate{

@@ -20,11 +20,13 @@
 
 #import "WXApi.h"
 
-@interface EverywhereAppDelegate ()
+@interface EverywhereAppDelegate () <WXApiDelegate>
 
 @end
 
 @implementation EverywhereAppDelegate{
+    AssetsMapProVC *assetsMapProVC;
+    
     GCPhotoManager *photoManager;
     EverywhereCoreDataManager *cdManager;
     EverywhereSettingManager *settingManager;
@@ -44,6 +46,10 @@
     //calendarVC.edgesForExtendedLayout = UIRectEdgeNone;
     //UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:calendarVC];
     
+    //向微信注册id
+    BOOL wx=[WXApi registerApp:@"wxa1b9c5632d24039a"];
+    if(DEBUGMODE) NSLog(@"WeChat Rigister：%@",wx? @"Succeeded" : @"Failed");
+
     photoManager = [GCPhotoManager defaultManager];
     cdManager = [EverywhereCoreDataManager defaultManager];
     settingManager = [EverywhereSettingManager defaultManager];
@@ -61,9 +67,9 @@
     
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
     
-    AssetsMapProVC *vc = [AssetsMapProVC new];
+    assetsMapProVC = [AssetsMapProVC new];
     //[vc prefersStatusBarHidden];
-    self.window.rootViewController = vc;
+    self.window.rootViewController = assetsMapProVC;
     self.window.tintColor = settingManager.color;
     ;
     [self.window makeKeyAndVisible];
@@ -100,6 +106,34 @@
         }
     }];
     NSLog(@"Time : %.3f , Add Photo Count : %ld",[[NSDate date] timeIntervalSinceDate:timeTest],(long)addPhotosCount);
+}
+
+/*
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(nonnull id)annotation{
+    
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    NSLog(@"openURL: %@",[url absoluteString]);
+    
+    BOOL isSuc = [WXApi handleOpenURL:url delegate:self];
+    NSLog(@"url %@ isSuc %d",url,isSuc == YES ? 1 : 0);
+    return  isSuc;
+}
+*/
+
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options{
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    //NSLog(@"%@",url);
+    
+    [assetsMapProVC receiveTrackString:url.absoluteString];
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    //NSLog(@"%@",url);
+    
+    [assetsMapProVC receiveTrackString:url.absoluteString];
+    return YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

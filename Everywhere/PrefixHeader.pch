@@ -14,6 +14,10 @@
 
 #endif /* PrefixHeader_pch */
 
+#define WXAppID @"wxa1b9c5632d24039a"
+#define AppID @"1133399709"
+#define AppDownloadURLString @"https://itunes.apple.com/app/1133399709"
+
 #define DEBUGMODE YES
 
 #define WEAKSELF(weakSelf)  __weak __typeof (&*self)weakSelf = self;

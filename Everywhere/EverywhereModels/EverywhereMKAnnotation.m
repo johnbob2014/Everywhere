@@ -10,7 +10,7 @@
 #import "WGS84TOGCJ02.h"
 
 @implementation EverywhereMKAnnotation
-@synthesize coordinate;
+//@synthesize coordinate;
 
 //- (void)setLocaton:(CLLocation *)locaton{
 //    if (locaton) coordinate = self.locaton.coordinate;
