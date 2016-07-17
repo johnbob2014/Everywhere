@@ -17,15 +17,22 @@
 }
 
 - (NSString *)title{
-    return [self.annotationDate stringWithDefaultFormat];
+    if (self.endDate) return [NSString stringWithFormat:@"%@ ~ %@",[self.startDate stringWithFormat:@"yyyy-MM-dd"],[self.endDate stringWithFormat:@"yyyy-MM-dd"]];
+    else return [self.startDate stringWithDefaultFormat];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder{
     CGPoint annotationCoordinatePoint = [aDecoder decodeCGPointForKey:@"annotationCoordinatePoint"];
-    NSTimeInterval timeInterval = [aDecoder decodeDoubleForKey:@"timeInterval"];
+    NSTimeInterval startDateTimeInterval = [aDecoder decodeDoubleForKey:@"startDateTimeInterval"];
+    NSTimeInterval endDateTimeInterval = [aDecoder decodeDoubleForKey:@"endDateTimeInterval"];
+    
     EverywhereShareMKAnnotation *shareAnno = [EverywhereShareMKAnnotation new];
     shareAnno.annotationCoordinate = CLLocationCoordinate2DMake(annotationCoordinatePoint.x, annotationCoordinatePoint.y);
-    shareAnno.annotationDate = [NSDate dateWithTimeIntervalSinceReferenceDate:timeInterval];
+    shareAnno.startDate = [NSDate dateWithTimeIntervalSinceReferenceDate:startDateTimeInterval];
+    
+    if (endDateTimeInterval != 0) shareAnno.endDate = [NSDate dateWithTimeIntervalSinceReferenceDate:endDateTimeInterval];
+    else shareAnno.endDate = nil;
+    
     return shareAnno;
 }
 
@@ -33,7 +40,12 @@
     CGPoint annotationCoordinatePoint = CGPointMake(self.annotationCoordinate.latitude, self.annotationCoordinate.longitude);
     [aCoder encodeCGPoint:annotationCoordinatePoint forKey:@"annotationCoordinatePoint"];
     
-    NSTimeInterval timeInterval = [self.annotationDate timeIntervalSinceReferenceDate];
-    [aCoder encodeDouble:timeInterval forKey:@"timeInterval"];
+    NSTimeInterval startDateTimeInterval = [self.startDate timeIntervalSinceReferenceDate];
+    [aCoder encodeDouble:startDateTimeInterval forKey:@"startDateTimeInterval"];
+    
+    if (self.endDate) {
+        NSTimeInterval endDateTimeInterval = [self.endDate timeIntervalSinceReferenceDate];
+        [aCoder encodeDouble:endDateTimeInterval forKey:@"endDateTimeInterval"];
+    }
 }
 @end

@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10174" systemVersion="15F34" minimumToolsVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="14F1713" minimumToolsVersion="Automatic">
+    <entity name="CoordinateInfo" representedClassName="CoordinateInfo" syncable="YES">
+        <attribute name="administrativeArea_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ccISOcountryCode_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="country_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="inlandWater_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="locality_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="localizedPlaceString_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="name_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ocean_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="postalCode_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="reverseGeocodeSucceed" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="subAdministrativeArea_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="subLocality_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="subThoroughfare_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="thoroughfare_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="PHAssetInfo" representedClassName="PHAssetInfo" syncable="YES">
         <attribute name="administrativeArea_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="altitude_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
@@ -39,5 +57,6 @@
     </entity>
     <elements>
         <element name="PHAssetInfo" positionX="-63" positionY="-18" width="128" height="570"/>
+        <element name="CoordinateInfo" positionX="-63" positionY="135" width="128" height="285"/>
     </elements>
 </model>

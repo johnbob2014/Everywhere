@@ -6,6 +6,8 @@
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
+#define DEBUGMODE 1
+
 #import "EverywhereAppDelegate.h"
 
 #import "GCPhotoManager.h"
@@ -124,7 +126,7 @@
     NSLog(@"%@",NSStringFromSelector(_cmd));
     //NSLog(@"%@",url);
     
-    [assetsMapProVC receiveTrackString:url.absoluteString];
+    [assetsMapProVC didReceiveTrackOrPositionString:url.absoluteString];
     return YES;
 }
 
@@ -132,7 +134,7 @@
     NSLog(@"%@",NSStringFromSelector(_cmd));
     //NSLog(@"%@",url);
     
-    [assetsMapProVC receiveTrackString:url.absoluteString];
+    [assetsMapProVC didReceiveTrackOrPositionString:url.absoluteString];
     return YES;
 }
 

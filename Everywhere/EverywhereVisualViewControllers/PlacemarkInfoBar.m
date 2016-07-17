@@ -25,6 +25,8 @@
     
     self = [super init];
     if (self) {
+        self.pinInfoLabelToTop = NO;
+        
         self.backgroundColor = [UIColor clearColor];
         
         self.cellInfoLabel = [UILabel newAutoLayoutView];

@@ -13,12 +13,15 @@ typedef void(^ButtonTouchDownHandler)(UIButton *sender);
 
 @interface MapShowModeBar : UIView
 
-@property (assign,nonatomic) MapShowMode mapShowMode;
 @property (strong,nonatomic) NSString *info;
 
+@property (assign,nonatomic) BOOL modeSegEnabled;
+
+- (instancetype)initWithModeSegItems:(NSArray *)segItems selectedSegIndex:(NSInteger)selectedSegIndex leftButtonImage:(UIImage *)leftImage rightButtonImage:(UIImage *)rightImage;
+
 @property (copy,nonatomic) SegmentedControlValueChangedHandler mapShowModeChangedHandler;
-@property (copy,nonatomic) ButtonTouchDownHandler datePickerTouchDownHandler;
-@property (copy,nonatomic) ButtonTouchDownHandler locaitonPickerTouchDownHandler;
+@property (copy,nonatomic) ButtonTouchDownHandler leftButtonTouchDownHandler;
+@property (copy,nonatomic) ButtonTouchDownHandler rightButtonTouchDownHandler;
 
 @property (copy,nonatomic) UIColor *contentViewBackgroundColor;
 

@@ -175,7 +175,7 @@
                                                 assetInfo.reverseGeocodeSucceed = @(NO);
                                             }
                                             
-                                            NSLog(@"%@",assetInfo.localizedPlaceString_Placemark);
+                                            NSLog(@"PHAssetInfo : %@",assetInfo.localizedPlaceString_Placemark);
                                             
                                             // 保存修改后的信息
                                             [assetInfo.managedObjectContext save:NULL];

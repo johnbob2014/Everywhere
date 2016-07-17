@@ -12,13 +12,13 @@
 @interface MapShowModeBar ()
 @property (strong,nonatomic) UISegmentedControl *modeSeg;
 @property (strong,nonatomic) UILabel *infoLabel;
-@property (strong,nonatomic) UIButton *datePickerBtn;
-@property (strong,nonatomic) UIButton *locationPickerBtn;
-
+@property (strong,nonatomic) UIButton *leftButton;
+@property (strong,nonatomic) UIButton *rightButton;
 @end
 
 @implementation MapShowModeBar{
     UIView *leftView,*middleView,*rightView;
+    NSArray *modeSegItems;
 }
 /*
 // Only override drawRect: if you perform custom drawing.
@@ -26,7 +26,7 @@
 - (void)drawRect:(CGRect)rect {
     // Drawing code
 }
-*/
+
 - (void)setMapShowMode:(MapShowMode)mapShowMode{
     _mapShowMode = mapShowMode;
     self.modeSeg.selectedSegmentIndex = mapShowMode;
@@ -37,49 +37,57 @@
     _info = info;
     self.infoLabel.text = info;
 }
+*/
 
-- (instancetype)init{
+- (instancetype)initWithModeSegItems:(NSArray *)segItems selectedSegIndex:(NSInteger)selectedSegIndex leftButtonImage:(UIImage *)leftImage rightButtonImage:(UIImage *)rightImage{
     self = [super init];
     if (self) {
+        modeSegItems = segItems;
+        
+        self.translatesAutoresizingMaskIntoConstraints = NO;
         self.backgroundColor = [UIColor clearColor];
         
         middleView = [UIView newAutoLayoutView];
-        
         [self addSubview:middleView];
         
-        self.modeSeg = [[UISegmentedControl alloc] initWithItems:[NSLocalizedString(@"MomentMode LocationMode",@"") componentsSeparatedByString:@" "]];
+        self.modeSeg = [[UISegmentedControl alloc] initWithItems:segItems];
+        self.modeSeg.tintColor = [UIColor whiteColor];
+        self.modeSeg.selectedSegmentIndex = selectedSegIndex;
         self.modeSeg.translatesAutoresizingMaskIntoConstraints = NO;
         [self.modeSeg addTarget:self action:@selector(mapShowModeValueChanged:) forControlEvents:UIControlEventValueChanged];
         [middleView addSubview:self.modeSeg];
         
+        
         self.infoLabel = [UILabel newAutoLayoutView];
         self.infoLabel.textAlignment = NSTextAlignmentCenter;
         self.infoLabel.textColor = [UIColor whiteColor];
+        self.infoLabel.text = modeSegItems[selectedSegIndex];
         [middleView addSubview:self.infoLabel];
         
         leftView = [UIView newAutoLayoutView];
         
         [self addSubview:leftView];
         
-        self.datePickerBtn = [UIButton newAutoLayoutView];
-        self.datePickerBtn.enabled = self.mapShowMode == MapShowModeMoment ? YES : NO;
-        [self.datePickerBtn setImage:[UIImage imageNamed:@"IcoMoon_Calendar"] forState:UIControlStateNormal];
-        [self.datePickerBtn setImage:[UIImage imageNamed:@"IcoMoon_Unlink"] forState:UIControlStateDisabled];
-        [self.datePickerBtn setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Background"] forState:UIControlStateNormal];
-        [self.datePickerBtn addTarget:self action:@selector(datePickerBtnTouchDown:) forControlEvents:UIControlEventTouchDown];
-        [leftView addSubview:self.datePickerBtn];
+        self.leftButton = [UIButton newAutoLayoutView];
+        self.leftButton.enabled = selectedSegIndex == 0 ? YES : NO;
+        [self.leftButton setImage:leftImage forState:UIControlStateNormal];
+        [self.leftButton setImage:[UIImage imageNamed:@"IcoMoon_Unlink"] forState:UIControlStateDisabled];
+        [self.leftButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Background"] forState:UIControlStateNormal];
+        [self.leftButton addTarget:self action:@selector(leftButtonTouchDown:) forControlEvents:UIControlEventTouchDown];
+        [leftView addSubview:self.leftButton];
         
         rightView = [UIView newAutoLayoutView];
         
         [self addSubview:rightView];
         
-        self.locationPickerBtn = [UIButton newAutoLayoutView];
-        self.locationPickerBtn.enabled = self.mapShowMode == MapShowModeLocation ? YES : NO;
-        [self.locationPickerBtn setImage:[UIImage imageNamed:@"IcoMoon_Dribble3"] forState:UIControlStateNormal];
-        [self.locationPickerBtn setImage:[UIImage imageNamed:@"IcoMoon_Unlink"] forState:UIControlStateDisabled];
-        [self.locationPickerBtn setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Background"] forState:UIControlStateNormal];
-        [self.locationPickerBtn addTarget:self action:@selector(locationPickerBtnTouchDown:) forControlEvents:UIControlEventTouchDown];
-        [rightView addSubview:self.locationPickerBtn];
+        self.rightButton = [UIButton newAutoLayoutView];
+        self.rightButton.enabled = selectedSegIndex == 1 ? YES : NO;
+        [self.rightButton setImage:rightImage forState:UIControlStateNormal];
+        [self.rightButton setImage:[UIImage imageNamed:@"IcoMoon_Unlink"] forState:UIControlStateDisabled];
+        [self.rightButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Background"] forState:UIControlStateNormal];
+        [self.rightButton addTarget:self action:@selector(rightButtonTouchDown:) forControlEvents:UIControlEventTouchDown];
+        [rightView addSubview:self.rightButton];
+
     }
     return self;
 }
@@ -87,21 +95,21 @@
 - (void)mapShowModeValueChanged:(UISegmentedControl *)sender{
     if (self.mapShowModeChangedHandler) self.mapShowModeChangedHandler(sender);
     if (sender.selectedSegmentIndex == 0) {
-        self.datePickerBtn.enabled = YES;
-        self.locationPickerBtn.enabled = NO;
+        self.leftButton.enabled = YES;
+        self.rightButton.enabled = NO;
     }else{
-        self.datePickerBtn.enabled = NO;
-        self.locationPickerBtn.enabled = YES;
+        self.leftButton.enabled = NO;
+        self.rightButton.enabled = YES;
     }
-    //self.infoLabel.text = [NSLocalizedString(@"MomentMode LocationMode",@"") componentsSeparatedByString:@" "][sender.selectedSegmentIndex];
+    self.infoLabel.text = modeSegItems[sender.selectedSegmentIndex];
 }
 
-- (void)datePickerBtnTouchDown:(UIButton *)sender{
-    if (self.datePickerTouchDownHandler) self.datePickerTouchDownHandler(sender);
+- (void)leftButtonTouchDown:(UIButton *)sender{
+    if (self.leftButtonTouchDownHandler) self.leftButtonTouchDownHandler(sender);
 }
 
-- (void)locationPickerBtnTouchDown:(UIButton *)sender{
-    if (self.locaitonPickerTouchDownHandler) self.locaitonPickerTouchDownHandler(sender);
+- (void)rightButtonTouchDown:(UIButton *)sender{
+    if (self.rightButtonTouchDownHandler) self.rightButtonTouchDownHandler(sender);
 }
 
 - (void)layoutSubviews{
@@ -116,10 +124,10 @@
     [middleView autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:leftView withOffset:10];
     [middleView autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:rightView withOffset:-10];
     
-    [self.datePickerBtn autoSetDimensionsToSize:CGSizeMake(40, 40)];
-    [self.datePickerBtn autoCenterInSuperview];
-    [self.locationPickerBtn autoSetDimensionsToSize:CGSizeMake(40, 40)];
-    [self.locationPickerBtn autoCenterInSuperview];
+    [self.leftButton autoSetDimensionsToSize:CGSizeMake(44, 44)];
+    [self.leftButton autoCenterInSuperview];
+    [self.rightButton autoSetDimensionsToSize:CGSizeMake(44, 44)];
+    [self.rightButton autoCenterInSuperview];
     [self.modeSeg autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(5, 5, 0, 5) excludingEdge:ALEdgeBottom];
     [self.infoLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
 }
@@ -129,4 +137,10 @@
     leftView.backgroundColor = contentViewBackgroundColor;
     rightView.backgroundColor = contentViewBackgroundColor;
 }
+
+- (void)setModeSegEnabled:(BOOL)modeSegEnabled{
+    _modeSegEnabled = modeSegEnabled;
+    self.modeSeg.enabled = modeSegEnabled;
+}
+
 @end

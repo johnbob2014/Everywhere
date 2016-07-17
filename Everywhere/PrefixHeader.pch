@@ -18,8 +18,6 @@
 #define AppID @"1133399709"
 #define AppDownloadURLString @"https://itunes.apple.com/app/1133399709"
 
-#define DEBUGMODE YES
-
 #define WEAKSELF(weakSelf)  __weak __typeof (&*self)weakSelf = self;
 
 #define IOS7 ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0 ? YES : NO)
@@ -75,7 +73,6 @@ typedef NS_ENUM(NSInteger, LocationMode) {
 
 typedef NS_ENUM(NSInteger,ColorScheme){
     ColorSchemeClassicGray = 0,
-    ColorSchemeForestGreen,
     ColorSchemeFreshBlue,
     ColorSchemeDeepBrown
 };

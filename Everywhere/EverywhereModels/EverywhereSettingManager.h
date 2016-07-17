@@ -28,4 +28,6 @@
 @property (assign,nonatomic) ColorScheme colorScheme;
 @property (strong,nonatomic,readonly) UIColor *color;
 
+@property (assign,nonatomic) BOOL hasPurchasedShare;
+
 @end

@@ -5,6 +5,7 @@
 //  Created by 张保国 on 16/7/3.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
+#define DEBUGMODE 1
 
 #define ScreenWidth [UIScreen mainScreen].bounds.size.width
 #define ScreenHeight [UIScreen mainScreen].bounds.size.height
@@ -16,6 +17,9 @@
 #import "EverywhereMKAnnotation.h"
 #import "EverywhereSettingManager.h"
 #import "EverywhereShareMKAnnotation.h"
+#import "EverywhereShareRepository.h"
+#import "EverywhereShareRepositoryManager.h"
+
 #import "NSDate+Assistant.h"
 #import "UIView+AutoLayout.h"
 #import "PHAsset+Assistant.h"
@@ -35,9 +39,14 @@
 #import "SettingVC.h"
 #import "ShareVC.h"
 #import "ShareBar.h"
+#import "InAppPurchaseVC.h"
+
+
+#import "CLPlacemark+Assistant.h"
 
 #import "EverywhereCoreDataManager.h"
 #import "PHAssetInfo.h"
+#import "CoordinateInfo.h"
 
 #import "GCPolyline.h"
 #import "GCRoutePolyline.h"
@@ -61,20 +70,24 @@
 @property (strong,nonatomic) EverywhereSettingManager *settingManager;
 
 @property (strong,nonatomic) MKMapView *myMapView;
+
+@property (strong,nonatomic) NSArray <id<MKAnnotation>> *addedIDAnnos;
+@property (strong,nonatomic) NSArray <EverywhereMKAnnotation *> *addedEWAnnos;
+@property (strong,nonatomic) NSArray <EverywhereShareMKAnnotation *> *addedEWShareAnnos;
+//@property (assign,nonatomic) CLLocationDistance shareRadius;
+
 @end
 
 @implementation AssetsMapProVC{
     STPopupController *popupController;
     
-    
-    NSArray <EverywhereMKAnnotation *> *addedAnnotationsWithIndex;
-    NSArray <EverywhereShareMKAnnotation *> *addedShareAnnotationsWithIndex;
-    
-    MapShowModeBar *mapShowModeBar;
+    MapShowModeBar *msMomentLocationModeBar;
+    MapShowModeBar *msShareEditModeBar;
+    UIButton *quiteShareModeButton;
     
     LocationInfoBar *locationInfoBar;
     float locationInfoBarHeight;
-    BOOL locationInfoBarIsHidden;
+    BOOL locationInfoBarIsOutOfVisualView;
     
     PlacemarkInfoBar *placemarkInfoBar;
     float placemarkInfoBarHeight;
@@ -94,7 +107,8 @@
     
     UIView *leftVerticalBar;
     UIView *rightVerticalBar;
-    BOOL verticalBarIsHidden;
+    UIView *rightSwipeVerticalBar;
+    BOOL verticalBarIsAlphaZero;
     
     __block CLLocationDistance maxDistance;
     __block CLLocationDistance totalDistance;
@@ -104,6 +118,8 @@
 #pragma mark - Getter & Setter
 
 - (void)setAssetInfoArray:(NSArray<PHAssetInfo *> *)assetInfoArray{
+    if (!assetInfoArray) return;
+    
     _assetInfoArray = assetInfoArray;
     
     [self updateMapShowModeBar];
@@ -120,11 +136,14 @@
         PHFetchResult <PHAsset *> *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:assetIDArry options:options];
         self.assetArray = (NSArray <PHAsset *> *)fetchResult;
         
-        [self updatePlacemarkInfoBar];
+        NSDictionary <NSString *,NSArray<NSString *> *> *placemarkDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:assetInfoArray];
+        [self updatePlacemarkInfoBarWithPlacemarkDictionary:placemarkDictionary mapShowMode:self.settingManager.mapShowMode];
     }
 }
 
 - (void)setAssetArray:(NSArray<PHAsset *> *)assetArray{
+    if (!assetArray) return;
+    
     _assetArray = assetArray;
     switch (self.settingManager.mapShowMode) {
         case MapShowModeMoment:
@@ -139,24 +158,27 @@
 }
 
 - (void)setAssetsArray:(NSArray<NSArray<PHAsset *> *> *)assetsArray{
+    if (!assetsArray) return;
+    
     _assetsArray = assetsArray;
     
+    self.addedEWAnnos = nil;
+    self.addedEWShareAnnos = nil;
     [self addAnnotations];
     
     switch (self.settingManager.mapShowMode) {
         case MapShowModeMoment:
-            [self addLineOverlays];
+            [self addLineOverlaysPro:self.addedEWAnnos];
             break;
         case MapShowModeLocation:
-            [self addCircleOverlays];
+            [self addCircleOverlaysPro:self.addedEWAnnos radius:self.settingManager.mergedDistanceForLocation / 2.0];
             break;
         default:
             break;
     }
     
     // 如果地图已经初始化，才进行更新
-    if (self.myMapView) [self updateVisualViewAfterAddAnnotationsAndOverlays];
-    
+    if (self.myMapView) [self updateVisualViewAfterAddAnnotationsAndOverlays];    
 }
 
 #pragma mark - Life Cycle
@@ -179,7 +201,7 @@
     // PlacemarkInfoBar 位于 MapShowModeBar 下方10
     [self initPlacemarkInfoBar];
     
-    [self initVerticalAccessoriesBar];
+    [self initButtonsAndVerticalAccessoriesBar];
     
     [self initData];
 
@@ -195,17 +217,19 @@
     [self updateBarColor:self.settingManager.color];
     
     [self showVerticalBar];
-    mapShowModeBar.alpha = 1;
+    msMomentLocationModeBar.alpha = 1;
     naviBar.alpha = 1;
     shareBar.alpha = 0;
 }
 
 - (void)updateBarColor:(UIColor *)newColor{
     locationInfoBar.backgroundColor = newColor;
-    mapShowModeBar.contentViewBackgroundColor = newColor;
     placemarkInfoBar.backgroundColor = newColor;
     naviBar.backgroundColor = newColor;
     shareBar.backgroundColor = newColor;
+    
+    msMomentLocationModeBar.contentViewBackgroundColor = newColor;
+    msShareEditModeBar.contentViewBackgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.6];
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
@@ -247,21 +271,10 @@
 }
 
 - (void)mapViewTapGR:(id)sender{
-    if (verticalBarIsHidden) [self showVerticalBar];
+    if (verticalBarIsAlphaZero) [self showVerticalBar];
     else [self hideVerticalBar];
 }
 
-- (void)showVerticalBar{
-    leftVerticalBar.hidden = NO;
-    rightVerticalBar.hidden = NO;
-    verticalBarIsHidden = NO;
-}
-
-- (void)hideVerticalBar{
-    leftVerticalBar.hidden = YES;
-    rightVerticalBar.hidden = YES;
-    verticalBarIsHidden = YES;
-}
 /*
 //UIGestureRecognizerDelegate
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
@@ -272,41 +285,82 @@
 #pragma mark ModeBar
 
 - (void)initMapShowModeBar{
-    mapShowModeBar = [MapShowModeBar newAutoLayoutView];
-    [self.view addSubview:mapShowModeBar];
-    [mapShowModeBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 5, 0, 5) excludingEdge:ALEdgeBottom];
-    [mapShowModeBar autoSetDimension:ALDimensionHeight toSize:60];
-    
-    mapShowModeBar.mapShowMode = self.settingManager.mapShowMode;
-    
     WEAKSELF(weakSelf);
-    mapShowModeBar.mapShowModeChangedHandler = ^(UISegmentedControl *sender){
+    
+    msMomentLocationModeBar = [[MapShowModeBar alloc]initWithModeSegItems:[NSLocalizedString(@"MomentMode LocationMode",@"") componentsSeparatedByString:@" "]
+                                                selectedSegIndex:self.settingManager.mapShowMode
+                                                 leftButtonImage:[UIImage imageNamed:@"IcoMoon_Calendar"]
+                                                rightButtonImage:[UIImage imageNamed:@"IcoMoon_Dribble3"]];
+    msMomentLocationModeBar.modeSegEnabled = YES;
+    
+    [self.view addSubview:msMomentLocationModeBar];
+    [msMomentLocationModeBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 5, 0, 5) excludingEdge:ALEdgeBottom];
+    [msMomentLocationModeBar autoSetDimension:ALDimensionHeight toSize:60];
+    
+    msMomentLocationModeBar.mapShowModeChangedHandler = ^(UISegmentedControl *sender){
         // 记录当前地图模式
         weakSelf.settingManager.mapShowMode = sender.selectedSegmentIndex;
-        weakSelf.assetInfoArray = nil;
-        weakSelf.startDate = nil;
-        weakSelf.endDate = nil;
-        weakSelf.lastPlacemark = @"";
-        [weakSelf.myMapView removeAnnotations:weakSelf.myMapView.annotations];
-        [weakSelf.myMapView removeOverlays:weakSelf.myMapView.overlays];
+        [weakSelf clearData];
     };
     
-    mapShowModeBar.datePickerTouchDownHandler = ^(UIButton *sender) {
+    msMomentLocationModeBar.leftButtonTouchDownHandler = ^(UIButton *sender) {
         [weakSelf showDatePicker];
     };
     
-    mapShowModeBar.locaitonPickerTouchDownHandler = ^(UIButton *sender){
+    msMomentLocationModeBar.rightButtonTouchDownHandler = ^(UIButton *sender){
         [weakSelf showLocationPicker];
     };
+    
+    msShareEditModeBar = [[MapShowModeBar alloc]initWithModeSegItems:[NSLocalizedString(@"ShareMode EditMode",@"") componentsSeparatedByString:@" "]
+                                                    selectedSegIndex:0
+                                                     leftButtonImage:[UIImage imageNamed:@"IcoMoon_Share2_WOBG"]
+                                                    rightButtonImage:[UIImage imageNamed:@"IcoMoon_Trophy_WOBG"]];
+    
+    [self.view addSubview:msShareEditModeBar];
+    [msShareEditModeBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 5, 0, 5) excludingEdge:ALEdgeBottom];
+    [msShareEditModeBar autoSetDimension:ALDimensionHeight toSize:60];
+    
+    msShareEditModeBar.mapShowModeChangedHandler = ^(UISegmentedControl *sender){
+        
+    };
+    
+    msShareEditModeBar.leftButtonTouchDownHandler = ^(UIButton *sender) {
+        
+    };
+    
+    msShareEditModeBar.rightButtonTouchDownHandler = ^(UIButton *sender){
+        
+    };
+    
+    msShareEditModeBar.hidden = YES;
+    msShareEditModeBar.modeSegEnabled = NO;
+
+}
+
+- (void)clearData{
+    self.assetInfoArray = nil;
+    self.assetArray = nil;
+    self.assetsArray = nil;
+    
+    self.addedEWAnnos = nil;
+    self.addedEWShareAnnos = nil;
+    
+    self.endDate = nil;
+    self.startDate = nil;
+    self.endDate = nil;
+    self.lastPlacemark = @"";
+    
+    [self.myMapView removeAnnotations:self.myMapView.annotations];
+    [self.myMapView removeOverlays:self.myMapView.overlays];
 }
 
 - (void)updateMapShowModeBar{
     switch (self.settingManager.mapShowMode) {
         case MapShowModeMoment:
-            mapShowModeBar.info = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate];
+            msMomentLocationModeBar.info = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate];
             break;
         case MapShowModeLocation:
-            mapShowModeBar.info = self.lastPlacemark;
+            msMomentLocationModeBar.info = self.lastPlacemark;
             break;
         default:
             break;
@@ -372,7 +426,7 @@
     
     firstButton = [UIButton newAutoLayoutView];
     [firstButton setTitle:@"⏪" forState:UIControlStateNormal];
-    firstButton.titleLabel.font = [UIFont bodyFontWithSizeMultiplier:2.0];
+    firstButton.titleLabel.font = [UIFont bodyFontWithSizeMultiplier:1.5];
     [firstButton addTarget:self action:@selector(firstButtonPressed:) forControlEvents:UIControlEventTouchDown];
     [naviBar addSubview:firstButton];
     [firstButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
@@ -381,7 +435,7 @@
     
     previousButton = [UIButton newAutoLayoutView];
     [previousButton setTitle:@"⬅️" forState:UIControlStateNormal];
-    previousButton.titleLabel.font = [UIFont bodyFontWithSizeMultiplier:2.0];
+    previousButton.titleLabel.font = [UIFont bodyFontWithSizeMultiplier:1.5];
     [previousButton addTarget:self action:@selector(previousButtonPressed:) forControlEvents:UIControlEventTouchDown];
     [naviBar addSubview:previousButton];
     [previousButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:firstButton withOffset:30 relation:NSLayoutRelationLessThanOrEqual];
@@ -389,7 +443,7 @@
     
     playButton = [UIButton newAutoLayoutView];
     [playButton setTitle:@"▶️" forState:UIControlStateNormal];
-    playButton.titleLabel.font = [UIFont bodyFontWithSizeMultiplier:2.0];
+    playButton.titleLabel.font = [UIFont bodyFontWithSizeMultiplier:1.5];
     [playButton addTarget:self action:@selector(playButtonPressed:) forControlEvents:UIControlEventTouchDown];
     [naviBar addSubview:playButton];
     [playButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:previousButton withOffset:30 relation:NSLayoutRelationLessThanOrEqual];
@@ -397,7 +451,7 @@
     
     nextButton = [UIButton newAutoLayoutView];
     [nextButton setTitle:@"➡️" forState:UIControlStateNormal];
-    nextButton.titleLabel.font = [UIFont bodyFontWithSizeMultiplier:2.0];
+    nextButton.titleLabel.font = [UIFont bodyFontWithSizeMultiplier:1.5];
     [nextButton addTarget:self action:@selector(nextButtonPressed:) forControlEvents:UIControlEventTouchDown];
     [naviBar addSubview:nextButton];
     [nextButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:playButton withOffset:30 relation:NSLayoutRelationLessThanOrEqual];
@@ -405,7 +459,7 @@
     
     lastButton = [UIButton newAutoLayoutView];
     [lastButton setTitle:@"⏩" forState:UIControlStateNormal];
-    lastButton.titleLabel.font = [UIFont bodyFontWithSizeMultiplier:2.0];
+    lastButton.titleLabel.font = [UIFont bodyFontWithSizeMultiplier:1.5];
     [lastButton addTarget:self action:@selector(lastButtonPressed:) forControlEvents:UIControlEventTouchDown];
     [naviBar addSubview:lastButton];
     [lastButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:nextButton withOffset:30 relation:NSLayoutRelationLessThanOrEqual];
@@ -424,23 +478,23 @@
 }
 
 - (void)firstButtonPressed:(id)sender{
-    EverywhereMKAnnotation *ida = addedAnnotationsWithIndex.firstObject;
-    [self.myMapView setCenterCoordinate:ida.coordinate animated:NO];
-    [self.myMapView selectAnnotation:ida animated:YES];
+    id<MKAnnotation> idAnno = self.addedIDAnnos.firstObject;
+    [self.myMapView setCenterCoordinate:idAnno.coordinate animated:NO];
+    [self.myMapView selectAnnotation:idAnno animated:YES];
 }
 
 - (void)previousButtonPressed:(id)sender{
-    EverywhereMKAnnotation *ida = self.myMapView.selectedAnnotations.firstObject;
-    if (!ida && self.currentAnnotationIndex) {
-        ida = addedAnnotationsWithIndex[self.currentAnnotationIndex];
+    id<MKAnnotation> idAnno = self.myMapView.selectedAnnotations.firstObject;
+    if (!idAnno && self.currentAnnotationIndex) {
+        idAnno = self.addedIDAnnos[self.currentAnnotationIndex];
     }
-    if (ida) {
-        NSInteger index = [addedAnnotationsWithIndex indexOfObject:ida];
+    if (idAnno) {
+        NSInteger index = [self.addedIDAnnos indexOfObject:idAnno];
         if (--index >= 0) {
-            [self.myMapView deselectAnnotation:ida animated:YES];
-            ida = addedAnnotationsWithIndex[index];
-            [self.myMapView setCenterCoordinate:ida.coordinate animated:NO];
-            [self.myMapView selectAnnotation:ida animated:YES];
+            [self.myMapView deselectAnnotation:idAnno animated:YES];
+            idAnno = self.addedIDAnnos[index];
+            [self.myMapView setCenterCoordinate:idAnno.coordinate animated:NO];
+            [self.myMapView selectAnnotation:idAnno animated:YES];
         }
     }
 }
@@ -460,29 +514,30 @@
 }
 
 - (void)nextButtonPressed:(id)sender{
-    EverywhereMKAnnotation *ida = self.myMapView.selectedAnnotations.firstObject;
-    if (!ida && self.currentAnnotationIndex) {
-        ida = addedAnnotationsWithIndex[self.currentAnnotationIndex];
+    
+    id<MKAnnotation> idAnno = self.myMapView.selectedAnnotations.firstObject;
+    if (!idAnno && self.currentAnnotationIndex) {
+        idAnno = self.addedIDAnnos[self.currentAnnotationIndex];
     }
-    if (ida) {
-        NSInteger index = [addedAnnotationsWithIndex indexOfObject:ida];
-        if (++index < addedAnnotationsWithIndex.count) {
-            [self.myMapView deselectAnnotation:ida animated:YES];
-            ida = addedAnnotationsWithIndex[index];
+    if (idAnno) {
+        NSInteger index = [self.addedIDAnnos indexOfObject:idAnno];
+        if (++index < self.addedIDAnnos.count) {
+            [self.myMapView deselectAnnotation:idAnno animated:YES];
+            idAnno = self.addedIDAnnos[index];
             
-            [self.myMapView setCenterCoordinate:ida.coordinate animated:NO];
-            [self.myMapView selectAnnotation:ida animated:YES];
+            [self.myMapView setCenterCoordinate:idAnno.coordinate animated:NO];
+            [self.myMapView selectAnnotation:idAnno animated:YES];
         }
-        if (index == addedAnnotationsWithIndex.count) {
+        if (index == self.addedIDAnnos.count) {
             [self playButtonPressed:playButton];
         }
     }
 }
 
 - (void)lastButtonPressed:(id)sender{
-    EverywhereMKAnnotation *ida = addedAnnotationsWithIndex.lastObject;
-    [self.myMapView setCenterCoordinate:ida.coordinate animated:NO];
-    [self.myMapView selectAnnotation:ida animated:YES];
+    id<MKAnnotation> idAnno = self.addedIDAnnos.lastObject;
+    [self.myMapView setCenterCoordinate:idAnno.coordinate animated:NO];
+    [self.myMapView selectAnnotation:idAnno animated:YES];
 }
 
 - (CLLocation *)averageLocationForLocations:(NSArray <CLLocation *> *)locations{
@@ -513,7 +568,7 @@
     locationInfoBarHeight = 150;
     locationInfoBar = [[LocationInfoBar alloc] initWithFrame:CGRectMake(5, -locationInfoBarHeight - 40, ScreenWidth - 10, locationInfoBarHeight)];
     [self.view addSubview:locationInfoBar];
-    locationInfoBarIsHidden = YES;
+    locationInfoBarIsOutOfVisualView = YES;
     
     UISwipeGestureRecognizer *swipeUpGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(locationInfoBarSwipeUp:)];
     swipeUpGR.direction = UISwipeGestureRecognizerDirectionUp;
@@ -526,10 +581,17 @@
 
 - (void)showLocationInfoBar{
     
-    if (mapShowModeBar.alpha || placemarkInfoBar.alpha) {
+    if (msMomentLocationModeBar.alpha || placemarkInfoBar.alpha) {
         [UIView animateWithDuration:0.2 animations:^{
-            mapShowModeBar.alpha = 0;
+            msMomentLocationModeBar.alpha = 0;
             placemarkInfoBar.alpha = 0;
+        }];
+    }
+    
+    if (!msShareEditModeBar.hidden) {
+        [UIView animateWithDuration:0.2 animations:^{
+            msShareEditModeBar.alpha = 0;
+            quiteShareModeButton.alpha = 0;
         }];
     }
     
@@ -546,7 +608,7 @@
                                   
                               }
                               completion:^(BOOL finished) {
-                                  locationInfoBarIsHidden = NO;
+                                  locationInfoBarIsOutOfVisualView = NO;
                               }];
 
 }
@@ -565,11 +627,19 @@
                                   
                               }
                               completion:^(BOOL finished) {
-                                  locationInfoBarIsHidden = YES;
+                                  locationInfoBarIsOutOfVisualView = YES;
                                   [UIView animateWithDuration:0.2 animations:^{
-                                      mapShowModeBar.alpha = 1;
+                                      msMomentLocationModeBar.alpha = 1;
                                       placemarkInfoBar.alpha = 1;
                                   }];
+                                  
+                                  if (!msShareEditModeBar.hidden) {
+                                      [UIView animateWithDuration:0.2 animations:^{
+                                          msShareEditModeBar.alpha = 1;
+                                          quiteShareModeButton.alpha = 0.6;
+                                      }];
+                                  }
+
                               }];
     
 }
@@ -580,24 +650,25 @@
     placemarkInfoBarHeight = 80;
     placemarkInfoBar = [PlacemarkInfoBar newAutoLayoutView];
     [self.view addSubview:placemarkInfoBar];
-    [placemarkInfoBar autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:mapShowModeBar withOffset:10];
+    [placemarkInfoBar autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:msMomentLocationModeBar withOffset:10];
     [placemarkInfoBar autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
     [placemarkInfoBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
     [placemarkInfoBar autoSetDimension:ALDimensionHeight toSize:placemarkInfoBarHeight];
     
-    [self updatePlacemarkInfoBar];
+    NSDictionary <NSString *,NSArray<NSString *> *> *placemarkDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:self.assetInfoArray];
+    [self updatePlacemarkInfoBarWithPlacemarkDictionary:placemarkDictionary mapShowMode:self.settingManager.mapShowMode];
 }
 
-- (void)updatePlacemarkInfoBar{
+- (void)updatePlacemarkInfoBarWithPlacemarkDictionary:(NSDictionary <NSString *,NSArray<NSString *> *> *)placemarkDictionary mapShowMode:(enum MapShowMode)mapShowMode{
     // 更新统计信息
-    NSDictionary <NSString *,NSArray<NSString *> *> *placemarkDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:self.assetInfoArray];
+   
     placemarkInfoBar.countryCount = placemarkDictionary[kCountryArray].count;
     placemarkInfoBar.administrativeAreaCount = placemarkDictionary[kAdministrativeAreaArray].count;
     placemarkInfoBar.localityCount = placemarkDictionary[kLocalityArray].count;
     placemarkInfoBar.subLocalityCount = placemarkDictionary[kSubLocalityArray].count;
     placemarkInfoBar.thoroughfareCount = placemarkDictionary[kThoroughfareArray].count;
     
-    switch (self.settingManager.mapShowMode) {
+    switch (mapShowMode) {
         case 0:{
             placemarkInfoBar.totalTitle = NSLocalizedString(@"Distance", @"");
             placemarkInfoBar.totalDistance = totalDistance;
@@ -605,29 +676,31 @@
             break;
         case 1:{
             placemarkInfoBar.totalTitle = NSLocalizedString(@"Area", @"");
-            totalArea = addedAnnotationsWithIndex.count * M_PI * pow(self.settingManager.mergedDistanceForLocation,2);
+            totalArea = self.addedEWAnnos.count * M_PI * pow(self.settingManager.mergedDistanceForLocation,2);
             placemarkInfoBar.totalArea = totalArea;
         }
             break;
         default:
             break;
     }
-
 }
 
-#pragma mark Vertical Accessories Bar
+#pragma mark Buttons And Vertical Accessories Bars
 
-#define VerticalViewHeight 240.0
+#define ButtonPlaceholderHeight 60
 #define ButtionSize CGSizeMake(44, 44)
+#define ButtionEdgeLength 44
 
-- (void)initVerticalAccessoriesBar{
+- (void)initButtonsAndVerticalAccessoriesBar{
+
+#pragma mark leftVerticalBar
     
     leftVerticalBar = [UIView newAutoLayoutView];
-    leftVerticalBar.backgroundColor = [UIColor clearColor];
+    leftVerticalBar.backgroundColor = [UIColor clearColor];//[[UIColor cyanColor] colorWithAlphaComponent:0.3];//
     [self.view addSubview:leftVerticalBar];
     [leftVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
     [leftVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
-    [leftVerticalBar autoSetDimensionsToSize:CGSizeMake(44, VerticalViewHeight)];
+    [leftVerticalBar autoSetDimensionsToSize:CGSizeMake(44, ButtonPlaceholderHeight * 4)];
     
     UIButton *leftBtn1 = [UIButton newAutoLayoutView];
     leftBtn1.alpha = 0.6;
@@ -637,7 +710,7 @@
     [leftVerticalBar addSubview:leftBtn1];
     [leftBtn1 autoSetDimensionsToSize:ButtionSize];
     [leftBtn1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [leftBtn1 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
+    [leftBtn1 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:8];
     
 
     UIButton *leftBtn2 = [UIButton newAutoLayoutView];
@@ -648,7 +721,7 @@
     [leftVerticalBar addSubview:leftBtn2];
     [leftBtn2 autoSetDimensionsToSize:ButtionSize];
     [leftBtn2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [leftBtn2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn1 withOffset:15];
+    [leftBtn2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn1 withOffset:16];
     
     UIButton *leftBtn3 = [UIButton newAutoLayoutView];
     leftBtn3.alpha = 0.6;
@@ -658,7 +731,7 @@
     [leftVerticalBar addSubview:leftBtn3];
     [leftBtn3 autoSetDimensionsToSize:ButtionSize];
     [leftBtn3 autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [leftBtn3 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn2 withOffset:15];
+    [leftBtn3 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn2 withOffset:16];
     
     UIButton *leftBtn4 = [UIButton newAutoLayoutView];
     leftBtn4.alpha = 0.6;
@@ -668,51 +741,25 @@
     [leftVerticalBar addSubview:leftBtn4];
     [leftBtn4 autoSetDimensionsToSize:ButtionSize];
     [leftBtn4 autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [leftBtn4 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn3 withOffset:15];
+    [leftBtn4 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn3 withOffset:16];
     
     //[leftVerticalView.subviews autoDistributeViewsAlongAxis:ALAxisVertical withFixedSize:44 insetSpacing:YES alignment:NSLayoutFormatAlignAllLeft];
+#pragma mark rightSwipeVerticalBar
     
-    rightVerticalBar = [UIView newAutoLayoutView];
-    rightVerticalBar.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:rightVerticalBar];
-    [rightVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
-    [rightVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
-    [rightVerticalBar autoSetDimensionsToSize:CGSizeMake(44, VerticalViewHeight + 54)];
-    
-    UIButton *rightBtn1 = [UIButton newAutoLayoutView];
-    rightBtn1.alpha = 0.6;
-    [rightBtn1 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share_WBG"] forState:UIControlStateNormal];
-    rightBtn1.translatesAutoresizingMaskIntoConstraints = NO;
-    [rightBtn1 addTarget:self action:@selector(showShareVCForSnapShot) forControlEvents:UIControlEventTouchDown];
-    [rightVerticalBar addSubview:rightBtn1];
-    [rightBtn1 autoSetDimensionsToSize:CGSizeMake(44, 44)];
-    [rightBtn1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [rightBtn1 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
-    
-    UIButton *rightBtn2 = [UIButton newAutoLayoutView];
-    rightBtn2.alpha = 0.6;
-    [rightBtn2 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share2_WBG"] forState:UIControlStateNormal];
-    rightBtn2.translatesAutoresizingMaskIntoConstraints = NO;
-    [rightBtn2 addTarget:self action:@selector(showShareVCForTrack) forControlEvents:UIControlEventTouchDown];
-    [rightVerticalBar addSubview:rightBtn2];
-    [rightBtn2 autoSetDimensionsToSize:CGSizeMake(44, 44)];
-    [rightBtn2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [rightBtn2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:rightBtn1 withOffset:10];
-
-    UIView *swipeScaleBackgroundView = [UIView newAutoLayoutView];
-    swipeScaleBackgroundView.backgroundColor = [UIColor clearColor];//[[UIColor cyanColor] colorWithAlphaComponent:0.6];
-    [rightVerticalBar addSubview:swipeScaleBackgroundView];
-    [swipeScaleBackgroundView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
-    [swipeScaleBackgroundView autoMatchDimension:ALDimensionHeight toDimension:ALDimensionHeight ofView:rightVerticalBar withMultiplier:0.75];
+    rightSwipeVerticalBar = [UIView newAutoLayoutView];
+    rightSwipeVerticalBar.backgroundColor = [UIColor clearColor];//[[UIColor cyanColor] colorWithAlphaComponent:0.3];//
+    [self.view addSubview:rightSwipeVerticalBar];
+    [rightSwipeVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
+    [rightSwipeVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
+    [rightSwipeVerticalBar autoSetDimensionsToSize:CGSizeMake(ButtionEdgeLength, ButtonPlaceholderHeight * 2.5)];
     
     UIImageView *swipeImageView = [UIImageView newAutoLayoutView];
     swipeImageView.alpha = 0.6;
     swipeImageView.image = [UIImage imageNamed:@"IcoMoon_SlideBar_Long"];
     swipeImageView.contentMode = UIViewContentModeScaleAspectFit;
     swipeImageView.layer.cornerRadius = 10.0;
-    [swipeScaleBackgroundView addSubview:swipeImageView];
+    [rightSwipeVerticalBar addSubview:swipeImageView];
     [swipeImageView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
-    
     
     UIView *swipeScaleView = [UIView newAutoLayoutView];
     swipeScaleView.backgroundColor = [UIColor clearColor];
@@ -725,14 +772,213 @@
     UITapGestureRecognizer *doubleTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swipeScaleViewDoubleTap:)];
     doubleTapGR.numberOfTapsRequired = 2;
     [swipeScaleView addGestureRecognizer:doubleTapGR];
-    [swipeScaleBackgroundView addSubview:swipeScaleView];
+    [rightSwipeVerticalBar addSubview:swipeScaleView];
     [swipeScaleView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
 
+#pragma mark rightVerticalBar
+    
+    rightVerticalBar = [UIView newAutoLayoutView];
+    rightVerticalBar.backgroundColor = [UIColor clearColor];//[[UIColor brownColor] colorWithAlphaComponent:0.3];//
+    [self.view addSubview:rightVerticalBar];
+    [rightVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
+    [rightVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:rightSwipeVerticalBar withOffset:0];
+    [rightVerticalBar autoSetDimensionsToSize:CGSizeMake(ButtionEdgeLength, ButtonPlaceholderHeight * 2)];
+    
+    UIButton *rightBtn1 = [UIButton newAutoLayoutView];
+    rightBtn1.alpha = 0.6;
+    [rightBtn1 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share_WBG"] forState:UIControlStateNormal];
+    rightBtn1.translatesAutoresizingMaskIntoConstraints = NO;
+    [rightBtn1 addTarget:self action:@selector(showShareVCForSnapShot) forControlEvents:UIControlEventTouchDown];
+    [rightVerticalBar addSubview:rightBtn1];
+    [rightBtn1 autoSetDimensionsToSize:CGSizeMake(44, 44)];
+    [rightBtn1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [rightBtn1 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:8];
+    
+    UIButton *rightBtn2 = [UIButton newAutoLayoutView];
+    rightBtn2.alpha = 0.6;
+    [rightBtn2 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share2_WBG"] forState:UIControlStateNormal];
+    rightBtn2.translatesAutoresizingMaskIntoConstraints = NO;
+    [rightBtn2 addTarget:self action:@selector(showShareVCForTrackOrPosition) forControlEvents:UIControlEventTouchDown];
+    [rightVerticalBar addSubview:rightBtn2];
+    [rightBtn2 autoSetDimensionsToSize:CGSizeMake(44, 44)];
+    [rightBtn2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [rightBtn2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:rightBtn1 withOffset:16];
+    
+#pragma mark Button
+    quiteShareModeButton = [UIButton newAutoLayoutView];
+    quiteShareModeButton.alpha = 0.6;
+    [quiteShareModeButton setBackgroundImage:[UIImage imageNamed:@"cross"] forState:UIControlStateNormal];
+    quiteShareModeButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [quiteShareModeButton addTarget:self action:@selector(showQuiteShareModeAlertController) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:quiteShareModeButton];
+    [quiteShareModeButton autoSetDimensionsToSize:CGSizeMake(44, 44)];
+    [quiteShareModeButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:msShareEditModeBar withOffset:10];
+    [quiteShareModeButton autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    quiteShareModeButton.hidden = YES;
+}
+
+- (void)showVerticalBar{
+    leftVerticalBar.alpha = 1;
+    rightVerticalBar.alpha = 1;
+    rightSwipeVerticalBar.alpha = 1;
+    verticalBarIsAlphaZero = NO;
+}
+
+- (void)hideVerticalBar{
+    leftVerticalBar.alpha = 0;
+    rightVerticalBar.alpha = 0;
+    rightSwipeVerticalBar.alpha = 0;
+    verticalBarIsAlphaZero = YES;
+}
+
+- (void)showHideMapShowModeBar{
+    [UIView animateWithDuration:0.3 animations:^{
+        msMomentLocationModeBar.alpha = (msMomentLocationModeBar.alpha == 1) ? 0 : 1;
+    }];
+    
+}
+
+- (void)showHidePlacemarkInfoBar{
+    [UIView animateWithDuration:0.3 animations:^{
+        placemarkInfoBar.alpha = (placemarkInfoBar.alpha == 1) ? 0 : 1;
+    }];
+    
+}
+
+- (void)showHideNaviBar{
+    [UIView animateWithDuration:0.3 animations:^{
+        naviBar.alpha = (naviBar.alpha == 1) ? 0 : 1;
+    }];
+    
+}
+
+- (void)swipeScaleViewSwipeUp:(UISwipeGestureRecognizer *)sender{
+    [self scaleMapView:1.0 / self.settingManager.mapViewScaleRate];
+}
+
+- (void)swipeScaleViewSwipeDown:(UISwipeGestureRecognizer *)sender{
+    [self scaleMapView:self.settingManager.mapViewScaleRate];
+}
+
+- (void)swipeScaleViewDoubleTap:(UITapGestureRecognizer *)sender{
+    CGPoint tapPoint = [sender locationInView:sender.view];
+    if (tapPoint.y < sender.view.bounds.size.height / 2.0) {
+        [self scaleMapView:1.0 / (self.settingManager.mapViewScaleRate * 2.0)];
+    }else{
+        [self scaleMapView:self.settingManager.mapViewScaleRate * 2.0];
+    }
+}
+
+- (void)scaleMapView:(float)mapViewScaleRate{
+    MKCoordinateRegion oldRegion = self.myMapView.region;
+    MKCoordinateSpan newSpan = MKCoordinateSpanMake(oldRegion.span.latitudeDelta * mapViewScaleRate, oldRegion.span.longitudeDelta * mapViewScaleRate);
+    
+    if (newSpan.latitudeDelta < 145.8 && newSpan.latitudeDelta > 0.0008) {
+        if (newSpan.latitudeDelta < 145.3 && newSpan.longitudeDelta > 0.0006) {
+            if(DEBUGMODE) NSLog(@"%@",NSStringFromCGPoint(CGPointMake(newSpan.latitudeDelta, newSpan.longitudeDelta)));
+            MKCoordinateRegion newRegion = MKCoordinateRegionMake(oldRegion.center, newSpan);
+            [self.myMapView setRegion:newRegion animated:YES];
+        }
+    }
+}
+
+
+#pragma mark PopupController
+
+- (void)initPopupController{
+    [STPopupNavigationBar appearance].barTintColor = [UIColor colorWithRed:0.20 green:0.60 blue:0.86 alpha:1.0];
+    [STPopupNavigationBar appearance].tintColor = [UIColor whiteColor];
+    [STPopupNavigationBar appearance].barStyle = UIBarStyleDefault;
+    [STPopupNavigationBar appearance].titleTextAttributes = @{ NSFontAttributeName: [UIFont fontWithName:@"Cochin" size:18],
+                                                               NSForegroundColorAttributeName: [UIColor whiteColor] };
+    
+    [[UIBarButtonItem appearanceWhenContainedIn:[STPopupNavigationBar class], nil] setTitleTextAttributes:@{ NSFontAttributeName:[UIFont fontWithName:@"Cochin" size:17] } forState:UIControlStateNormal];
+}
+
+#pragma mark Share Bar
+
+- (void)initShareBar{
+    shareBar = [ShareBar newAutoLayoutView];
+    shareBar.sideViewShrinkRate = 0.8;
+    shareBar.title =  @"用相册记录人生，用足迹丈量世界";
+    shareBar.titleFont = [UIFont bodyFontWithSizeMultiplier:1.0];
+    shareBar.leftImage = [UIImage imageNamed:@"地球_300_300"];
+    shareBar.leftText = NSLocalizedString(@"AlbumMaps", @"相册地图");
+    shareBar.rightImage = [UIImage imageNamed:@"1133399709_300"];
+    shareBar.rightText = NSLocalizedString(@"ScanToDL", @"扫描下载");
+    [self.view addSubview:shareBar];
+    [shareBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(5, 5, 0, 5) excludingEdge:ALEdgeBottom];
+    [shareBar autoSetDimension:ALDimensionHeight toSize:150];
+    //[shareBar autoMatchDimension:ALDimensionHeight toDimension:ALDimensionHeight ofView:self.view withMultiplier:0.2];
+}
+
+#pragma mark Data
+
+- (void)initData{
+    switch (self.settingManager.mapShowMode) {
+        case MapShowModeMoment:{
+            // 时刻模式初始化
+            switch (self.settingManager.dateMode) {
+                case DateModeDay:{
+                    self.startDate = [NOW dateAtStartOfToday];
+                    self.endDate = [NOW dateAtEndOfToday];
+                }
+                    break;
+                case DateModeWeek:{
+                    self.startDate = [NOW dateAtStartOfThisWeek];
+                    self.endDate = [NOW dateAtEndOfThisWeek];
+                }
+                    break;
+                case DateModeMonth:{
+                    self.startDate = [NOW dateAtStartOfThisMonth];
+                    self.endDate = [NOW dateAtEndOfThisMonth];
+                }
+                    break;
+                case DateModeYear:{
+                    self.startDate = [NOW dateAtStartOfThisYear];
+                    self.endDate = [NOW dateAtEndOfThisYear];
+                }
+                    break;
+                case DateModeAll:{
+                    self.startDate = nil;
+                    self.endDate = nil;
+                }
+                    break;
+                default:{
+                    self.startDate = [NOW dateAtStartOfThisMonth];
+                    self.endDate = [NOW dateAtEndOfThisMonth];
+                }
+                    break;
+            }
+            
+            self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:self.startDate toEndDate:self.endDate inManagedObjectContext:self.cdManager.appMOC];
+        }
+            break;
+        case MapShowModeLocation:{
+            // 位置模式初始化
+            self.lastPlacemark = self.settingManager.lastPlacemark;
+            self.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:self.settingManager.lastPlacemark inManagedObjectContext:self.cdManager.appMOC];
+        }
+            break;
+        default:
+            break;
+    }
+    
+}
+
+#pragma mark - Scene Change
+
+- (void)showSettingVC{
+    SettingVC *settingVC = [SettingVC new];
+    settingVC.edgesForExtendedLayout = UIRectEdgeNone;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:settingVC];
+    nav.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)showShareVCForSnapShot{
     [self hideVerticalBar];
-    mapShowModeBar.alpha = 0;
+    msMomentLocationModeBar.alpha = 0;
     placemarkInfoBar.alpha = 0;
     naviBar.alpha = 0;
     
@@ -785,8 +1031,11 @@
     
     UIGraphicsEndImageContext();
     
+    NSData *thumbImageData=UIImageJPEGRepresentation([UIImage imageNamed:@"地球_300_300"], 0.5);
+    
     ShareVC *ssVC = [ShareVC new];
-    ssVC.image = contentImage;
+    ssVC.shareImage = contentImage;
+    ssVC.shareThumbData = thumbImageData;
     ssVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.8, ScreenHeight * 0.85);
     ssVC.landscapeContentSizeInPopup = CGSizeMake(ScreenHeight * 0.85, ScreenWidth * 0.8);
 
@@ -795,24 +1044,40 @@
     [popupController presentInViewController:self];
 }
 
-- (void)showShareVCForTrack{
-    if (addedShareAnnotationsWithIndex.count < 2) return;
+- (void)showShareVCForTrackOrPosition{
     
-    NSData *trackData = [NSKeyedArchiver archivedDataWithRootObject:addedShareAnnotationsWithIndex];
-    //NSString *trackURL = [[NSString alloc] initWithData:trackData encoding:NSNonLossyASCIIStringEncoding];
-    NSString *trackString = [trackData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-    //NSLog(@"trackURL (length:%ld) :\n%@",trackString.length,trackString);
-    
-    if (trackString.length > 10*1024*8) {
-        NSLog(@"TrackURL is too Long!");
+    // 如果没有分享功能
+    if (!self.settingManager.hasPurchasedShare) {
+        [self showPurchaseShareFunctionAlertController];
         return;
     }
     
-    NSString *appendedString = [NSString stringWithFormat:@"%@://AlbumMaps/track/",WXAppID];
-    trackString = [appendedString stringByAppendingString:trackString];
+    if (!self.addedEWShareAnnos) return;
     
+    NSData *trackOrPositionData = [NSKeyedArchiver archivedDataWithRootObject:self.addedEWShareAnnos];
+    // 分享完立即清空
+    // self.addedEWShareAnnos = nil;
+    
+    //NSString *trackOrPositionURL = [[NSString alloc] initWithData:trackOrPositionData encoding:NSNonLossyASCIIStringEncoding];
+    NSString *trackOrPositionString = [trackOrPositionData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+    //NSLog(@"trackOrPositionURL (length:%ld) :\n%@",trackOrPositionString.length,trackOrPositionString);
+    
+    if (trackOrPositionString.length > 10*1024*8) {
+        NSLog(@"trackOrPositionURL is too Long!");
+        return;
+    }
+    NSString *headerString = nil;
+    if (self.settingManager.mapShowMode == MapShowModeMoment) headerString = [NSString stringWithFormat:@"%@://AlbumMaps/track/",WXAppID];
+    else if (self.settingManager.mapShowMode == MapShowModeLocation) headerString = [NSString stringWithFormat:@"%@://AlbumMaps/position/radius%0.f/",WXAppID,self.settingManager.mergedDistanceForLocation];
+    
+    trackOrPositionString = [headerString stringByAppendingString:trackOrPositionString];
+    
+    NSData *thumbImageData=UIImageJPEGRepresentation([UIImage imageNamed:@"地球_300_300"], 0.5);
     ShareVC *ssVC = [ShareVC new];
-    ssVC.webpageUrl = trackString;
+    ssVC.shareTitle = NSLocalizedString(@"I shared my footprints to you!Take a look!", @"我分享了一个足迹给你，快来看看吧！");
+    ssVC.shareDescription = NSLocalizedString(@"Tap '···' and choose 'Open In Safari' to open AlbumMaps", @"点击右上角“···”，选择“在Safari中打开”，进入《相册地图》查看");
+    ssVC.shareThumbData = thumbImageData;
+    ssVC.shareWebpageUrl = trackOrPositionString;
     ssVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.8, ScreenHeight * 0.45);
     ssVC.landscapeContentSizeInPopup = CGSizeMake(ScreenHeight * 0.45, ScreenWidth * 0.8);
     
@@ -820,178 +1085,197 @@
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
     
-    //[self receiveTrackString:trackString];
+    // 测试使用
+    // [self didReceiveTrackOrPositionString:trackOrPositionString];
 }
 
-- (void)receiveTrackString:(NSString *)trackString{
-    NSString *appendedString = [NSString stringWithFormat:@"%@://AlbumMaps/track/",WXAppID];
-    trackString = [trackString stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:appendedString]];
+- (void)showPurchaseShareFunctionAlertController{
+    NSString *alertTitle = NSLocalizedString(@"Purchase Share Function",@"购买分享功能");
+    NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@\n%@\n%@",NSLocalizedString(@"You can get utilities below:", @"您将获得如下功能："),NSLocalizedString(@"1.Share your footprints to others", @"1.将足迹分享给他人"),NSLocalizedString(@"2.Store footprints shared by others and lookup anytime", @"2.存储别人分享的足迹，并实时查看"),NSLocalizedString(@"Cost $0.99,continue?", @"价格6元，是否购买？")];
     
-    // For iOS9
-    trackString = [trackString stringByReplacingOccurrencesOfString:@"%0D%0A" withString:@"\n"];
-    // For iOS8
-    trackString = [trackString stringByReplacingOccurrencesOfString:@"%20" withString:@"\n"];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase",@"购买")
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:^(UIAlertAction * action) {
+                                                         [self showPurchaseShareFunctionVC];
+                                                     }];
     
-    NSLog(@"received trackString:\n%@",trackString);
-    NSData *trackData = [[NSData alloc] initWithBase64EncodedString:trackString options:NSDataBase64DecodingIgnoreUnknownCharacters];
-    addedShareAnnotationsWithIndex = [NSKeyedUnarchiver unarchiveObjectWithData:trackData];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
+    [alertController addAction:okAction];
+    [alertController addAction:cancelAction];
     
-    NSLog(@"received shareAnnotation count : %lu",(unsigned long)addedShareAnnotationsWithIndex.count);
-    
-    [self.myMapView removeAnnotations:self.myMapView.annotations];
-    [self.myMapView addAnnotations:addedShareAnnotationsWithIndex];
-    [self addLineOverlaysPro:addedShareAnnotationsWithIndex];
-    [self updateVisualViewAfterAddAnnotationsAndOverlays];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
-- (void)showHideMapShowModeBar{
-    [UIView animateWithDuration:0.3 animations:^{
-        mapShowModeBar.alpha = (mapShowModeBar.alpha == 1) ? 0 : 1;
-    }];
-    
-}
-
-- (void)showHidePlacemarkInfoBar{
-    [UIView animateWithDuration:0.3 animations:^{
-        placemarkInfoBar.alpha = (placemarkInfoBar.alpha == 1) ? 0 : 1;
-    }];
-    
-}
-
-- (void)showHideNaviBar{
-    [UIView animateWithDuration:0.3 animations:^{
-        naviBar.alpha = (naviBar.alpha == 1) ? 0 : 1;
-    }];
-    
-}
-
-- (void)showSettingVC{
-    SettingVC *settingVC = [SettingVC new];
-    settingVC.edgesForExtendedLayout = UIRectEdgeNone;
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:settingVC];
-    nav.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+- (void)showPurchaseShareFunctionVC{
+    InAppPurchaseVC *inAppPurchaseVC = [InAppPurchaseVC new];
+    inAppPurchaseVC.edgesForExtendedLayout = UIRectEdgeNone;
+    inAppPurchaseVC.transactionType = TransactionTypePurchase;
+    inAppPurchaseVC.productIndex = 0;
+    inAppPurchaseVC.inAppPurchaseCompletionHandler = ^(BOOL success,int productIndex,enum TransactionType transactionType){
+#warning here
+        if (YES) {
+            self.settingManager.hasPurchasedShare = YES;
+            NSLog(@"%@",self.settingManager.hasPurchasedShare? @"1111" : @"0000");
+        }
+    };
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:inAppPurchaseVC];
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-- (void)swipeScaleViewSwipeUp:(UISwipeGestureRecognizer *)sender{
-    [self scaleMapView:1.0 / self.settingManager.mapViewScaleRate];
+- (void)didReceiveTrackOrPositionString:(NSString *)receivedString{
+    NSString *trackOrPositionString = nil;
+    CLLocationDistance sharedRadius = 0;
+    
+    NSString *headerString = nil;
+    if ([receivedString containsString:@"track/"]) {
+        // 时刻模式分享的足迹
+        headerString = [NSString stringWithFormat:@"%@://AlbumMaps/track/",WXAppID];
+        trackOrPositionString = [receivedString stringByReplacingOccurrencesOfString:headerString withString:@""];
+    }else if ([receivedString containsString:@"position/"]){
+        // 地点模式分享的足迹
+        headerString = [NSString stringWithFormat:@"%@://AlbumMaps/position/",WXAppID];
+        trackOrPositionString = [receivedString stringByReplacingOccurrencesOfString:headerString withString:@""];
+        NSString *radiusNumberString = [trackOrPositionString substringToIndex:[trackOrPositionString rangeOfString:@"/"].location + 1];
+        if (DEBUGMODE) NSLog(@"radiusNumberString : %@",radiusNumberString);
+        trackOrPositionString = [trackOrPositionString stringByReplacingOccurrencesOfString:radiusNumberString withString:@""];
+        
+        radiusNumberString = [radiusNumberString stringByReplacingOccurrencesOfString:@"radius" withString:@""];
+        radiusNumberString = [radiusNumberString stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]];
+        sharedRadius = [radiusNumberString doubleValue];
+    }
+    
+    // For iOS9
+    trackOrPositionString = [trackOrPositionString stringByReplacingOccurrencesOfString:@"%0D%0A" withString:@"\n"];
+    // For iOS8
+    trackOrPositionString = [trackOrPositionString stringByReplacingOccurrencesOfString:@"%20" withString:@"\n"];
+    
+    if (DEBUGMODE) NSLog(@"trackOrPositionString:\n%@",trackOrPositionString);
+    NSData *trackOrPositionData = [[NSData alloc] initWithBase64EncodedString:trackOrPositionString options:NSDataBase64DecodingIgnoreUnknownCharacters];
+    NSArray <EverywhereShareMKAnnotation *> *receivedEWShareAnnos = [NSKeyedUnarchiver unarchiveObjectWithData:trackOrPositionData];
+    if (DEBUGMODE) NSLog(@"received shareAnnotation count : %lu",(unsigned long)receivedEWShareAnnos.count);
+    
+    
+    if (!(receivedEWShareAnnos.count > 0)) return;
+    // 成功获取分享的数据
+    
+    // 生成分享数据对象
+    EverywhereShareRepository *shareRepository = [EverywhereShareRepository new];
+    shareRepository.shareAnnos = receivedEWShareAnnos;
+    shareRepository.radius = sharedRadius;
+    shareRepository.title = [NOW stringWithDefaultFormat];
+    shareRepository.creationDate = NOW;
+    
+    EverywhereShareRepositoryManager *shareRepositoryManager = [EverywhereShareRepositoryManager defaultManager];
+    [shareRepositoryManager addshareRepository:shareRepository];
+    NSLog(@"%lu",(unsigned long)shareRepositoryManager.shareRepositoryArray.count);
+    
+    // 显示主界面
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    NSString *alertTitle = NSLocalizedString(@"Receive Shared Footprints",@"收到分享的足迹");
+    NSString *alertMessage = [NSString stringWithFormat:@"%@ %lu %@%@",NSLocalizedString(@"There are", @"该足迹共有"),(unsigned long)receivedEWShareAnnos.count,NSLocalizedString(@"footprints.", @"个足迹点，"), NSLocalizedString(@"Would you like to accept the footprints and enter Share Mode?", @"是否接收足迹并进入分享模式？")];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK",@"")
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:^(UIAlertAction * action) {
+                                                         [self enterShareModeWithEWShareRepository:shareRepository];
+                                                     }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"") style:UIAlertActionStyleCancel handler:nil];
+    [alertController addAction:okAction];
+    [alertController addAction:cancelAction];
+    
+    [self presentViewController:alertController animated:YES completion:nil];
+
 }
 
-- (void)swipeScaleViewSwipeDown:(UISwipeGestureRecognizer *)sender{
-    [self scaleMapView:self.settingManager.mapViewScaleRate];
-}
-
-- (void)swipeScaleViewDoubleTap:(UITapGestureRecognizer *)sender{
-    CGPoint tapPoint = [sender locationInView:sender.view];
-    if (tapPoint.y < sender.view.bounds.size.height / 2.0) {
-        [self scaleMapView:1.0 / (self.settingManager.mapViewScaleRate * 2.0)];
+- (void)enterShareModeWithEWShareRepository:(EverywhereShareRepository *)shareRepository{
+    msMomentLocationModeBar.hidden = YES;
+    placemarkInfoBar.hidden = YES;
+    leftVerticalBar.hidden = YES;
+    rightVerticalBar.hidden = YES;
+    
+    msShareEditModeBar.hidden = NO;
+    quiteShareModeButton.hidden = NO;
+    
+    naviBar.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.6];
+    
+    // 清理地图
+    self.addedEWAnnos = nil;
+    [self.myMapView removeAnnotations:self.myMapView.annotations];
+    
+    // 添加接收到的ShareAnnotations
+    [self.myMapView addAnnotations:shareRepository.shareAnnos];
+    self.addedIDAnnos = shareRepository.shareAnnos;
+    
+    // 添加Overlays
+    if (shareRepository.radius == 0){
+        // 时刻模式 分享的足迹
+        [self addLineOverlaysPro:shareRepository.shareAnnos];
     }else{
-        [self scaleMapView:self.settingManager.mapViewScaleRate * 2.0];
-    }
-}
-
-- (void)scaleMapView:(float)mapViewScaleRate{
-    MKCoordinateRegion oldRegion = self.myMapView.region;
-    MKCoordinateSpan newSpan = MKCoordinateSpanMake(oldRegion.span.latitudeDelta * mapViewScaleRate, oldRegion.span.longitudeDelta * mapViewScaleRate);
-    
-    if (newSpan.latitudeDelta < 145.8 && newSpan.latitudeDelta > 0.0008) {
-        if (newSpan.latitudeDelta < 145.3 && newSpan.longitudeDelta > 0.0006) {
-            if(DEBUGMODE) NSLog(@"%@",NSStringFromCGPoint(CGPointMake(newSpan.latitudeDelta, newSpan.longitudeDelta)));
-            MKCoordinateRegion newRegion = MKCoordinateRegionMake(oldRegion.center, newSpan);
-            [self.myMapView setRegion:newRegion animated:YES];
-        }
-    }
-}
-
-#pragma mark PopupController
-
-- (void)initPopupController{
-    [STPopupNavigationBar appearance].barTintColor = [UIColor colorWithRed:0.20 green:0.60 blue:0.86 alpha:1.0];
-    [STPopupNavigationBar appearance].tintColor = [UIColor whiteColor];
-    [STPopupNavigationBar appearance].barStyle = UIBarStyleDefault;
-    [STPopupNavigationBar appearance].titleTextAttributes = @{ NSFontAttributeName: [UIFont fontWithName:@"Cochin" size:18],
-                                                               NSForegroundColorAttributeName: [UIColor whiteColor] };
-    
-    [[UIBarButtonItem appearanceWhenContainedIn:[STPopupNavigationBar class], nil] setTitleTextAttributes:@{ NSFontAttributeName:[UIFont fontWithName:@"Cochin" size:17] } forState:UIControlStateNormal];
-}
-
-#pragma mark Share Bar
-
-- (void)initShareBar{
-    shareBar = [ShareBar newAutoLayoutView];
-    shareBar.sideViewShrinkRate = 0.8;
-    shareBar.title =  @"用相册记录人生，用足迹丈量世界";
-    shareBar.titleFont = [UIFont bodyFontWithSizeMultiplier:1.0];
-    shareBar.leftImage = [UIImage imageNamed:@"地球_300_300"];
-    shareBar.leftText = NSLocalizedString(@"AlbumMaps", @"相册地图");
-    shareBar.rightImage = [UIImage imageNamed:@"1133399709_300"];
-    shareBar.rightText = NSLocalizedString(@"ScanToDL", @"扫描下载");
-    [self.view addSubview:shareBar];
-    [shareBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(5, 5, 0, 5) excludingEdge:ALEdgeBottom];
-    [shareBar autoSetDimension:ALDimensionHeight toSize:150];
-    //[shareBar autoMatchDimension:ALDimensionHeight toDimension:ALDimensionHeight ofView:self.view withMultiplier:0.2];
-}
-
-#pragma mark - Init Data
-
-- (void)initData{
-    switch (self.settingManager.mapShowMode) {
-        case MapShowModeMoment:{
-            // 时刻模式初始化
-            switch (self.settingManager.dateMode) {
-                case DateModeDay:{
-                    self.startDate = [NOW dateAtStartOfToday];
-                    self.endDate = [NOW dateAtEndOfToday];
-                }
-                    break;
-                case DateModeWeek:{
-                    self.startDate = [NOW dateAtStartOfThisWeek];
-                    self.endDate = [NOW dateAtEndOfThisWeek];
-                }
-                    break;
-                case DateModeMonth:{
-                    self.startDate = [NOW dateAtStartOfThisMonth];
-                    self.endDate = [NOW dateAtEndOfThisMonth];
-                }
-                    break;
-                case DateModeYear:{
-                    self.startDate = [NOW dateAtStartOfThisYear];
-                    self.endDate = [NOW dateAtEndOfThisYear];
-                }
-                    break;
-                case DateModeAll:{
-                    self.startDate = nil;
-                    self.endDate = nil;
-                }
-                    break;
-                default:{
-                    self.startDate = [NOW dateAtStartOfThisMonth];
-                    self.endDate = [NOW dateAtEndOfThisMonth];
-                }
-                    break;
-            }
-
-            self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:self.startDate toEndDate:self.endDate inManagedObjectContext:self.cdManager.appMOC];
-        }
-            break;
-        case MapShowModeLocation:{
-            // 位置模式初始化
-            self.lastPlacemark = self.settingManager.lastPlacemark;
-            self.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:self.settingManager.lastPlacemark inManagedObjectContext:self.cdManager.appMOC];
-        }
-            break;
-        default:
-            break;
+        // 地点模式 分享的足迹
+        [self addCircleOverlaysPro:shareRepository.shareAnnos radius:shareRepository.radius];
     }
     
+    [self updateVisualViewAfterAddAnnotationsAndOverlays];
+}
+
+- (void)showQuiteShareModeAlertController{
+    NSString *alertTitle = NSLocalizedString(@"Quite Share Mode",@"退出分享模式");
+    NSString *alertMessage = NSLocalizedString(@"How to dealwith the footprints?", @"请选择足迹处理方式");
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *saveAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Save",@"保存")
+                                                         style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * action) {
+                                                           [self quiteShareMode];
+                                                       }];
+    UIAlertAction *purchaseAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase",@"购买")
+                                                             style:UIAlertActionStyleDefault
+                                                           handler:^(UIAlertAction * action) {
+                                                               [self showPurchaseShareFunctionVC];
+                                                           }];
+    UIAlertAction *dropAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Drop",@"丢弃")
+                                                         style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * action) {
+                                                           [self quiteShareMode];
+                                                       }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
+    
+    if (self.settingManager.hasPurchasedShare) [alertController addAction:saveAction];
+    else [alertController addAction:purchaseAction];
+    
+    [alertController addAction:dropAction];
+    [alertController addAction:cancelAction];
+    
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)quiteShareMode{
+    
+    msMomentLocationModeBar.hidden = NO;
+    placemarkInfoBar.hidden = NO;
+    leftVerticalBar.hidden = NO;
+    rightVerticalBar.hidden = NO;
+
+    msShareEditModeBar.hidden = YES;
+    quiteShareModeButton.hidden = YES;
+    
+    naviBar.backgroundColor = self.settingManager.color;
+    
+    // 清理地图
+    self.addedEWShareAnnos = nil;
+    self.addedIDAnnos = nil;
+    [self.myMapView removeAnnotations:self.myMapView.annotations];
+    [self.myMapView removeOverlays:self.myMapView.overlays];
 }
 
 #pragma mark - Add Annotations And Overlays
 
 - (void)addAnnotations{
     // 清理数组
-    addedAnnotationsWithIndex = nil;
-    addedShareAnnotationsWithIndex = nil;
+    self.addedEWAnnos = nil;
+    self.addedEWShareAnnos = nil;
     NSMutableArray <EverywhereMKAnnotation *> *annotationsToAdd = [NSMutableArray new];
     NSMutableArray <EverywhereShareMKAnnotation *> *shareAnnotationsToAdd = [NSMutableArray new];
     // 添加 MKAnnotations
@@ -1020,15 +1304,15 @@
         
         EverywhereShareMKAnnotation *shareAnno = [EverywhereShareMKAnnotation new];
         shareAnno.annotationCoordinate = firstAsset.location.coordinate;
-        shareAnno.annotationDate = firstAsset.creationDate;
+        shareAnno.startDate = firstAsset.creationDate;
         [shareAnnotationsToAdd addObject:shareAnno];
     }];
     
     if (!annotationsToAdd || !annotationsToAdd.count) return;
     [self.myMapView addAnnotations:annotationsToAdd];
-    
-    addedAnnotationsWithIndex = annotationsToAdd;
-    addedShareAnnotationsWithIndex = shareAnnotationsToAdd;
+    self.addedIDAnnos = annotationsToAdd;
+    self.addedEWAnnos = annotationsToAdd;
+    self.addedEWShareAnnos = shareAnnotationsToAdd;
 }
 
 - (void)addLineOverlaysPro:(NSArray <id<MKAnnotation>> *)annotationArray{
@@ -1091,6 +1375,7 @@
     }
 }
 
+/*
 - (void)addLineOverlays{
     [self.myMapView removeOverlays:self.myMapView.overlays];
     maxDistance = 500;
@@ -1150,7 +1435,31 @@
         [self.myMapView addOverlays:polygonsToAdd];
     }
 }
+*/
 
+- (void)addCircleOverlaysPro:(NSArray <id<MKAnnotation>> *)annotationArray radius:(CLLocationDistance)circleRadius{
+    [self.myMapView removeOverlays:self.myMapView.overlays];
+    
+    if (annotationArray.count >= 1) {
+        
+        //__block CLLocationDistance radius = circleRadius;
+        
+        // 添加 MKOverlays
+        
+        NSMutableArray <MKCircle *> *circlesToAdd = [NSMutableArray new];
+        
+        [annotationArray enumerateObjectsUsingBlock:^(id<MKAnnotation> _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            //if ([obj respondsToSelector:@selector(radius)]) radius = (CLLocationDistance)[[obj performSelector:@selector(radius)] doubleValue];
+            MKCircle *circle = [MKCircle circleWithCenterCoordinate:obj.coordinate radius:circleRadius];
+            if (circle) [circlesToAdd addObject:circle];
+        }];
+        
+        [self.myMapView addOverlays:circlesToAdd];
+    }
+
+}
+
+/*
 - (void)addCircleOverlays{
     [self.myMapView removeOverlays:self.myMapView.overlays];
     
@@ -1168,13 +1477,14 @@
         [self.myMapView addOverlays:circlesToAdd];
     }
 }
+*/
 
 - (void)asyncAddRouteOverlays{
     [self.myMapView removeOverlays:self.myMapView.overlays];
     maxDistance = 500;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        if (addedAnnotationsWithIndex.count >= 2) {
+        if (self.addedEWAnnos.count >= 2) {
             // 记录距离信息
             NSMutableArray *distanceArray = [NSMutableArray new];
             totalDistance = 0;
@@ -1184,7 +1494,7 @@
             //NSMutableArray <MKPolyline *> *polylinesToAdd = [NSMutableArray new];
             GCRoutePolylineManager *rpManager = [GCRoutePolylineManager defaultManager];
             
-            [addedAnnotationsWithIndex enumerateObjectsUsingBlock:^(EverywhereMKAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [self.addedEWAnnos enumerateObjectsUsingBlock:^(EverywhereMKAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 if (idx > 0){
                     GCRoutePolyline *foundedRP = [rpManager fetchRoutePolylineWithSource:lastCoordinate destination:obj.coordinate];
                     __block CLLocationDistance subDistance;
@@ -1254,25 +1564,44 @@
 }
 
 - (void)updateVisualViewAfterAddAnnotationsAndOverlays{
-    /*
-     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-     [self asyncAddRouteOverlays];
-     });
-     */
-    [self updateMapShowModeBar];
-    [self updatePlacemarkInfoBar];
     
-    if (self.settingManager.mapShowMode == MapShowModeLocation){
-        maxDistance = self.settingManager.mergedDistanceForLocation * 4.0;
-    }
+    // 自己的
+    if (self.addedEWAnnos.count > 0) {
+        
+        [self updateMapShowModeBar];
+        NSDictionary <NSString *,NSArray<NSString *> *> *placemarkDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:self.assetInfoArray];
+        [self updatePlacemarkInfoBarWithPlacemarkDictionary:placemarkDictionary mapShowMode:self.settingManager.mapShowMode];
+        
+        if (self.settingManager.mapShowMode == MapShowModeLocation){
+            maxDistance = self.settingManager.mergedDistanceForLocation * 8.0;
+        }
     
-    // 移动地图到第一个点
-    if (addedAnnotationsWithIndex.count > 0) {
-        EverywhereMKAnnotation *firstAnnotation = addedAnnotationsWithIndex.firstObject;
+        // 移动地图到第一个点
+    
+        EverywhereMKAnnotation *firstAnnotation = self.addedEWAnnos.firstObject;
         MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(firstAnnotation.coordinate, maxDistance, maxDistance);
-        [self.myMapView setRegion:showRegion animated:YES];
+        [self.myMapView setRegion:showRegion animated:NO];
         [self.myMapView selectAnnotation:firstAnnotation animated:YES];
     }
+    
+    // 分享的
+    if (self.addedEWShareAnnos.count > 0) {
+        
+        //NSDictionary <NSString *,NSArray<NSString *> *> *placemarkDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:self.assetInfoArray];
+        //[self updatePlacemarkInfoBarWithPlacemarkDictionary:placemarkDictionary mapShowMode:self.settingManager.mapShowMode];
+
+        EverywhereShareMKAnnotation *firstShareAnnotation = self.addedEWShareAnnos.firstObject;
+        
+        if (self.addedEWShareAnnos.count > 1) {
+            EverywhereShareMKAnnotation *secondShareAnnotation = self.addedEWShareAnnos[1];
+            maxDistance = fabs(MKMetersBetweenMapPoints(MKMapPointForCoordinate(firstShareAnnotation.coordinate), MKMapPointForCoordinate(secondShareAnnotation.coordinate))) * 8.0;
+        }
+        
+        MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(firstShareAnnotation.coordinate, maxDistance, maxDistance);
+        [self.myMapView setRegion:showRegion animated:NO];
+        [self.myMapView selectAnnotation:firstShareAnnotation animated:YES];
+    }
+    
 }
 
 #pragma mark - MKMapViewDelegate
@@ -1319,14 +1648,16 @@
         //MKAnnotationView *annoView = (MKAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"annoView"];
         
     }else if ([annotation isKindOfClass:[EverywhereShareMKAnnotation class]]){
-        MKPinAnnotationView *pinAV = (MKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"pinAV"];
-        if (!pinAV) pinAV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pinAV"];
+        MKPinAnnotationView *pinAV = (MKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"pinShareAV"];
+        if (!pinAV) pinAV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pinShareAV"];
         
         pinAV.animatesDrop = NO;
         
         pinAV.pinColor = MKPinAnnotationColorRed;
         
         pinAV.canShowCallout = YES;
+        
+        pinAV.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
         
         return pinAV;
 
@@ -1372,15 +1703,15 @@
             
             PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:self.cdManager.appMOC];
             if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
-            if (locationInfoBarIsHidden) [self showLocationInfoBar];
-            else [self hideLocationInfoBar];
             
             [self updateLocationInfoBarWithAssetInfo:assetInfo];
         }else if ([view.annotation isKindOfClass:[EverywhereShareMKAnnotation class]]){
-            
+            EverywhereShareMKAnnotation *shareAnno = (EverywhereShareMKAnnotation *)view.annotation;
+            [self updateLocationInfoBarWithCoordinate:shareAnno.coordinate];
         }
         
-        
+        if (locationInfoBarIsOutOfVisualView) [self showLocationInfoBar];
+        else [self hideLocationInfoBar];
     }
     
 }
@@ -1393,6 +1724,28 @@
     locationInfoBar.verticalAccuracy = [assetInfo.verticalAccuracy_Location doubleValue];
     locationInfoBar.level = [assetInfo.level_floor_Location integerValue];
     locationInfoBar.address = assetInfo.localizedPlaceString_Placemark;
+}
+
+- (void)updateLocationInfoBarWithCoordinate:(CLLocationCoordinate2D)aCoordinate{
+    
+    locationInfoBar.latitude = aCoordinate.latitude;
+    locationInfoBar.longitude = aCoordinate.longitude;
+    
+    [[CLGeocoder new] reverseGeocodeLocation:[[CLLocation alloc] initWithLatitude:aCoordinate.latitude longitude:aCoordinate.longitude]
+                                        completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+                                            
+                                            if (!error) {
+                                                // 解析成功
+                                                CLPlacemark *placemark = placemarks.lastObject;
+                                                locationInfoBar.address = [placemark localizedPlaceString];
+                                            }else{
+                                                // 解析失败
+                                                locationInfoBar.address = error.localizedDescription;
+                                                
+                                            }
+                                            
+                                        }];
+
 }
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay{
@@ -1425,54 +1778,34 @@
     // [mapView setRegion:showRegion animated:YES];
 }
 
+
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view{
+    self.currentAnnotationIndex = [self.addedIDAnnos indexOfObject:view.annotation];
+    
     if ([view.annotation isKindOfClass:[EverywhereMKAnnotation class]]) {
-        self.currentAnnotationIndex = [addedAnnotationsWithIndex indexOfObject:view.annotation];
+        //self.currentAnnotationIndex = [self.addedEWAnnos indexOfObject:view.annotation];
         
         EverywhereMKAnnotation *anno = (EverywhereMKAnnotation *)view.annotation;
         PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:self.cdManager.appMOC];
         if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
-        [self updateLocationInfoBarWithAssetInfo:assetInfo];
-    }else if ([view.annotation isKindOfClass:[EverywhereShareMKAnnotation class]]){
         
+        [self updateLocationInfoBarWithAssetInfo:assetInfo];
+        
+    }else if ([view.annotation isKindOfClass:[EverywhereShareMKAnnotation class]]){
+        EverywhereShareMKAnnotation *shareAnno = (EverywhereShareMKAnnotation *)view.annotation;
+        //self.currentAnnotationIndex = [self.addedEWShareAnnos indexOfObject:shareAnno];
+        
+        [self updateLocationInfoBarWithCoordinate:shareAnno.coordinate];
     }
 }
 
 - (void)setCurrentAnnotationIndex:(NSInteger)currentAnnotationIndex{
     _currentAnnotationIndex = currentAnnotationIndex;
-    if (addedAnnotationsWithIndex.count > 0){
-        currentAnnotationIndexLabel.text = [NSString stringWithFormat:@"%ld / %ld",(unsigned long)(currentAnnotationIndex + 1),(unsigned long)addedAnnotationsWithIndex.count];
+    if (self.addedIDAnnos.count > 0){
+        currentAnnotationIndexLabel.text = [NSString stringWithFormat:@"%ld / %ld",(unsigned long)(currentAnnotationIndex + 1),(unsigned long)self.addedIDAnnos.count];
     }else{
         currentAnnotationIndexLabel.text = @"";
     }
-    
-    
-    /*
-     if (currentAnnotationIndex == 0) {
-     firstButton.enabled = NO;
-     previousButton.enabled = NO;
-     
-     playButton.enabled = YES;
-     nextButton.enabled = YES;
-     lastButton.enabled = YES;
-     
-     }else if (currentAnnotationIndex == addedAnnotationsWithIndex.count - 1) {
-     
-     playButton.enabled = NO;
-     nextButton.enabled = NO;
-     lastButton.enabled = NO;
-     
-     firstButton.enabled = YES;
-     previousButton.enabled = YES;
-     
-     }else{
-     firstButton.enabled = YES;
-     previousButton.enabled = YES;
-     playButton.enabled = YES;
-     nextButton.enabled = YES;
-     lastButton.enabled = YES;
-     }
-     */
 }
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated{

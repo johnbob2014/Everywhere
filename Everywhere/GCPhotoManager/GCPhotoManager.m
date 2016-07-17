@@ -9,6 +9,8 @@
 #import "GCPhotoManager.h"
 #import "NSDate+Assistant.h"
 
+#define Authorized [PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusAuthorized
+
 @import Photos;
 
 @interface GCPhotoManager()
@@ -21,7 +23,23 @@
     static id instance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-       instance = [[self alloc]init];
+        instance = [[self alloc]init];
+        PHAuthorizationStatus authorizationStatus = [PHPhotoLibrary authorizationStatus];
+        if (authorizationStatus == PHAuthorizationStatusNotDetermined) {
+            
+            __block BOOL authorized = NO;
+            [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+                authorized = status == PHAuthorizationStatusAuthorized;
+            }];
+            
+            while (!authorized) {
+                [NSThread sleepForTimeInterval:1.0];
+            }
+            
+        }else if (authorizationStatus == PHAuthorizationStatusDenied || authorizationStatus == PHAuthorizationStatusRestricted){
+            NSLog(@"无法访问相册");
+            instance = nil;
+        }
     });
     return instance;
 }

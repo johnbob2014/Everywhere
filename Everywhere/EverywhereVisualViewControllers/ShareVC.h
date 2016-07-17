@@ -10,7 +10,12 @@
 
 @interface ShareVC : UIViewController
 
-@property (strong,nonatomic) UIImage *image;
-@property (strong,nonatomic) NSString *webpageUrl;
+@property (strong,nonatomic) UIImage *shareImage;
+@property (strong,nonatomic) NSString *shareWebpageUrl;
+
+@property (strong,nonatomic) NSString *shareTitle;
+@property (strong,nonatomic) NSString *shareDescription;
+
+@property (strong,nonatomic) NSData *shareThumbData;
 
 @end

@@ -120,9 +120,6 @@
         case ColorSchemeClassicGray:
             resultColor = [[UIColor grayColor] colorWithAlphaComponent:0.6];
             break;
-        case ColorSchemeForestGreen:
-            resultColor = [[UIColor greenColor] colorWithAlphaComponent:0.6];
-            break;
         case ColorSchemeFreshBlue:
             resultColor = [[UIColor blueColor] colorWithAlphaComponent:0.6];
             break;
@@ -133,6 +130,20 @@
             break;
     }
     return resultColor;
+}
+
+
+
+- (BOOL)hasPurchasedShare{
+    BOOL hasPurchasedShare = [[NSUserDefaults standardUserDefaults] boolForKey:@"hasPurchasedShare"];
+#warning here
+    return YES;
+    return hasPurchasedShare;
+}
+
+- (void)setHasPurchasedShare:(BOOL)hasPurchasedShare{
+    [[NSUserDefaults standardUserDefaults] setBool:hasPurchasedShare forKey:@"hasPurchasedShare"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end

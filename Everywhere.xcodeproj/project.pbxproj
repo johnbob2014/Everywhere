@@ -25,6 +25,11 @@
 		1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */; };
 		1E9D5D441D1E8F2D00E8B630 /* Everywhere.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */; };
 		1EEA79511D2791A0002B6291 /* EverywhereMKAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEA79501D2791A0002B6291 /* EverywhereMKAnnotation.m */; };
+		1EF62A531D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A501D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m */; };
+		1EF62A541D3B8FD50084AF66 /* CoordinateInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A521D3B8FD50084AF66 /* CoordinateInfo.m */; };
+		1EF62A571D3B902A0084AF66 /* CoordinateInfo+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A561D3B902A0084AF66 /* CoordinateInfo+Assistant.m */; };
+		1EF62A5A1D3BB90F0084AF66 /* EverywhereShareRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A591D3BB90F0084AF66 /* EverywhereShareRepository.m */; };
+		1EF62A5D1D3BD6DF0084AF66 /* EverywhereShareRepositoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A5C1D3BD6DF0084AF66 /* EverywhereShareRepositoryManager.m */; };
 		2A6563BC8BBF2B5997748106 /* libPods-Everywhere.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E9CF64AE7F289869F003D6F /* libPods-Everywhere.a */; };
 		4B001CD41D21002700DF7287 /* CTPImageBrowserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CCD1D21002700DF7287 /* CTPImageBrowserVC.m */; };
 		4B001CD51D21002700DF7287 /* CTPImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CCF1D21002700DF7287 /* CTPImageView.m */; };
@@ -100,6 +105,16 @@
 		1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Everywhere.rtf; sourceTree = "<group>"; };
 		1EEA794F1D2791A0002B6291 /* EverywhereMKAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereMKAnnotation.h; path = EverywhereModels/EverywhereMKAnnotation.h; sourceTree = "<group>"; };
 		1EEA79501D2791A0002B6291 /* EverywhereMKAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereMKAnnotation.m; path = EverywhereModels/EverywhereMKAnnotation.m; sourceTree = "<group>"; };
+		1EF62A4F1D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CoordinateInfo+CoreDataProperties.h"; path = "EverywhereCoreData/CoordinateInfo+CoreDataProperties.h"; sourceTree = "<group>"; };
+		1EF62A501D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CoordinateInfo+CoreDataProperties.m"; path = "EverywhereCoreData/CoordinateInfo+CoreDataProperties.m"; sourceTree = "<group>"; };
+		1EF62A511D3B8FD50084AF66 /* CoordinateInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoordinateInfo.h; path = EverywhereCoreData/CoordinateInfo.h; sourceTree = "<group>"; };
+		1EF62A521D3B8FD50084AF66 /* CoordinateInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CoordinateInfo.m; path = EverywhereCoreData/CoordinateInfo.m; sourceTree = "<group>"; };
+		1EF62A551D3B902A0084AF66 /* CoordinateInfo+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CoordinateInfo+Assistant.h"; path = "EverywhereCoreData/CoordinateInfo+Assistant.h"; sourceTree = "<group>"; };
+		1EF62A561D3B902A0084AF66 /* CoordinateInfo+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CoordinateInfo+Assistant.m"; path = "EverywhereCoreData/CoordinateInfo+Assistant.m"; sourceTree = "<group>"; };
+		1EF62A581D3BB90F0084AF66 /* EverywhereShareRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereShareRepository.h; path = EverywhereModels/EverywhereShareRepository.h; sourceTree = "<group>"; };
+		1EF62A591D3BB90F0084AF66 /* EverywhereShareRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereShareRepository.m; path = EverywhereModels/EverywhereShareRepository.m; sourceTree = "<group>"; };
+		1EF62A5B1D3BD6DF0084AF66 /* EverywhereShareRepositoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereShareRepositoryManager.h; path = EverywhereModels/EverywhereShareRepositoryManager.h; sourceTree = "<group>"; };
+		1EF62A5C1D3BD6DF0084AF66 /* EverywhereShareRepositoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereShareRepositoryManager.m; path = EverywhereModels/EverywhereShareRepositoryManager.m; sourceTree = "<group>"; };
 		4B001CCB1D21002700DF7287 /* CTPImageBrowserConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTPImageBrowserConfig.h; sourceTree = "<group>"; };
 		4B001CCC1D21002700DF7287 /* CTPImageBrowserVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTPImageBrowserVC.h; sourceTree = "<group>"; };
 		4B001CCD1D21002700DF7287 /* CTPImageBrowserVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTPImageBrowserVC.m; sourceTree = "<group>"; };
@@ -331,6 +346,10 @@
 				1EEA79501D2791A0002B6291 /* EverywhereMKAnnotation.m */,
 				4B90DDF81D38C5A200332945 /* EverywhereShareMKAnnotation.h */,
 				4B90DDF91D38C5A200332945 /* EverywhereShareMKAnnotation.m */,
+				1EF62A581D3BB90F0084AF66 /* EverywhereShareRepository.h */,
+				1EF62A591D3BB90F0084AF66 /* EverywhereShareRepository.m */,
+				1EF62A5B1D3BD6DF0084AF66 /* EverywhereShareRepositoryManager.h */,
+				1EF62A5C1D3BD6DF0084AF66 /* EverywhereShareRepositoryManager.m */,
 				4BE88A9D1D332B38009501CE /* EverywhereSettingManager.h */,
 				4BE88A9E1D332B38009501CE /* EverywhereSettingManager.m */,
 			);
@@ -473,6 +492,12 @@
 		4BD51FC31D2B475000F18244 /* EverywhereCoreData */ = {
 			isa = PBXGroup;
 			children = (
+				1EF62A4F1D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.h */,
+				1EF62A501D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m */,
+				1EF62A511D3B8FD50084AF66 /* CoordinateInfo.h */,
+				1EF62A521D3B8FD50084AF66 /* CoordinateInfo.m */,
+				1EF62A551D3B902A0084AF66 /* CoordinateInfo+Assistant.h */,
+				1EF62A561D3B902A0084AF66 /* CoordinateInfo+Assistant.m */,
 				4BD51FC41D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.h */,
 				4BD51FC51D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m */,
 				4BD51FC61D2B47B900F18244 /* PHAssetInfo.h */,
@@ -647,6 +672,8 @@
 				4B1B4BE21D387A4200CCD842 /* InAppPurchaseVC.m in Sources */,
 				1E41FD211D2AB66100E1A5B9 /* LocationInfoBar.m in Sources */,
 				4B001CD41D21002700DF7287 /* CTPImageBrowserVC.m in Sources */,
+				1EF62A541D3B8FD50084AF66 /* CoordinateInfo.m in Sources */,
+				1EF62A5A1D3BB90F0084AF66 /* EverywhereShareRepository.m in Sources */,
 				4BFA4EB31D33791A007DDA87 /* LocationPickerVC.m in Sources */,
 				4BD51FC91D2B47B900F18244 /* PHAssetInfo.m in Sources */,
 				4BE88AA21D333A46009501CE /* MapShowModeBar.m in Sources */,
@@ -655,8 +682,10 @@
 				4BFA4EB61D33982A007DDA87 /* DatePickerVC.m in Sources */,
 				1E2848031D1ADDB900189A83 /* Everywhere.xcdatamodeld in Sources */,
 				4B3AF9CC1D2F3E70009BD545 /* GCRoutePolyline.m in Sources */,
+				1EF62A5D1D3BD6DF0084AF66 /* EverywhereShareRepositoryManager.m in Sources */,
 				4B001CD61D21002700DF7287 /* CTPMultiImage.m in Sources */,
 				1E63B77C1D2E9D90003E355B /* PlacemarkInfoBar.m in Sources */,
+				1EF62A571D3B902A0084AF66 /* CoordinateInfo+Assistant.m in Sources */,
 				4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */,
 				1E2847FA1D1ADDB900189A83 /* EverywhereAppDelegate.m in Sources */,
 				1E74C30A1D268377000A9790 /* VCFloatingActionButton.m in Sources */,
@@ -665,6 +694,7 @@
 				4B1D5E7F1D3645A70011552F /* SettingVC.m in Sources */,
 				4B08662B1D373658000300AD /* ShareVC.m in Sources */,
 				4B1B4BE11D387A4200CCD842 /* AboutVC.m in Sources */,
+				1EF62A531D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m in Sources */,
 				4BF8DC151D37882E00BC7B64 /* ShareBar.m in Sources */,
 				4B27FDC51D2CA12000067683 /* UIButton+Bootstrap.m in Sources */,
 				4B001CD51D21002700DF7287 /* CTPImageView.m in Sources */,
