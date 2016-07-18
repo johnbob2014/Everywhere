@@ -53,7 +53,7 @@
 #import "GCRoutePolyline.h"
 #import "GCRoutePolylineManager.h"
 
-@interface AssetsMapProVC () <MKMapViewDelegate,UIGestureRecognizerDelegate>
+@interface AssetsMapProVC () <MKMapViewDelegate,CLLocationManagerDelegate,UIGestureRecognizerDelegate>
 //@property (assign,nonatomic) MapShowMode mapShowMode;
 //@property (assign,nonatomic) CLLocationDistance mergedDistanceForMoment;
 //@property (assign,nonatomic) CLLocationDistance mergedDistanceForLocation;
@@ -80,11 +80,20 @@
 @end
 
 @implementation AssetsMapProVC{
+    CLLocationManager *locationManager;
+    CLLocation *lastLocation;
+    NSMutableArray <EverywhereShareMKAnnotation *> *recordedShareAnnos;
+    
     STPopupController *popupController;
     
     MapShowModeBar *msMomentLocationModeBar;
     MapShowModeBar *msShareEditModeBar;
     UIButton *quiteShareModeButton;
+    
+    UIView *recordModeBar;
+    UIButton *quiteRecordModeButton;
+    UIButton *startPauseRecordButton;
+    BOOL isRecording;
     
     LocationInfoBar *locationInfoBar;
     float locationInfoBarHeight;
@@ -324,7 +333,7 @@
         [weakSelf showLocationPicker];
     };
     
-    msShareEditModeBar = [[MapShowModeBar alloc]initWithModeSegItems:[NSLocalizedString(@"ShareMode EditMode",@"") componentsSeparatedByString:@" "]
+    msShareEditModeBar = [[MapShowModeBar alloc]initWithModeSegItems:[NSLocalizedString(@"ShareMode RecordMode",@"") componentsSeparatedByString:@" "]
                                                     selectedSegIndex:0
                                                      leftButtonImage:[UIImage imageNamed:@"IcoMoon_Share2_WOBG"]
                                                     rightButtonImage:[UIImage imageNamed:@"IcoMoon_Trophy_WOBG"]];
@@ -336,6 +345,12 @@
     [msShareEditModeBar autoSetDimension:ALDimensionHeight toSize:60];
     
     msShareEditModeBar.mapShowModeChangedHandler = ^(UISegmentedControl *sender){
+        
+        if (sender.selectedSegmentIndex == 1) [weakSelf enterRecordMode];
+        else {
+            [weakSelf quiteRecordMode];
+            [weakSelf enterShareMode];
+        }
         
     };
     
@@ -349,7 +364,7 @@
     };
     
     msShareEditModeBar.hidden = YES;
-    msShareEditModeBar.modeSegEnabled = NO;
+    //msShareEditModeBar.modeSegEnabled = NO;
 
 }
 
@@ -825,7 +840,7 @@
     rightBtn1.translatesAutoresizingMaskIntoConstraints = NO;
     [rightBtn1 addTarget:self action:@selector(showShareImageVC) forControlEvents:UIControlEventTouchDown];
     [rightVerticalBar addSubview:rightBtn1];
-    [rightBtn1 autoSetDimensionsToSize:CGSizeMake(44, 44)];
+    [rightBtn1 autoSetDimensionsToSize:ButtionSize];
     [rightBtn1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
     [rightBtn1 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:8];
     
@@ -835,7 +850,7 @@
     rightBtn2.translatesAutoresizingMaskIntoConstraints = NO;
     [rightBtn2 addTarget:self action:@selector(showShareEWShareRepositoryVC) forControlEvents:UIControlEventTouchDown];
     [rightVerticalBar addSubview:rightBtn2];
-    [rightBtn2 autoSetDimensionsToSize:CGSizeMake(44, 44)];
+    [rightBtn2 autoSetDimensionsToSize:ButtionSize];
     [rightBtn2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
     [rightBtn2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:rightBtn1 withOffset:16];
     
@@ -845,21 +860,51 @@
     rightBtn3.translatesAutoresizingMaskIntoConstraints = NO;
     [rightBtn3 addTarget:self action:@selector(enterShareMode) forControlEvents:UIControlEventTouchDown];
     [rightVerticalBar addSubview:rightBtn3];
-    [rightBtn3 autoSetDimensionsToSize:CGSizeMake(44, 44)];
+    [rightBtn3 autoSetDimensionsToSize:ButtionSize];
     [rightBtn3 autoAlignAxisToSuperviewAxis:ALAxisVertical];
     [rightBtn3 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:rightBtn2 withOffset:16];
     
-#pragma mark Button
+#pragma mark quiteShareModeButton
     quiteShareModeButton = [UIButton newAutoLayoutView];
     quiteShareModeButton.alpha = 0.6;
     [quiteShareModeButton setBackgroundImage:[UIImage imageNamed:@"cross"] forState:UIControlStateNormal];
     quiteShareModeButton.translatesAutoresizingMaskIntoConstraints = NO;
     [quiteShareModeButton addTarget:self action:@selector(showQuiteShareModeAlertController) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:quiteShareModeButton];
-    [quiteShareModeButton autoSetDimensionsToSize:CGSizeMake(44, 44)];
+    [quiteShareModeButton autoSetDimensionsToSize:ButtionSize];
     [quiteShareModeButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:msShareEditModeBar withOffset:10];
     [quiteShareModeButton autoAlignAxisToSuperviewAxis:ALAxisVertical];
     quiteShareModeButton.hidden = YES;
+
+#pragma mark recordModeBar
+    recordModeBar = [UIView newAutoLayoutView];
+    recordModeBar.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:recordModeBar];
+    [recordModeBar autoSetDimensionsToSize:CGSizeMake(ButtonPlaceholderHeight * 2, ButtionEdgeLength)];
+    [recordModeBar autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:msShareEditModeBar withOffset:10];
+    [recordModeBar autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    recordModeBar.hidden = YES;
+    
+    quiteRecordModeButton = [UIButton newAutoLayoutView];
+    quiteRecordModeButton.alpha = 0.6;
+    [quiteRecordModeButton setBackgroundImage:[UIImage imageNamed:@"cross"] forState:UIControlStateNormal];
+    quiteRecordModeButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [quiteRecordModeButton addTarget:self action:@selector(quiteRecordMode) forControlEvents:UIControlEventTouchDown];
+    [recordModeBar addSubview:quiteRecordModeButton];
+    [quiteRecordModeButton autoSetDimensionsToSize:ButtionSize];
+    [quiteRecordModeButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    [quiteRecordModeButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:8];
+    
+    startPauseRecordButton = [UIButton newAutoLayoutView];
+    startPauseRecordButton.alpha = 0.6;
+    [startPauseRecordButton setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
+    startPauseRecordButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [startPauseRecordButton addTarget:self action:@selector(startPauseRecord) forControlEvents:UIControlEventTouchDown];
+    [recordModeBar addSubview:startPauseRecordButton];
+    [startPauseRecordButton autoSetDimensionsToSize:ButtionSize];
+    [startPauseRecordButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    [startPauseRecordButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:8];
+    
 }
 
 - (void)showVerticalBar{
@@ -1101,7 +1146,8 @@
     // 生成分享对象
     EverywhereShareRepository *shareRepository = [EverywhereShareRepository new];
     shareRepository.shareAnnos = self.addedEWShareAnnos;
-    shareRepository.radius = self.settingManager.mergedDistanceForLocation;
+    if (self.settingManager.mapShowMode == MapShowModeMoment) shareRepository.radius = 0;
+    else shareRepository.radius = self.settingManager.mergedDistanceForLocation / 2.0;
     shareRepository.creationDate = NOW;
     shareRepository.isSharedByMe = YES;
     
@@ -1245,6 +1291,7 @@
     quiteShareModeButton.hidden = NO;
     
     naviBar.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.6];
+    locationInfoBar.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.6];
 }
 
 - (void)showEWShareRepository:(EverywhereShareRepository *)shareRepository{
@@ -1320,12 +1367,81 @@
     quiteShareModeButton.hidden = YES;
     
     naviBar.backgroundColor = self.settingManager.color;
+    locationInfoBar.backgroundColor = self.settingManager.color;
     
     // 清理地图
     self.addedEWShareAnnos = nil;
     self.addedIDAnnos = nil;
     [self.myMapView removeAnnotations:self.myMapView.annotations];
     [self.myMapView removeOverlays:self.myMapView.overlays];
+}
+
+- (void)enterRecordMode{
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    
+    isRecording = NO;
+    
+    lastLocation = nil;
+    quiteShareModeButton.hidden = YES;
+    naviBar.hidden = YES;
+    
+    recordModeBar.hidden = NO;
+    
+    // 清理地图
+    self.addedEWShareAnnos = nil;
+    self.addedIDAnnos = nil;
+    [self.myMapView removeAnnotations:self.myMapView.annotations];
+    [self.myMapView removeOverlays:self.myMapView.overlays];
+    
+    locationManager = [CLLocationManager new];
+    
+    locationManager.distanceFilter = 20;
+    locationManager.delegate = self;
+    CLAuthorizationStatus authorizationStatus = [CLLocationManager authorizationStatus];
+    
+    if (authorizationStatus == kCLAuthorizationStatusNotDetermined) {
+        [locationManager requestAlwaysAuthorization];
+    }else if (authorizationStatus == kCLAuthorizationStatusDenied || authorizationStatus == kCLAuthorizationStatusRestricted){
+        NSLog(@"Fault");
+        return;
+    }
+    
+    [locationManager startUpdatingLocation];
+    
+    recordedShareAnnos = [NSMutableArray new];
+    
+    self.myMapView.showsUserLocation = YES;
+}
+
+- (void)startPauseRecord{
+    if (isRecording) {
+        [locationManager stopUpdatingLocation];
+        startPauseRecordButton.backgroundColor = [UIColor blackColor];
+    }else{
+        [locationManager startUpdatingLocation];
+        startPauseRecordButton.backgroundColor = [UIColor whiteColor];
+    }
+    isRecording = !isRecording;
+}
+
+- (void)quiteRecordMode{
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    
+    quiteShareModeButton.hidden = NO;
+    naviBar.hidden = NO;
+    
+    recordModeBar.hidden = YES;
+    
+    self.myMapView.showsUserLocation = NO;
+    
+    EverywhereShareRepository *shareRepository = [EverywhereShareRepository new];
+    shareRepository.shareAnnos = recordedShareAnnos;
+    shareRepository.creationDate = NOW;
+    shareRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Record", @"记录"),[shareRepository.creationDate stringWithDefaultFormat]];
+    shareRepository.isSharedByMe = YES;
+    
+    [EverywhereShareRepositoryManager addShareRepository:shareRepository];
+    
 }
 
 #pragma mark - Add Annotations And Overlays
@@ -1870,6 +1986,51 @@
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated{
     //MKCoordinateSpan newSpan = mapView.region.span;
     //NSLog(@"%@",NSStringFromCGPoint(CGPointMake(newSpan.latitudeDelta, newSpan.longitudeDelta)));
+}
+
+#pragma mark - CLLocationManagerDelegate
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations{
+    if (!lastLocation) {
+        lastLocation = locations.lastObject;
+        [self addNewRecordedShareAnnosWithLocation:lastLocation];
+    }
+    
+    CLLocation *currentLocation = locations.lastObject;
+    if ([currentLocation distanceFromLocation:lastLocation] > 100) {
+        [self addNewRecordedShareAnnosWithLocation:currentLocation];
+    }
+    
+    lastLocation = currentLocation;
+}
+
+- (void)addNewRecordedShareAnnosWithLocation:(CLLocation *)newLocation{
+    EverywhereShareMKAnnotation *shareAnno = [EverywhereShareMKAnnotation new];
+    shareAnno.annotationCoordinate = newLocation.coordinate;
+    shareAnno.startDate = NOW;
+    [recordedShareAnnos addObject:shareAnno];
+    [self.myMapView addAnnotation:shareAnno];
+    
+    if (recordedShareAnnos.count > 1){
+        [self.myMapView removeOverlays:self.myMapView.overlays];
+        [self addLineOverlaysPro:recordedShareAnnos];
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status{
+    
+}
+
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{
+    
+}
+
+- (void)locationManagerDidPauseLocationUpdates:(CLLocationManager *)manager{
+    
+}
+
+- (void)locationManagerDidResumeLocationUpdates:(CLLocationManager *)manager{
+    
 }
 
 @end

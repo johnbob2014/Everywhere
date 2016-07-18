@@ -19,6 +19,7 @@
 		1E5A54181D28FE0F0056CF46 /* AssetsMapProVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E5A54171D28FE0F0056CF46 /* AssetsMapProVC.m */; };
 		1E63B77C1D2E9D90003E355B /* PlacemarkInfoBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E63B77B1D2E9D90003E355B /* PlacemarkInfoBar.m */; };
 		1E65218D1D28BFB500F41860 /* UIFont+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E65218C1D28BFB500F41860 /* UIFont+Assistant.m */; };
+		1E8E367D1D3D1C9300B9E30C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1E8E367C1D3D1C9300B9E30C /* Info.plist */; };
 		1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */; };
 		1EEA79511D2791A0002B6291 /* EverywhereMKAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEA79501D2791A0002B6291 /* EverywhereMKAnnotation.m */; };
 		1EF62A531D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A501D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m */; };
@@ -41,7 +42,6 @@
 		4B1B4BE21D387A4200CCD842 /* InAppPurchaseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1B4BE01D387A4200CCD842 /* InAppPurchaseVC.m */; };
 		4B1B4BE41D387C6800CCD842 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B1B4BE31D387C6800CCD842 /* libc++.tbd */; };
 		4B1D5E7F1D3645A70011552F /* SettingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1D5E7E1D3645A70011552F /* SettingVC.m */; };
-		4B216FEF1D347DCA003DCDBC /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B216FED1D347DCA003DCDBC /* Info.plist */; };
 		4B27FDC31D2CA12000067683 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4B27FDBE1D2CA12000067683 /* FontAwesome.ttf */; };
 		4B27FDC41D2CA12000067683 /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B27FDC01D2CA12000067683 /* NSString+FontAwesome.m */; };
 		4B27FDC51D2CA12000067683 /* UIButton+Bootstrap.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B27FDC21D2CA12000067683 /* UIButton+Bootstrap.m */; };
@@ -93,6 +93,7 @@
 		1E74C3051D268377000A9790 /* floatTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = floatTableViewCell.xib; sourceTree = "<group>"; };
 		1E74C3061D268377000A9790 /* VCFloatingActionButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VCFloatingActionButton.h; sourceTree = "<group>"; };
 		1E74C3071D268377000A9790 /* VCFloatingActionButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VCFloatingActionButton.m; sourceTree = "<group>"; };
+		1E8E367C1D3D1C9300B9E30C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1E9CF64AE7F289869F003D6F /* libPods-Everywhere.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Everywhere.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E9D5D401D1E2AFE00E8B630 /* WGS84TOGCJ02.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WGS84TOGCJ02.h; path = WGS84TOGCJ02/WGS84TOGCJ02.h; sourceTree = "<group>"; };
 		1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WGS84TOGCJ02.m; path = WGS84TOGCJ02/WGS84TOGCJ02.m; sourceTree = "<group>"; };
@@ -142,7 +143,6 @@
 		4B1B4BE31D387C6800CCD842 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		4B1D5E7D1D3645A70011552F /* SettingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingVC.h; path = EverywhereVisualViewControllers/SettingVC.h; sourceTree = "<group>"; };
 		4B1D5E7E1D3645A70011552F /* SettingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingVC.m; path = EverywhereVisualViewControllers/SettingVC.m; sourceTree = "<group>"; };
-		4B216FF01D347DE2003DCDBC /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
 		4B216FF41D347F7D003DCDBC /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.storyboard"; sourceTree = "<group>"; };
 		4B27FDBE1D2CA12000067683 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
 		4B27FDBF1D2CA12000067683 /* NSString+FontAwesome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+FontAwesome.h"; sourceTree = "<group>"; };
@@ -250,8 +250,8 @@
 				1E2847F91D1ADDB900189A83 /* EverywhereAppDelegate.m */,
 				4B0620771D2CE36C00545FCE /* PrefixHeader.pch */,
 				4BF5130B1D348870009565EF /* Localizable.strings */,
-				4B216FED1D347DCA003DCDBC /* Info.plist */,
 				1E2847F61D1ADDB900189A83 /* main.m */,
+				1E8E367C1D3D1C9300B9E30C /* Info.plist */,
 				1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */,
 				1E2848041D1ADDB900189A83 /* Assets.xcassets */,
 				1E2848061D1ADDB900189A83 /* LaunchScreen.storyboard */,
@@ -597,9 +597,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4B216FEF1D347DCA003DCDBC /* Info.plist in Resources */,
 				4BF513091D348870009565EF /* Localizable.strings in Resources */,
 				1E2848081D1ADDB900189A83 /* LaunchScreen.storyboard in Resources */,
+				1E8E367D1D3D1C9300B9E30C /* Info.plist in Resources */,
 				1E2848051D1ADDB900189A83 /* Assets.xcassets in Resources */,
 				4B0866281D372AA2000300AD /* README.txt in Resources */,
 				4B27FDC31D2CA12000067683 /* FontAwesome.ttf in Resources */,
@@ -716,14 +716,6 @@
 				4B216FF41D347F7D003DCDBC /* zh-Hans */,
 			);
 			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-		4B216FED1D347DCA003DCDBC /* Info.plist */ = {
-			isa = PBXVariantGroup;
-			children = (
-				4B216FF01D347DE2003DCDBC /* Base */,
-			);
-			name = Info.plist;
 			sourceTree = "<group>";
 		};
 		4BF5130B1D348870009565EF /* Localizable.strings */ = {

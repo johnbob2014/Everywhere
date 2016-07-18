@@ -56,12 +56,12 @@
     
     titleTF = [UITextField newAutoLayoutView];
     
-    titleTF.textColor = [UIColor whiteColor];
+    //titleTF.textColor = [UIColor whiteColor];
     titleTF.clearButtonMode = UITextFieldViewModeAlways;
     titleTF.textAlignment = NSTextAlignmentCenter;
     
     titleTF.font = [UIFont fontWithName:@"FontAwesome" size:titleTF.font.pointSize * 1.2];
-    titleTF.backgroundColor = [UIColor colorWithRed:240/255.0 green:173/255.0 blue:78/255.0 alpha:1];
+    //titleTF.backgroundColor = [UIColor colorWithRed:240/255.0 green:173/255.0 blue:78/255.0 alpha:1];
     
     titleTF.layer.borderWidth = 1;
     titleTF.layer.cornerRadius = 4.0;
