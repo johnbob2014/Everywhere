@@ -34,20 +34,27 @@
     return shareRepositoryDataArray;
 }
 
+/*
 + (void)save{
     [[NSUserDefaults standardUserDefaults] setValue:[EverywhereShareRepositoryManager shareRepositoryDataArray] forKey:@"shareRepositoryDataArray"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
+ */
+
 
 + (void)addShareRepository:(EverywhereShareRepository *)shareRepository{
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:shareRepository];
-    [[EverywhereShareRepositoryManager shareRepositoryDataArray] addObject:data];
-    [EverywhereShareRepositoryManager save];
+    NSMutableArray *tempMA = [EverywhereShareRepositoryManager shareRepositoryDataArray];
+    [tempMA insertObject:data atIndex:0];
+    [[NSUserDefaults standardUserDefaults] setValue:tempMA forKey:@"shareRepositoryDataArray"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+ (void)removeLastShareRepository{
-    [[EverywhereShareRepositoryManager shareRepositoryDataArray] removeLastObject];
-    [EverywhereShareRepositoryManager save];
++ (void)removeLastAddedShareRepository{
+    NSMutableArray *tempMA = [EverywhereShareRepositoryManager shareRepositoryDataArray];
+    [tempMA removeObjectAtIndex:0];
+    [[NSUserDefaults standardUserDefaults] setValue:tempMA forKey:@"shareRepositoryDataArray"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 + (NSArray <EverywhereShareRepository *> *)shareRepositoryArray{

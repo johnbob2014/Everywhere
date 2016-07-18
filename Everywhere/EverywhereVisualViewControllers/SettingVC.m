@@ -51,6 +51,8 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.view.backgroundColor = VCBackgroundColor;
+    
     self.settingManager = [EverywhereSettingManager defaultManager];
     
     self.shareTitle=NSLocalizedString(@"中国那么大，我要去看看", @"");
@@ -116,7 +118,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 #pragma mark 播放时间间隔
     
     tempString = [NSString stringWithFormat:@"%.f",self.settingManager.playTimeInterval];
-    RETextItem *playTimeIntervalItem = [RETextItem itemWithTitle:NSLocalizedString(@"Play Time Interval(s)",@"播放时间间隔（秒）") value:tempString placeholder:@""];
+    RETextItem *playTimeIntervalItem = [RETextItem itemWithTitle:NSLocalizedString(@"Play Time Interval",@"播放时间间隔") value:tempString placeholder:@""];
     playTimeIntervalItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     playTimeIntervalItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
@@ -146,7 +148,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     //[optionSection setHeaderHeight:30];
     
     tempString = [NSString stringWithFormat:@"%.f",self.settingManager.mergedDistanceForMoment];
-    RETextItem *mergedDistanceForMomentItem = [RETextItem itemWithTitle:NSLocalizedString(@"Moment Mode Merged Distance(m)",@"时刻模式合并距离（米）") value:tempString placeholder:@""];
+    RETextItem *mergedDistanceForMomentItem = [RETextItem itemWithTitle:NSLocalizedString(@"Merged Distance",@"时刻模式合并距离") value:tempString placeholder:@""];
     mergedDistanceForMomentItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     mergedDistanceForMomentItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
@@ -164,7 +166,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     //[optionSection setHeaderHeight:30];
     
     tempString = [NSString stringWithFormat:@"%.f",self.settingManager.mergedDistanceForLocation];
-    RETextItem *mergedDistanceForLocationItem = [RETextItem itemWithTitle:NSLocalizedString(@"Location Mode Merged Distance(m)",@"地址模式合并距离（米）") value:tempString placeholder:@""];
+    RETextItem *mergedDistanceForLocationItem = [RETextItem itemWithTitle:NSLocalizedString(@"Merged Distance",@"地址模式合并距离") value:tempString placeholder:@""];
     mergedDistanceForLocationItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     mergedDistanceForLocationItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);

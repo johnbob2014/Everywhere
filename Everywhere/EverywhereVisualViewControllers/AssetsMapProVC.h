@@ -11,6 +11,6 @@
 
 @interface AssetsMapProVC : UIViewController
 
-- (void)didReceiveTrackOrPositionString:(NSString *)trackString;
+- (void)didReceiveShareRepositoryString:(NSString *)trackString;
 
 @end
