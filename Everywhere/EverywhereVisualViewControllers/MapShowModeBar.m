@@ -94,13 +94,15 @@
 
 - (void)mapShowModeValueChanged:(UISegmentedControl *)sender{
     if (self.mapShowModeChangedHandler) self.mapShowModeChangedHandler(sender);
+    
     if (sender.selectedSegmentIndex == 0) {
-        self.leftButton.enabled = YES;
+        self.leftButton.enabled = self.leftButtonEnabled;
         self.rightButton.enabled = NO;
     }else{
         self.leftButton.enabled = NO;
-        self.rightButton.enabled = YES;
+        self.rightButton.enabled = self.rightButtonEnabled;
     }
+    
     self.infoLabel.text = modeSegItems[sender.selectedSegmentIndex];
 }
 
@@ -143,4 +145,13 @@
     self.modeSeg.enabled = modeSegEnabled;
 }
 
+- (void)setLeftButtonEnabled:(BOOL)leftButtonEnabled{
+    _leftButtonEnabled = leftButtonEnabled;
+    self.leftButton.enabled = leftButtonEnabled;
+}
+
+- (void)setRightButtonEnabled:(BOOL)rightButtonEnabled{
+    _rightButtonEnabled = rightButtonEnabled;
+    self.rightButton.enabled = rightButtonEnabled;
+}
 @end

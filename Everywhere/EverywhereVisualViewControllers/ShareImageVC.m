@@ -1,5 +1,5 @@
 //
-//  ShareVC.m
+//  ShareImageVC.m
 //  Everywhere
 //
 //  Created by BobZhang on 16/7/14.
@@ -7,14 +7,14 @@
 //
 #define DEBUGMODE 1
 
-#import "ShareVC.h"
+#import "ShareImageVC.h"
 #import "WXApi.h"
 
-@interface ShareVC ()
+@interface ShareImageVC ()
 
 @end
 
-@implementation ShareVC{
+@implementation ShareImageVC{
 UIImageView *imageView;
     UIButton *sessionBtn,*timelineBtn;
 }
@@ -22,6 +22,8 @@ UIImageView *imageView;
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    self.title = NSLocalizedString(@"Share Snap Shots", @"分享截图");
     
     sessionBtn = [UIButton newAutoLayoutView];
     [sessionBtn infoStyle];

@@ -10,11 +10,12 @@
 
 
 @interface EverywhereShareRepositoryManager ()
-@property (strong,nonatomic) NSMutableArray <NSData *> *shareRepositoryDataArray;
+//@property (strong,nonatomic) NSMutableArray <NSData *> *shareRepositoryDataArray;
 @end
 
 @implementation EverywhereShareRepositoryManager
 
+/*
 + (instancetype)defaultManager{
     static id instance;
     static dispatch_once_t onceToken;
@@ -23,31 +24,35 @@
     });
     return instance;
 }
+*/
 
-- (NSMutableArray<NSData *> *)shareRepositoryDataArray{
-    if(!_shareRepositoryDataArray){
-        NSArray *tempArray = [[NSUserDefaults standardUserDefaults] valueForKey:@"shareRepositoryDataArray"];
-        if (tempArray) {
-            _shareRepositoryDataArray = [NSMutableArray arrayWithArray:tempArray];
-        }
-        if (!_shareRepositoryDataArray) {
-            _shareRepositoryDataArray = [NSMutableArray new];
-        }
-    }
-    return _shareRepositoryDataArray;
++ (NSMutableArray<NSData *> *)shareRepositoryDataArray{
+    NSMutableArray <NSData *> *shareRepositoryDataArray = nil;
+    NSArray *tempArray = [[NSUserDefaults standardUserDefaults] valueForKey:@"shareRepositoryDataArray"];
+    if (tempArray) shareRepositoryDataArray = [NSMutableArray arrayWithArray:tempArray];
+    if (!shareRepositoryDataArray)  shareRepositoryDataArray = [NSMutableArray new];
+    return shareRepositoryDataArray;
 }
 
-
-- (void)addshareRepository:(EverywhereShareRepository *)shareRepository{
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:shareRepository];
-    [self.shareRepositoryDataArray addObject:data];
-    [[NSUserDefaults standardUserDefaults] setValue:self.shareRepositoryDataArray forKey:@"shareRepositoryDataArray"];
++ (void)save{
+    [[NSUserDefaults standardUserDefaults] setValue:[EverywhereShareRepositoryManager shareRepositoryDataArray] forKey:@"shareRepositoryDataArray"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (NSArray <EverywhereShareRepository *> *)shareRepositoryArray{
-    NSMutableArray *ma = [NSMutableArray new];
-    [self.shareRepositoryDataArray enumerateObjectsUsingBlock:^(NSData * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
++ (void)addShareRepository:(EverywhereShareRepository *)shareRepository{
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:shareRepository];
+    [[EverywhereShareRepositoryManager shareRepositoryDataArray] addObject:data];
+    [EverywhereShareRepositoryManager save];
+}
+
++ (void)removeLastShareRepository{
+    [[EverywhereShareRepositoryManager shareRepositoryDataArray] removeLastObject];
+    [EverywhereShareRepositoryManager save];
+}
+
++ (NSArray <EverywhereShareRepository *> *)shareRepositoryArray{
+    NSMutableArray <EverywhereShareRepository *> *ma = [NSMutableArray new];
+    [[EverywhereShareRepositoryManager shareRepositoryDataArray] enumerateObjectsUsingBlock:^(NSData * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         EverywhereShareRepository *shareRepository = (EverywhereShareRepository *)[NSKeyedUnarchiver unarchiveObjectWithData:obj];
         [ma addObject:shareRepository];
     }];

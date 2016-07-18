@@ -37,7 +37,7 @@
 		4B001CD71D21002700DF7287 /* CTPWaitingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CD31D21002700DF7287 /* CTPWaitingView.m */; };
 		4B001CDE1D2125FC00DF7287 /* CLPlacemark+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CDD1D2125FC00DF7287 /* CLPlacemark+Assistant.m */; };
 		4B0866281D372AA2000300AD /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4B0866231D372AA2000300AD /* README.txt */; };
-		4B08662B1D373658000300AD /* ShareVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B08662A1D373658000300AD /* ShareVC.m */; };
+		4B08662B1D373658000300AD /* ShareImageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B08662A1D373658000300AD /* ShareImageVC.m */; };
 		4B08662D1D37388E000300AD /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B08662C1D37388E000300AD /* SystemConfiguration.framework */; };
 		4B08662F1D3738A4000300AD /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B08662E1D3738A4000300AD /* libz.tbd */; };
 		4B0866311D3738B3000300AD /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B0866301D3738B3000300AD /* libsqlite3.0.tbd */; };
@@ -55,6 +55,7 @@
 		4B27FDC51D2CA12000067683 /* UIButton+Bootstrap.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B27FDC21D2CA12000067683 /* UIButton+Bootstrap.m */; };
 		4B27FDC81D2CAB5500067683 /* AssetDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B27FDC71D2CAB5500067683 /* AssetDetailVC.m */; };
 		4B30E2A81D24A999002C2DE7 /* NSDate+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B30E2A71D24A999002C2DE7 /* NSDate+Assistant.m */; };
+		4B31B4381D3C5EE20072044F /* ShareRepositoryPickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B31B4371D3C5EE20072044F /* ShareRepositoryPickerVC.m */; };
 		4B3AF9C91D2F3E70009BD545 /* GCLocationAnalyser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3AF9BE1D2F3E70009BD545 /* GCLocationAnalyser.m */; };
 		4B3AF9CA1D2F3E70009BD545 /* GCPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3AF9C11D2F3E70009BD545 /* GCPhotoManager.m */; };
 		4B3AF9CB1D2F3E70009BD545 /* GCPolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3AF9C41D2F3E70009BD545 /* GCPolyline.m */; };
@@ -72,6 +73,7 @@
 		4BF8DC151D37882E00BC7B64 /* ShareBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF8DC141D37882E00BC7B64 /* ShareBar.m */; };
 		4BFA4EB31D33791A007DDA87 /* LocationPickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */; };
 		4BFA4EB61D33982A007DDA87 /* DatePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA4EB51D33982A007DDA87 /* DatePickerVC.m */; };
+		4BFC352C1D3C851200F111EE /* ShareEWAnnotationsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFC352B1D3C851200F111EE /* ShareEWAnnotationsVC.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -131,8 +133,8 @@
 		4B0866241D372AA2000300AD /* WechatAuthSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WechatAuthSDK.h; sourceTree = "<group>"; };
 		4B0866251D372AA2000300AD /* WXApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApi.h; sourceTree = "<group>"; };
 		4B0866261D372AA2000300AD /* WXApiObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApiObject.h; sourceTree = "<group>"; };
-		4B0866291D373658000300AD /* ShareVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareVC.h; path = EverywhereVisualViewControllers/ShareVC.h; sourceTree = "<group>"; };
-		4B08662A1D373658000300AD /* ShareVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShareVC.m; path = EverywhereVisualViewControllers/ShareVC.m; sourceTree = "<group>"; };
+		4B0866291D373658000300AD /* ShareImageVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareImageVC.h; path = EverywhereVisualViewControllers/ShareImageVC.h; sourceTree = "<group>"; };
+		4B08662A1D373658000300AD /* ShareImageVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShareImageVC.m; path = EverywhereVisualViewControllers/ShareImageVC.m; sourceTree = "<group>"; };
 		4B08662C1D37388E000300AD /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		4B08662E1D3738A4000300AD /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		4B0866301D3738B3000300AD /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
@@ -159,6 +161,8 @@
 		4B27FDC71D2CAB5500067683 /* AssetDetailVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AssetDetailVC.m; path = EverywhereVisualViewControllers/AssetDetailVC.m; sourceTree = "<group>"; };
 		4B30E2A61D24A999002C2DE7 /* NSDate+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+Assistant.h"; path = "NSDate+Assistant/NSDate+Assistant.h"; sourceTree = "<group>"; };
 		4B30E2A71D24A999002C2DE7 /* NSDate+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDate+Assistant.m"; path = "NSDate+Assistant/NSDate+Assistant.m"; sourceTree = "<group>"; };
+		4B31B4361D3C5EE20072044F /* ShareRepositoryPickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareRepositoryPickerVC.h; path = EverywhereVisualViewControllers/ShareRepositoryPickerVC.h; sourceTree = "<group>"; };
+		4B31B4371D3C5EE20072044F /* ShareRepositoryPickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShareRepositoryPickerVC.m; path = EverywhereVisualViewControllers/ShareRepositoryPickerVC.m; sourceTree = "<group>"; };
 		4B3AF9BD1D2F3E70009BD545 /* GCLocationAnalyser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCLocationAnalyser.h; sourceTree = "<group>"; };
 		4B3AF9BE1D2F3E70009BD545 /* GCLocationAnalyser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCLocationAnalyser.m; sourceTree = "<group>"; };
 		4B3AF9C01D2F3E70009BD545 /* GCPhotoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCPhotoManager.h; sourceTree = "<group>"; };
@@ -193,6 +197,8 @@
 		4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationPickerVC.m; path = EverywhereVisualViewControllers/LocationPickerVC.m; sourceTree = "<group>"; };
 		4BFA4EB41D33982A007DDA87 /* DatePickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DatePickerVC.h; path = EverywhereVisualViewControllers/DatePickerVC.h; sourceTree = "<group>"; };
 		4BFA4EB51D33982A007DDA87 /* DatePickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatePickerVC.m; path = EverywhereVisualViewControllers/DatePickerVC.m; sourceTree = "<group>"; };
+		4BFC352A1D3C851200F111EE /* ShareEWAnnotationsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareEWAnnotationsVC.h; path = EverywhereVisualViewControllers/ShareEWAnnotationsVC.h; sourceTree = "<group>"; };
+		4BFC352B1D3C851200F111EE /* ShareEWAnnotationsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShareEWAnnotationsVC.m; path = EverywhereVisualViewControllers/ShareEWAnnotationsVC.m; sourceTree = "<group>"; };
 		6C5CC4DC43B9922DBD449DFF /* Pods-Everywhere.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Everywhere.release.xcconfig"; path = "Pods/Target Support Files/Pods-Everywhere/Pods-Everywhere.release.xcconfig"; sourceTree = "<group>"; };
 		8CB0F045B4429E7E7F66F602 /* Pods-Everywhere.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Everywhere.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Everywhere/Pods-Everywhere.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -315,6 +321,8 @@
 				4BFA4EB51D33982A007DDA87 /* DatePickerVC.m */,
 				4BFA4EB11D33791A007DDA87 /* LocationPickerVC.h */,
 				4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */,
+				4B31B4361D3C5EE20072044F /* ShareRepositoryPickerVC.h */,
+				4B31B4371D3C5EE20072044F /* ShareRepositoryPickerVC.m */,
 				1E5A54161D28FE0F0056CF46 /* AssetsMapProVC.h */,
 				1E5A54171D28FE0F0056CF46 /* AssetsMapProVC.m */,
 				4B27FDC61D2CAB5500067683 /* AssetDetailVC.h */,
@@ -325,8 +333,10 @@
 				4B1B4BDE1D387A4200CCD842 /* AboutVC.m */,
 				4B1B4BDF1D387A4200CCD842 /* InAppPurchaseVC.h */,
 				4B1B4BE01D387A4200CCD842 /* InAppPurchaseVC.m */,
-				4B0866291D373658000300AD /* ShareVC.h */,
-				4B08662A1D373658000300AD /* ShareVC.m */,
+				4B0866291D373658000300AD /* ShareImageVC.h */,
+				4B08662A1D373658000300AD /* ShareImageVC.m */,
+				4BFC352A1D3C851200F111EE /* ShareEWAnnotationsVC.h */,
+				4BFC352B1D3C851200F111EE /* ShareEWAnnotationsVC.m */,
 				1E41FD1F1D2AB66100E1A5B9 /* LocationInfoBar.h */,
 				1E41FD201D2AB66100E1A5B9 /* LocationInfoBar.m */,
 				1E63B77A1D2E9D90003E355B /* PlacemarkInfoBar.h */,
@@ -684,6 +694,7 @@
 				4B3AF9CC1D2F3E70009BD545 /* GCRoutePolyline.m in Sources */,
 				1EF62A5D1D3BD6DF0084AF66 /* EverywhereShareRepositoryManager.m in Sources */,
 				4B001CD61D21002700DF7287 /* CTPMultiImage.m in Sources */,
+				4BFC352C1D3C851200F111EE /* ShareEWAnnotationsVC.m in Sources */,
 				1E63B77C1D2E9D90003E355B /* PlacemarkInfoBar.m in Sources */,
 				1EF62A571D3B902A0084AF66 /* CoordinateInfo+Assistant.m in Sources */,
 				4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */,
@@ -692,7 +703,7 @@
 				1E5A54181D28FE0F0056CF46 /* AssetsMapProVC.m in Sources */,
 				4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */,
 				4B1D5E7F1D3645A70011552F /* SettingVC.m in Sources */,
-				4B08662B1D373658000300AD /* ShareVC.m in Sources */,
+				4B08662B1D373658000300AD /* ShareImageVC.m in Sources */,
 				4B1B4BE11D387A4200CCD842 /* AboutVC.m in Sources */,
 				1EF62A531D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m in Sources */,
 				4BF8DC151D37882E00BC7B64 /* ShareBar.m in Sources */,
@@ -704,6 +715,7 @@
 				1EEA79511D2791A0002B6291 /* EverywhereMKAnnotation.m in Sources */,
 				1E2847F71D1ADDB900189A83 /* main.m in Sources */,
 				4B3AF9CA1D2F3E70009BD545 /* GCPhotoManager.m in Sources */,
+				4B31B4381D3C5EE20072044F /* ShareRepositoryPickerVC.m in Sources */,
 				4B3AF9CD1D2F3E70009BD545 /* GCRoutePolylineManager.m in Sources */,
 				4B001CDE1D2125FC00DF7287 /* CLPlacemark+Assistant.m in Sources */,
 				1E65218D1D28BFB500F41860 /* UIFont+Assistant.m in Sources */,

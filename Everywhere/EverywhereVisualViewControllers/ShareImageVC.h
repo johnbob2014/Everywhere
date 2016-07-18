@@ -1,5 +1,5 @@
 //
-//  ShareVC.h
+//  ShareImageVC.h
 //  Everywhere
 //
 //  Created by BobZhang on 16/7/14.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ShareVC : UIViewController
+@interface ShareImageVC : UIViewController
 
 @property (strong,nonatomic) UIImage *shareImage;
 @property (strong,nonatomic) NSString *shareWebpageUrl;

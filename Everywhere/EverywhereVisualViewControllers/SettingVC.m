@@ -10,7 +10,7 @@
 #import "SettingVC.h"
 #import "UIView+AutoLayout.h"
 #import "RETableViewManager.h"
-#import "ShareVC.h"
+#import "ShareImageVC.h"
 #import "InAppPurchaseVC.h"
 #import "AboutVC.h"
 

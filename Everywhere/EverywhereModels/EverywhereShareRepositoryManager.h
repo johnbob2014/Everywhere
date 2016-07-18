@@ -11,8 +11,8 @@
 
 @interface EverywhereShareRepositoryManager : NSObject
 
-+ (instancetype)defaultManager;
-- (void)addshareRepository:(EverywhereShareRepository *)shareRepository;
-- (NSArray <EverywhereShareRepository *> *)shareRepositoryArray;
++ (void)addShareRepository:(EverywhereShareRepository *)shareRepository;
++ (void)removeLastShareRepository;
++ (NSArray <EverywhereShareRepository *> *)shareRepositoryArray;
 
 @end

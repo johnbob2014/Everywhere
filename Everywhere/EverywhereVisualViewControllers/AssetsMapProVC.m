@@ -37,10 +37,11 @@
 #import "MapShowModeBar.h"
 #import "LocationPickerVC.h"
 #import "SettingVC.h"
-#import "ShareVC.h"
+#import "ShareImageVC.h"
+#import "ShareEWAnnotationsVC.h"
 #import "ShareBar.h"
 #import "InAppPurchaseVC.h"
-
+#import "ShareRepositoryPickerVC.h"
 
 #import "CLPlacemark+Assistant.h"
 
@@ -181,6 +182,11 @@
     if (self.myMapView) [self updateVisualViewAfterAddAnnotationsAndOverlays];    
 }
 
+- (void)setAddedIDAnnos:(NSArray<id<MKAnnotation>> *)addedIDAnnos{
+    // 设置导航序号
+    self.currentAnnotationIndex = 0;
+}
+
 #pragma mark - Life Cycle
 
 - (void)viewDidLoad{
@@ -316,6 +322,8 @@
                                                      leftButtonImage:[UIImage imageNamed:@"IcoMoon_Share2_WOBG"]
                                                     rightButtonImage:[UIImage imageNamed:@"IcoMoon_Trophy_WOBG"]];
     
+    msShareEditModeBar.leftButtonEnabled = self.settingManager.hasPurchasedShare;
+    
     [self.view addSubview:msShareEditModeBar];
     [msShareEditModeBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 5, 0, 5) excludingEdge:ALEdgeBottom];
     [msShareEditModeBar autoSetDimension:ALDimensionHeight toSize:60];
@@ -325,7 +333,7 @@
     };
     
     msShareEditModeBar.leftButtonTouchDownHandler = ^(UIButton *sender) {
-        
+        [weakSelf showShareRepositoryPicker];
     };
     
     msShareEditModeBar.rightButtonTouchDownHandler = ^(UIButton *sender){
@@ -369,8 +377,6 @@
 
 - (void)showDatePicker{
     DatePickerVC *datePickerVC = [DatePickerVC new];
-    datePickerVC.contentSizeInPopup = CGSizeMake(300, 400);
-    datePickerVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
     
     WEAKSELF(weakSelf);
     //__weak AssetsMapProVC *weakSelf = self;
@@ -386,6 +392,8 @@
         weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:weakSelf.startDate toEndDate:weakSelf.endDate inManagedObjectContext:weakSelf.cdManager.appMOC];
     };
     
+    datePickerVC.contentSizeInPopup = CGSizeMake(300, 400);
+    datePickerVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
     popupController = [[STPopupController alloc] initWithRootViewController:datePickerVC];
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
@@ -396,8 +404,6 @@
     LocationPickerVC *locationPickerVC = [LocationPickerVC new];
     NSArray <PHAssetInfo *> *allAssetInfoArray = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:weakSelf.cdManager.appMOC];
     locationPickerVC.placemarkInfoDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:allAssetInfoArray];
-    locationPickerVC.contentSizeInPopup = CGSizeMake(300, 400);
-    locationPickerVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
     
     locationPickerVC.locationModeDidChangeHandler = ^(LocationMode choosedLocationMode){
         weakSelf.settingManager.locationMode = choosedLocationMode;
@@ -409,7 +415,27 @@
         weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:choosedLocation inManagedObjectContext:weakSelf.cdManager.appMOC];
     };
     
+    locationPickerVC.contentSizeInPopup = CGSizeMake(300, 400);
+    locationPickerVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
     popupController = [[STPopupController alloc] initWithRootViewController:locationPickerVC];
+    popupController.containerView.layer.cornerRadius = 4;
+    [popupController presentInViewController:self];
+}
+
+
+
+- (void)showShareRepositoryPicker{
+    WEAKSELF(weakSelf);
+    
+    ShareRepositoryPickerVC *shareRepositoryPickerVC = [ShareRepositoryPickerVC new];
+        shareRepositoryPickerVC.shareRepositoryArray = [EverywhereShareRepositoryManager shareRepositoryArray];
+    shareRepositoryPickerVC.shareRepositoryDidChangeHandler = ^(EverywhereShareRepository *choosedShareRepository){
+        [weakSelf showEWShareRepository:choosedShareRepository isNew:NO];
+    };
+    
+    shareRepositoryPickerVC.contentSizeInPopup = CGSizeMake(300, 400);
+    shareRepositoryPickerVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
+    popupController = [[STPopupController alloc] initWithRootViewController:shareRepositoryPickerVC];
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
 }
@@ -788,7 +814,7 @@
     rightBtn1.alpha = 0.6;
     [rightBtn1 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share_WBG"] forState:UIControlStateNormal];
     rightBtn1.translatesAutoresizingMaskIntoConstraints = NO;
-    [rightBtn1 addTarget:self action:@selector(showShareVCForSnapShot) forControlEvents:UIControlEventTouchDown];
+    [rightBtn1 addTarget:self action:@selector(showShareImageVCForSnapShot) forControlEvents:UIControlEventTouchDown];
     [rightVerticalBar addSubview:rightBtn1];
     [rightBtn1 autoSetDimensionsToSize:CGSizeMake(44, 44)];
     [rightBtn1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
@@ -798,7 +824,7 @@
     rightBtn2.alpha = 0.6;
     [rightBtn2 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share2_WBG"] forState:UIControlStateNormal];
     rightBtn2.translatesAutoresizingMaskIntoConstraints = NO;
-    [rightBtn2 addTarget:self action:@selector(showShareVCForTrackOrPosition) forControlEvents:UIControlEventTouchDown];
+    [rightBtn2 addTarget:self action:@selector(showShareImageVCForTrackOrPosition) forControlEvents:UIControlEventTouchDown];
     [rightVerticalBar addSubview:rightBtn2];
     [rightBtn2 autoSetDimensionsToSize:CGSizeMake(44, 44)];
     [rightBtn2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
@@ -976,7 +1002,7 @@
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-- (void)showShareVCForSnapShot{
+- (void)showShareImageVCForSnapShot{
     [self hideVerticalBar];
     msMomentLocationModeBar.alpha = 0;
     placemarkInfoBar.alpha = 0;
@@ -1033,7 +1059,7 @@
     
     NSData *thumbImageData=UIImageJPEGRepresentation([UIImage imageNamed:@"地球_300_300"], 0.5);
     
-    ShareVC *ssVC = [ShareVC new];
+    ShareImageVC *ssVC = [ShareImageVC new];
     ssVC.shareImage = contentImage;
     ssVC.shareThumbData = thumbImageData;
     ssVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.8, ScreenHeight * 0.85);
@@ -1044,7 +1070,7 @@
     [popupController presentInViewController:self];
 }
 
-- (void)showShareVCForTrackOrPosition{
+- (void)showShareImageVCForTrackOrPosition{
     
     // 如果没有分享功能
     if (!self.settingManager.hasPurchasedShare) {
@@ -1054,33 +1080,15 @@
     
     if (!self.addedEWShareAnnos) return;
     
-    NSData *trackOrPositionData = [NSKeyedArchiver archivedDataWithRootObject:self.addedEWShareAnnos];
-    // 分享完立即清空
-    // self.addedEWShareAnnos = nil;
-    
-    //NSString *trackOrPositionURL = [[NSString alloc] initWithData:trackOrPositionData encoding:NSNonLossyASCIIStringEncoding];
-    NSString *trackOrPositionString = [trackOrPositionData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-    //NSLog(@"trackOrPositionURL (length:%ld) :\n%@",trackOrPositionString.length,trackOrPositionString);
-    
-    if (trackOrPositionString.length > 10*1024*8) {
-        NSLog(@"trackOrPositionURL is too Long!");
-        return;
-    }
-    NSString *headerString = nil;
-    if (self.settingManager.mapShowMode == MapShowModeMoment) headerString = [NSString stringWithFormat:@"%@://AlbumMaps/track/",WXAppID];
-    else if (self.settingManager.mapShowMode == MapShowModeLocation) headerString = [NSString stringWithFormat:@"%@://AlbumMaps/position/radius%0.f/",WXAppID,self.settingManager.mergedDistanceForLocation];
-    
-    trackOrPositionString = [headerString stringByAppendingString:trackOrPositionString];
-    
     NSData *thumbImageData=UIImageJPEGRepresentation([UIImage imageNamed:@"地球_300_300"], 0.5);
-    ShareVC *ssVC = [ShareVC new];
-    ssVC.shareTitle = NSLocalizedString(@"I shared my footprints to you!Take a look!", @"我分享了一个足迹给你，快来看看吧！");
-    ssVC.shareDescription = NSLocalizedString(@"Tap '···' and choose 'Open In Safari' to open AlbumMaps", @"点击右上角“···”，选择“在Safari中打开”，进入《相册地图》查看");
+    ShareEWAnnotationsVC *ssVC = [ShareEWAnnotationsVC new];
+    ssVC.shareAnnos = self.addedEWShareAnnos;
     ssVC.shareThumbData = thumbImageData;
-    ssVC.shareWebpageUrl = trackOrPositionString;
-    ssVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.8, ScreenHeight * 0.45);
-    ssVC.landscapeContentSizeInPopup = CGSizeMake(ScreenHeight * 0.45, ScreenWidth * 0.8);
+    ssVC.mapShowMode = self.settingManager.mapShowMode;
+    ssVC.mergedDistanceForLocation = self.settingManager.mergedDistanceForLocation;
     
+    ssVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.8, ScreenHeight * 0.3);
+    ssVC.landscapeContentSizeInPopup = CGSizeMake(ScreenHeight * 0.3, ScreenWidth * 0.8);
     popupController = [[STPopupController alloc] initWithRootViewController:ssVC];
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
@@ -1166,10 +1174,6 @@
     shareRepository.title = [NOW stringWithDefaultFormat];
     shareRepository.creationDate = NOW;
     
-    EverywhereShareRepositoryManager *shareRepositoryManager = [EverywhereShareRepositoryManager defaultManager];
-    [shareRepositoryManager addshareRepository:shareRepository];
-    NSLog(@"%lu",(unsigned long)shareRepositoryManager.shareRepositoryArray.count);
-    
     // 显示主界面
     [self dismissViewControllerAnimated:YES completion:nil];
     
@@ -1179,7 +1183,8 @@
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK",@"")
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction * action) {
-                                                         [self enterShareModeWithEWShareRepository:shareRepository];
+                                                         [self enterShareMode];
+                                                         [self showEWShareRepository:shareRepository isNew:YES];
                                                      }];
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"") style:UIAlertActionStyleCancel handler:nil];
@@ -1190,7 +1195,7 @@
 
 }
 
-- (void)enterShareModeWithEWShareRepository:(EverywhereShareRepository *)shareRepository{
+- (void)enterShareMode{
     msMomentLocationModeBar.hidden = YES;
     placemarkInfoBar.hidden = YES;
     leftVerticalBar.hidden = YES;
@@ -1200,6 +1205,15 @@
     quiteShareModeButton.hidden = NO;
     
     naviBar.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.6];
+}
+
+- (void)showEWShareRepository:(EverywhereShareRepository *)shareRepository isNew:(BOOL)isNew{
+    
+    if (isNew) {
+        // 新接收到，先保存shareRepository，如果用户选择丢弃，再删除掉
+        [EverywhereShareRepositoryManager addShareRepository:shareRepository];
+        if (DEBUGMODE) NSLog(@"shareRepositoryArray count : %lu",(unsigned long)[EverywhereShareRepositoryManager shareRepositoryArray].count);
+    }
     
     // 清理地图
     self.addedEWAnnos = nil;
@@ -1207,6 +1221,8 @@
     
     // 添加接收到的ShareAnnotations
     [self.myMapView addAnnotations:shareRepository.shareAnnos];
+    
+    // 设置addedIDAnnos，用于导航
     self.addedIDAnnos = shareRepository.shareAnnos;
     
     // 添加Overlays
@@ -1222,14 +1238,23 @@
 }
 
 - (void)showQuiteShareModeAlertController{
+    
+    if (self.settingManager.hasPurchasedShare) {
+        // 如果已经购买了分享模式，直接退出（内容已经保存），不再询问
+        [self quiteShareMode];
+        return;
+    }
+    
     NSString *alertTitle = NSLocalizedString(@"Quite Share Mode",@"退出分享模式");
     NSString *alertMessage = NSLocalizedString(@"How to dealwith the footprints?", @"请选择足迹处理方式");
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
+    /*
     UIAlertAction *saveAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Save",@"保存")
                                                          style:UIAlertActionStyleDefault
                                                        handler:^(UIAlertAction * action) {
                                                            [self quiteShareMode];
                                                        }];
+     */
     UIAlertAction *purchaseAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase",@"购买")
                                                              style:UIAlertActionStyleDefault
                                                            handler:^(UIAlertAction * action) {
@@ -1238,13 +1263,13 @@
     UIAlertAction *dropAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Drop",@"丢弃")
                                                          style:UIAlertActionStyleDefault
                                                        handler:^(UIAlertAction * action) {
+                                                           // 用户选择丢弃，则删除保存的shareRepository
+                                                           [EverywhereShareRepositoryManager removeLastShareRepository];
                                                            [self quiteShareMode];
                                                        }];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
     
-    if (self.settingManager.hasPurchasedShare) [alertController addAction:saveAction];
-    else [alertController addAction:purchaseAction];
-    
+    [alertController addAction:purchaseAction];
     [alertController addAction:dropAction];
     [alertController addAction:cancelAction];
     
