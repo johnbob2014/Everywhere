@@ -12,7 +12,7 @@
 @interface EverywhereShareRepositoryManager : NSObject
 
 + (void)addShareRepository:(EverywhereShareRepository *)shareRepository;
-+ (void)removeLastShareRepository;
++ (void)removeLastAddedShareRepository;
 + (NSArray <EverywhereShareRepository *> *)shareRepositoryArray;
 
 @end

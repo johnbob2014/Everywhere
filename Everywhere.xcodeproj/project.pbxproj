@@ -19,11 +19,7 @@
 		1E5A54181D28FE0F0056CF46 /* AssetsMapProVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E5A54171D28FE0F0056CF46 /* AssetsMapProVC.m */; };
 		1E63B77C1D2E9D90003E355B /* PlacemarkInfoBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E63B77B1D2E9D90003E355B /* PlacemarkInfoBar.m */; };
 		1E65218D1D28BFB500F41860 /* UIFont+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E65218C1D28BFB500F41860 /* UIFont+Assistant.m */; };
-		1E74C3081D268377000A9790 /* floatTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E74C3041D268377000A9790 /* floatTableViewCell.m */; };
-		1E74C3091D268377000A9790 /* floatTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E74C3051D268377000A9790 /* floatTableViewCell.xib */; };
-		1E74C30A1D268377000A9790 /* VCFloatingActionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E74C3071D268377000A9790 /* VCFloatingActionButton.m */; };
 		1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */; };
-		1E9D5D441D1E8F2D00E8B630 /* Everywhere.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1E9D5D431D1E8F2D00E8B630 /* Everywhere.rtf */; };
 		1EEA79511D2791A0002B6291 /* EverywhereMKAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEA79501D2791A0002B6291 /* EverywhereMKAnnotation.m */; };
 		1EF62A531D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A501D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m */; };
 		1EF62A541D3B8FD50084AF66 /* CoordinateInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A521D3B8FD50084AF66 /* CoordinateInfo.m */; };
@@ -31,10 +27,6 @@
 		1EF62A5A1D3BB90F0084AF66 /* EverywhereShareRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A591D3BB90F0084AF66 /* EverywhereShareRepository.m */; };
 		1EF62A5D1D3BD6DF0084AF66 /* EverywhereShareRepositoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A5C1D3BD6DF0084AF66 /* EverywhereShareRepositoryManager.m */; };
 		2A6563BC8BBF2B5997748106 /* libPods-Everywhere.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E9CF64AE7F289869F003D6F /* libPods-Everywhere.a */; };
-		4B001CD41D21002700DF7287 /* CTPImageBrowserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CCD1D21002700DF7287 /* CTPImageBrowserVC.m */; };
-		4B001CD51D21002700DF7287 /* CTPImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CCF1D21002700DF7287 /* CTPImageView.m */; };
-		4B001CD61D21002700DF7287 /* CTPMultiImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CD11D21002700DF7287 /* CTPMultiImage.m */; };
-		4B001CD71D21002700DF7287 /* CTPWaitingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CD31D21002700DF7287 /* CTPWaitingView.m */; };
 		4B001CDE1D2125FC00DF7287 /* CLPlacemark+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CDD1D2125FC00DF7287 /* CLPlacemark+Assistant.m */; };
 		4B0866281D372AA2000300AD /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4B0866231D372AA2000300AD /* README.txt */; };
 		4B08662B1D373658000300AD /* ShareImageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B08662A1D373658000300AD /* ShareImageVC.m */; };
@@ -73,7 +65,7 @@
 		4BF8DC151D37882E00BC7B64 /* ShareBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF8DC141D37882E00BC7B64 /* ShareBar.m */; };
 		4BFA4EB31D33791A007DDA87 /* LocationPickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */; };
 		4BFA4EB61D33982A007DDA87 /* DatePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA4EB51D33982A007DDA87 /* DatePickerVC.m */; };
-		4BFC352C1D3C851200F111EE /* ShareEWAnnotationsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFC352B1D3C851200F111EE /* ShareEWAnnotationsVC.m */; };
+		4BFC352C1D3C851200F111EE /* ShareEWShareRepositoryVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFC352B1D3C851200F111EE /* ShareEWShareRepositoryVC.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -197,8 +189,8 @@
 		4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationPickerVC.m; path = EverywhereVisualViewControllers/LocationPickerVC.m; sourceTree = "<group>"; };
 		4BFA4EB41D33982A007DDA87 /* DatePickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DatePickerVC.h; path = EverywhereVisualViewControllers/DatePickerVC.h; sourceTree = "<group>"; };
 		4BFA4EB51D33982A007DDA87 /* DatePickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatePickerVC.m; path = EverywhereVisualViewControllers/DatePickerVC.m; sourceTree = "<group>"; };
-		4BFC352A1D3C851200F111EE /* ShareEWAnnotationsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareEWAnnotationsVC.h; path = EverywhereVisualViewControllers/ShareEWAnnotationsVC.h; sourceTree = "<group>"; };
-		4BFC352B1D3C851200F111EE /* ShareEWAnnotationsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShareEWAnnotationsVC.m; path = EverywhereVisualViewControllers/ShareEWAnnotationsVC.m; sourceTree = "<group>"; };
+		4BFC352A1D3C851200F111EE /* ShareEWShareRepositoryVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareEWShareRepositoryVC.h; path = EverywhereVisualViewControllers/ShareEWShareRepositoryVC.h; sourceTree = "<group>"; };
+		4BFC352B1D3C851200F111EE /* ShareEWShareRepositoryVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShareEWShareRepositoryVC.m; path = EverywhereVisualViewControllers/ShareEWShareRepositoryVC.m; sourceTree = "<group>"; };
 		6C5CC4DC43B9922DBD449DFF /* Pods-Everywhere.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Everywhere.release.xcconfig"; path = "Pods/Target Support Files/Pods-Everywhere/Pods-Everywhere.release.xcconfig"; sourceTree = "<group>"; };
 		8CB0F045B4429E7E7F66F602 /* Pods-Everywhere.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Everywhere.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Everywhere/Pods-Everywhere.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -335,8 +327,8 @@
 				4B1B4BE01D387A4200CCD842 /* InAppPurchaseVC.m */,
 				4B0866291D373658000300AD /* ShareImageVC.h */,
 				4B08662A1D373658000300AD /* ShareImageVC.m */,
-				4BFC352A1D3C851200F111EE /* ShareEWAnnotationsVC.h */,
-				4BFC352B1D3C851200F111EE /* ShareEWAnnotationsVC.m */,
+				4BFC352A1D3C851200F111EE /* ShareEWShareRepositoryVC.h */,
+				4BFC352B1D3C851200F111EE /* ShareEWShareRepositoryVC.m */,
 				1E41FD1F1D2AB66100E1A5B9 /* LocationInfoBar.h */,
 				1E41FD201D2AB66100E1A5B9 /* LocationInfoBar.m */,
 				1E63B77A1D2E9D90003E355B /* PlacemarkInfoBar.h */,
@@ -605,8 +597,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1E74C3091D268377000A9790 /* floatTableViewCell.xib in Resources */,
-				1E9D5D441D1E8F2D00E8B630 /* Everywhere.rtf in Resources */,
 				4B216FEF1D347DCA003DCDBC /* Info.plist in Resources */,
 				4BF513091D348870009565EF /* Localizable.strings in Resources */,
 				1E2848081D1ADDB900189A83 /* LaunchScreen.storyboard in Resources */,
@@ -674,14 +664,12 @@
 				4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */,
 				4B30E2A81D24A999002C2DE7 /* NSDate+Assistant.m in Sources */,
 				4BE88A9F1D332B38009501CE /* EverywhereSettingManager.m in Sources */,
-				1E74C3081D268377000A9790 /* floatTableViewCell.m in Sources */,
 				4B3AF9C91D2F3E70009BD545 /* GCLocationAnalyser.m in Sources */,
 				4BD51FC81D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m in Sources */,
 				1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */,
 				4B27FDC41D2CA12000067683 /* NSString+FontAwesome.m in Sources */,
 				4B1B4BE21D387A4200CCD842 /* InAppPurchaseVC.m in Sources */,
 				1E41FD211D2AB66100E1A5B9 /* LocationInfoBar.m in Sources */,
-				4B001CD41D21002700DF7287 /* CTPImageBrowserVC.m in Sources */,
 				1EF62A541D3B8FD50084AF66 /* CoordinateInfo.m in Sources */,
 				1EF62A5A1D3BB90F0084AF66 /* EverywhereShareRepository.m in Sources */,
 				4BFA4EB31D33791A007DDA87 /* LocationPickerVC.m in Sources */,
@@ -693,13 +681,11 @@
 				1E2848031D1ADDB900189A83 /* Everywhere.xcdatamodeld in Sources */,
 				4B3AF9CC1D2F3E70009BD545 /* GCRoutePolyline.m in Sources */,
 				1EF62A5D1D3BD6DF0084AF66 /* EverywhereShareRepositoryManager.m in Sources */,
-				4B001CD61D21002700DF7287 /* CTPMultiImage.m in Sources */,
-				4BFC352C1D3C851200F111EE /* ShareEWAnnotationsVC.m in Sources */,
+				4BFC352C1D3C851200F111EE /* ShareEWShareRepositoryVC.m in Sources */,
 				1E63B77C1D2E9D90003E355B /* PlacemarkInfoBar.m in Sources */,
 				1EF62A571D3B902A0084AF66 /* CoordinateInfo+Assistant.m in Sources */,
 				4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */,
 				1E2847FA1D1ADDB900189A83 /* EverywhereAppDelegate.m in Sources */,
-				1E74C30A1D268377000A9790 /* VCFloatingActionButton.m in Sources */,
 				1E5A54181D28FE0F0056CF46 /* AssetsMapProVC.m in Sources */,
 				4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */,
 				4B1D5E7F1D3645A70011552F /* SettingVC.m in Sources */,
@@ -708,8 +694,6 @@
 				1EF62A531D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m in Sources */,
 				4BF8DC151D37882E00BC7B64 /* ShareBar.m in Sources */,
 				4B27FDC51D2CA12000067683 /* UIButton+Bootstrap.m in Sources */,
-				4B001CD51D21002700DF7287 /* CTPImageView.m in Sources */,
-				4B001CD71D21002700DF7287 /* CTPWaitingView.m in Sources */,
 				4B90DDFA1D38C5A200332945 /* EverywhereShareMKAnnotation.m in Sources */,
 				4BD51FCC1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m in Sources */,
 				1EEA79511D2791A0002B6291 /* EverywhereMKAnnotation.m in Sources */,

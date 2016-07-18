@@ -18,6 +18,8 @@
 #define AppID @"1133399709"
 #define AppDownloadURLString @"https://itunes.apple.com/app/1133399709"
 
+#define VCBackgroundColor [UIColor groupTableViewBackgroundColor]
+
 #define WEAKSELF(weakSelf)  __weak __typeof (&*self)weakSelf = self;
 
 #define IOS7 ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0 ? YES : NO)

@@ -23,12 +23,13 @@
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder{
     CGPoint annotationCoordinatePoint = [aDecoder decodeCGPointForKey:@"annotationCoordinatePoint"];
-    NSTimeInterval startDateTimeInterval = [aDecoder decodeDoubleForKey:@"startDateTimeInterval"];
+    //NSTimeInterval startDateTimeInterval = [aDecoder decodeDoubleForKey:@"startDateTimeInterval"];
     NSTimeInterval endDateTimeInterval = [aDecoder decodeDoubleForKey:@"endDateTimeInterval"];
     
     EverywhereShareMKAnnotation *shareAnno = [EverywhereShareMKAnnotation new];
     shareAnno.annotationCoordinate = CLLocationCoordinate2DMake(annotationCoordinatePoint.x, annotationCoordinatePoint.y);
-    shareAnno.startDate = [NSDate dateWithTimeIntervalSinceReferenceDate:startDateTimeInterval];
+    //shareAnno.startDate = [NSDate dateWithTimeIntervalSinceReferenceDate:startDateTimeInterval];
+    shareAnno.startDate = [aDecoder decodeObjectForKey:@"startDate"];
     
     if (endDateTimeInterval != 0) shareAnno.endDate = [NSDate dateWithTimeIntervalSinceReferenceDate:endDateTimeInterval];
     else shareAnno.endDate = nil;
@@ -40,8 +41,11 @@
     CGPoint annotationCoordinatePoint = CGPointMake(self.annotationCoordinate.latitude, self.annotationCoordinate.longitude);
     [aCoder encodeCGPoint:annotationCoordinatePoint forKey:@"annotationCoordinatePoint"];
     
+    [aCoder encodeObject:self.startDate forKey:@"startDate"];
+    /*
     NSTimeInterval startDateTimeInterval = [self.startDate timeIntervalSinceReferenceDate];
     [aCoder encodeDouble:startDateTimeInterval forKey:@"startDateTimeInterval"];
+    */
     
     if (self.endDate) {
         NSTimeInterval endDateTimeInterval = [self.endDate timeIntervalSinceReferenceDate];

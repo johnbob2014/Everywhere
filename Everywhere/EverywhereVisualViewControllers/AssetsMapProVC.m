@@ -38,7 +38,7 @@
 #import "LocationPickerVC.h"
 #import "SettingVC.h"
 #import "ShareImageVC.h"
-#import "ShareEWAnnotationsVC.h"
+#import "ShareEWShareRepositoryVC.h"
 #import "ShareBar.h"
 #import "InAppPurchaseVC.h"
 #import "ShareRepositoryPickerVC.h"
@@ -183,6 +183,7 @@
 }
 
 - (void)setAddedIDAnnos:(NSArray<id<MKAnnotation>> *)addedIDAnnos{
+    _addedIDAnnos = addedIDAnnos;
     // 设置导航序号
     self.currentAnnotationIndex = 0;
 }
@@ -269,9 +270,15 @@
     
     //NSLog(@"%@",self.myMapView.gestureRecognizers);
     
+    UILongPressGestureRecognizer *longPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(mapViewTapGR:)];
+    longPressGR.minimumPressDuration = 2.0;
+    [self.myMapView addGestureRecognizer:longPressGR];
+    
+    /*
     UITapGestureRecognizer *mapViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mapViewTapGR:)];
     mapViewTapGR.delegate = self;
     [self.myMapView addGestureRecognizer:mapViewTapGR];
+    */
     
     //NSLog(@"%@",self.myMapView.gestureRecognizers);
 }
@@ -322,7 +329,7 @@
                                                      leftButtonImage:[UIImage imageNamed:@"IcoMoon_Share2_WOBG"]
                                                     rightButtonImage:[UIImage imageNamed:@"IcoMoon_Trophy_WOBG"]];
     
-    msShareEditModeBar.leftButtonEnabled = self.settingManager.hasPurchasedShare;
+    //msShareEditModeBar.leftButtonEnabled = self.settingManager.hasPurchasedShare;
     
     [self.view addSubview:msShareEditModeBar];
     [msShareEditModeBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 5, 0, 5) excludingEdge:ALEdgeBottom];
@@ -333,7 +340,8 @@
     };
     
     msShareEditModeBar.leftButtonTouchDownHandler = ^(UIButton *sender) {
-        [weakSelf showShareRepositoryPicker];
+        if (weakSelf.settingManager.hasPurchasedShare) [weakSelf showShareRepositoryPicker];
+        else [weakSelf showPurchaseShareFunctionAlertController];
     };
     
     msShareEditModeBar.rightButtonTouchDownHandler = ^(UIButton *sender){
@@ -430,7 +438,7 @@
     ShareRepositoryPickerVC *shareRepositoryPickerVC = [ShareRepositoryPickerVC new];
         shareRepositoryPickerVC.shareRepositoryArray = [EverywhereShareRepositoryManager shareRepositoryArray];
     shareRepositoryPickerVC.shareRepositoryDidChangeHandler = ^(EverywhereShareRepository *choosedShareRepository){
-        [weakSelf showEWShareRepository:choosedShareRepository isNew:NO];
+        [weakSelf showEWShareRepository:choosedShareRepository];
     };
     
     shareRepositoryPickerVC.contentSizeInPopup = CGSizeMake(300, 400);
@@ -540,7 +548,8 @@
 }
 
 - (void)nextButtonPressed:(id)sender{
-    
+    //NSLog(@"%@",NSStringFromSelector(_cmd));
+    //NSLog(@"%@",self.addedIDAnnos);
     id<MKAnnotation> idAnno = self.myMapView.selectedAnnotations.firstObject;
     if (!idAnno && self.currentAnnotationIndex) {
         idAnno = self.addedIDAnnos[self.currentAnnotationIndex];
@@ -808,13 +817,13 @@
     [self.view addSubview:rightVerticalBar];
     [rightVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
     [rightVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:rightSwipeVerticalBar withOffset:0];
-    [rightVerticalBar autoSetDimensionsToSize:CGSizeMake(ButtionEdgeLength, ButtonPlaceholderHeight * 2)];
+    [rightVerticalBar autoSetDimensionsToSize:CGSizeMake(ButtionEdgeLength, ButtonPlaceholderHeight * 3)];
     
     UIButton *rightBtn1 = [UIButton newAutoLayoutView];
     rightBtn1.alpha = 0.6;
     [rightBtn1 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share_WBG"] forState:UIControlStateNormal];
     rightBtn1.translatesAutoresizingMaskIntoConstraints = NO;
-    [rightBtn1 addTarget:self action:@selector(showShareImageVCForSnapShot) forControlEvents:UIControlEventTouchDown];
+    [rightBtn1 addTarget:self action:@selector(showShareImageVC) forControlEvents:UIControlEventTouchDown];
     [rightVerticalBar addSubview:rightBtn1];
     [rightBtn1 autoSetDimensionsToSize:CGSizeMake(44, 44)];
     [rightBtn1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
@@ -824,11 +833,21 @@
     rightBtn2.alpha = 0.6;
     [rightBtn2 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share2_WBG"] forState:UIControlStateNormal];
     rightBtn2.translatesAutoresizingMaskIntoConstraints = NO;
-    [rightBtn2 addTarget:self action:@selector(showShareImageVCForTrackOrPosition) forControlEvents:UIControlEventTouchDown];
+    [rightBtn2 addTarget:self action:@selector(showShareEWShareRepositoryVC) forControlEvents:UIControlEventTouchDown];
     [rightVerticalBar addSubview:rightBtn2];
     [rightBtn2 autoSetDimensionsToSize:CGSizeMake(44, 44)];
     [rightBtn2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
     [rightBtn2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:rightBtn1 withOffset:16];
+    
+    UIButton *rightBtn3 = [UIButton newAutoLayoutView];
+    rightBtn3.alpha = 0.6;
+    [rightBtn3 setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
+    rightBtn3.translatesAutoresizingMaskIntoConstraints = NO;
+    [rightBtn3 addTarget:self action:@selector(enterShareMode) forControlEvents:UIControlEventTouchDown];
+    [rightVerticalBar addSubview:rightBtn3];
+    [rightBtn3 autoSetDimensionsToSize:CGSizeMake(44, 44)];
+    [rightBtn3 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [rightBtn3 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:rightBtn2 withOffset:16];
     
 #pragma mark Button
     quiteShareModeButton = [UIButton newAutoLayoutView];
@@ -1002,7 +1021,7 @@
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-- (void)showShareImageVCForSnapShot{
+- (void)showShareImageVC{
     [self hideVerticalBar];
     msMomentLocationModeBar.alpha = 0;
     placemarkInfoBar.alpha = 0;
@@ -1070,8 +1089,7 @@
     [popupController presentInViewController:self];
 }
 
-- (void)showShareImageVCForTrackOrPosition{
-    
+- (void)showShareEWShareRepositoryVC{
     // 如果没有分享功能
     if (!self.settingManager.hasPurchasedShare) {
         [self showPurchaseShareFunctionAlertController];
@@ -1080,21 +1098,29 @@
     
     if (!self.addedEWShareAnnos) return;
     
-    NSData *thumbImageData=UIImageJPEGRepresentation([UIImage imageNamed:@"地球_300_300"], 0.5);
-    ShareEWAnnotationsVC *ssVC = [ShareEWAnnotationsVC new];
-    ssVC.shareAnnos = self.addedEWShareAnnos;
-    ssVC.shareThumbData = thumbImageData;
-    ssVC.mapShowMode = self.settingManager.mapShowMode;
-    ssVC.mergedDistanceForLocation = self.settingManager.mergedDistanceForLocation;
+    // 生成分享对象
+    EverywhereShareRepository *shareRepository = [EverywhereShareRepository new];
+    shareRepository.shareAnnos = self.addedEWShareAnnos;
+    shareRepository.radius = self.settingManager.mergedDistanceForLocation;
+    shareRepository.creationDate = NOW;
+    shareRepository.isSharedByMe = YES;
     
-    ssVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.8, ScreenHeight * 0.3);
-    ssVC.landscapeContentSizeInPopup = CGSizeMake(ScreenHeight * 0.3, ScreenWidth * 0.8);
+    if (self.settingManager.mapShowMode == MapShowModeMoment) shareRepository.title = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate];
+    else shareRepository.title = self.lastPlacemark;
+    
+    ShareEWShareRepositoryVC *ssVC = [ShareEWShareRepositoryVC new];
+    ssVC.shareRepository = shareRepository;
+    NSData *thumbImageData=UIImageJPEGRepresentation([UIImage imageNamed:@"地球_300_300"], 0.5);
+    ssVC.shareThumbImageData = thumbImageData;
+    
+    ssVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.9, 200);
+    ssVC.landscapeContentSizeInPopup = CGSizeMake(200, ScreenWidth * 0.9);
     popupController = [[STPopupController alloc] initWithRootViewController:ssVC];
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
     
     // 测试使用
-    // [self didReceiveTrackOrPositionString:trackOrPositionString];
+    //
 }
 
 - (void)showPurchaseShareFunctionAlertController{
@@ -1131,11 +1157,13 @@
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-- (void)didReceiveTrackOrPositionString:(NSString *)receivedString{
-    NSString *trackOrPositionString = nil;
-    CLLocationDistance sharedRadius = 0;
+- (void)didReceiveShareRepositoryString:(NSString *)receivedString{
+    NSString *shareRepositoryString = nil;
+    //CLLocationDistance sharedRadius = 0;
     
-    NSString *headerString = nil;
+    NSString *headerString = [NSString stringWithFormat:@"%@://AlbumMaps/",WXAppID];
+    
+    /*
     if ([receivedString containsString:@"track/"]) {
         // 时刻模式分享的足迹
         headerString = [NSString stringWithFormat:@"%@://AlbumMaps/track/",WXAppID];
@@ -1152,39 +1180,51 @@
         radiusNumberString = [radiusNumberString stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]];
         sharedRadius = [radiusNumberString doubleValue];
     }
-    
+    */
+    shareRepositoryString = [receivedString stringByReplacingOccurrencesOfString:headerString withString:@""];
     // For iOS9
-    trackOrPositionString = [trackOrPositionString stringByReplacingOccurrencesOfString:@"%0D%0A" withString:@"\n"];
+    shareRepositoryString = [shareRepositoryString stringByReplacingOccurrencesOfString:@"%0D%0A" withString:@"\n"];
     // For iOS8
-    trackOrPositionString = [trackOrPositionString stringByReplacingOccurrencesOfString:@"%20" withString:@"\n"];
+    shareRepositoryString = [shareRepositoryString stringByReplacingOccurrencesOfString:@"%20" withString:@"\n"];
     
-    if (DEBUGMODE) NSLog(@"trackOrPositionString:\n%@",trackOrPositionString);
-    NSData *trackOrPositionData = [[NSData alloc] initWithBase64EncodedString:trackOrPositionString options:NSDataBase64DecodingIgnoreUnknownCharacters];
-    NSArray <EverywhereShareMKAnnotation *> *receivedEWShareAnnos = [NSKeyedUnarchiver unarchiveObjectWithData:trackOrPositionData];
-    if (DEBUGMODE) NSLog(@"received shareAnnotation count : %lu",(unsigned long)receivedEWShareAnnos.count);
+    //if (DEBUGMODE) NSLog(@"\n%@",shareRepositoryString);
     
+    NSData *shareRepositoryData = [[NSData alloc] initWithBase64EncodedString:shareRepositoryString options:NSDataBase64DecodingIgnoreUnknownCharacters];
     
-    if (!(receivedEWShareAnnos.count > 0)) return;
+    // 获取接收到的分享对象
+    EverywhereShareRepository *shareRepository = nil;
+    
+    // 解析数据可能出错
+    @try {
+        shareRepository = [NSKeyedUnarchiver unarchiveObjectWithData:shareRepositoryData];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
+    
+    //if (DEBUGMODE) NSLog(@"received shareAnnotation count : %lu",(unsigned long)receivedEWShareAnnos.count);
+    
+    if (!shareRepository) return;
     // 成功获取分享的数据
     
-    // 生成分享数据对象
-    EverywhereShareRepository *shareRepository = [EverywhereShareRepository new];
-    shareRepository.shareAnnos = receivedEWShareAnnos;
-    shareRepository.radius = sharedRadius;
-    shareRepository.title = [NOW stringWithDefaultFormat];
-    shareRepository.creationDate = NOW;
+    // 修改属性
+    shareRepository.isSharedByMe = NO;
+    // 新接收到，先保存shareRepository，如果用户选择丢弃，再删除掉
+    [EverywhereShareRepositoryManager addShareRepository:shareRepository];
+    if (DEBUGMODE) NSLog(@"shareRepositoryArray count : %lu",(unsigned long)[EverywhereShareRepositoryManager shareRepositoryArray].count);
     
     // 显示主界面
     [self dismissViewControllerAnimated:YES completion:nil];
     
     NSString *alertTitle = NSLocalizedString(@"Receive Shared Footprints",@"收到分享的足迹");
-    NSString *alertMessage = [NSString stringWithFormat:@"%@ %lu %@%@",NSLocalizedString(@"There are", @"该足迹共有"),(unsigned long)receivedEWShareAnnos.count,NSLocalizedString(@"footprints.", @"个足迹点，"), NSLocalizedString(@"Would you like to accept the footprints and enter Share Mode?", @"是否接收足迹并进入分享模式？")];
+    NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@ %lu %@%@",shareRepository.title,NSLocalizedString(@"There are", @"该足迹共有"),(unsigned long)shareRepository.shareAnnos.count,NSLocalizedString(@"footprints.", @"个足迹点，"), NSLocalizedString(@"Would you like to accept the footprints and enter Share Mode?", @"是否接收足迹并进入分享模式？")];
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK",@"")
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction * action) {
                                                          [self enterShareMode];
-                                                         [self showEWShareRepository:shareRepository isNew:YES];
+                                                         [self showEWShareRepository:shareRepository];
                                                      }];
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"") style:UIAlertActionStyleCancel handler:nil];
@@ -1207,14 +1247,7 @@
     naviBar.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.6];
 }
 
-- (void)showEWShareRepository:(EverywhereShareRepository *)shareRepository isNew:(BOOL)isNew{
-    
-    if (isNew) {
-        // 新接收到，先保存shareRepository，如果用户选择丢弃，再删除掉
-        [EverywhereShareRepositoryManager addShareRepository:shareRepository];
-        if (DEBUGMODE) NSLog(@"shareRepositoryArray count : %lu",(unsigned long)[EverywhereShareRepositoryManager shareRepositoryArray].count);
-    }
-    
+- (void)showEWShareRepository:(EverywhereShareRepository *)shareRepository{
     // 清理地图
     self.addedEWAnnos = nil;
     [self.myMapView removeAnnotations:self.myMapView.annotations];
@@ -1264,7 +1297,7 @@
                                                          style:UIAlertActionStyleDefault
                                                        handler:^(UIAlertAction * action) {
                                                            // 用户选择丢弃，则删除保存的shareRepository
-                                                           [EverywhereShareRepositoryManager removeLastShareRepository];
+                                                           [EverywhereShareRepositoryManager removeLastAddedShareRepository];
                                                            [self quiteShareMode];
                                                        }];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
@@ -1330,6 +1363,7 @@
         EverywhereShareMKAnnotation *shareAnno = [EverywhereShareMKAnnotation new];
         shareAnno.annotationCoordinate = firstAsset.location.coordinate;
         shareAnno.startDate = firstAsset.creationDate;
+        if (self.settingManager.mapShowMode == MapShowModeLocation) shareAnno.endDate = lastAsset.creationDate;
         [shareAnnotationsToAdd addObject:shareAnno];
     }];
     
@@ -1834,8 +1868,8 @@
 }
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated{
-    MKCoordinateSpan newSpan = mapView.region.span;
-    NSLog(@"%@",NSStringFromCGPoint(CGPointMake(newSpan.latitudeDelta, newSpan.longitudeDelta)));
+    //MKCoordinateSpan newSpan = mapView.region.span;
+    //NSLog(@"%@",NSStringFromCGPoint(CGPointMake(newSpan.latitudeDelta, newSpan.longitudeDelta)));
 }
 
 @end

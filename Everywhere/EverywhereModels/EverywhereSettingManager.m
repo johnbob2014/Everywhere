@@ -42,7 +42,7 @@
 
 - (CLLocationDistance)mergedDistanceForLocation{
     CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"mergedDistanceForLocation"];
-    if (!distance || distance == 0) distance = 20000;
+    if (!distance || distance == 0) distance = 1000;
     return distance;
 }
 
@@ -145,5 +145,6 @@
     [[NSUserDefaults standardUserDefaults] setBool:hasPurchasedShare forKey:@"hasPurchasedShare"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
+
 
 @end

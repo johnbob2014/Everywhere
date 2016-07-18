@@ -16,8 +16,7 @@ typedef void(^ButtonTouchDownHandler)(UIButton *sender);
 @property (strong,nonatomic) NSString *info;
 
 @property (assign,nonatomic) BOOL modeSegEnabled;
-@property (assign,nonatomic) BOOL leftButtonEnabled;
-@property (assign,nonatomic) BOOL rightButtonEnabled;
+
 
 - (instancetype)initWithModeSegItems:(NSArray *)segItems selectedSegIndex:(NSInteger)selectedSegIndex leftButtonImage:(UIImage *)leftImage rightButtonImage:(UIImage *)rightImage;
 

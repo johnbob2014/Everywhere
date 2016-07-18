@@ -14,6 +14,9 @@
 @property (strong,nonatomic) UILabel *infoLabel;
 @property (strong,nonatomic) UIButton *leftButton;
 @property (strong,nonatomic) UIButton *rightButton;
+
+@property (assign,nonatomic) BOOL leftButtonEnabled;
+@property (assign,nonatomic) BOOL rightButtonEnabled;
 @end
 
 @implementation MapShowModeBar{
@@ -32,12 +35,13 @@
     self.modeSeg.selectedSegmentIndex = mapShowMode;
     [self mapShowModeValueChanged:self.modeSeg];
 }
+*/
 
 - (void)setInfo:(NSString *)info{
     _info = info;
     self.infoLabel.text = info;
 }
-*/
+
 
 - (instancetype)initWithModeSegItems:(NSArray *)segItems selectedSegIndex:(NSInteger)selectedSegIndex leftButtonImage:(UIImage *)leftImage rightButtonImage:(UIImage *)rightImage{
     self = [super init];
@@ -87,6 +91,9 @@
         [self.rightButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Background"] forState:UIControlStateNormal];
         [self.rightButton addTarget:self action:@selector(rightButtonTouchDown:) forControlEvents:UIControlEventTouchDown];
         [rightView addSubview:self.rightButton];
+        
+        self.leftButtonEnabled = YES;
+        self.rightButtonEnabled = YES;
 
     }
     return self;
@@ -96,11 +103,11 @@
     if (self.mapShowModeChangedHandler) self.mapShowModeChangedHandler(sender);
     
     if (sender.selectedSegmentIndex == 0) {
-        self.leftButton.enabled = self.leftButtonEnabled;
+        self.leftButton.enabled = YES;//self.leftButtonEnabled;
         self.rightButton.enabled = NO;
     }else{
         self.leftButton.enabled = NO;
-        self.rightButton.enabled = self.rightButtonEnabled;
+        self.rightButton.enabled = YES;// self.rightButtonEnabled;
     }
     
     self.infoLabel.text = modeSegItems[sender.selectedSegmentIndex];

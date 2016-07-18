@@ -15,6 +15,8 @@
 @property (assign,nonatomic) double radius;
 
 @property (strong,nonatomic) NSString *title;
+
 @property (strong,nonatomic) NSDate *creationDate;
+@property (assign,nonatomic) BOOL isSharedByMe;
 
 @end

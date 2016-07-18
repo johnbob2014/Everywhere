@@ -81,6 +81,7 @@
         [allAssetInfoArray enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if (![obj.reverseGeocodeSucceed boolValue]) {
                 [PHAssetInfo updatePlacemarkForAssetInfo:obj];
+                //NSLog(@"%@",NSStringFromCGPoint(CGPointMake([obj.latitude_Coordinate_Location doubleValue], [obj.longitude_Coordinate_Location doubleValue])));
                 [NSThread sleepForTimeInterval:0.5];
             }
         }];
@@ -95,12 +96,11 @@
     
     NSDictionary *dic = [photoManager fetchAssetsFormStartDate:startDate toEndDate:endDate fromAssetCollectionIDs:@[photoManager.GCAssetCollectionID_UserLibrary]];
     NSArray <PHAsset *> *assetArray = dic[photoManager.GCAssetCollectionID_UserLibrary];
-    //NSMutableArray *assetArrayWithLocations = [NSMutableArray new];
+    
     [assetArray enumerateObjectsUsingBlock:^(PHAsset *obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (obj.location){
-            CLLocationCoordinate2D coordinate = obj.location.coordinate;
-            if ((coordinate.latitude != 0) && (coordinate.longitude != 0)) {
-                //[assetArrayWithLocations addObject:obj];
+            if ([self checkCoordinate:obj.location.coordinate]) {
+                
                 PHAssetInfo *info = [PHAssetInfo newAssetInfoWithPHAsset:obj inManagedObjectContext:cdManager.appMOC];
                 addPhotosCount++;
                 NSLog(@"%@",info.localIdentifier);
@@ -110,6 +110,24 @@
     NSLog(@"Time : %.3f , Add Photo Count : %ld",[[NSDate date] timeIntervalSinceDate:timeTest],(long)addPhotosCount);
 }
 
+- (BOOL)checkCoordinate:(CLLocationCoordinate2D)aCoord{
+    /*
+    if ([objectWithCoordinateProperty respondsToSelector:@selector(coordinate)]) {
+        CLLocationCoordinate2D aCoord = [(CLLocationCoordinate2D)[[objectWithCoordinateProperty performSelector:@selector(coordinate)] CGPointValue]
+        
+    }else{
+        return NO;
+    }
+     */
+    
+    if (aCoord.latitude > -90 && aCoord.latitude < 90) {
+        if (aCoord.longitude > - 180 && aCoord.longitude < 180) {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
 /*
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(nonnull id)annotation{
     
@@ -126,7 +144,7 @@
     NSLog(@"%@",NSStringFromSelector(_cmd));
     //NSLog(@"%@",url);
     
-    [assetsMapProVC didReceiveTrackOrPositionString:url.absoluteString];
+    [assetsMapProVC didReceiveShareRepositoryString:url.absoluteString];
     return YES;
 }
 
@@ -134,7 +152,7 @@
     NSLog(@"%@",NSStringFromSelector(_cmd));
     //NSLog(@"%@",url);
     
-    [assetsMapProVC didReceiveTrackOrPositionString:url.absoluteString];
+    [assetsMapProVC didReceiveShareRepositoryString:url.absoluteString];
     return YES;
 }
 
