@@ -66,4 +66,14 @@
     return ma;
 }
 
++ (void)setShareRepositoryArray:(NSArray <EverywhereShareRepository *> *)shareRepositoryArray{
+    NSMutableArray <NSData *> *ma = [NSMutableArray new];
+    [shareRepositoryArray enumerateObjectsUsingBlock:^(EverywhereShareRepository * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:obj];
+        [ma addObject:data];
+    }];
+    
+    [[NSUserDefaults standardUserDefaults] setValue:ma forKey:@"shareRepositoryDataArray"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
 @end

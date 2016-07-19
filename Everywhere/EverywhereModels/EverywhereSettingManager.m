@@ -19,13 +19,23 @@
     return instance;
 }
 
-- (MapShowMode)mapShowMode{
-    MapShowMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"mapShowMode"];
+- (MapMainMode)mapMainMode{
+    MapMainMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"mapMainMode"];
     return mode;
 }
 
-- (void)setMapShowMode:(MapShowMode)mapShowMode{
-    [[NSUserDefaults standardUserDefaults] setInteger:mapShowMode forKey:@"mapShowMode"];
+- (void)setMapMainMode:(MapMainMode)mapMainMode{
+    [[NSUserDefaults standardUserDefaults] setInteger:mapMainMode forKey:@"mapMainMode"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (MapExtendedMode)mapExtendedMode{
+    MapExtendedMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"mapExtendedMode"];
+    return mode;
+}
+
+- (void)setMapExtendedMode:(MapExtendedMode)mapExtendedMode{
+    [[NSUserDefaults standardUserDefaults] setInteger:mapExtendedMode forKey:@"mapExtendedMode"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -132,19 +142,30 @@
     return resultColor;
 }
 
-
-
 - (BOOL)hasPurchasedShare{
-    BOOL hasPurchasedShare = [[NSUserDefaults standardUserDefaults] boolForKey:@"hasPurchasedShare"];
-#warning here
-    return YES;
-    return hasPurchasedShare;
+    BOOL ahasPurchasedShare = [[NSUserDefaults standardUserDefaults] boolForKey:@"hasPurchasedShare"];
+//#warning here
+    //return YES;
+    return ahasPurchasedShare;
 }
 
 - (void)setHasPurchasedShare:(BOOL)hasPurchasedShare{
     [[NSUserDefaults standardUserDefaults] setBool:hasPurchasedShare forKey:@"hasPurchasedShare"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
+
+- (BOOL)hasPurchasedRecord{
+    BOOL ahasPurchasedRecord = [[NSUserDefaults standardUserDefaults] boolForKey:@"hasPurchasedRecord"];
+//#warning here
+    //return YES;
+    return ahasPurchasedRecord;
+}
+
+- (void)setHasPurchasedRecord:(BOOL)hasPurchasedRecord{
+    [[NSUserDefaults standardUserDefaults] setBool:hasPurchasedRecord forKey:@"hasPurchasedRecord"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 
 
 @end

@@ -1,5 +1,5 @@
 //
-//  MapShowModeBar.h
+//  MapModeBar.h
 //  Everywhere
 //
 //  Created by BobZhang on 16/7/11.
@@ -11,7 +11,7 @@
 typedef void(^SegmentedControlValueChangedHandler)(UISegmentedControl *sender);
 typedef void(^ButtonTouchDownHandler)(UIButton *sender);
 
-@interface MapShowModeBar : UIView
+@interface MapModeBar : UIView
 
 @property (strong,nonatomic) NSString *info;
 
@@ -20,7 +20,7 @@ typedef void(^ButtonTouchDownHandler)(UIButton *sender);
 
 - (instancetype)initWithModeSegItems:(NSArray *)segItems selectedSegIndex:(NSInteger)selectedSegIndex leftButtonImage:(UIImage *)leftImage rightButtonImage:(UIImage *)rightImage;
 
-@property (copy,nonatomic) SegmentedControlValueChangedHandler mapShowModeChangedHandler;
+@property (copy,nonatomic) SegmentedControlValueChangedHandler mapMainModeChangedHandler;
 @property (copy,nonatomic) ButtonTouchDownHandler leftButtonTouchDownHandler;
 @property (copy,nonatomic) ButtonTouchDownHandler rightButtonTouchDownHandler;
 

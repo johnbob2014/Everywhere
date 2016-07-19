@@ -12,7 +12,9 @@
 
 + (instancetype)defaultManager;
 
-@property (assign,nonatomic) MapShowMode mapShowMode;
+@property (assign,nonatomic) MapMainMode mapMainMode;
+@property (assign,nonatomic) MapExtendedMode mapExtendedMode;
+
 @property (assign,nonatomic) CLLocationDistance mergedDistanceForMoment;
 @property (assign,nonatomic) CLLocationDistance mergedDistanceForLocation;
 
@@ -29,5 +31,6 @@
 @property (strong,nonatomic,readonly) UIColor *color;
 
 @property (assign,nonatomic) BOOL hasPurchasedShare;
+@property (assign,nonatomic) BOOL hasPurchasedRecord;
 
 @end

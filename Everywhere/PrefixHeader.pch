@@ -50,9 +50,20 @@
 #import "LocationInfoBar.h"
 
 
-typedef NS_ENUM(NSInteger, MapShowMode) {
-    MapShowModeMoment = 0,      // 时刻模式
-    MapShowModeLocation         // 地点模式
+/**
+ 地图基础模式
+ */
+typedef NS_ENUM(NSInteger, MapMainMode) {
+    MapMainModeMoment = 0,      // 时刻模式
+    MapMainModeLocation         // 地点模式
+};
+
+/**
+ 地图扩展模式
+ */
+typedef NS_ENUM(NSInteger, MapExtendedMode) {
+    MapExtendedModeBrowser = 0,      // 浏览模式
+    MapExtendedModeRecord         // 记录模式
 };
 
 typedef NS_ENUM(NSInteger, DateMode) {
@@ -79,6 +90,11 @@ typedef NS_ENUM(NSInteger,ColorScheme){
     ColorSchemeDeepBrown
 };
 
+typedef NS_ENUM(NSInteger,ShareRepositoryType){
+    ShareRepositoryTypeSended = 0,
+    ShareRepositoryTypeReceived,
+    ShareRepositoryTypeRecorded
+};
 
 #define NOW [NSDate date]
 

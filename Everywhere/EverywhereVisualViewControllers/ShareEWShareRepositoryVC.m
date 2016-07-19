@@ -92,7 +92,7 @@
         return nil;
     }
     NSString *headerString = [NSString stringWithFormat:@"%@://AlbumMaps/",WXAppID];
-//    else if (self.mapShowMode == MapShowModeLocation) headerString = [NSString stringWithFormat:@"%@://AlbumMaps/position/radius%0.f/",WXAppID,self.mergedDistanceForLocation];
+//    else if (self.mapMainMode == MapMainModeLocation) headerString = [NSString stringWithFormat:@"%@://AlbumMaps/position/radius%0.f/",WXAppID,self.mergedDistanceForLocation];
     
     shareRepositoryString = [headerString stringByAppendingString:shareRepositoryString];
     return shareRepositoryString;

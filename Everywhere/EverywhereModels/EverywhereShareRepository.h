@@ -17,6 +17,7 @@
 @property (strong,nonatomic) NSString *title;
 
 @property (strong,nonatomic) NSDate *creationDate;
-@property (assign,nonatomic) BOOL isSharedByMe;
+
+@property (assign,nonatomic) ShareRepositoryType shareRepositoryType;
 
 @end

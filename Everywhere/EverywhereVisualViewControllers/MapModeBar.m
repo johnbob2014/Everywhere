@@ -1,15 +1,15 @@
 //
-//  MapShowModeBar.m
+//  MapModeBar.m
 //  Everywhere
 //
 //  Created by BobZhang on 16/7/11.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#import "MapShowModeBar.h"
+#import "MapModeBar.h"
 #import "EverywhereSettingManager.h"
 
-@interface MapShowModeBar ()
+@interface MapModeBar ()
 @property (strong,nonatomic) UISegmentedControl *modeSeg;
 @property (strong,nonatomic) UILabel *infoLabel;
 @property (strong,nonatomic) UIButton *leftButton;
@@ -19,7 +19,7 @@
 @property (assign,nonatomic) BOOL rightButtonEnabled;
 @end
 
-@implementation MapShowModeBar{
+@implementation MapModeBar{
     UIView *leftView,*middleView,*rightView;
     NSArray *modeSegItems;
 }
@@ -30,10 +30,10 @@
     // Drawing code
 }
 
-- (void)setMapShowMode:(MapShowMode)mapShowMode{
-    _mapShowMode = mapShowMode;
-    self.modeSeg.selectedSegmentIndex = mapShowMode;
-    [self mapShowModeValueChanged:self.modeSeg];
+- (void)setMapMainMode:(MapMainMode)mapMainMode{
+    _mapMainMode = mapMainMode;
+    self.modeSeg.selectedSegmentIndex = mapMainMode;
+    [self mapMainModeValueChanged:self.modeSeg];
 }
 */
 
@@ -58,7 +58,7 @@
         self.modeSeg.tintColor = [UIColor whiteColor];
         self.modeSeg.selectedSegmentIndex = selectedSegIndex;
         self.modeSeg.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.modeSeg addTarget:self action:@selector(mapShowModeValueChanged:) forControlEvents:UIControlEventValueChanged];
+        [self.modeSeg addTarget:self action:@selector(mapMainModeValueChanged:) forControlEvents:UIControlEventValueChanged];
         [middleView addSubview:self.modeSeg];
         
         
@@ -99,8 +99,8 @@
     return self;
 }
 
-- (void)mapShowModeValueChanged:(UISegmentedControl *)sender{
-    if (self.mapShowModeChangedHandler) self.mapShowModeChangedHandler(sender);
+- (void)mapMainModeValueChanged:(UISegmentedControl *)sender{
+    if (self.mapMainModeChangedHandler) self.mapMainModeChangedHandler(sender);
     
     if (sender.selectedSegmentIndex == 0) {
         self.leftButton.enabled = YES;//self.leftButtonEnabled;

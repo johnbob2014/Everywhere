@@ -245,7 +245,7 @@ static const NSInteger BIG_MONTH[7] = {1,3,5,7,8,10,12};
 }
 
 + (NSString *)localizedStringWithFormat:(NSString *)format startDate:(NSDate *)startDate endDate:(NSDate *)endDate{
-    if (!startDate || !endDate) return @" ";
+    if (!startDate || !endDate) return @"";
     if ([startDate isSameDay:endDate]){
         if ([startDate isSameDay:[NSDate date]]) return NSLocalizedString(@"Today", @"今天");
         else return [startDate stringWithFormat:format];
@@ -253,28 +253,30 @@ static const NSInteger BIG_MONTH[7] = {1,3,5,7,8,10,12};
     if ([startDate isInSameWeek:endDate]) {
         if ([startDate isSameDay:[startDate dateAtStartOfThisWeek]]) {
             if ([endDate isSameDay:[endDate dateAtEndOfThisWeek]]) {
-                return NSLocalizedString(@"This Week", @"本周");
+                if ([startDate isInSameWeek:[NSDate date]]) return NSLocalizedString(@"This Week", @"本周");
             }
         }
     }
     if ([startDate isInSameMonth:endDate]) {
         if ([startDate isSameDay:[startDate dateAtStartOfThisMonth]]) {
             if ([endDate isSameDay:[endDate dateAtEndOfThisMonth]]) {
-                return NSLocalizedString(@"This Month", @"本月");
+                if ([startDate isInSameMonth:[NSDate date]]) return NSLocalizedString(@"This Month", @"本月");
+                else return [startDate stringWithFormat:@"yyyy-MM"];
             }
         }
     }
     if ([startDate isInSameYear:endDate]) {
         if ([startDate isSameDay:[startDate dateAtStartOfThisYear]]) {
             if ([endDate isSameDay:[endDate dateAtEndOfThisYear]]) {
-                return NSLocalizedString(@"This Year", @"今年");
+                if ([startDate isInSameYear:[NSDate date]]) return NSLocalizedString(@"This Year", @"今年");
+                else return [startDate stringWithFormat:@"yyyy"];
             }
         }
     }
     NSMutableString *ms = [NSMutableString new];
-    [ms appendString:NSLocalizedString(@"From ", @"从 ")];
+    //[ms appendString:NSLocalizedString(@"From ", @"从 ")];
     [ms appendString:[startDate stringWithFormat:format]];
-    [ms appendString:NSLocalizedString(@" To ", @" 到 ")];
+    [ms appendString:@" ~ "];//NSLocalizedString(@" To ", @" 到 ")];
     [ms appendString:[endDate stringWithFormat:format]];
     return ms;
 }

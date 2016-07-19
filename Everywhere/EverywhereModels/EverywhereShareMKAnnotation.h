@@ -29,7 +29,7 @@
 /**
  可选，生成该Annotation时所处的地图模式 - EverywhereShareMKAnnotation
  */
-//@property (assign,nonatomic) MapShowMode *mapShowMode;
+//@property (assign,nonatomic) MapMainMode *mapMainMode;
 
 /**
  可选，该Annotation的结束时间 - EverywhereShareMKAnnotation

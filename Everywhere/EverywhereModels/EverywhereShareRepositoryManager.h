@@ -14,5 +14,6 @@
 + (void)addShareRepository:(EverywhereShareRepository *)shareRepository;
 + (void)removeLastAddedShareRepository;
 + (NSArray <EverywhereShareRepository *> *)shareRepositoryArray;
++ (void)setShareRepositoryArray:(NSArray <EverywhereShareRepository *> *)shareRepositoryArray;
 
 @end

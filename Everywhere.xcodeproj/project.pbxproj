@@ -60,7 +60,7 @@
 		4BD51FCC1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FCB1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m */; };
 		4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */; };
 		4BE88A9F1D332B38009501CE /* EverywhereSettingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE88A9E1D332B38009501CE /* EverywhereSettingManager.m */; };
-		4BE88AA21D333A46009501CE /* MapShowModeBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE88AA11D333A46009501CE /* MapShowModeBar.m */; };
+		4BE88AA21D333A46009501CE /* MapModeBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE88AA11D333A46009501CE /* MapModeBar.m */; };
 		4BF513091D348870009565EF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4BF5130B1D348870009565EF /* Localizable.strings */; };
 		4BF8DC151D37882E00BC7B64 /* ShareBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF8DC141D37882E00BC7B64 /* ShareBar.m */; };
 		4BFA4EB31D33791A007DDA87 /* LocationPickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */; };
@@ -179,8 +179,8 @@
 		4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereCoreDataManager.m; path = EverywhereCoreData/EverywhereCoreDataManager.m; sourceTree = "<group>"; };
 		4BE88A9D1D332B38009501CE /* EverywhereSettingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereSettingManager.h; path = EverywhereModels/EverywhereSettingManager.h; sourceTree = "<group>"; };
 		4BE88A9E1D332B38009501CE /* EverywhereSettingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereSettingManager.m; path = EverywhereModels/EverywhereSettingManager.m; sourceTree = "<group>"; };
-		4BE88AA01D333A46009501CE /* MapShowModeBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapShowModeBar.h; path = EverywhereVisualViewControllers/MapShowModeBar.h; sourceTree = "<group>"; };
-		4BE88AA11D333A46009501CE /* MapShowModeBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapShowModeBar.m; path = EverywhereVisualViewControllers/MapShowModeBar.m; sourceTree = "<group>"; };
+		4BE88AA01D333A46009501CE /* MapModeBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapModeBar.h; path = EverywhereVisualViewControllers/MapModeBar.h; sourceTree = "<group>"; };
+		4BE88AA11D333A46009501CE /* MapModeBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapModeBar.m; path = EverywhereVisualViewControllers/MapModeBar.m; sourceTree = "<group>"; };
 		4BF5130A1D348870009565EF /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4BF5130C1D348872009565EF /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		4BF8DC131D37882E00BC7B64 /* ShareBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareBar.h; path = EverywhereVisualViewControllers/ShareBar.h; sourceTree = "<group>"; };
@@ -333,8 +333,8 @@
 				1E41FD201D2AB66100E1A5B9 /* LocationInfoBar.m */,
 				1E63B77A1D2E9D90003E355B /* PlacemarkInfoBar.h */,
 				1E63B77B1D2E9D90003E355B /* PlacemarkInfoBar.m */,
-				4BE88AA01D333A46009501CE /* MapShowModeBar.h */,
-				4BE88AA11D333A46009501CE /* MapShowModeBar.m */,
+				4BE88AA01D333A46009501CE /* MapModeBar.h */,
+				4BE88AA11D333A46009501CE /* MapModeBar.m */,
 				4BF8DC131D37882E00BC7B64 /* ShareBar.h */,
 				4BF8DC141D37882E00BC7B64 /* ShareBar.m */,
 			);
@@ -674,7 +674,7 @@
 				1EF62A5A1D3BB90F0084AF66 /* EverywhereShareRepository.m in Sources */,
 				4BFA4EB31D33791A007DDA87 /* LocationPickerVC.m in Sources */,
 				4BD51FC91D2B47B900F18244 /* PHAssetInfo.m in Sources */,
-				4BE88AA21D333A46009501CE /* MapShowModeBar.m in Sources */,
+				4BE88AA21D333A46009501CE /* MapModeBar.m in Sources */,
 				4B27FDC81D2CAB5500067683 /* AssetDetailVC.m in Sources */,
 				4B3AF9CB1D2F3E70009BD545 /* GCPolyline.m in Sources */,
 				4BFA4EB61D33982A007DDA87 /* DatePickerVC.m in Sources */,

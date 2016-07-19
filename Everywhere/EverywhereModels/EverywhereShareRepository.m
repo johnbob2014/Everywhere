@@ -21,7 +21,7 @@
     
     shareRepository.creationDate = [aDecoder decodeObjectForKey:@"creationDate"];
     
-    shareRepository.isSharedByMe = [aDecoder decodeBoolForKey:@"isSharedByMe"];
+    shareRepository.shareRepositoryType = [aDecoder decodeIntegerForKey:@"shareRepositoryType"];
     
     return shareRepository;
 }
@@ -36,7 +36,7 @@
     
     [aCoder encodeObject:self.creationDate forKey:@"creationDate"];
     
-    [aCoder encodeBool:self.isSharedByMe forKey:@"isSharedByMe"];
+    [aCoder encodeInteger:self.shareRepositoryType forKey:@"shareRepositoryType"];
 }
 
 @end

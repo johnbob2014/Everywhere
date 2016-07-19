@@ -14,13 +14,16 @@
 #import "InAppPurchaseVC.h"
 #import "AboutVC.h"
 
+#import "EverywhereSettingManager.h"
+#import "EverywhereShareRepositoryManager.h"
+#import "WXApi.h"
+
 #define NumberAndDecimal @"0123456789.\n"
 #define Number @"0123456789\n"
 #define kAlphaNum @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\n"
 typedef BOOL (^OnChangeCharacterInRange)(RETextItem *item, NSRange range, NSString *replacementString);
 
-#import "EverywhereSettingManager.h"
-#import "WXApi.h"
+
 
 const NSString *APP_DOWNLOAD_URL=@"https://itunes.apple.com/app/id1072387063";
 const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/ChinaSceneryIntroduction.html";
@@ -159,7 +162,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     
     [momentModeSection addItemsFromArray:@[mergedDistanceForMomentItem]];
     
-#pragma mark 时刻模式
+#pragma mark 模式
     
     //地址模式
     RETableViewSection *locationModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"LocationMode", @"地址模式")];
@@ -175,6 +178,16 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     //mergedDistanceForLocationItem.textAlignment = NSTextAlignmentRight;
     [locationModeSection addItemsFromArray:@[mergedDistanceForLocationItem]];
 
+#pragma mark 模式
+    
+    RETableViewSection *extendedModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Mode", @"模式")];
+    RETableViewItem *clearCatchItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"❌ 清理缓存",@"") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        [EverywhereShareRepositoryManager setShareRepositoryArray:nil];
+    }];
+    [extendedModeSection addItem:clearCatchItem];
+
+    
 #pragma mark 购买
     
     RETableViewSection *purchaseSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Purchase and Restore", @"购买与恢复")];
@@ -220,7 +233,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         [self.navigationController pushViewController:aboutVC animated:YES];
     }]];
     
-    [self.reTVManager addSectionsFromArray:@[section1,momentModeSection,locationModeSection,purchaseSection,shareSection,aboutSection]];
+    [self.reTVManager addSectionsFromArray:@[section1,momentModeSection,locationModeSection,extendedModeSection,purchaseSection,shareSection,aboutSection]];
 }
 
 #pragma mark - RE Block
