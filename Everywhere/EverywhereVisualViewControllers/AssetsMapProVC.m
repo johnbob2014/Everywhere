@@ -81,6 +81,7 @@
 @property (assign,nonatomic) BOOL isInMainMode;
 @property (assign,nonatomic) BOOL isRecording;
 @property (assign,nonatomic) BOOL allowBrowserMode;
+@property (assign,nonatomic) BOOL allowRecordMode;
 
 @end
 
@@ -470,7 +471,7 @@
     ShareRepositoryPickerVC *shareRepositoryPickerVC = [ShareRepositoryPickerVC new];
     //shareRepositoryPickerVC.shareRepositoryArray = [EverywhereShareRepositoryManager shareRepositoryArray];
     shareRepositoryPickerVC.shareRepositoryDidChangeHandler = ^(EverywhereShareRepository *choosedShareRepository){
-        [weakSelf showEWShareRepository:choosedShareRepository];
+        [weakSelf showShareRepository:choosedShareRepository];
     };
     
     shareRepositoryPickerVC.contentSizeInPopup = CGSizeMake(300, 400);
@@ -1325,8 +1326,9 @@
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK",@"")
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction * action) {
+                                                         [self enterExtendedMode];
                                                          [self enterBrowserMode];
-                                                         [self showEWShareRepository:shareRepository];
+                                                         [self showShareRepository:shareRepository];
                                                      }];
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"") style:UIAlertActionStyleCancel handler:nil];
@@ -1345,8 +1347,15 @@
         return;
     }
     
-    if (!self.settingManager.hasPurchasedShare) self.settingManager.mapExtendedMode = MapExtendedModeRecord;
-    if (!self.settingManager.hasPurchasedRecord) self.settingManager.mapExtendedMode = MapExtendedModeBrowser;
+    if (!self.settingManager.hasPurchasedShare) {
+        self.settingManager.mapExtendedMode = MapExtendedModeRecord;
+        self.allowBrowserMode = NO;
+    }
+    
+    if (!self.settingManager.hasPurchasedRecord) {
+        self.settingManager.mapExtendedMode = MapExtendedModeBrowser;
+        self.allowRecordMode = NO;
+    }
     
     [self enterExtendedMode];
     
@@ -1412,7 +1421,7 @@
     
 }
 
-- (void)showEWShareRepository:(EverywhereShareRepository *)shareRepository{
+- (void)showShareRepository:(EverywhereShareRepository *)shareRepository{
     // 清理地图
     self.addedEWAnnos = nil;
     [self.myMapView removeAnnotations:self.myMapView.annotations];
@@ -1546,15 +1555,26 @@
 - (void)setAllowBrowserMode:(BOOL)allowBrowserMode{
     _allowBrowserMode = allowBrowserMode;
     if (allowBrowserMode) {
-        if(DEBUGMODE) NSLog(@"打开扩展模式选择器");
-        // 成功保存，打开扩展模式选择器
+        if(DEBUGMODE) NSLog(@"允许BrowserMode");
         msExtenedModeBar.modeSegEnabled = YES;
         msExtenedModeBar.leftButtonEnabled = YES;
     }else{
-        // 关闭扩展模式选择器
-        if(DEBUGMODE) NSLog(@"关闭扩展模式选择器");
+        if(DEBUGMODE) NSLog(@"禁止BrowserMode");
         msExtenedModeBar.modeSegEnabled = NO;
         msExtenedModeBar.leftButtonEnabled = NO;
+    }
+}
+
+- (void)setAllowRecordMode:(BOOL)allowRecordMode{
+    _allowRecordMode = allowRecordMode;
+    if (allowRecordMode) {
+        if(DEBUGMODE) NSLog(@"允许RecordMode");
+        msExtenedModeBar.modeSegEnabled = YES;
+        msExtenedModeBar.rightButtonEnabled = YES;
+    }else{
+        if(DEBUGMODE) NSLog(@"禁止RecordMode");
+        msExtenedModeBar.modeSegEnabled = NO;
+        msExtenedModeBar.rightButtonEnabled = NO;
     }
 }
 
@@ -2168,6 +2188,7 @@
     EverywhereShareAnnotation *shareAnno = [EverywhereShareAnnotation new];
     shareAnno.annotationCoordinate = newLocation.coordinate;
     shareAnno.startDate = NOW;
+    shareAnno.customTitle = [NSString stringWithFormat:@"%lu",recordedShareAnnos.count + 1];
     [recordedShareAnnos addObject:shareAnno];
     [self.myMapView addAnnotation:shareAnno];
     

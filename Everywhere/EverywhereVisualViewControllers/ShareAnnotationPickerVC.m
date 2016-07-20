@@ -87,10 +87,10 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
     EverywhereShareAnnotation *shareAnnotation = currentGroupArray[indexPath.row];
-    cell.textLabel.text = shareAnnotation.title;
-    
+    cell.textLabel.text = shareAnnotation.customTitle;
+    cell.detailTextLabel.text = shareAnnotation.title;
     return cell;
 }
 
@@ -103,9 +103,57 @@
     return YES;
 }
 
+
+- (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath{
+    EverywhereShareAnnotation *shareAnnotation = currentGroupArray[indexPath.row];
+    
+    UITableViewRowAction *renameRA = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault
+                                                                         title:NSLocalizedString(@"Rename", @"更名")
+                                                                       handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+                                                                           UIAlertController *alertController = [self createRenameAlertControllerWithHandler:^(UIAlertAction *action) {
+                                                                               NSLog(@"%@",alertController.textFields.firstObject.text);
+                                                                               shareAnnotation.customTitle = alertController.textFields.firstObject.text;
+                                                                           }];
+                                                                           [self presentViewController:alertController animated:YES completion:nil];
+                                                                       }];
+    
+    UITableViewRowAction *deleteRA = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault
+                                                                        title:NSLocalizedString(@"Delete", @"删除")
+                                                                      handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+                                                                          
+                                                                      }];
+
+    return @[renameRA,deleteRA];
+}
+
+- (UIAlertController *)createRenameAlertControllerWithHandler:(void (^)(UIAlertAction *action))handler{
+    
+    NSString *alertTitle = NSLocalizedString(@"Rename", @"更名");
+    NSString *alertMessage = NSLocalizedString(@"Enter a new name", @"输入新名称");
+    
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK",@"确定")
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:handler];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
+    [alertController addAction:okAction];
+    [alertController addAction:cancelAction];
+    
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        
+    }];
+    
+    return alertController;
+}
+
+
+/*
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
     return UITableViewCellEditingStyleDelete;
 }
+
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     if (editingStyle == UITableViewCellEditingStyleDelete) {
@@ -113,5 +161,6 @@
         
     }
 }
+*/
 
 @end

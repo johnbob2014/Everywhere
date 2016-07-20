@@ -27,6 +27,11 @@
 @property (strong,nonatomic) NSDate *endDate;
 
 /**
+ 该Annotation的自定义标题 - EverywhereShareAnnotation
+ */
+@property (strong,nonatomic) NSString *customTitle;
+
+/**
  可选，生成该Annotation时所处的地图模式 - EverywhereShareAnnotation
  */
 //@property (assign,nonatomic) MapMainMode *mapMainMode;

@@ -21,6 +21,11 @@
     else return [self.startDate stringWithDefaultFormat];
 }
 
+- (NSString *)customTitle{
+    if (_customTitle) return _customTitle;
+    else return @"customTitle";
+}
+
 - (instancetype)initWithCoder:(NSCoder *)aDecoder{
     CGPoint annotationCoordinatePoint = [aDecoder decodeCGPointForKey:@"annotationCoordinatePoint"];
     //NSTimeInterval startDateTimeInterval = [aDecoder decodeDoubleForKey:@"startDateTimeInterval"];
@@ -30,6 +35,7 @@
     shareAnno.annotationCoordinate = CLLocationCoordinate2DMake(annotationCoordinatePoint.x, annotationCoordinatePoint.y);
     //shareAnno.startDate = [NSDate dateWithTimeIntervalSinceReferenceDate:startDateTimeInterval];
     shareAnno.startDate = [aDecoder decodeObjectForKey:@"startDate"];
+    shareAnno.customTitle = [aDecoder decodeObjectForKey:@"customTitle"];
     
     if (endDateTimeInterval != 0) shareAnno.endDate = [NSDate dateWithTimeIntervalSinceReferenceDate:endDateTimeInterval];
     else shareAnno.endDate = nil;
@@ -50,6 +56,10 @@
     if (self.endDate) {
         NSTimeInterval endDateTimeInterval = [self.endDate timeIntervalSinceReferenceDate];
         [aCoder encodeDouble:endDateTimeInterval forKey:@"endDateTimeInterval"];
+    }
+    
+    if (self.customTitle){
+        [aCoder encodeObject:self.customTitle forKey:@"customTitle"];
     }
 }
 @end
