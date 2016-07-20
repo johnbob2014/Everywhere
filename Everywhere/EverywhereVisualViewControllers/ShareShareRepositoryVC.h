@@ -1,5 +1,5 @@
 //
-//  ShareEWShareRepositoryVC.h
+//  ShareShareRepositoryVC.h
 //  Everywhere
 //
 //  Created by BobZhang on 16/7/18.
@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "EverywhereShareRepository.h"
 
-@interface ShareEWShareRepositoryVC : UIViewController
+@interface ShareShareRepositoryVC : UIViewController
 
 @property (strong,nonatomic) EverywhereShareRepository *shareRepository;
 

@@ -162,7 +162,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     
     [momentModeSection addItemsFromArray:@[mergedDistanceForMomentItem]];
     
-#pragma mark 模式
+#pragma mark 地址模式
     
     //地址模式
     RETableViewSection *locationModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"LocationMode", @"地址模式")];
@@ -178,21 +178,39 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     //mergedDistanceForLocationItem.textAlignment = NSTextAlignmentRight;
     [locationModeSection addItemsFromArray:@[mergedDistanceForLocationItem]];
 
-#pragma mark 模式
+#pragma mark 记录模式
     
-    RETableViewSection *extendedModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Mode", @"模式")];
-    RETableViewItem *clearCatchItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"❌ 清理缓存",@"") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+    RETableViewSection *extendedModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"RecordMode", @"记录模式")];
+    //self.settingManager.shortestTimeIntervalForRecord
+    
+    tempString = [NSString stringWithFormat:@"%.f",self.settingManager.shortestDistanceForRecord];
+    RETextItem *shortestDistanceForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"Shortest Distance",@"最短距离") value:tempString placeholder:@""];
+    shortestDistanceForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
+    shortestDistanceForRecordItem.onEndEditing = ^(RETextItem *item){
+        if(DEBUGMODE) NSLog(@"%@",item.value);
+        self.settingManager.shortestDistanceForRecord = [item.value doubleValue];
+    };
+    
+    tempString = [NSString stringWithFormat:@"%.f",self.settingManager.shortestTimeIntervalForRecord];
+    RETextItem *shortestTimeIntervalForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"Shortest TimeInterval",@"最短时间间隔") value:tempString placeholder:@""];
+    shortestTimeIntervalForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
+    shortestTimeIntervalForRecordItem.onEndEditing = ^(RETextItem *item){
+        if(DEBUGMODE) NSLog(@"%@",item.value);
+        self.settingManager.shortestTimeIntervalForRecord = [item.value doubleValue];
+    };
+
+    RETableViewItem *clearCatchItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"❌ 清空所有足迹",@"") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         [EverywhereShareRepositoryManager setShareRepositoryArray:nil];
     }];
-    [extendedModeSection addItem:clearCatchItem];
+    [extendedModeSection addItemsFromArray:@[shortestDistanceForRecordItem,shortestTimeIntervalForRecordItem,clearCatchItem]];
 
     
 #pragma mark 购买
     
     RETableViewSection *purchaseSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Purchase and Restore", @"购买与恢复")];
     [purchaseSection setHeaderHeight:20];
-    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"Share Function",@"轨迹分享") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"Share Function",@"足迹分享") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         
     }]];

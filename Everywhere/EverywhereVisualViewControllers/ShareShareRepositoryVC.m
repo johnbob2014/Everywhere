@@ -1,5 +1,5 @@
 //
-//  ShareEWShareRepositoryVC.m
+//  ShareShareRepositoryVC.m
 //  Everywhere
 //
 //  Created by BobZhang on 16/7/18.
@@ -8,14 +8,15 @@
 #define DEBUGMODE 1
 
 #import "WXApi.h"
-#import "ShareEWShareRepositoryVC.h"
+#import "ShareShareRepositoryVC.h"
 #import "EverywhereShareRepositoryManager.h"
+#import "EverywhereSettingManager.h"
 
-@interface ShareEWShareRepositoryVC ()
+@interface ShareShareRepositoryVC ()
 
 @end
 
-@implementation ShareEWShareRepositoryVC{
+@implementation ShareShareRepositoryVC{
     UILabel *titleLabel;
     UITextField *titleTF;
     UIButton *sessionBtn,*timelineBtn;
@@ -33,25 +34,24 @@
     titleLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:titleLabel];
     [titleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
+    [titleLabel autoSetDimension:ALDimensionHeight toSize:30];
     
     sessionBtn = [UIButton newAutoLayoutView];
-    [sessionBtn infoStyle];
+    [sessionBtn setImage:[UIImage imageNamed:@"Share_WXSession"] forState:UIControlStateNormal];
     sessionBtn.tag = WXSceneSession;
     [sessionBtn addTarget:self action:@selector(wxShare:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:sessionBtn];
-    [sessionBtn autoSetDimension:ALDimensionHeight toSize:44];
-    [sessionBtn autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:self.view withMultiplier:0.3];
+    [sessionBtn autoSetDimensionsToSize:CGSizeMake(60, 60)];
     [sessionBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
     [sessionBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
     
     timelineBtn = [UIButton newAutoLayoutView];
-    [timelineBtn dangerStyle];
+    [timelineBtn setImage:[UIImage imageNamed:@"Share_WXTimeline"] forState:UIControlStateNormal];
     timelineBtn.tag = WXSceneTimeline;
     [timelineBtn addTarget:self action:@selector(wxShare:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:timelineBtn];
-    [timelineBtn autoSetDimension:ALDimensionHeight toSize:44];
-    [timelineBtn autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:self.view withMultiplier:0.3];
-    [timelineBtn autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:sessionBtn withOffset:5];
+    [timelineBtn autoSetDimensionsToSize:CGSizeMake(60, 60)];
+    [timelineBtn autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:sessionBtn withOffset:10];
     [timelineBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
     
     titleTF = [UITextField newAutoLayoutView];
@@ -64,9 +64,10 @@
     //titleTF.backgroundColor = [UIColor colorWithRed:240/255.0 green:173/255.0 blue:78/255.0 alpha:1];
     
     titleTF.layer.borderWidth = 1;
-    titleTF.layer.cornerRadius = 4.0;
+    titleTF.layer.borderColor = [[EverywhereSettingManager defaultManager].color CGColor];
+    //titleTF.layer.cornerRadius = 4.0;
     titleTF.layer.masksToBounds = YES;
-    titleTF.layer.borderColor = [[UIColor colorWithRed:238/255.0 green:162/255.0 blue:54/255.0 alpha:1] CGColor];
+    
     
     //titleTF.contentMode = UIViewContentModeScaleAspectFit;
     //titleTF.text = NSLocalizedString(@"I shared my footprints to you!Take a look!", @"我分享了一个足迹给你，快来看看吧！");
@@ -83,16 +84,14 @@
     self.shareRepository.title = titleTF.text;
     
     NSData *shareRepositoryData = [NSKeyedArchiver archivedDataWithRootObject:self.shareRepository];
-    //NSString *trackOrPositionURL = [[NSString alloc] initWithData:trackOrPositionData encoding:NSNonLossyASCIIStringEncoding];
+    
     NSString *shareRepositoryString = [shareRepositoryData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-    //NSLog(@"trackOrPositionURL (length:%ld) :\n%@",trackOrPositionString.length,trackOrPositionString);
     
     if (shareRepositoryString.length > 10*1024*8) {
-        NSLog(@"trackOrPositionURL is too Long!");
+        NSLog(@"footprintsOrPositionURL is too Long!");
         return nil;
     }
     NSString *headerString = [NSString stringWithFormat:@"%@://AlbumMaps/",WXAppID];
-//    else if (self.mapMainMode == MapMainModeLocation) headerString = [NSString stringWithFormat:@"%@://AlbumMaps/position/radius%0.f/",WXAppID,self.mergedDistanceForLocation];
     
     shareRepositoryString = [headerString stringByAppendingString:shareRepositoryString];
     return shareRepositoryString;

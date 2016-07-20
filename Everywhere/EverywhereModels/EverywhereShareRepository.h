@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EverywhereShareMKAnnotation.h"
+#import "EverywhereShareAnnotation.h"
 
 @interface EverywhereShareRepository : NSObject <NSCoding>
 
-@property (strong,nonatomic) NSArray <EverywhereShareMKAnnotation *> *shareAnnos;
+@property (strong,nonatomic) NSArray <EverywhereShareAnnotation *> *shareAnnos;
 @property (assign,nonatomic) double radius;
 
 @property (strong,nonatomic) NSString *title;

@@ -27,23 +27,21 @@ UIImageView *imageView;
     self.title = NSLocalizedString(@"Share Snap Shots", @"分享截图");
     
     sessionBtn = [UIButton newAutoLayoutView];
-    [sessionBtn infoStyle];
+    [sessionBtn setImage:[UIImage imageNamed:@"Share_WXSession"] forState:UIControlStateNormal];
     sessionBtn.tag = WXSceneSession;
     [sessionBtn addTarget:self action:@selector(wxShare:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:sessionBtn];
-    [sessionBtn autoSetDimension:ALDimensionHeight toSize:44];
-    [sessionBtn autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:self.view withMultiplier:0.3];
+    [sessionBtn autoSetDimensionsToSize:CGSizeMake(60, 60)];
     [sessionBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
     [sessionBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
     
     timelineBtn = [UIButton newAutoLayoutView];
-    [timelineBtn dangerStyle];
+    [timelineBtn setImage:[UIImage imageNamed:@"Share_WXTimeline"] forState:UIControlStateNormal];
     timelineBtn.tag = WXSceneTimeline;
     [timelineBtn addTarget:self action:@selector(wxShare:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:timelineBtn];
-    [timelineBtn autoSetDimension:ALDimensionHeight toSize:44];
-    [timelineBtn autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:self.view withMultiplier:0.3];
-    [timelineBtn autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:sessionBtn withOffset:5];
+    [timelineBtn autoSetDimensionsToSize:CGSizeMake(60, 60)];
+    [timelineBtn autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:sessionBtn withOffset:10];
     [timelineBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
 
     imageView = [UIImageView newAutoLayoutView];

@@ -52,9 +52,18 @@
     BOOL wx=[WXApi registerApp:@"wxa1b9c5632d24039a"];
     if(DEBUGMODE) NSLog(@"WeChat Rigister：%@",wx? @"Succeeded" : @"Failed");
 
+    assetsMapProVC = [AssetsMapProVC new];
+    //[vc prefersStatusBarHidden];
+    self.window.rootViewController = assetsMapProVC;
+    self.window.tintColor = settingManager.color;
+    ;
+    [self.window makeKeyAndVisible];
+
     photoManager = [GCPhotoManager defaultManager];
     cdManager = [EverywhereCoreDataManager defaultManager];
     settingManager = [EverywhereSettingManager defaultManager];
+    
+    if (!photoManager) return YES;
     
     if (!cdManager.lastUpdateDate) {
         // 首次加载照片数据
@@ -69,12 +78,6 @@
     
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
     
-    assetsMapProVC = [AssetsMapProVC new];
-    //[vc prefersStatusBarHidden];
-    self.window.rootViewController = assetsMapProVC;
-    self.window.tintColor = settingManager.color;
-    ;
-    [self.window makeKeyAndVisible];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         NSArray <PHAssetInfo *> *allAssetInfoArray = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:cdManager.appMOC];

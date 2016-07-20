@@ -33,4 +33,7 @@
 @property (assign,nonatomic) BOOL hasPurchasedShare;
 @property (assign,nonatomic) BOOL hasPurchasedRecord;
 
+@property (assign,nonatomic) CLLocationDistance shortestDistanceForRecord;
+@property (assign,nonatomic) NSTimeInterval shortestTimeIntervalForRecord;
+
 @end

@@ -1,20 +1,20 @@
 //
-//  EverywhereMKAnnotation.m
+//  EverywhereAnnotation.m
 //  Everywhere
 //
 //  Created by 张保国 on 16/7/2.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#import "EverywhereMKAnnotation.h"
+#import "EverywhereAnnotation.h"
 #import "WGS84TOGCJ02.h"
 
-@implementation EverywhereMKAnnotation
+@implementation EverywhereAnnotation
 //@synthesize coordinate;
 
 //- (void)setLocaton:(CLLocation *)locaton{
 //    if (locaton) coordinate = self.locaton.coordinate;
-//    NSLog(@"EverywhereMKAnnotation : coordinate updated!");
+//    NSLog(@"EverywhereAnnotation : coordinate updated!");
 //}
 
 - (CLLocationCoordinate2D)coordinate{

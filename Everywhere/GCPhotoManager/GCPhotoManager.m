@@ -31,11 +31,12 @@
             [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
                 authorized = status == PHAuthorizationStatusAuthorized;
             }];
-            
+            /*
             while (!authorized) {
                 [NSThread sleepForTimeInterval:1.0];
             }
-            
+             */
+            instance = nil;
         }else if (authorizationStatus == PHAuthorizationStatusDenied || authorizationStatus == PHAuthorizationStatusRestricted){
             NSLog(@"无法访问相册");
             instance = nil;
@@ -53,6 +54,8 @@
 }
 
 - (NSString *)GCAssetCollectionID_UserLibrary{
+    if (Authorized == NO) return nil;
+    
     if (!_GCAssetCollectionID_UserLibrary) {
         PHFetchResult <PHAssetCollection *> *fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
         _GCAssetCollectionID_UserLibrary = fetchResultArray.firstObject.localIdentifier;
@@ -61,6 +64,7 @@
 }
 
 - (NSArray <NSString *> *)GCAssetCollectionIDs_Album{
+    if (Authorized == NO) return nil;
     if (!_GCAssetCollectionIDs_Album) {
         NSMutableArray <NSString *> *ma = [NSMutableArray new];
         PHFetchResult <PHAssetCollection *> *fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
@@ -75,7 +79,7 @@
 #pragma mark - Fetch by Date
 
 - (NSDictionary <NSString *,NSArray *> *)fetchAssetIDsFormStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate fromAssetCollectionIDs:(NSArray <NSString *> *)assetCollectionIDs{
-    
+    if (Authorized == NO) return nil;
     PHFetchOptions *assetOptions = [PHFetchOptions new];
     //startDate = [startDate dateAtStartOfToday];
     //endDate = [endDate dateAtEndOfToday];
@@ -110,7 +114,7 @@
 }
 
 - (NSDictionary <NSString *,NSArray *> *)fetchAssetsFormStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate fromAssetCollectionIDs:(NSArray <NSString *> *)assetCollectionIDs{
-    
+    if (Authorized == NO) return nil;
     PHFetchOptions *assetOptions = [PHFetchOptions new];
     //startDate = [startDate dateAtStartOfToday];
     //endDate = [endDate dateAtEndOfToday];

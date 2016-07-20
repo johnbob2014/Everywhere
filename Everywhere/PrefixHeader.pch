@@ -15,8 +15,8 @@
 #endif /* PrefixHeader_pch */
 
 #define WXAppID @"wxa1b9c5632d24039a"
-#define AppID @"1133399709"
-#define AppDownloadURLString @"https://itunes.apple.com/app/1133399709"
+#define AppID @"1136142337"
+#define AppDownloadURLString @"https://itunes.apple.com/app/1136142337"
 
 #define VCBackgroundColor [UIColor groupTableViewBackgroundColor]
 

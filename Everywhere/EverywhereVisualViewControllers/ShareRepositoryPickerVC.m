@@ -29,14 +29,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    // self.title = NSLocalizedString(@"Share Track Picker", @"分享轨迹选取器");
-    
     groupNameArray = @[NSLocalizedString(@"Sended", @"发出的"),
                        NSLocalizedString(@"Received", @"接收的"),
                        NSLocalizedString(@"Recorded", @"记录的")];
-    
-    //currentGroupArray = self.placemarkInfoDictionary[kLocalityArray];
-    //self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[self.initLocationMode],(unsigned long)currentGroupArray.count];
     
     groupSeg = [[UISegmentedControl alloc] initWithItems:groupNameArray];
     groupSeg.selectedSegmentIndex = 1;
@@ -103,19 +98,18 @@
     }];
     
     switch (index) {
-        case 0:{
+        case 0:
             currentGroupArray = sendedArray;
             self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[0],(unsigned long)currentGroupArray.count];
-        }
             break;
-        case 1:{
+        case 1:
             currentGroupArray = receivedArray;
             self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[1],(unsigned long)currentGroupArray.count];
-        }
-        case 2:{
+            break;
+        case 2:
             currentGroupArray = recordedArray;
             self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[2],(unsigned long)currentGroupArray.count];
-        }
+            break;
         default:
             break;
             

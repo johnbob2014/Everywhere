@@ -1,15 +1,15 @@
 //
-//  EverywhereShareMKAnnotation.m
+//  EverywhereShareAnnotation.m
 //  Everywhere
 //
 //  Created by BobZhang on 16/7/15.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#import "EverywhereShareMKAnnotation.h"
+#import "EverywhereShareAnnotation.h"
 #import "WGS84TOGCJ02.h"
 
-@implementation EverywhereShareMKAnnotation
+@implementation EverywhereShareAnnotation
 
 - (CLLocationCoordinate2D)coordinate{
     CLLocationCoordinate2D originalCoordinate = self.annotationCoordinate;
@@ -26,7 +26,7 @@
     //NSTimeInterval startDateTimeInterval = [aDecoder decodeDoubleForKey:@"startDateTimeInterval"];
     NSTimeInterval endDateTimeInterval = [aDecoder decodeDoubleForKey:@"endDateTimeInterval"];
     
-    EverywhereShareMKAnnotation *shareAnno = [EverywhereShareMKAnnotation new];
+    EverywhereShareAnnotation *shareAnno = [EverywhereShareAnnotation new];
     shareAnno.annotationCoordinate = CLLocationCoordinate2DMake(annotationCoordinatePoint.x, annotationCoordinatePoint.y);
     //shareAnno.startDate = [NSDate dateWithTimeIntervalSinceReferenceDate:startDateTimeInterval];
     shareAnno.startDate = [aDecoder decodeObjectForKey:@"startDate"];

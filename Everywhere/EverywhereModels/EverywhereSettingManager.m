@@ -167,5 +167,26 @@
 }
 
 
+- (CLLocationDistance)shortestDistanceForRecord{
+    CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"shortestDistanceForRecord"];
+    if (!distance || distance == 0) distance = 100;
+    return distance;
+}
+
+- (void)setShortestDistanceForRecord:(CLLocationDistance)shortestDistanceForRecord{
+    [[NSUserDefaults standardUserDefaults] setDouble:shortestDistanceForRecord forKey:@"shortestDistanceForRecord"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (NSTimeInterval)shortestTimeIntervalForRecord{
+    NSTimeInterval shortestTI = [[NSUserDefaults standardUserDefaults] doubleForKey:@"shortestTimeIntervalForRecord"];
+    if (!shortestTI || shortestTI == 0) shortestTI = 3;
+    return shortestTI;
+}
+
+- (void)setShortestTimeIntervalForRecord:(NSTimeInterval)shortestTimeIntervalForRecord{
+    [[NSUserDefaults standardUserDefaults] setDouble:shortestTimeIntervalForRecord forKey:@"shortestTimeIntervalForRecord"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
 
 @end

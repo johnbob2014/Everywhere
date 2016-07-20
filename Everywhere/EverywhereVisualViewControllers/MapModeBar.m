@@ -15,8 +15,6 @@
 @property (strong,nonatomic) UIButton *leftButton;
 @property (strong,nonatomic) UIButton *rightButton;
 
-@property (assign,nonatomic) BOOL leftButtonEnabled;
-@property (assign,nonatomic) BOOL rightButtonEnabled;
 @end
 
 @implementation MapModeBar{
@@ -28,12 +26,6 @@
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect {
     // Drawing code
-}
-
-- (void)setMapMainMode:(MapMainMode)mapMainMode{
-    _mapMainMode = mapMainMode;
-    self.modeSeg.selectedSegmentIndex = mapMainMode;
-    [self mapMainModeValueChanged:self.modeSeg];
 }
 */
 
@@ -56,11 +48,10 @@
         
         self.modeSeg = [[UISegmentedControl alloc] initWithItems:segItems];
         self.modeSeg.tintColor = [UIColor whiteColor];
-        self.modeSeg.selectedSegmentIndex = selectedSegIndex;
         self.modeSeg.translatesAutoresizingMaskIntoConstraints = NO;
         [self.modeSeg addTarget:self action:@selector(mapMainModeValueChanged:) forControlEvents:UIControlEventValueChanged];
         [middleView addSubview:self.modeSeg];
-        
+        self.modeSeg.selectedSegmentIndex = selectedSegIndex;
         
         self.infoLabel = [UILabel newAutoLayoutView];
         self.infoLabel.textAlignment = NSTextAlignmentCenter;

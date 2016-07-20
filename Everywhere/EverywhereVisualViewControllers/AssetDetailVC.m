@@ -81,7 +81,7 @@
     [imageView addGestureRecognizer:swipeUpGR];
     
     playButton = [UIButton newAutoLayoutView];
-    [playButton setBackgroundImage:[UIImage imageNamed:@"plus"] forState:UIControlStateNormal];
+    [playButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Video_WBG"] forState:UIControlStateNormal];
     [playButton addTarget:self action:@selector(play:) forControlEvents:UIControlEventTouchDown];
     [imageView addSubview:playButton];
     [playButton autoCenterInSuperview];
