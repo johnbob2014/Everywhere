@@ -30,6 +30,17 @@ UIEdgeInsets UIEdgeInsetsMake (
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
+        UIButton *badgeButton = [UIButton newAutoLayoutView];
+        badgeButton.userInteractionEnabled = NO;
+        [badgeButton setBackgroundImage:[UIImage imageNamed:@"badge"] forState:UIControlStateNormal];
+        [badgeButton setTitle:@"0" forState:UIControlStateNormal];
+        badgeButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
+        [self addSubview:badgeButton];
+        [badgeButton autoSetDimensionsToSize:CGSizeMake(20, 20)];
+        [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
+        [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+
+        
         UILabel *coordlabel = [UILabel newAutoLayoutView];
         coordlabel.numberOfLines = 0;
         [self addSubview:coordlabel];
@@ -59,17 +70,9 @@ UIEdgeInsets UIEdgeInsetsMake (
         imageView.userInteractionEnabled = YES;
         UITapGestureRecognizer *imageViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapGR:)];
         [imageView addGestureRecognizer:imageViewTapGR];
+        */
         
-        UIButton *badgeButton = [UIButton newAutoLayoutView];
-        badgeButton.userInteractionEnabled = NO;
-        [badgeButton setBackgroundImage:[UIImage imageNamed:@"badge"] forState:UIControlStateNormal];
-        [badgeButton setTitle:@"0" forState:UIControlStateNormal];
-        badgeButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
-        [imageView addSubview:badgeButton];
-        [badgeButton autoSetDimensionsToSize:CGSizeMake(20, 20)];
-        [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
-        [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
-         */
+        
 
     }
     return self;

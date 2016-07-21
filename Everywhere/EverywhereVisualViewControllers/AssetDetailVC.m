@@ -82,9 +82,11 @@
     
     playButton = [UIButton newAutoLayoutView];
     [playButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Video_WBG"] forState:UIControlStateNormal];
+    playButton.alpha = 0.6;
     [playButton addTarget:self action:@selector(play:) forControlEvents:UIControlEventTouchDown];
     [imageView addSubview:playButton];
     [playButton autoCenterInSuperview];
+    [playButton autoSetDimensionsToSize:CGSizeMake(50, 50)];
     playButton.hidden = YES;
     
     self.currentIndex = 0;

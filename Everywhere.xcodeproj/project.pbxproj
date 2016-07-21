@@ -56,6 +56,7 @@
 		4B3AF9CC1D2F3E70009BD545 /* GCRoutePolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3AF9C61D2F3E70009BD545 /* GCRoutePolyline.m */; };
 		4B3AF9CD1D2F3E70009BD545 /* GCRoutePolylineManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3AF9C81D2F3E70009BD545 /* GCRoutePolylineManager.m */; };
 		4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */; };
+		4B8B4E4B1D40A7D2006D4AEB /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B8B4E4A1D40A7D2006D4AEB /* AudioToolbox.framework */; };
 		4B90DDFA1D38C5A200332945 /* EverywhereShareAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B90DDF91D38C5A200332945 /* EverywhereShareAnnotation.m */; };
 		4BD51FC81D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FC51D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m */; };
 		4BD51FC91D2B47B900F18244 /* PHAssetInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FC71D2B47B900F18244 /* PHAssetInfo.m */; };
@@ -171,6 +172,7 @@
 		4B3AF9C81D2F3E70009BD545 /* GCRoutePolylineManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCRoutePolylineManager.m; sourceTree = "<group>"; };
 		4B3C10061D1CDCA700C20C72 /* UIView+AutoLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AutoLayout.h"; sourceTree = "<group>"; };
 		4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AutoLayout.m"; sourceTree = "<group>"; };
+		4B8B4E4A1D40A7D2006D4AEB /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		4B90DDF81D38C5A200332945 /* EverywhereShareAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereShareAnnotation.h; path = EverywhereModels/EverywhereShareAnnotation.h; sourceTree = "<group>"; };
 		4B90DDF91D38C5A200332945 /* EverywhereShareAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereShareAnnotation.m; path = EverywhereModels/EverywhereShareAnnotation.m; sourceTree = "<group>"; };
 		4BD51FC41D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PHAssetInfo+CoreDataProperties.h"; path = "EverywhereCoreData/PHAssetInfo+CoreDataProperties.h"; sourceTree = "<group>"; };
@@ -209,6 +211,7 @@
 				4B0866331D373987000300AD /* CoreTelephony.framework in Frameworks */,
 				4B0866311D3738B3000300AD /* libsqlite3.0.tbd in Frameworks */,
 				4B08662F1D3738A4000300AD /* libz.tbd in Frameworks */,
+				4B8B4E4B1D40A7D2006D4AEB /* AudioToolbox.framework in Frameworks */,
 				4B1B4BDC1D3879FE00CCD842 /* libWeChatSDK.a in Frameworks */,
 				4B08662D1D37388E000300AD /* SystemConfiguration.framework in Frameworks */,
 				1E2848191D1AE00000189A83 /* Photos.framework in Frameworks */,
@@ -266,6 +269,7 @@
 		1E28481A1D1AE00C00189A83 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4B8B4E4A1D40A7D2006D4AEB /* AudioToolbox.framework */,
 				4B15B5CE1D3F58050096EE89 /* MapKit.framework */,
 				4B1B4BE31D387C6800CCD842 /* libc++.tbd */,
 				4B0866341D373993000300AD /* Security.framework */,
@@ -568,6 +572,9 @@
 								enabled = 1;
 							};
 							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+							com.apple.InterAppAudio = {
 								enabled = 1;
 							};
 							com.apple.Maps.iOS = {

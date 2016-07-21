@@ -11,6 +11,9 @@
 
 @interface AssetsMapProVC : UIViewController
 
+@property (strong,nonatomic) CLLocationManager *locationManagerForRecording;
+@property (assign,nonatomic) BOOL isRecording;
+
 - (void)didReceiveShareRepositoryString:(NSString *)footprintstring;
 
 @end

@@ -10,11 +10,11 @@
 
 #import "EverywhereAppDelegate.h"
 
-#import "GCPhotoManager.h"
-#import "NSDate+Assistant.h"
+//#import "GCPhotoManager.h"
+//#import "NSDate+Assistant.h"
 
 #import "EverywhereCoreDataManager.h"
-#import "PHAssetInfo.h"
+//#import "PHAssetInfo.h"
 
 #import "EverywhereSettingManager.h"
 
@@ -28,123 +28,39 @@
 
 @implementation EverywhereAppDelegate{
     AssetsMapProVC *assetsMapProVC;
-    
-    GCPhotoManager *photoManager;
-    EverywhereCoreDataManager *cdManager;
-    EverywhereSettingManager *settingManager;
+//    
+//    GCPhotoManager *photoManager;
+//    EverywhereCoreDataManager *cdManager;
+//    EverywhereSettingManager *settingManager;
 }
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    //MainVC *mainVC = [MainVC new];
-    //MapVC *mapVC = [MapVC new];
-    //mapVC.edgesForExtendedLayout = UIRectEdgeNone;
-    //CollectionListsTVC *clTVC = [CollectionListsTVC new];
-    //AssetCollectionsTVC *acTVC = [AssetCollectionsTVC new];
-    //PeriodAssetCollectionsTVC *pacTVC = [PeriodAssetCollectionsTVC new];
-    //alendarVC *calendarVC = [CalendarVC new];
-    //calendarVC.edgesForExtendedLayout = UIRectEdgeNone;
-    //UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:calendarVC];
-    
+    if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     //向微信注册id
     BOOL wx=[WXApi registerApp:@"wxa1b9c5632d24039a"];
     if(DEBUGMODE) NSLog(@"WeChat Rigister：%@",wx? @"Succeeded" : @"Failed");
-
+    
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     assetsMapProVC = [AssetsMapProVC new];
-    //[vc prefersStatusBarHidden];
     self.window.rootViewController = assetsMapProVC;
-    self.window.tintColor = settingManager.color;
-    ;
+    self.window.tintColor = [EverywhereSettingManager defaultManager].color;
     [self.window makeKeyAndVisible];
-
-    photoManager = [GCPhotoManager defaultManager];
-    cdManager = [EverywhereCoreDataManager defaultManager];
-    settingManager = [EverywhereSettingManager defaultManager];
-    
-    if (!photoManager) return YES;
-    
-    if (!cdManager.lastUpdateDate) {
-        // 首次加载照片数据
-        [self updateCoreDataFormStartDate:nil toEndDate:nil];
-    }else{
-        // 更新照片数据
-        [self updateCoreDataFormStartDate:cdManager.lastUpdateDate toEndDate:nil];
-    }
-    
-    // 更新刷新时间
-    cdManager.lastUpdateDate = [NSDate date];
     
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
     
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        NSArray <PHAssetInfo *> *allAssetInfoArray = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:cdManager.appMOC];
-        [allAssetInfoArray enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if (![obj.reverseGeocodeSucceed boolValue]) {
-                [PHAssetInfo updatePlacemarkForAssetInfo:obj];
-                //NSLog(@"%@",NSStringFromCGPoint(CGPointMake([obj.latitude_Coordinate_Location doubleValue], [obj.longitude_Coordinate_Location doubleValue])));
-                [NSThread sleepForTimeInterval:0.5];
-            }
-        }];
-    });
+    if ([UIApplication instancesRespondToSelector:@selector(registerUserNotificationSettings:)])
+    {
+        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound categories:nil]];
+    }
 
     return YES;
 }
 
-- (void)updateCoreDataFormStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate{
-    NSDate *timeTest = [NSDate date];
-    __block NSInteger addPhotosCount = 0;
-    
-    NSDictionary *dic = [photoManager fetchAssetsFormStartDate:startDate toEndDate:endDate fromAssetCollectionIDs:@[photoManager.GCAssetCollectionID_UserLibrary]];
-    NSArray <PHAsset *> *assetArray = dic[photoManager.GCAssetCollectionID_UserLibrary];
-    
-    [assetArray enumerateObjectsUsingBlock:^(PHAsset *obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (obj.location){
-            if ([self checkCoordinate:obj.location.coordinate]) {
-                
-                PHAssetInfo *info = [PHAssetInfo newAssetInfoWithPHAsset:obj inManagedObjectContext:cdManager.appMOC];
-                addPhotosCount++;
-                NSLog(@"%@",info.localIdentifier);
-            }
-        }
-    }];
-    NSLog(@"Time : %.3f , Add Photo Count : %ld",[[NSDate date] timeIntervalSinceDate:timeTest],(long)addPhotosCount);
-}
-
-- (BOOL)checkCoordinate:(CLLocationCoordinate2D)aCoord{
-    /*
-    if ([objectWithCoordinateProperty respondsToSelector:@selector(coordinate)]) {
-        CLLocationCoordinate2D aCoord = [(CLLocationCoordinate2D)[[objectWithCoordinateProperty performSelector:@selector(coordinate)] CGPointValue]
-        
-    }else{
-        return NO;
-    }
-     */
-    
-    if (aCoord.latitude > -90 && aCoord.latitude < 90) {
-        if (aCoord.longitude > - 180 && aCoord.longitude < 180) {
-            return YES;
-        }
-    }
-    
-    return NO;
-}
-/*
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(nonnull id)annotation{
-    
-    NSLog(@"%@",NSStringFromSelector(_cmd));
-    NSLog(@"openURL: %@",[url absoluteString]);
-    
-    BOOL isSuc = [WXApi handleOpenURL:url delegate:self];
-    NSLog(@"url %@ isSuc %d",url,isSuc == YES ? 1 : 0);
-    return  isSuc;
-}
-*/
 
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options{
-    NSLog(@"%@",NSStringFromSelector(_cmd));
+    if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     //NSLog(@"%@",url);
     
     [assetsMapProVC didReceiveShareRepositoryString:url.absoluteString];
@@ -152,7 +68,7 @@
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
-    NSLog(@"%@",NSStringFromSelector(_cmd));
+    if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     //NSLog(@"%@",url);
     
     [assetsMapProVC didReceiveShareRepositoryString:url.absoluteString];
@@ -160,24 +76,37 @@
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
+    if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
+    if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    if (assetsMapProVC.isRecording){
+        [assetsMapProVC.locationManagerForRecording startUpdatingLocation];
+    }
+    
+    [[EverywhereCoreDataManager defaultManager] asyncUpdatePlacemarkForPHAssetInfoWithCompletionBlock:^(NSInteger reverseGeocodeSucceedCountForThisTime, NSInteger reverseGeocodeSucceedCountForTotal, NSInteger totalPHAssetInfoCount) {
+        
+    }];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
+    if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
+    if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];

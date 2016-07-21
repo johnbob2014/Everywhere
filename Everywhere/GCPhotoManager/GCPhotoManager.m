@@ -27,9 +27,9 @@
         PHAuthorizationStatus authorizationStatus = [PHPhotoLibrary authorizationStatus];
         if (authorizationStatus == PHAuthorizationStatusNotDetermined) {
             
-            __block BOOL authorized = NO;
+            //__block BOOL authorized = NO;
             [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-                authorized = status == PHAuthorizationStatusAuthorized;
+                //authorized = status == PHAuthorizationStatusAuthorized;
             }];
             /*
             while (!authorized) {

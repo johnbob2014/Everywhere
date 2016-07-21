@@ -29,12 +29,6 @@
 }
 */
 
-- (void)setInfo:(NSString *)info{
-    _info = info;
-    self.infoLabel.text = info;
-}
-
-
 - (instancetype)initWithModeSegItems:(NSArray *)segItems selectedSegIndex:(NSInteger)selectedSegIndex leftButtonImage:(UIImage *)leftImage rightButtonImage:(UIImage *)rightImage{
     self = [super init];
     if (self) {
@@ -91,6 +85,7 @@
 }
 
 - (void)mapMainModeValueChanged:(UISegmentedControl *)sender{
+    NSLog(@"%@",NSStringFromSelector(_cmd));
     if (self.mapMainModeChangedHandler) self.mapMainModeChangedHandler(sender);
     
     if (sender.selectedSegmentIndex == 0) {
@@ -102,6 +97,11 @@
     }
     
     self.infoLabel.text = modeSegItems[sender.selectedSegmentIndex];
+}
+
+- (void)setSelectedSegmentIndex:(NSInteger)selectedSegmentIndex{
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    self.modeSeg.selectedSegmentIndex = selectedSegmentIndex;
 }
 
 - (void)leftButtonTouchDown:(UIButton *)sender{
@@ -152,4 +152,10 @@
     _rightButtonEnabled = rightButtonEnabled;
     self.rightButton.enabled = rightButtonEnabled;
 }
+
+- (void)setInfo:(NSString *)info{
+    _info = info;
+    self.infoLabel.text = info;
+}
+
 @end

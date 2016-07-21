@@ -245,7 +245,7 @@ static const NSInteger BIG_MONTH[7] = {1,3,5,7,8,10,12};
 }
 
 + (NSString *)localizedStringWithFormat:(NSString *)format startDate:(NSDate *)startDate endDate:(NSDate *)endDate{
-    if (!startDate || !endDate) return @"";
+    if (!startDate || !endDate) return nil;
     if ([startDate isSameDay:endDate]){
         if ([startDate isSameDay:[NSDate date]]) return NSLocalizedString(@"Today", @"今天");
         else return [startDate stringWithFormat:format];
