@@ -96,6 +96,12 @@ typedef NS_ENUM(NSInteger,ShareRepositoryType){
     ShareRepositoryTypeRecorded
 };
 
+typedef NS_ENUM(NSInteger,ShowUserLocationMode){
+    ShowUserLocationModeOn = 0,
+    ShowUserLocationModeFollow,
+    ShowUserLocationModeOff
+};
+
 #define NOW [NSDate date]
 
 #pragma mark - Placemark键

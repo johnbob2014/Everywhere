@@ -9,38 +9,79 @@
 #import "LocationInfoBar.h"
 #import "UIView+AutoLayout.h"
 
-@implementation LocationInfoBar
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+
+@interface LocationInfoBar ()
+
+@property (assign,nonatomic) CLLocationCoordinate2D currentCoord;
+@property (assign,nonatomic) CLLocationCoordinate2D sourceCoord;
+@property (assign,nonatomic) CLLocationCoordinate2D destinationCoord;
+
+@end
+
+@implementation LocationInfoBar{
+    UIButton *naviToHereButton;
+    UIButton *setSourceButton;
+    UIButton *setDestinationButton;
+    UIButton *getRouteButton;
 }
-*/
-/*
-UIEdgeInsets UIEdgeInsetsMake (
-                               CGFloat top,
-                               CGFloat left,
-                               CGFloat bottom,
-                               CGFloat right
-                               );
- */
+
+- (CLLocationCoordinate2D)currentCoord{
+    return CLLocationCoordinate2DMake(self.latitude, self.longitude);
+}
 
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
-        UIButton *badgeButton = [UIButton newAutoLayoutView];
-        badgeButton.userInteractionEnabled = NO;
-        [badgeButton setBackgroundImage:[UIImage imageNamed:@"badge"] forState:UIControlStateNormal];
-        [badgeButton setTitle:@"0" forState:UIControlStateNormal];
-        badgeButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
-        [self addSubview:badgeButton];
-        [badgeButton autoSetDimensionsToSize:CGSizeMake(20, 20)];
-        [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
-        [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
-
+        UIView *bottomView = [UIView newAutoLayoutView];
+        [self addSubview:bottomView];
+        [bottomView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 0, 5, 0) excludingEdge:ALEdgeTop];
+        [bottomView autoSetDimension:ALDimensionHeight toSize:44];
         
+        float buttonWidth = (self.frame.size.width - 5*2 - 3*10) / 4;
+        CGSize buttonSize = CGSizeMake(buttonWidth, 44);
+
+        naviToHereButton = [UIButton newAutoLayoutView];
+        naviToHereButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
+        //[naviToHereButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Flag_WBG"] forState:UIControlStateNormal];
+        [naviToHereButton setTitle:@"Navi To here" forState:UIControlStateNormal];
+        [naviToHereButton addTarget:self action:@selector(naviToHereBtnTD) forControlEvents:UIControlEventTouchDown];
+        [bottomView addSubview:naviToHereButton];
+        [naviToHereButton autoSetDimensionsToSize:buttonSize];
+        [naviToHereButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+        [naviToHereButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+        
+        setSourceButton = [UIButton newAutoLayoutView];
+        setSourceButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
+        //[setSourceButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Flag_WBG"] forState:UIControlStateNormal];
+        [setSourceButton setTitle:@"Set Source" forState:UIControlStateNormal];
+        [setSourceButton addTarget:self action:@selector(setSourceBtnTD) forControlEvents:UIControlEventTouchDown];
+        [bottomView addSubview:setSourceButton];
+        [setSourceButton autoSetDimensionsToSize:buttonSize];
+        [setSourceButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+        [setSourceButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:naviToHereButton withOffset:10];
+        
+        setDestinationButton = [UIButton newAutoLayoutView];
+        setDestinationButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
+        //[setDestinationButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Flag_WBG"] forState:UIControlStateNormal];
+        [setDestinationButton setTitle:@"Set Destination" forState:UIControlStateNormal];
+        [setDestinationButton addTarget:self action:@selector(setDestinationBtnTD) forControlEvents:UIControlEventTouchDown];
+        [bottomView addSubview:setDestinationButton];
+        [setDestinationButton autoSetDimensionsToSize:buttonSize];
+        [setDestinationButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+        [setDestinationButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:setSourceButton withOffset:10];
+        
+        getRouteButton = [UIButton newAutoLayoutView];
+        getRouteButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
+        //[getRouteButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Flag_WBG"] forState:UIControlStateNormal];
+        [getRouteButton setTitle:@"Get Route" forState:UIControlStateNormal];
+        [getRouteButton addTarget:self action:@selector(getRouteBtnTD) forControlEvents:UIControlEventTouchDown];
+        [bottomView addSubview:getRouteButton];
+        [getRouteButton autoSetDimensionsToSize:buttonSize];
+        [getRouteButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+        [getRouteButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:setDestinationButton withOffset:10];
+        getRouteButton.enabled = NO;
+
         UILabel *coordlabel = [UILabel newAutoLayoutView];
         coordlabel.numberOfLines = 0;
         [self addSubview:coordlabel];
@@ -62,21 +103,53 @@ UIEdgeInsets UIEdgeInsetsMake (
         [addlabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.altitudeLabel withOffset:5];
         [addlabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
         [addlabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:20];
+        [addlabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:bottomView withOffset:5];
         self.addressLabel = addlabel;
         
-        /*
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-        imageView.contentMode = UIViewContentModeScaleAspectFill;
-        imageView.userInteractionEnabled = YES;
-        UITapGestureRecognizer *imageViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapGR:)];
-        [imageView addGestureRecognizer:imageViewTapGR];
-        */
-        
-        
-
     }
     return self;
 }
+
+- (void)naviToHereBtnTD{
+    
+}
+
+- (void)setSourceBtnTD{
+    NSLog(@"%@",NSStringFromSelector(_cmd));;
+    self.sourceCoord = self.currentCoord;
+    setSourceButton.enabled = NO;
+}
+
+- (void)setDestinationBtnTD{
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    self.destinationCoord = self.currentCoord;
+    setDestinationButton.enabled = NO;
+    getRouteButton.enabled = YES;
+}
+
+- (void)getRouteBtnTD{
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    MKMapItem *lastMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:self.sourceCoord addressDictionary:nil]];
+    MKMapItem *currentMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:self.destinationCoord addressDictionary:nil]];
+    
+    MKDirectionsRequest *directionsRequest = [MKDirectionsRequest new];
+    [directionsRequest setSource:lastMapItem];
+    [directionsRequest setDestination:currentMapItem];
+    
+    MKDirections *directions = [[MKDirections alloc] initWithRequest:directionsRequest];
+    [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse * _Nullable response, NSError * _Nullable error) {
+        if(!error && self.didGetMKDirectionsResponseHandler) self.didGetMKDirectionsResponseHandler(response);
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            setSourceButton.enabled = YES;
+            setDestinationButton.enabled = YES;
+            getRouteButton.enabled = NO;
+        });
+
+    }];
+    //MKDirectionsHandler
+}
+
 
 - (void)setLatitude:(CLLocationDegrees)latitude{
     _latitude = latitude;

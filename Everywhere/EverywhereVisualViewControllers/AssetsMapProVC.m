@@ -57,6 +57,7 @@
 @interface AssetsMapProVC () <MKMapViewDelegate,CLLocationManagerDelegate,UIGestureRecognizerDelegate>
 
 @property (strong,nonatomic) MKMapView *myMapView;
+@property (assign,nonatomic) ShowUserLocationMode showUserLocationMode;
 
 #pragma mark 数据管理器
 @property (strong,nonatomic) EverywhereCoreDataManager *cdManager;
@@ -845,6 +846,17 @@
     UISwipeGestureRecognizer *swipeUpGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(locationInfoBarSwipeUp:)];
     swipeUpGR.direction = UISwipeGestureRecognizerDirectionUp;
     [locationInfoBar addGestureRecognizer:swipeUpGR];
+    
+    
+    WEAKSELF(weakSelf);
+    locationInfoBar.didGetMKDirectionsResponseHandler = ^(MKDirectionsResponse *response){
+        MKRoute *route = response.routes.firstObject;
+        MKPolyline *routePolyline = route.polyline;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(routePolyline) [weakSelf.myMapView addOverlay:routePolyline];
+        });
+    };
+    
 }
 
 - (void)locationInfoBarSwipeUp:(UISwipeGestureRecognizer *)sender{
@@ -965,13 +977,25 @@
 
 - (void)initButtonsAndVerticalAccessoriesBar{
 
-#pragma mark leftVerticalBar
+#pragma mark userLocationButton 屏幕左下方，naviBar上方
+    UIButton *userLocationButton = [UIButton newAutoLayoutView];
+    userLocationButton.alpha = 0.6;
+    [userLocationButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Trophy_WBG"] forState:UIControlStateNormal];
+    userLocationButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [userLocationButton addTarget:self action:@selector(changeShowUserLocationMode) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:userLocationButton];
+    [userLocationButton autoSetDimensionsToSize:ButtionSize];
+    //[userLocationButton autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [userLocationButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+    [userLocationButton autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
+    
+#pragma mark leftVerticalBar 屏幕左下方，userLocationButton上方，包含设置、显示隐藏等4个按钮
     
     leftVerticalBar = [UIView newAutoLayoutView];
     leftVerticalBar.backgroundColor = [UIColor clearColor];//[[UIColor cyanColor] colorWithAlphaComponent:0.3];//
     [self.view addSubview:leftVerticalBar];
     [leftVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
-    [leftVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
+    [leftVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:userLocationButton withOffset:-10];
     [leftVerticalBar autoSetDimensionsToSize:CGSizeMake(44, ButtonPlaceholderHeight * 4)];
     
     UIButton *leftBtn1 = [UIButton newAutoLayoutView];
@@ -1016,7 +1040,8 @@
     [leftBtn4 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn3 withOffset:16];
     
     //[leftVerticalView.subviews autoDistributeViewsAlongAxis:ALAxisVertical withFixedSize:44 insetSpacing:YES alignment:NSLayoutFormatAlignAllLeft];
-#pragma mark rightSwipeVerticalBar
+    
+#pragma mark rightSwipeVerticalBar 屏幕右下方，naviBar上方
     
     rightSwipeVerticalBar = [UIView newAutoLayoutView];
     rightSwipeVerticalBar.backgroundColor = [UIColor clearColor];//[[UIColor cyanColor] colorWithAlphaComponent:0.3];//
@@ -1047,7 +1072,7 @@
     [rightSwipeVerticalBar addSubview:swipeScaleView];
     [swipeScaleView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
 
-#pragma mark rightVerticalBar
+#pragma mark rightVerticalBar 屏幕右下方，rightSwipeVerticalBar上方，包含分享截图、分享足迹、进入扩展模式3个按钮
     
     rightVerticalBar = [UIView newAutoLayoutView];
     rightVerticalBar.backgroundColor = [UIColor clearColor];//[[UIColor brownColor] colorWithAlphaComponent:0.3];//
@@ -1194,6 +1219,37 @@
     }
 }
 
+- (void)changeShowUserLocationMode{
+    NSInteger mode = self.showUserLocationMode;
+    mode++;
+    if (mode == 3) mode = 0;
+    self.showUserLocationMode = mode;
+}
+
+- (void)setShowUserLocationMode:(ShowUserLocationMode)showUserLocationMode{
+    _showUserLocationMode = showUserLocationMode;
+    
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse ||
+        [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways) {
+        
+        switch (showUserLocationMode) {
+            case ShowUserLocationModeOn:
+                self.myMapView.showsUserLocation = YES;
+                break;
+            case ShowUserLocationModeFollow:
+                self.myMapView.showsUserLocation = YES;
+                break;
+            case ShowUserLocationModeOff:
+                self.myMapView.showsUserLocation = NO;
+                break;
+            default:
+                break;
+        }
+        
+    }else{
+        [[CLLocationManager new] requestWhenInUseAuthorization];
+    }
+}
 
 #pragma mark PopupController
 
@@ -2320,10 +2376,10 @@
 }
 
 - (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation{
-    // MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 10000, 10000);
-    [mapView setCenterCoordinate:userLocation.coordinate animated:YES];
+    if (self.showUserLocationMode == ShowUserLocationModeFollow) {
+        [mapView setCenterCoordinate:userLocation.coordinate animated:YES];
+    }
 }
-
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view{
     self.currentAnnotationIndex = [self.addedIDAnnos indexOfObject:view.annotation];
@@ -2381,14 +2437,14 @@
         }
        
     }
-    NSLog(@"%@",NSStringFromSelector(_cmd));
+    //NSLog(@"%@",NSStringFromSelector(_cmd));
 }
 
 - (void)addRecordedShareAnnosWithLocation:(CLLocation *)newLocation{
     EverywhereShareAnnotation *shareAnno = [EverywhereShareAnnotation new];
     shareAnno.annotationCoordinate = newLocation.coordinate;
     shareAnno.startDate = NOW;
-    shareAnno.customTitle = [NSString stringWithFormat:@"Footprint %u",recordedShareAnnos.count + 1];
+    shareAnno.customTitle = [NSString stringWithFormat:@"Footprint %lu",recordedShareAnnos.count + 1];
     [recordedShareAnnos addObject:shareAnno];
     [self.myMapView addAnnotation:shareAnno];
     
@@ -2399,7 +2455,6 @@
         [self.myMapView addOverlay:[AssetsMapProVC createArrowMKPolygonBetweenStartCoordinate:lastAnno.coordinate endCoordinate:shareAnno.coordinate]];
     }
 }
-
 
 
 @end

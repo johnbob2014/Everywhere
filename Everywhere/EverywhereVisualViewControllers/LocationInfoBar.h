@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 @import CoreLocation;
+@import MapKit;
+
+typedef void(^DidGetMKDirectionsResponseHandler)(MKDirectionsResponse *response);
 
 @interface LocationInfoBar : UIView
 
@@ -24,7 +27,6 @@
 @property (strong,nonatomic) NSString *address;
 @property (strong,nonatomic) UILabel *addressLabel;
 
-@property (strong,nonatomic) UIImageView *imageView;
-
+@property (copy,nonatomic) DidGetMKDirectionsResponseHandler didGetMKDirectionsResponseHandler;
 
 @end
