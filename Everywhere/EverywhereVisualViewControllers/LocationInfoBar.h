@@ -27,6 +27,7 @@ typedef void(^DidGetMKDirectionsResponseHandler)(MKDirectionsResponse *response)
 @property (strong,nonatomic) NSString *address;
 @property (strong,nonatomic) UILabel *addressLabel;
 
+@property (assign,nonatomic) CLLocationCoordinate2D userCoord;
 @property (copy,nonatomic) DidGetMKDirectionsResponseHandler didGetMKDirectionsResponseHandler;
 
 @end

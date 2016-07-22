@@ -7,9 +7,6 @@
 //
 #define DEBUGMODE 1
 
-#define ScreenWidth [UIScreen mainScreen].bounds.size.width
-#define ScreenHeight [UIScreen mainScreen].bounds.size.height
-
 #import "AssetsMapProVC.h"
 @import Photos;
 @import MapKit;
@@ -43,7 +40,7 @@
 #import "InAppPurchaseVC.h"
 #import "ShareRepositoryPickerVC.h"
 #import "ShareAnnotationPickerVC.h"
-
+#import "WGS84TOGCJ02.h"
 #import "CLPlacemark+Assistant.h"
 
 #import "EverywhereCoreDataManager.h"
@@ -86,6 +83,8 @@
 @end
 
 @implementation AssetsMapProVC{
+    
+    UIButton *userLocationButton;
     
 #pragma mark 用于模式转换时恢复数据
     NSString *savedTitleForMainMode;
@@ -187,7 +186,7 @@
 }
 
 - (void)showNotification:(NSInteger)count{
-    //if (count > 0){
+    if (count > 0){
         UILocalNotification *noti = [UILocalNotification new];
         
         noti.alertBody = [NSString stringWithFormat:@"%@ %lu",NSLocalizedString(@"Add New Photo : ", @"新添加照片 : "),(long)count];
@@ -195,12 +194,13 @@
         noti.soundName = UILocalNotificationDefaultSoundName;
         //noti.applicationIconBadgeNumber = count;
         [[UIApplication sharedApplication] presentLocalNotificationNow:noti];
-    //}
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     NSLog(@"%@",NSStringFromSelector(_cmd));
+    NSLog(@"%@",NSStringFromCGRect(leftVerticalBar.frame));
     
     // 更新地址数据
     if (!allPlaceMarkReverseGeocodeSucceedForThisTime) {
@@ -242,73 +242,7 @@
     }
 }
 
-/*
- - (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
- 
- 
- }
- */
-/*
-#pragma mark - Photo Data
 
-- (void)updatePhotoData{
-    if (!self.photoManager) return;
-    
-    if (!self.cdManager.lastUpdateDate) {
-        // 首次加载照片数据
-        [self updateCoreDataFormStartDate:nil toEndDate:nil];
-    }else{
-        // 更新照片数据
-        [self updateCoreDataFormStartDate:self.cdManager.lastUpdateDate toEndDate:nil];
-    }
-    
-    // 更新刷新时间
-    self.cdManager.lastUpdateDate = [NSDate date];
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        NSArray <PHAssetInfo *> *allAssetInfoArray = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:self.cdManager.appMOC];
-        [allAssetInfoArray enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if (![obj.reverseGeocodeSucceed boolValue]) {
-                [PHAssetInfo updatePlacemarkForAssetInfo:obj];
-                //NSLog(@"%@",NSStringFromCGPoint(CGPointMake([obj.latitude_Coordinate_Location doubleValue], [obj.longitude_Coordinate_Location doubleValue])));
-                [NSThread sleepForTimeInterval:0.5];
-            }
-        }];
-    });
-
-}
-
-- (void)updateCoreDataFormStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate{
-    NSDate *timeTest = [NSDate date];
-    __block NSInteger addPhotosCount = 0;
-    
-    NSDictionary *dic = [self.photoManager fetchAssetsFormStartDate:startDate toEndDate:endDate fromAssetCollectionIDs:@[self.photoManager.GCAssetCollectionID_UserLibrary]];
-    NSArray <PHAsset *> *assetArray = dic[self.photoManager.GCAssetCollectionID_UserLibrary];
-    
-    [assetArray enumerateObjectsUsingBlock:^(PHAsset *obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (obj.location){
-            if ([self checkCoordinate:obj.location.coordinate]) {
-                
-                PHAssetInfo *info = [PHAssetInfo newAssetInfoWithPHAsset:obj inManagedObjectContext:self.cdManager.appMOC];
-                addPhotosCount++;
-                NSLog(@"%@",info.localIdentifier);
-            }
-        }
-    }];
-    NSLog(@"Time : %.3f , Add Photo Count : %ld",[[NSDate date] timeIntervalSinceDate:timeTest],(long)addPhotosCount);
-}
-
-- (BOOL)checkCoordinate:(CLLocationCoordinate2D)aCoord{
-    
-    if (aCoord.latitude > -90 && aCoord.latitude < 90) {
-        if (aCoord.longitude > - 180 && aCoord.longitude < 180) {
-            return YES;
-        }
-    }
-    
-    return NO;
-}
-*/
 #pragma mark - Getter & Setter
 
 - (CLLocationManager *)locationManagerForRecording{
@@ -325,7 +259,7 @@
             _locationManagerForRecording.distanceFilter = 20;
             _locationManagerForRecording.desiredAccuracy = kCLLocationAccuracyBest;
             _locationManagerForRecording.pausesLocationUpdatesAutomatically = NO;
-            _locationManagerForRecording.allowsBackgroundLocationUpdates = YES;
+            if(iOS9) _locationManagerForRecording.allowsBackgroundLocationUpdates = YES;
             _locationManagerForRecording.activityType = CLActivityTypeAutomotiveNavigation;
             
             CLAuthorizationStatus authorizationStatus = [CLLocationManager authorizationStatus];
@@ -863,6 +797,11 @@
     [self hideLocationInfoBar];
 }
 
+- (void)showHideLocationInfoBar{
+    if (locationInfoBarIsOutOfVisualView) [self showLocationInfoBar];
+    else [self hideLocationInfoBar];
+}
+
 - (void)showLocationInfoBar{
     
     if (msMainModeBar.alpha || placemarkInfoBar.alpha) {
@@ -971,16 +910,17 @@
 
 #pragma mark Buttons And Vertical Accessories Bars
 
-#define ButtonPlaceholderHeight 60
+#define ButtonPlaceholderHeight 60//ScreenHeight > 568 ? 60 : 50
 #define ButtionSize CGSizeMake(44, 44)
 #define ButtionEdgeLength 44
+#define VerticalButtonOffset 16//ScreenHeight > 568 ? 16 : 8
 
 - (void)initButtonsAndVerticalAccessoriesBar{
 
 #pragma mark userLocationButton 屏幕左下方，naviBar上方
-    UIButton *userLocationButton = [UIButton newAutoLayoutView];
+    userLocationButton = [UIButton newAutoLayoutView];
     userLocationButton.alpha = 0.6;
-    [userLocationButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Trophy_WBG"] forState:UIControlStateNormal];
+    [userLocationButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_User"] forState:UIControlStateNormal];
     userLocationButton.translatesAutoresizingMaskIntoConstraints = NO;
     [userLocationButton addTarget:self action:@selector(changeShowUserLocationMode) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:userLocationButton];
@@ -996,7 +936,7 @@
     [self.view addSubview:leftVerticalBar];
     [leftVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
     [leftVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:userLocationButton withOffset:-10];
-    [leftVerticalBar autoSetDimensionsToSize:CGSizeMake(44, ButtonPlaceholderHeight * 4)];
+    [leftVerticalBar autoSetDimensionsToSize:CGSizeMake(44, ButtonPlaceholderHeight * 5)];
     
     UIButton *leftBtn1 = [UIButton newAutoLayoutView];
     leftBtn1.alpha = 0.6;
@@ -1006,39 +946,47 @@
     [leftVerticalBar addSubview:leftBtn1];
     [leftBtn1 autoSetDimensionsToSize:ButtionSize];
     [leftBtn1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [leftBtn1 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:8];
+    [leftBtn1 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
     
-
     UIButton *leftBtn2 = [UIButton newAutoLayoutView];
     leftBtn2.alpha = 0.6;
-    [leftBtn2 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Glasses_WBG"] forState:UIControlStateNormal];
+    [leftBtn2 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_MapMarker"] forState:UIControlStateNormal];
     leftBtn2.translatesAutoresizingMaskIntoConstraints = NO;
-    [leftBtn2 addTarget:self action:@selector(showHideMapModeBar) forControlEvents:UIControlEventTouchDown];
+    [leftBtn2 addTarget:self action:@selector(showHideLocationInfoBar) forControlEvents:UIControlEventTouchDown];
     [leftVerticalBar addSubview:leftBtn2];
     [leftBtn2 autoSetDimensionsToSize:ButtionSize];
     [leftBtn2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [leftBtn2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn1 withOffset:16];
+    [leftBtn2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn1 withOffset:VerticalButtonOffset];
     
     UIButton *leftBtn3 = [UIButton newAutoLayoutView];
     leftBtn3.alpha = 0.6;
-    [leftBtn3 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_StatisticBar1_WBG"] forState:UIControlStateNormal];
+    [leftBtn3 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Glasses_WBG"] forState:UIControlStateNormal];
     leftBtn3.translatesAutoresizingMaskIntoConstraints = NO;
-    [leftBtn3 addTarget:self action:@selector(showHidePlacemarkInfoBar) forControlEvents:UIControlEventTouchDown];
+    [leftBtn3 addTarget:self action:@selector(showHideMapModeBar) forControlEvents:UIControlEventTouchDown];
     [leftVerticalBar addSubview:leftBtn3];
     [leftBtn3 autoSetDimensionsToSize:ButtionSize];
     [leftBtn3 autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [leftBtn3 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn2 withOffset:16];
+    [leftBtn3 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn2 withOffset:VerticalButtonOffset];
     
     UIButton *leftBtn4 = [UIButton newAutoLayoutView];
     leftBtn4.alpha = 0.6;
-    [leftBtn4 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Play_WBG"] forState:UIControlStateNormal];
+    [leftBtn4 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_StatisticBar1_WBG"] forState:UIControlStateNormal];
     leftBtn4.translatesAutoresizingMaskIntoConstraints = NO;
-    [leftBtn4 addTarget:self action:@selector(showHideNaviBar) forControlEvents:UIControlEventTouchDown];
+    [leftBtn4 addTarget:self action:@selector(showHidePlacemarkInfoBar) forControlEvents:UIControlEventTouchDown];
     [leftVerticalBar addSubview:leftBtn4];
     [leftBtn4 autoSetDimensionsToSize:ButtionSize];
     [leftBtn4 autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [leftBtn4 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn3 withOffset:16];
+    [leftBtn4 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn3 withOffset:VerticalButtonOffset];
     
+    UIButton *leftBtn5 = [UIButton newAutoLayoutView];
+    leftBtn5.alpha = 0.6;
+    [leftBtn5 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Play_WBG"] forState:UIControlStateNormal];
+    leftBtn5.translatesAutoresizingMaskIntoConstraints = NO;
+    [leftBtn5 addTarget:self action:@selector(showHideNaviBar) forControlEvents:UIControlEventTouchDown];
+    [leftVerticalBar addSubview:leftBtn5];
+    [leftBtn5 autoSetDimensionsToSize:ButtionSize];
+    [leftBtn5 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [leftBtn5 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:leftBtn4 withOffset:VerticalButtonOffset];
     //[leftVerticalView.subviews autoDistributeViewsAlongAxis:ALAxisVertical withFixedSize:44 insetSpacing:YES alignment:NSLayoutFormatAlignAllLeft];
     
 #pragma mark rightSwipeVerticalBar 屏幕右下方，naviBar上方
@@ -1048,7 +996,7 @@
     [self.view addSubview:rightSwipeVerticalBar];
     [rightSwipeVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
     [rightSwipeVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
-    [rightSwipeVerticalBar autoSetDimensionsToSize:CGSizeMake(ButtionEdgeLength, ButtonPlaceholderHeight * 2.5)];
+    [rightSwipeVerticalBar autoSetDimensionsToSize:CGSizeMake(ButtionEdgeLength, ButtonPlaceholderHeight * 3)];
     
     UIImageView *swipeImageView = [UIImageView newAutoLayoutView];
     swipeImageView.alpha = 0.6;
@@ -1078,7 +1026,7 @@
     rightVerticalBar.backgroundColor = [UIColor clearColor];//[[UIColor brownColor] colorWithAlphaComponent:0.3];//
     [self.view addSubview:rightVerticalBar];
     [rightVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
-    [rightVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:rightSwipeVerticalBar withOffset:0];
+    [rightVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:rightSwipeVerticalBar withOffset:-(VerticalButtonOffset)];
     [rightVerticalBar autoSetDimensionsToSize:CGSizeMake(ButtionEdgeLength, ButtonPlaceholderHeight * 3)];
     
     UIButton *rightBtn1 = [UIButton newAutoLayoutView];
@@ -1089,7 +1037,7 @@
     [rightVerticalBar addSubview:rightBtn1];
     [rightBtn1 autoSetDimensionsToSize:ButtionSize];
     [rightBtn1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [rightBtn1 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:8];
+    [rightBtn1 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
     
     UIButton *rightBtn2 = [UIButton newAutoLayoutView];
     rightBtn2.alpha = 0.6;
@@ -1099,7 +1047,7 @@
     [rightVerticalBar addSubview:rightBtn2];
     [rightBtn2 autoSetDimensionsToSize:ButtionSize];
     [rightBtn2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [rightBtn2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:rightBtn1 withOffset:16];
+    [rightBtn2 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:rightBtn1 withOffset:VerticalButtonOffset];
     
     UIButton *rightBtn3 = [UIButton newAutoLayoutView];
     rightBtn3.alpha = 0.6;
@@ -1109,7 +1057,7 @@
     [rightVerticalBar addSubview:rightBtn3];
     [rightBtn3 autoSetDimensionsToSize:ButtionSize];
     [rightBtn3 autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [rightBtn3 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:rightBtn2 withOffset:16];
+    [rightBtn3 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:rightBtn2 withOffset:VerticalButtonOffset];
     
 #pragma mark quiteBrowserModeButton
     quiteBrowserModeButton = [UIButton newAutoLayoutView];
@@ -1119,7 +1067,7 @@
     [quiteBrowserModeButton addTarget:self action:@selector(showQuiteBrowserModeAlertController) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:quiteBrowserModeButton];
     [quiteBrowserModeButton autoSetDimensionsToSize:ButtionSize];
-    [quiteBrowserModeButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:msExtenedModeBar withOffset:10];
+    [quiteBrowserModeButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:msExtenedModeBar withOffset:VerticalButtonOffset];
     [quiteBrowserModeButton autoAlignAxisToSuperviewAxis:ALAxisVertical];
     quiteBrowserModeButton.hidden = YES;
 
@@ -1235,12 +1183,15 @@
         switch (showUserLocationMode) {
             case ShowUserLocationModeOn:
                 self.myMapView.showsUserLocation = YES;
+                [userLocationButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_User-On"] forState:UIControlStateNormal];
                 break;
             case ShowUserLocationModeFollow:
                 self.myMapView.showsUserLocation = YES;
+                [userLocationButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_User-Follow"] forState:UIControlStateNormal];
                 break;
             case ShowUserLocationModeOff:
                 self.myMapView.showsUserLocation = NO;
+                [userLocationButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_User"] forState:UIControlStateNormal];
                 break;
             default:
                 break;
@@ -1268,7 +1219,7 @@
 - (void)initShareBar{
     shareBar = [ShareBar newAutoLayoutView];
     shareBar.sideViewShrinkRate = 0.8;
-    shareBar.title =  @"用相册记录人生，用足迹丈量世界";
+    shareBar.title =  NSLocalizedString(@"Record your life by albums.Measure the world by footprints.",@"用相册记录人生，用足迹丈量世界");
     shareBar.titleFont = [UIFont bodyFontWithSizeMultiplier:1.0];
     shareBar.leftImage = [UIImage imageNamed:@"地球_300_300"];
     shareBar.leftText = NSLocalizedString(@"AlbumMaps", @"相册地图");
@@ -1420,12 +1371,12 @@
     NSString *alertTitle = NSLocalizedString(@"Can not enter extended mode",@"无法进入扩展模式");
     NSString *alertMessage = [NSString stringWithFormat:@"%@",NSLocalizedString(@"Please choose a purchase item", @"请选择购买项目")];
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *purchaseShareFunctionAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase Share Function",@"购买 分享功能")
+    UIAlertAction *purchaseShareFunctionAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase ShareFunctionAndBrowserMode",@"购买 分享功能和浏览模式")
                                                                           style:UIAlertActionStyleDefault
                                                                         handler:^(UIAlertAction * action) {
                                                                             [self showPurchaseShareFunctionAlertController];
                                                                         }];
-    UIAlertAction *purchaseRecordFunctionAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase footprints Record Function",@"购买 足迹记录功能")
+    UIAlertAction *purchaseRecordFunctionAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase RecordFuntionAndRecordMode",@"购买 记录功能和记录模式")
                                                                            style:UIAlertActionStyleDefault
                                                                          handler:^(UIAlertAction * action) {
                                                                              [self showPurchaseRecordFunctionAlertController];
@@ -1441,45 +1392,75 @@
 }
 
 - (void)showPurchaseShareFunctionAlertController{
-    NSString *alertTitle = NSLocalizedString(@"Purchase Share Function",@"购买分享功能");
-    NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@\n%@\n%@",NSLocalizedString(@"You can get utilities below:", @"您将获得如下功能："),NSLocalizedString(@"1.Share your footprints to others", @"1.将足迹分享给他人"),NSLocalizedString(@"2.Store footprints shared by others and lookup anytime", @"2.存储足迹，并实时查看"),NSLocalizedString(@"Cost $0.99,continue?", @"价格6元，是否购买？")];
+    NSString *alertTitle = NSLocalizedString(@"ShareFunctionAndBrowserMode",@"分享功能和浏览模式");
+    NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",NSLocalizedString(@"You can get utilities below:", @"您将获得如下功能："),NSLocalizedString(@"1.Share your footprints to others", @"1.将足迹分享给他人"),NSLocalizedString(@"2.Store footprints both sended by you and shared by others", @"2.存储足迹，包括自己发送的和别人分享的"),NSLocalizedString(@"3.Unlock Browser Mode and  lookup stored footprints anytime", @"3.解锁浏览模式，随时查看分享足迹"),NSLocalizedString(@"Cost $1.99,continue?", @"价格 ￥12元，是否购买？")];
     
     [self showPurchaseAlertControllerWithTitle:alertTitle message:alertMessage productIndex:0];
 }
 
 - (void)showPurchaseRecordFunctionAlertController{
-    NSString *alertTitle = NSLocalizedString(@"Purchase Record Function",@"购买足迹记录功能");
-    NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@\n%@\n%@",NSLocalizedString(@"You can get utilities below:", @"您将获得如下功能："),NSLocalizedString(@"1.Record your footprints", @"1.记录你的运动足迹"),NSLocalizedString(@"2.Smart edit your footprints", @"2.足迹智能编辑"),NSLocalizedString(@"Cost $0.99,continue?", @"价格6元，是否购买？")];
+    NSString *alertTitle = NSLocalizedString(@"RecordFuntionAndRecordMode",@"足迹记录和记录模式");
+    NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",NSLocalizedString(@"You can get utilities below:", @"您将获得如下功能："),NSLocalizedString(@"1.Record your footprints, support background recording", @"1.记录你的运动足迹"),NSLocalizedString(@"2.Intelligently edit your footprints", @"2.足迹智能编辑"),NSLocalizedString(@"3.Unlock Record Mode to manage your recorded footprints", @"3.解锁记录模式，管理你记录的足迹"),NSLocalizedString(@"Cost $1.99,continue?", @"价格 ￥12元，是否购买？")];
     [self showPurchaseAlertControllerWithTitle:alertTitle message:alertMessage productIndex:1];
 }
 
 - (void)showPurchaseAlertControllerWithTitle:(NSString *)title message:(NSString *)message productIndex:(NSInteger)productIndex{
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase",@"购买")
+    UIAlertAction *purchaseAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase",@"购买")
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction * action) {
-                                                         [self showPurchaseVC:productIndex];
+                                                         [self showPurchaseVC:productIndex transactionType:TransactionTypePurchase];
                                                      }];
-    
+    UIAlertAction *restoreAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Restore",@"恢复")
+                                                             style:UIAlertActionStyleDefault
+                                                           handler:^(UIAlertAction * action) {
+                                                               [self showPurchaseVC:productIndex transactionType:TransactionTypeRestore];
+                                                           }];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
-    [alertController addAction:okAction];
+    [alertController addAction:purchaseAction];
+    [alertController addAction:restoreAction];
     [alertController addAction:cancelAction];
     
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-- (void)showPurchaseVC:(NSInteger)productIndex{
+- (void)showInfomationAlertControllerWithTitle:(NSString *)title message:(NSString *)message{
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK",@"确定") style:UIAlertActionStyleDefault handler:nil];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
+    [alertController addAction:okAction];
+    [alertController addAction:cancelAction];
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)showPurchaseVC:(NSInteger)productIndex transactionType:(enum TransactionType)transactionType{
     InAppPurchaseVC *inAppPurchaseVC = [InAppPurchaseVC new];
     inAppPurchaseVC.edgesForExtendedLayout = UIRectEdgeNone;
-    inAppPurchaseVC.transactionType = TransactionTypePurchase;
+    
+    inAppPurchaseVC.productIDs = ProductIDs;
     inAppPurchaseVC.productIndex = productIndex;
-    inAppPurchaseVC.inAppPurchaseCompletionHandler = ^(BOOL success,int productIndex,enum TransactionType transactionType){
-#warning here
-        if (YES) {
-            self.settingManager.hasPurchasedShare = YES;
-            NSLog(@"%@",self.settingManager.hasPurchasedShare? @"1111" : @"0000");
+    inAppPurchaseVC.transactionType = transactionType;
+    
+    WEAKSELF(weakSelf);
+    inAppPurchaseVC.inAppPurchaseCompletionHandler = ^(BOOL success,NSInteger productIndex,enum TransactionType transactionType){
+        NSString *typeString = transactionType == TransactionTypePurchase ? NSLocalizedString(@"Purchase", @"购买") : NSLocalizedString(@"Restore", @"恢复");
+        NSString *resultString = nil;
+        NSString *productNameString = productIndex == 0 ? NSLocalizedString(@"ShareFunctionAndBrowserMode",@"分享功能和浏览模式"): NSLocalizedString(@"RecordFuntionAndRecordMode",@"足迹记录和记录模式");
+        
+        if (success) {
+            resultString = NSLocalizedString(@"Succeeded", @"成功");
+            if (productIndex == 0) self.settingManager.hasPurchasedShare = YES;
+            if (productIndex == 1) self.settingManager.hasPurchasedRecord = YES;
+        }else{
+            resultString = NSLocalizedString(@"Failed", @"失败");
         }
+        
+        NSString *alertMessage = [NSString stringWithFormat:@"%@ %@ %@",typeString,productNameString,resultString];
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [weakSelf showInfomationAlertControllerWithTitle:NSLocalizedString(@"Purchase/Restore Result", @"购买/恢复结果") message:alertMessage];
+        });
     };
+    
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:inAppPurchaseVC];
     [self presentViewController:nav animated:YES completion:nil];
 }
@@ -1510,7 +1491,7 @@
     
     ShareShareRepositoryVC *ssVC = [ShareShareRepositoryVC new];
     ssVC.shareRepository = shareRepository;
-    NSData *thumbImageData=UIImageJPEGRepresentation([UIImage imageNamed:@"地球_300_300"], 0.5);
+    NSData *thumbImageData = UIImageJPEGRepresentation([UIImage imageNamed:@"地球_300_300"], 0.5);
     ssVC.shareThumbImageData = thumbImageData;
     
     ssVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.9, 200);
@@ -1725,7 +1706,7 @@
     UIAlertAction *purchaseAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase",@"购买")
                                                              style:UIAlertActionStyleDefault
                                                            handler:^(UIAlertAction * action) {
-                                                               [self showPurchaseVC:0];
+                                                               [self showPurchaseShareFunctionAlertController];
                                                            }];
     UIAlertAction *dropAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Drop",@"丢弃")
                                                          style:UIAlertActionStyleDefault
@@ -2306,21 +2287,24 @@
             PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:self.cdManager.appMOC];
             if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
             
-            [self updateLocationInfoBarWithAssetInfo:assetInfo];
+            [self updateLocationInfoBarWithPHAssetInfo:assetInfo];
         }else if ([view.annotation isKindOfClass:[EverywhereShareAnnotation class]]){
             EverywhereShareAnnotation *shareAnno = (EverywhereShareAnnotation *)view.annotation;
-            [self updateLocationInfoBarWithCoordinate:shareAnno.coordinate];
+            [self updateLocationInfoBarWithGCJCoordinate:shareAnno.coordinate];
         }
         
-        if (locationInfoBarIsOutOfVisualView) [self showLocationInfoBar];
-        else [self hideLocationInfoBar];
+        [self showHideLocationInfoBar];
+        
     }
     
 }
 
-- (void)updateLocationInfoBarWithAssetInfo:(PHAssetInfo *)assetInfo{
-    locationInfoBar.latitude = [assetInfo.latitude_Coordinate_Location doubleValue];
-    locationInfoBar.longitude = [assetInfo.longitude_Coordinate_Location doubleValue];
+- (void)updateLocationInfoBarWithPHAssetInfo:(PHAssetInfo *)assetInfo{
+    
+    CLLocationCoordinate2D gcjCoord = [WGS84TOGCJ02 transformFromWGSToGCJ:CLLocationCoordinate2DMake([assetInfo.latitude_Coordinate_Location doubleValue], [assetInfo.longitude_Coordinate_Location doubleValue])];
+    
+    locationInfoBar.latitude = gcjCoord.latitude;
+    locationInfoBar.longitude = gcjCoord.longitude;
     locationInfoBar.horizontalAccuracy = [assetInfo.horizontalAccuracy_Location doubleValue];
     locationInfoBar.altitude = [assetInfo.altitude_Location doubleValue];
     locationInfoBar.verticalAccuracy = [assetInfo.verticalAccuracy_Location doubleValue];
@@ -2328,7 +2312,7 @@
     locationInfoBar.address = assetInfo.localizedPlaceString_Placemark;
 }
 
-- (void)updateLocationInfoBarWithCoordinate:(CLLocationCoordinate2D)aCoordinate{
+- (void)updateLocationInfoBarWithGCJCoordinate:(CLLocationCoordinate2D)aCoordinate{
     
     locationInfoBar.latitude = aCoordinate.latitude;
     locationInfoBar.longitude = aCoordinate.longitude;
@@ -2353,9 +2337,19 @@
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay{
     if ([overlay isKindOfClass:[MKPolyline class]]) {
         MKPolylineRenderer *polylineRenderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
-        polylineRenderer.lineWidth = 1;
-        polylineRenderer.strokeColor = [[UIColor brownColor] colorWithAlphaComponent:0.6];
-        //NSLog(@"%@",polylineRenderer);
+        MKPolyline *polyline = (MKPolyline *)overlay;
+        
+        if (polyline.pointCount > 2) {
+            // 查找的路线
+            polylineRenderer.lineWidth = 3;
+            polylineRenderer.strokeColor = [[UIColor magentaColor] colorWithAlphaComponent:0.6];
+            polylineRenderer.fillColor = [[UIColor cyanColor] colorWithAlphaComponent:0.6];
+        }else{
+            // 箭头路线
+            polylineRenderer.lineWidth = 1;
+            polylineRenderer.strokeColor = [[UIColor brownColor] colorWithAlphaComponent:0.6];
+        }
+
         return polylineRenderer;
     }else if([overlay isKindOfClass:[MKPolygon class]]){
         MKPolygonRenderer *polygonRenderer = [[MKPolygonRenderer alloc] initWithPolygon:overlay];
@@ -2376,6 +2370,8 @@
 }
 
 - (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation{
+    locationInfoBar.userCoord = [WGS84TOGCJ02 transformFromWGSToGCJ:userLocation.coordinate];
+    
     if (self.showUserLocationMode == ShowUserLocationModeFollow) {
         [mapView setCenterCoordinate:userLocation.coordinate animated:YES];
     }
@@ -2391,13 +2387,13 @@
         PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:self.cdManager.appMOC];
         if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
         
-        [self updateLocationInfoBarWithAssetInfo:assetInfo];
+        [self updateLocationInfoBarWithPHAssetInfo:assetInfo];
         
     }else if ([view.annotation isKindOfClass:[EverywhereShareAnnotation class]]){
         EverywhereShareAnnotation *shareAnno = (EverywhereShareAnnotation *)view.annotation;
         //self.currentAnnotationIndex = [self.addedEWShareAnnos indexOfObject:shareAnno];
         
-        [self updateLocationInfoBarWithCoordinate:shareAnno.coordinate];
+        [self updateLocationInfoBarWithGCJCoordinate:shareAnno.coordinate];
     }
 }
 
@@ -2444,7 +2440,7 @@
     EverywhereShareAnnotation *shareAnno = [EverywhereShareAnnotation new];
     shareAnno.annotationCoordinate = newLocation.coordinate;
     shareAnno.startDate = NOW;
-    shareAnno.customTitle = [NSString stringWithFormat:@"Footprint %lu",recordedShareAnnos.count + 1];
+    shareAnno.customTitle = [NSString stringWithFormat:@"Footprint %lu",(unsigned long)(recordedShareAnnos.count + 1)];
     [recordedShareAnnos addObject:shareAnno];
     [self.myMapView addAnnotation:shareAnno];
     

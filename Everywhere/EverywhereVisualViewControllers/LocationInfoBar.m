@@ -24,6 +24,7 @@
     UIButton *setSourceButton;
     UIButton *setDestinationButton;
     UIButton *getRouteButton;
+    NSArray <UIButton *> *buttonArray;
 }
 
 - (CLLocationCoordinate2D)currentCoord{
@@ -36,15 +37,14 @@
         UIView *bottomView = [UIView newAutoLayoutView];
         [self addSubview:bottomView];
         [bottomView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 0, 5, 0) excludingEdge:ALEdgeTop];
-        [bottomView autoSetDimension:ALDimensionHeight toSize:44];
+        [bottomView autoSetDimension:ALDimensionHeight toSize:30];
         
-        float buttonWidth = (self.frame.size.width - 5*2 - 3*10) / 4;
-        CGSize buttonSize = CGSizeMake(buttonWidth, 44);
+        float buttonWidth = (self.frame.size.width - 5*5) / 4;
+        CGSize buttonSize = CGSizeMake(buttonWidth, 30);
 
         naviToHereButton = [UIButton newAutoLayoutView];
-        naviToHereButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
         //[naviToHereButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Flag_WBG"] forState:UIControlStateNormal];
-        [naviToHereButton setTitle:@"Navi To here" forState:UIControlStateNormal];
+        [naviToHereButton setTitle:@"Navi" forState:UIControlStateNormal];
         [naviToHereButton addTarget:self action:@selector(naviToHereBtnTD) forControlEvents:UIControlEventTouchDown];
         [bottomView addSubview:naviToHereButton];
         [naviToHereButton autoSetDimensionsToSize:buttonSize];
@@ -52,66 +52,88 @@
         [naviToHereButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
         
         setSourceButton = [UIButton newAutoLayoutView];
-        setSourceButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
         //[setSourceButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Flag_WBG"] forState:UIControlStateNormal];
-        [setSourceButton setTitle:@"Set Source" forState:UIControlStateNormal];
+        [setSourceButton setTitle:@"Set Origin" forState:UIControlStateNormal];
         [setSourceButton addTarget:self action:@selector(setSourceBtnTD) forControlEvents:UIControlEventTouchDown];
         [bottomView addSubview:setSourceButton];
         [setSourceButton autoSetDimensionsToSize:buttonSize];
         [setSourceButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-        [setSourceButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:naviToHereButton withOffset:10];
+        [setSourceButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:naviToHereButton withOffset:5];
         
         setDestinationButton = [UIButton newAutoLayoutView];
-        setDestinationButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
+        //setDestinationButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
         //[setDestinationButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Flag_WBG"] forState:UIControlStateNormal];
-        [setDestinationButton setTitle:@"Set Destination" forState:UIControlStateNormal];
+        [setDestinationButton setTitle:@"Set Dest." forState:UIControlStateNormal];
         [setDestinationButton addTarget:self action:@selector(setDestinationBtnTD) forControlEvents:UIControlEventTouchDown];
         [bottomView addSubview:setDestinationButton];
         [setDestinationButton autoSetDimensionsToSize:buttonSize];
         [setDestinationButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-        [setDestinationButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:setSourceButton withOffset:10];
+        [setDestinationButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:setSourceButton withOffset:5];
         
         getRouteButton = [UIButton newAutoLayoutView];
-        getRouteButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
+        //getRouteButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
         //[getRouteButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Flag_WBG"] forState:UIControlStateNormal];
         [getRouteButton setTitle:@"Get Route" forState:UIControlStateNormal];
         [getRouteButton addTarget:self action:@selector(getRouteBtnTD) forControlEvents:UIControlEventTouchDown];
         [bottomView addSubview:getRouteButton];
         [getRouteButton autoSetDimensionsToSize:buttonSize];
         [getRouteButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-        [getRouteButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:setDestinationButton withOffset:10];
+        [getRouteButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:setDestinationButton withOffset:5];
         getRouteButton.enabled = NO;
+        
+        buttonArray = @[naviToHereButton,setSourceButton,setDestinationButton,getRouteButton];
+        [self setupButtonsStyle];
 
         UILabel *coordlabel = [UILabel newAutoLayoutView];
         coordlabel.numberOfLines = 0;
+        coordlabel.textAlignment = NSTextAlignmentLeft;
         [self addSubview:coordlabel];
-        [coordlabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:10];
-        [coordlabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
+        [coordlabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
+        [coordlabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
         self.coordinateLabel = coordlabel;
         
         UILabel *altLabel = [UILabel newAutoLayoutView];
         altLabel.numberOfLines = 0;
+        altLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:altLabel];
-        [altLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coordinateLabel withOffset:5];
-        [altLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
+        //[altLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coordinateLabel withOffset:5];
+        //[altLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
+        [altLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
+        [altLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
+        [altLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:coordlabel];
         self.altitudeLabel = altLabel;
         
         UILabel *addlabel = [UILabel newAutoLayoutView];
         addlabel.numberOfLines = 0;
         addlabel.textAlignment = NSTextAlignmentLeft;
         [self addSubview:addlabel];
-        [addlabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.altitudeLabel withOffset:5];
-        [addlabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
-        [addlabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:20];
-        [addlabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:bottomView withOffset:5];
+        [addlabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coordinateLabel withOffset:5];
+        [addlabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+        [addlabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
+        //[addlabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:bottomView withOffset:5];
         self.addressLabel = addlabel;
         
     }
     return self;
 }
 
+- (void)setupButtonsStyle{
+    [buttonArray enumerateObjectsUsingBlock:^(UIButton * _Nonnull button, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        CGFloat fontSize = ScreenWidth > 320 ? 16 : 10;
+        button.titleLabel.font = [UIFont boldSystemFontOfSize:fontSize];
+        
+        button.layer.cornerRadius = 3.0;
+        button.layer.borderColor = [UIColor whiteColor].CGColor;
+        button.layer.borderWidth = 1;
+        
+        [button setTitleColor:[UIColor grayColor] forState:UIControlStateDisabled];
+    }];
+}
+
+
 - (void)naviToHereBtnTD{
-    
+    [BaiduMap baidumapDirectionFromOrigin:self.userCoord toDestination:self.currentCoord directionMode:BaiduMapDirectionModeDriving];
 }
 
 - (void)setSourceBtnTD{
@@ -128,6 +150,8 @@
 }
 
 - (void)getRouteBtnTD{
+    getRouteButton.enabled = NO;
+    
     NSLog(@"%@",NSStringFromSelector(_cmd));
     MKMapItem *lastMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:self.sourceCoord addressDictionary:nil]];
     MKMapItem *currentMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:self.destinationCoord addressDictionary:nil]];
@@ -143,7 +167,6 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             setSourceButton.enabled = YES;
             setDestinationButton.enabled = YES;
-            getRouteButton.enabled = NO;
         });
 
     }];
@@ -206,14 +229,16 @@
 - (void)updateAltitudeLabel{
     NSMutableString *ma = [NSMutableString new];
     if (self.altitude != 0) {
-        [ma appendString:NSLocalizedString(@"Altitude : ", @"")];
-        [ma appendFormat:@"%.2f",self.altitude];
+        [ma appendString:NSLocalizedString(@"Altitude", @"高度")];
+        [ma appendFormat:@"\n%.2f",self.altitude];
     }
+    /*
     if (self.level != 0) {
         [ma appendFormat:@"\n"];
         [ma appendString:NSLocalizedString(@"Floor : ", @"")];
         [ma appendFormat:@"%ld",(long)self.level];
     }
+     */
     self.altitudeLabel.text = ma;
 }
 

@@ -69,6 +69,7 @@
 		4BFA4EB31D33791A007DDA87 /* LocationPickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */; };
 		4BFA4EB61D33982A007DDA87 /* DatePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA4EB51D33982A007DDA87 /* DatePickerVC.m */; };
 		4BFC352C1D3C851200F111EE /* ShareShareRepositoryVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFC352B1D3C851200F111EE /* ShareShareRepositoryVC.m */; };
+		4BFE71211D42297A00F5AA2F /* BaiduMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFE71201D42297A00F5AA2F /* BaiduMap.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -197,6 +198,8 @@
 		4BFA4EB51D33982A007DDA87 /* DatePickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatePickerVC.m; path = EverywhereVisualViewControllers/DatePickerVC.m; sourceTree = "<group>"; };
 		4BFC352A1D3C851200F111EE /* ShareShareRepositoryVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareShareRepositoryVC.h; path = EverywhereVisualViewControllers/ShareShareRepositoryVC.h; sourceTree = "<group>"; };
 		4BFC352B1D3C851200F111EE /* ShareShareRepositoryVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShareShareRepositoryVC.m; path = EverywhereVisualViewControllers/ShareShareRepositoryVC.m; sourceTree = "<group>"; };
+		4BFE711F1D42297A00F5AA2F /* BaiduMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaiduMap.h; path = BaiduMap/BaiduMap.h; sourceTree = "<group>"; };
+		4BFE71201D42297A00F5AA2F /* BaiduMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BaiduMap.m; path = BaiduMap/BaiduMap.m; sourceTree = "<group>"; };
 		6C5CC4DC43B9922DBD449DFF /* Pods-Everywhere.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Everywhere.release.xcconfig"; path = "Pods/Target Support Files/Pods-Everywhere/Pods-Everywhere.release.xcconfig"; sourceTree = "<group>"; };
 		8CB0F045B4429E7E7F66F602 /* Pods-Everywhere.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Everywhere.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Everywhere/Pods-Everywhere.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -483,6 +486,7 @@
 		4B3AF9CF1D2F3ECE009BD545 /* GeneralClass */ = {
 			isa = PBXGroup;
 			children = (
+				4BFE711E1D42292900F5AA2F /* BaiduMap */,
 				1E74C3021D268377000A9790 /* VCFloatingActionButton */,
 				4B001CCA1D21002700DF7287 /* CTPImageBrowser */,
 				1E9D5D3F1D1E2ADB00E8B630 /* WGS84TOGCJ02 */,
@@ -521,6 +525,15 @@
 				4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */,
 			);
 			name = EverywhereCoreData;
+			sourceTree = "<group>";
+		};
+		4BFE711E1D42292900F5AA2F /* BaiduMap */ = {
+			isa = PBXGroup;
+			children = (
+				4BFE711F1D42297A00F5AA2F /* BaiduMap.h */,
+				4BFE71201D42297A00F5AA2F /* BaiduMap.m */,
+			);
+			name = BaiduMap;
 			sourceTree = "<group>";
 		};
 		8E868D57129C0D604CE02162 /* Pods */ = {
@@ -702,6 +715,7 @@
 				4BFC352C1D3C851200F111EE /* ShareShareRepositoryVC.m in Sources */,
 				1E63B77C1D2E9D90003E355B /* PlacemarkInfoBar.m in Sources */,
 				1EF62A571D3B902A0084AF66 /* CoordinateInfo+Assistant.m in Sources */,
+				4BFE71211D42297A00F5AA2F /* BaiduMap.m in Sources */,
 				4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */,
 				1E2847FA1D1ADDB900189A83 /* EverywhereAppDelegate.m in Sources */,
 				1E5A54181D28FE0F0056CF46 /* AssetsMapProVC.m in Sources */,

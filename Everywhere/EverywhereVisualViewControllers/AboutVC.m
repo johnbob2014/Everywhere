@@ -42,8 +42,8 @@
     [self.imageView setImage:[UIImage imageNamed:@"China's Scenery-180*180.png"]];
     [self.view addSubview:self.imageView];
     [self.imageView autoSetDimensionsToSize:CGSizeMake(80, 80)];
-    [self.imageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:fNavBarHeigth*2];
-    [self.imageView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:fDeviceWidth/5];
+    [self.imageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
+    [self.imageView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
     
     self.nameLabel=[[UILabel alloc]initForAutoLayout];
     self.nameLabel.text=NSLocalizedString(@"中国风景", @"");
