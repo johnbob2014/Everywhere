@@ -64,7 +64,7 @@
     //titleTF.backgroundColor = [UIColor colorWithRed:240/255.0 green:173/255.0 blue:78/255.0 alpha:1];
     
     titleTF.layer.borderWidth = 1;
-    titleTF.layer.borderColor = [[EverywhereSettingManager defaultManager].color CGColor];
+    titleTF.layer.borderColor = [[EverywhereSettingManager defaultManager].baseTintColor CGColor];
     //titleTF.layer.cornerRadius = 4.0;
     titleTF.layer.masksToBounds = YES;
     
@@ -74,8 +74,8 @@
     titleTF.text = self.shareRepository.title; //NSLocalizedString(@"Wonderful Trip To Australia", @"美妙的澳洲之行");
     [self.view addSubview:titleTF];
     [titleTF autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:titleLabel withOffset:5];
-    [titleTF autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
-    [titleTF autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+    [titleTF autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
+    [titleTF autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
     [titleTF autoSetDimension:ALDimensionHeight toSize:50];
     //[titleTF autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:sessionBtn withOffset:-5];
 }

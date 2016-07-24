@@ -63,12 +63,12 @@
     [self.cellTitleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
     
     // cellInfoLabel
-    if (self.pinInfoLabelToTop) {
+//    if (self.pinInfoLabelToTop) {
         [self.cellInfoLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
-    }else{
-        [self.cellInfoLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
-        [self.cellInfoLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:self.cellTitleLabel.bounds.size.height];
-    }
+//    }else{
+//        [self.cellInfoLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
+//        [self.cellInfoLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:self.cellTitleLabel.bounds.size.height];
+//    }
 
 }
 

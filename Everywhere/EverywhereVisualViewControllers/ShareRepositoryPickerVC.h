@@ -13,6 +13,8 @@ typedef void(^ShareRepositoryDidChangeHandler)(EverywhereShareRepository *choose
 
 @interface ShareRepositoryPickerVC : UIViewController
 
+@property (assign,nonatomic) NSUInteger showShareRepositoryType;
+
 //@property (strong,nonatomic) NSArray <EverywhereShareRepository *> *shareRepositoryArray;
 @property (copy,nonatomic) ShareRepositoryDidChangeHandler shareRepositoryDidChangeHandler;
 

@@ -12,7 +12,7 @@
 
 + (instancetype)defaultManager;
 
-@property (assign,nonatomic) MapMainMode mapMainMode;
+@property (assign,nonatomic) MapBaseMode mapBaseMode;
 @property (assign,nonatomic) MapExtendedMode mapExtendedMode;
 
 @property (assign,nonatomic) CLLocationDistance mergedDistanceForMoment;
@@ -27,13 +27,17 @@
 
 @property (assign,nonatomic) float mapViewScaleRate;
 
-@property (assign,nonatomic) ColorScheme colorScheme;
-@property (strong,nonatomic,readonly) UIColor *color;
+@property (assign,nonatomic) BaseColorScheme baseColorScheme;
+@property (strong,nonatomic,readonly) UIColor *baseTintColor;
+
+@property (assign,nonatomic) ExtendedColorScheme extendedColorScheme;
+@property (strong,nonatomic,readonly) UIColor *extendedTintColor;
 
 @property (assign,nonatomic) BOOL hasPurchasedShare;
 @property (assign,nonatomic) BOOL hasPurchasedRecord;
 
-@property (assign,nonatomic) CLLocationDistance shortestDistanceForRecord;
-@property (assign,nonatomic) NSTimeInterval shortestTimeIntervalForRecord;
+@property (assign,nonatomic) CLLocationDistance minDistanceForRecord;
+@property (assign,nonatomic) NSTimeInterval minTimeIntervalForRecord;
+@property (assign,nonatomic) NSInteger maxFootprintsCountForRecord;
 
 @end

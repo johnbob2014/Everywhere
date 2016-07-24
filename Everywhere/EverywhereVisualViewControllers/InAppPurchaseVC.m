@@ -9,253 +9,233 @@
 #import "InAppPurchaseVC.h"
 #import <StoreKit/StoreKit.h>
 
-//#define ProductID_ShareFunctionAndBrowserMode @"com.ZhangBaoGuo.AlbumMaps.ShareFunctionAndBrowserMode"
-//#define ProductID_RecordFuntionAndRecordMode @"com.ZhangBaoGuo.AlbumMaps.RecordFuntionAndRecordMode"
 
 @interface InAppPurchaseVC () <SKProductsRequestDelegate,SKPaymentTransactionObserver>
-@property (strong,nonatomic) UITextView *textView;
 @property (copy,nonatomic) NSString *infoString;
-@property (strong,nonatomic) UIBarButtonItem *leftBarButtonItem;
-@property (strong,nonatomic) UIBarButtonItem *rightBarButtonItem;
 @end
 
-@implementation InAppPurchaseVC
-
-#pragma mark - User
--(void)leftButtonPressed:(id)sender{
-    [self dismissViewControllerAnimated:YES completion:^{
-        
-    }];
+@implementation InAppPurchaseVC{
+    UITextView *textView;
+    UIBarButtonItem *leftBarButtonItem,*rightBarButtonItem;
+    NSString *productTitle,*productDescription,*productPrice;
 }
 
--(void)rightButtonPressed:(id)sender{
-    self.textView.text=@"";
-    [self startProductRequest];
-}
+#pragma mark - Setter
 
 -(void)setInfoString:(NSString *)infoString{
     _infoString=infoString;
-    self.textView.text=[self.textView.text stringByAppendingString:infoString];
+    textView.text=[textView.text stringByAppendingString:infoString];
 }
 
-#pragma mark - init
+#pragma mark - Life Cycle
+
+-(void)viewDidDisappear:(BOOL)animated{
+    [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //监听结果
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+    
     NSString *title = self.transactionType == TransactionTypePurchase ? NSLocalizedString(@"Purchase",@"购买") : NSLocalizedString(@"Restore",@"恢复");
     self.title = title;
-    self.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(leftButtonPressed:)];
-    self.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonPressed:)];
     
-    self.navigationItem.leftBarButtonItem = self.leftBarButtonItem;
-    self.navigationItem.rightBarButtonItem = self.rightBarButtonItem;
+    leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(leftButtonPressed:)];
+    rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonPressed:)];
+    self.navigationItem.leftBarButtonItem = leftBarButtonItem;
+    self.navigationItem.rightBarButtonItem = rightBarButtonItem;
     
     [self initPurchaseUI];
     
-    //监听结果
-    [[SKPaymentQueue defaultQueue]addTransactionObserver:self];
-    
-    //购买还是恢复
-    switch (_transactionType) {
-        case TransactionTypePurchase:
-            [self.rightBarButtonItem setTitle:NSLocalizedString(@"Purchasing...",@"正在购买...")];
-            [self startProductRequest];
-            break;
-        case TransactionTypeRestore:
-            [self.rightBarButtonItem setTitle:NSLocalizedString(@"Restoring...",@"正在恢复...")];
-            //self.infoString=NSLocalizedString(@"-----向iTunes Store请求恢复产品-----\n-----请耐心等待-----\n",@"-----向iTunes Store请求恢复产品-----\n-----请耐心等待-----\n");
-            
-            [[SKPaymentQueue defaultQueue]restoreCompletedTransactions];
-            break;
-        default:
-            break;
-    }
+    [self startPurchaseOrRestore];
+}
+
+-(void)leftButtonPressed:(id)sender{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)rightButtonPressed:(id)sender{
+    textView.text=@"";
+    [self startProductRequest];
 }
 
 -(void)initPurchaseUI{
-    self.textView=[[UITextView alloc]initForAutoLayout];
-    [self.textView.layer setBorderColor:[UIColor grayColor].CGColor];
-    self.textView.editable=NO;
-    self.textView.selectable=NO;
-    self.textView.translatesAutoresizingMaskIntoConstraints=NO;
-    [self.view addSubview:self.textView];
-    [self.textView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+    textView=[[UITextView alloc]initForAutoLayout];
+    [textView.layer setBorderColor:[UIColor grayColor].CGColor];
+    textView.editable=NO;
+    textView.selectable=NO;
+    textView.translatesAutoresizingMaskIntoConstraints=NO;
+    [self.view addSubview:textView];
+    [textView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
 }
 
--(void)viewDidDisappear:(BOOL)animated{
-    [[SKPaymentQueue defaultQueue]removeTransactionObserver:self];
+- (void)startPurchaseOrRestore{
+    leftBarButtonItem.enabled = NO;
+    rightBarButtonItem.enabled = NO;
+    
+    //购买还是恢复
+    if (self.transactionType == TransactionTypePurchase) {
+        [rightBarButtonItem setTitle:NSLocalizedString(@"Purchasing...",@"正在购买...")];
+        [self startProductRequest];
+    }else{
+        [rightBarButtonItem setTitle:NSLocalizedString(@"Restoring...",@"正在恢复...")];
+        self.infoString=NSLocalizedString(@"-----Request to restore product-----\n-----Wait Please-----\n",@"-----向iTunes Store请求恢复产品-----\n-----请耐心等待-----\n");
+        [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
+    }
+
 }
 
-#pragma - Custom Methods
-
-//发出产品请求
+//自定义方法，发出产品查询请求
 -(void)startProductRequest{
     if ([SKPaymentQueue canMakePayments]) {
         //允许程序内付费购买
-        self.infoString=NSLocalizedString(@"-----Request Product Infomation...-----\n",@"-----向iTunes Store请求产品信息-----\n-----请耐心等待-----\n");
-        
-        /*
-        NSString *ProductID=nil;
-        switch (self.productIndex) {
-            case 0:
-                ProductID = ProductID_ShareFunctionAndBrowserMode;
-                break;
-                
-            case 1:
-                ProductID = ProductID_RecordFuntionAndRecordMode;
-                break;
-                
-            case 2:
-                //ProductID=ProductID_1200;
-                break;
-                
-            case 3:
-                //ProductID=ProductID_1800;
-                break;
-                
-            default:
-                break;
-        }
-        */
+        self.infoString=NSLocalizedString(@"-----Request product infomation-----\n-----Wait Please-----\n",@"-----向iTunes Store请求产品信息-----\n-----请耐心等待-----\n");
         
         NSSet *productSet=[NSSet setWithObject:self.productIDs[self.productIndex]];
+        NSLog(@"查询产品ID : %@",self.productIDs[self.productIndex]);
         SKProductsRequest *productRequest=[[SKProductsRequest alloc]initWithProductIdentifiers:productSet];
         productRequest.delegate=self;
         [productRequest start];
     }
     else{
-        //NSLog(@"不允许程序内付费购买");
+        //不允许程序内付费购买
         self.infoString=NSLocalizedString(@"-----InAppPurchase is denied,please turn on the function in iOS settings-----\n",@"-----不允许程序内付费购买，请到“设置”中打开-----\n");
-        
     }
 
 }
 
-#pragma - Delegate
-//代理方法：收到产品信息
+#pragma mark - SKProductsRequestDelegate
+
+//代理方法：收到查询的产品信息
 -(void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response{
     //NSLog(@"未识别的产品信息:%@",response.invalidProductIdentifiers);
     
-    NSArray *products=response.products;
-    self.infoString=NSLocalizedString(@"-----收到iTunes Store的反馈信息-----\n",@"-----收到iTunes Store的反馈信息-----\n");
+    self.infoString=NSLocalizedString(@"-----Receive feedback from iTunes Store-----\n",@"-----收到iTunes Store的反馈信息-----\n");
     
-    //NSLog(@"能识别的产品种类数: %lu\n",(unsigned long)[products count]);
+    NSArray <SKProduct *> *products = response.products;
+    
+    NSLog(@"请求查询的产品个数: %lu\n",(unsigned long)[products count]);
                  
     if ([products count]>0) {
-        SKProduct *product=products[0];
-        SKPayment *payment=[SKPayment paymentWithProduct:product];
+        SKProduct *product = products.firstObject;
+        SKPayment *payment = [SKPayment paymentWithProduct:product];
         
+        productTitle = product.localizedTitle;
+        productDescription = product.localizedDescription;
+        productPrice = [NSString stringWithFormat:@"%@",product.price];
+        
+        self.infoString=[[NSString alloc]initWithFormat:@"\n-----%@-----\n%@\n-----%@-----\n%@\n-----%@-----\n%@\n\n",NSLocalizedString(@"Product Name",@"产品名称"),product.localizedTitle,NSLocalizedString(@"Product Description",@"产品描述信息"),product.localizedDescription,NSLocalizedString(@"Product Price",@"产品价格"),product.price];
+
         //发起购买请求
-        [[SKPaymentQueue defaultQueue]addPayment:payment];
+        [[SKPaymentQueue defaultQueue] addPayment:payment];
+        self.infoString=NSLocalizedString(@"-----Sned payment to iTunes Store-----\n",@"-----向iTunes Store发送交易请求-----\n");
         
-        NSString *productName=NSLocalizedString(@"Product Name",@"产品名称");
-        NSString *productDescription=NSLocalizedString(@"Product Description",@"产品描述信息");
-        NSString *productPrice=NSLocalizedString(@"Product Price",@"产品价格");
-        
-        self.infoString=[[NSString alloc]initWithFormat:@"\n-----%@-----\n%@\n-----%@-----n%@\n-----%@-----\n%@\n\n",productName,product.localizedTitle,productDescription,product.localizedDescription,productPrice,product.price];
-        
-        self.infoString=NSLocalizedString(@"-----向iTunes Store发送交易请求-----\n",@"-----向iTunes Store发送交易请求-----\n");
     }
     else{
-        self.infoString=NSLocalizedString(@"-----iTunes Store没有相关产品信息-----\n",@"-----iTunes Store没有相关产品信息-----\n");
+        self.infoString=NSLocalizedString(@"-----No such product in iTunes Store-----\n",@"-----iTunes Store没有相关产品信息-----\n");
         
         [request cancel];
     }
 }
 
 -(void)request:(SKRequest *)request didFailWithError:(NSError *)error{
-    NSString *lst1=NSLocalizedString(@"-----向iTunes Store请求信息失败-----",@"-----向iTunes Store请求信息失败-----");
-    NSString *lst2=NSLocalizedString(@"Error",@"错误信息");
-    self.infoString=[[NSString alloc]initWithFormat:@"%@\n-----%@：%@-----\n",lst1,lst2,error.localizedDescription];
+    NSString *lst1=NSLocalizedString(@"-----Failed to request product infomation from iTunes Store-----\n",@"-----向iTunes Store请求产品信息失败-----\n");
+    NSString *lst2=NSLocalizedString(@"Error : ",@"错误信息 : ");
+    self.infoString=[[NSString alloc]initWithFormat:@"%@%@%@\n",lst1,lst2,error.localizedDescription];
     
 }
 
 -(void)requestDidFinish:(SKRequest *)request{
-    self.infoString=NSLocalizedString(@"-----iTunes Store反馈信息结束-----\n",@"-----iTunes Store反馈信息结束-----\n");
+    //self.infoString=NSLocalizedString(@"-----iTunes Store反馈信息结束-----\n",@"-----iTunes Store反馈信息结束-----\n");
 }
 
-//代理方法：收到交易结果
+#pragma mark - SKPaymentTransactionObserver Protocol
+
+//收到交易结果
 -(void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions{
     //交易结果<SKPaymentTransactionObserver> 千万不要忘记绑定，代码如下：
     //监听购买结果
     //[[SKPaymentQueue defaultQueue] addTransactionObserver:self];
     
-    self.infoString=NSLocalizedString(@"-----收到iTunes Store反馈的交易结果-----\n",@"-----收到iTunes Store反馈的交易结果-----\n");
+    self.infoString=NSLocalizedString(@"-----Receive payment result from iTunes Store-----\n",@"-----收到iTunes Store反馈的交易结果-----\n");
     
     //NSLog(@"交易数量:%lu",(unsigned long)[transactions count]);
-    if (_transactionType==TransactionTypeRestore&&[transactions count]==0) {
+    if (self.transactionType == TransactionTypeRestore && transactions.count == 0) {
         self.infoString=NSLocalizedString(@"-----No Product that can be restored!-----\n",@"-----您没有可供恢复的项目！-----\n");
-        
     }
     
-    for (SKPaymentTransaction *transaction in transactions) {
-        switch (transaction.transactionState) {
-            case SKPaymentTransactionStatePurchased:{
-                //交易完成,调用自定义方法，提供相应内容、记录交易记录等
-                NSLog(@"SKPaymentTransactionStatePurchased");
-                [self completeTransaction:transaction];
-            }
-                break;
-                
-            case SKPaymentTransactionStateRestored:{
-                NSLog(@"SKPaymentTransactionStateRestored");
-                [self completeTransaction:transaction];
-            }
-                break;
-                
-            case SKPaymentTransactionStateFailed:{
-                NSLog(@"SKPaymentTransactionStateFailed");
-                
-                NSString *lst1=NSLocalizedString(@"-----Failed,please try again!-----",@"-----交易失败，请重新尝试-----");
-                NSString *lst2=NSLocalizedString(@"Error",@"错误信息");
-                self.infoString=[[NSString alloc]initWithFormat:@"%@\n-----%@：%@-----\n\n",lst1,lst2,[self showTransactionErrorCode:transaction]];
-                [self.rightBarButtonItem setTitle:NSLocalizedString(@"Try Again",@"重试")];
-                self.rightBarButtonItem.enabled=YES;
-                [[SKPaymentQueue defaultQueue]finishTransaction:transaction];
-                if (self.inAppPurchaseCompletionHandler) self.inAppPurchaseCompletionHandler(NO,self.productIndex,self.transactionType);
-            }
-                break;
-            default:{
-                if (self.inAppPurchaseCompletionHandler) self.inAppPurchaseCompletionHandler(NO,self.productIndex,self.transactionType);
-            }
-                break;
-        }
+    
+    
+    SKPaymentTransaction *transaction = transactions.firstObject;
+    
+    if (!transaction) {
+        [self completeTransaction:nil succeeded:NO];
+        return;
     }
-
-}
-
-//交易成功，未用户提供相关功能
--(void)completeTransaction:(SKPaymentTransaction *)transaction{
-    //禁用重新尝试按钮
-    //self.rightButton.enabled=NO;
     
-    //显示提示信息
-    NSString *typeString=[NSString new];
+    BOOL succeeded = NO;
     
-    switch (self.transactionType) {
-        case TransactionTypePurchase:{
-            typeString=NSLocalizedString(@"Purchase",@"购买");
-            [self.rightBarButtonItem setTitle:NSLocalizedString(@"",@"成功")];
-        }
+    switch (transaction.transactionState) {
+        case SKPaymentTransactionStatePurchased:
+            //交易完成,调用自定义方法，提供相应内容、记录交易记录等
+            NSLog(@"SKPaymentTransactionStatePurchased");
+            succeeded = YES;
             break;
-        case TransactionTypeRestore:{
-            typeString=NSLocalizedString(@"Restore",@"恢复");
-            [self.rightBarButtonItem setTitle:NSLocalizedString(@"Succeeded",@"成功")];
-        }
+        case SKPaymentTransactionStateRestored:
+            NSLog(@"SKPaymentTransactionStateRestored");
+            succeeded = YES;
             break;
-            
+        case SKPaymentTransactionStateFailed:
+            succeeded = NO;
+            NSLog(@"SKPaymentTransactionStateFailed");
+            break;
+        case SKPaymentTransactionStateDeferred:
+            NSLog(@"SKPaymentTransactionStateDeferred");
+            return;
+            break;
+        case SKPaymentTransactionStatePurchasing:
+            NSLog(@"SKPaymentTransactionStatePurchasing");
+            return;
+            break;
         default:
             break;
     }
     
-    //NSLog(@"处理成功:%@",transaction.payment.productIdentifier);
-    self.infoString=[[NSString alloc]initWithFormat:NSLocalizedString(@"-----Succeeded-----",@"-----%@成功，请返回使用!-----\n"),typeString];
+    [self completeTransaction:transaction succeeded:succeeded];
     
-    //关闭成功的交易
-    [[SKPaymentQueue defaultQueue]finishTransaction:transaction];
-    
-    if (self.inAppPurchaseCompletionHandler) self.inAppPurchaseCompletionHandler(YES,self.productIndex,self.transactionType);
 }
 
+
+-(void)completeTransaction:(SKPaymentTransaction *)transaction succeeded:(BOOL)succeeded{
+    
+    NSString *typeString = self.transactionType == TransactionTypePurchase ? NSLocalizedString(@"Purchase", @"购买") : NSLocalizedString(@"Restore", @"恢复");
+    NSString *resultString = succeeded ? NSLocalizedString(@"Succeeded", @"成功") : NSLocalizedString(@"Failed", @"失败");
+    [rightBarButtonItem setTitle:resultString];
+    
+    NSString *alertMessage = [NSString stringWithFormat:@"%@ %@ %@",typeString,productTitle,resultString];
+    
+    [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:alertMessage]
+                       animated:YES completion:nil];
+    
+    if (succeeded) {
+        self.infoString=[[NSString alloc]initWithFormat:NSLocalizedString(@"-----Succeeded-----",@"-----%@成功，请返回使用!-----\n"),typeString];
+    }else{
+        NSString *lst1=NSLocalizedString(@"-----Failed,please try again!-----",@"-----交易失败，请重新尝试-----");
+        NSString *lst2=NSLocalizedString(@"Error",@"错误信息");
+        self.infoString=[[NSString alloc]initWithFormat:@"%@\n-----%@：%@-----\n\n",lst1,lst2,[self showTransactionErrorCode:transaction]];
+        [rightBarButtonItem setTitle:NSLocalizedString(@"Try Again",@"重试")];
+        rightBarButtonItem.enabled = YES;
+    }
+    
+    leftBarButtonItem.enabled = YES;
+    
+    //关闭交易
+    //[[SKPaymentQueue defaultQueue]finishTransaction:transaction];
+    
+    if (self.inAppPurchaseCompletionHandler) self.inAppPurchaseCompletionHandler(succeeded,self.productIndex,self.transactionType);
+}
 
 -(NSString *)showTransactionErrorCode:(SKPaymentTransaction *)transaction{
     NSString *code=[NSString new];
@@ -278,7 +258,6 @@
         case SKErrorUnknown:
             code=NSLocalizedString(@"Unknown",@"未知错误");
             break;
-            
         default:
             break;
     }
@@ -295,18 +274,13 @@
 
 -(void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue{
     //NSLog(@"paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue");
-    
-    self.infoString=NSLocalizedString(@"-----iTunes Store恢复结束-----",@"-----iTunes Store恢复结束-----");
-    
+    //self.infoString=NSLocalizedString(@"-----iTunes Store恢复结束-----",@"-----iTunes Store恢复结束-----");
 }
 
 -(void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error{
-    NSLog(@"paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error");
-    
-    NSString *lst1=NSLocalizedString(@"-----iTunes Store恢复失败，请重新尝试-----",@"-----iTunes Store恢复失败，请重新尝试-----");
-    NSString *lst2=NSLocalizedString(@"错误信息",@"错误信息");
+    NSString *lst1=NSLocalizedString(@"-----Restore failed,try again please-----",@"-----iTunes Store恢复失败，请重新尝试-----");
+    NSString *lst2=NSLocalizedString(@"Error",@"错误信息");
     self.infoString=[[NSString alloc]initWithFormat:@"%@\n-----%@：%@-----\n",lst1,lst2,error.localizedDescription];
-    
 }
 
 @end

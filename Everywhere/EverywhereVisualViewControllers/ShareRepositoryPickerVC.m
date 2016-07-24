@@ -7,7 +7,11 @@
 //
 
 #import "ShareRepositoryPickerVC.h"
+
+#import "ShareRepositoryEditerVC.h"
+
 #import "EverywhereShareRepositoryManager.h"
+#import "EverywhereSettingManager.h"
 
 @interface ShareRepositoryPickerVC () <UITableViewDelegate,UITableViewDataSource>
 
@@ -25,20 +29,43 @@
     //UIButton *clearAllButton;
 }
 
+- (void)viewWillAppear:(BOOL)animated{
+    [self updateDataSource:groupSeg.selectedSegmentIndex];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    groupNameArray = @[NSLocalizedString(@"Sended", @"发出的"),
-                       NSLocalizedString(@"Received", @"接收的"),
-                       NSLocalizedString(@"Recorded", @"记录的")];
+    switch (self.showShareRepositoryType) {
+        case ShareRepositoryTypeSended|ShareRepositoryTypeReceived|ShareRepositoryTypeRecorded:
+            groupNameArray = @[NSLocalizedString(@"Sended", @"发出的"),
+                               NSLocalizedString(@"Received", @"接收的"),
+                               NSLocalizedString(@"Recorded", @"记录的")];
+            break;
+
+        case ShareRepositoryTypeSended|ShareRepositoryTypeReceived:
+            groupNameArray = @[NSLocalizedString(@"Sended", @"发出的"),
+                               NSLocalizedString(@"Received", @"接收的")];
+            break;
+            
+        case ShareRepositoryTypeRecorded:
+            groupNameArray = @[NSLocalizedString(@"Recorded", @"记录的")];
+            break;
+            
+        default:
+            break;
+    }
+    
     
     groupSeg = [[UISegmentedControl alloc] initWithItems:groupNameArray];
-    groupSeg.selectedSegmentIndex = 1;
+    groupSeg.selectedSegmentIndex = 0;
     [groupSeg addTarget:self action:@selector(segValueChanged:) forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:groupSeg];
     groupSeg.translatesAutoresizingMaskIntoConstraints = NO;
     [groupSeg autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(10, 10, 0, 10) excludingEdge:ALEdgeBottom];
+    
+    if (groupNameArray.count == 1) groupSeg.hidden = YES;
     
     /*
     clearAllButton = [UIButton newAutoLayoutView];
@@ -61,12 +88,7 @@
     //[myTableView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
     //[myTableView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:clearAllButton withOffset:-10];
     
-    [self updateDataSource:1];
-}
-
-- (void)clearAll{
-    [EverywhereShareRepositoryManager setShareRepositoryArray:nil];
-    [myTableView reloadData];
+    [self updateDataSource:0];
 }
 
 - (void)segValueChanged:(UISegmentedControl *)sender{
@@ -100,6 +122,7 @@
     switch (index) {
         case 0:
             currentGroupArray = sendedArray;
+            if (self.showShareRepositoryType == ShareRepositoryTypeRecorded) currentGroupArray = recordedArray;
             self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[0],(unsigned long)currentGroupArray.count];
             break;
         case 1:
@@ -129,6 +152,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
+    cell.accessoryType = UITableViewCellAccessoryDetailButton;
     EverywhereShareRepository *shareRepository = currentGroupArray[indexPath.row];
     cell.textLabel.text = shareRepository.title;
     NSString *tempString = NSLocalizedString(@"footprints", @"个足迹点");
@@ -139,6 +163,23 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if (self.shareRepositoryDidChangeHandler) self.shareRepositoryDidChangeHandler(currentGroupArray[indexPath.row]);
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
+    //UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    //NSLog(@"%@",cell.accessoryView);
+    //NSLog(@"%@",NSStringFromSelector(_cmd));
+    if ([EverywhereSettingManager defaultManager].hasPurchasedRecord) {
+        ShareRepositoryEditerVC *shareRepositoryEditerVC = [ShareRepositoryEditerVC new];
+        shareRepositoryEditerVC.shareRepository = currentGroupArray[indexPath.row];
+        shareRepositoryEditerVC.contentSizeInPopup = CGSizeMake(300, 400);
+        shareRepositoryEditerVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
+        [self.popupController pushViewController:shareRepositoryEditerVC animated:YES];
+    }else{
+        [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"You haven't got RecordFucntionAndRecordMode so you can not edit it.", @"您没有购买足迹记录和记录模式，无法编辑。")]
+                           animated:YES
+                         completion:nil];
+    }
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -164,4 +205,5 @@
         [self updateDataSource:groupSeg.selectedSegmentIndex];
     }
 }
+
 @end

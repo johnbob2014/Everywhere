@@ -19,13 +19,13 @@
     return instance;
 }
 
-- (MapMainMode)mapMainMode{
-    MapMainMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"mapMainMode"];
+- (MapBaseMode)mapBaseMode{
+    MapBaseMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"mapBaseMode"];
     return mode;
 }
 
-- (void)setMapMainMode:(MapMainMode)mapMainMode{
-    [[NSUserDefaults standardUserDefaults] setInteger:mapMainMode forKey:@"mapMainMode"];
+- (void)setMapBaseMode:(MapBaseMode)mapBaseMode{
+    [[NSUserDefaults standardUserDefaults] setInteger:mapBaseMode forKey:@"mapBaseMode"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -114,27 +114,52 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (ColorScheme)colorScheme{
-    ColorScheme aCS = [[NSUserDefaults standardUserDefaults] integerForKey:@"colorScheme"];
+- (BaseColorScheme)baseColorScheme{
+    BaseColorScheme aCS = [[NSUserDefaults standardUserDefaults] integerForKey:@"baseColorScheme"];
     return aCS;
 }
 
-- (void)setColorScheme:(ColorScheme)colorScheme{
-    [[NSUserDefaults standardUserDefaults] setInteger:colorScheme forKey:@"colorScheme"];
+- (void)setBaseColorScheme:(BaseColorScheme)baseColorScheme{
+    [[NSUserDefaults standardUserDefaults] setInteger:baseColorScheme forKey:@"baseColorScheme"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (UIColor *)color{
+-(UIColor *)baseTintColor{
     UIColor *resultColor = nil;
-    switch (self.colorScheme) {
-        case ColorSchemeClassicGray:
+    switch (self.baseColorScheme) {
+        case BaseColorSchemeClassicGray:
             resultColor = [[UIColor grayColor] colorWithAlphaComponent:0.6];
             break;
-        case ColorSchemeFreshBlue:
+        case BaseColorSchemeFreshBlue:
             resultColor = [[UIColor blueColor] colorWithAlphaComponent:0.6];
             break;
-        case ColorSchemeDeepBrown:
+        case BaseColorSchemeDeepBrown:
             resultColor = [[UIColor brownColor] colorWithAlphaComponent:0.6];
+            break;
+        default:
+            break;
+    }
+    return resultColor;
+}
+
+- (ExtendedColorScheme)extendedColorScheme{
+    ExtendedColorScheme aCS = [[NSUserDefaults standardUserDefaults] integerForKey:@"extendedColorScheme"];
+    return aCS;
+}
+
+- (void)setExtendedColorScheme:(ExtendedColorScheme)extendedColorScheme{
+    [[NSUserDefaults standardUserDefaults] setInteger:extendedColorScheme forKey:@"extendedColorScheme"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (UIColor *)extendedTintColor{
+    UIColor *resultColor = nil;
+    switch (self.extendedColorScheme) {
+        case ExtendedColorSchemeBrightRed:
+            resultColor = [[UIColor redColor] colorWithAlphaComponent:0.6];
+            break;
+        case ExtendedColorSchemeGrassGreen:
+            resultColor = [[UIColor greenColor] colorWithAlphaComponent:0.6];
             break;
         default:
             break;
@@ -167,25 +192,36 @@
 }
 
 
-- (CLLocationDistance)shortestDistanceForRecord{
-    CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"shortestDistanceForRecord"];
-    if (!distance || distance == 0) distance = 100;
+- (CLLocationDistance)minDistanceForRecord{
+    CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"minDistanceForRecord"];
+    if (!distance || distance == 0) distance = 30;
     return distance;
 }
 
-- (void)setShortestDistanceForRecord:(CLLocationDistance)shortestDistanceForRecord{
-    [[NSUserDefaults standardUserDefaults] setDouble:shortestDistanceForRecord forKey:@"shortestDistanceForRecord"];
+- (void)setMinDistanceForRecord:(CLLocationDistance)minDistanceForRecord{
+    [[NSUserDefaults standardUserDefaults] setDouble:minDistanceForRecord forKey:@"minDistanceForRecord"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (NSTimeInterval)shortestTimeIntervalForRecord{
-    NSTimeInterval shortestTI = [[NSUserDefaults standardUserDefaults] doubleForKey:@"shortestTimeIntervalForRecord"];
-    if (!shortestTI || shortestTI == 0) shortestTI = 3;
-    return shortestTI;
+- (NSTimeInterval)minTimeIntervalForRecord{
+    NSTimeInterval minTI = [[NSUserDefaults standardUserDefaults] doubleForKey:@"minTimeIntervalForRecord"];
+    if (!minTI || minTI == 0) minTI = 2;
+    return minTI;
 }
 
-- (void)setShortestTimeIntervalForRecord:(NSTimeInterval)shortestTimeIntervalForRecord{
-    [[NSUserDefaults standardUserDefaults] setDouble:shortestTimeIntervalForRecord forKey:@"shortestTimeIntervalForRecord"];
+- (void)setMinTimeIntervalForRecord:(NSTimeInterval)minTimeIntervalForRecord{
+    [[NSUserDefaults standardUserDefaults] setDouble:minTimeIntervalForRecord forKey:@"minTimeIntervalForRecord"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (NSInteger)maxFootprintsCountForRecord{
+    NSInteger maxFootprintsCountForRecord = [[NSUserDefaults standardUserDefaults] integerForKey:@"maxFootprintsCountForRecord"];
+    if (!maxFootprintsCountForRecord || maxFootprintsCountForRecord == 0) maxFootprintsCountForRecord = 1000;
+    return maxFootprintsCountForRecord;
+}
+
+- (void)setMaxFootprintsCountForRecord:(NSInteger)maxFootprintsCountForRecord{
+    [[NSUserDefaults standardUserDefaults] setInteger:maxFootprintsCountForRecord forKey:@"maxFootprintsCountForRecord"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

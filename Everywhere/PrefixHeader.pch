@@ -29,8 +29,14 @@
 #define ScreenWidth [UIScreen mainScreen].bounds.size.width
 #define ScreenHeight [UIScreen mainScreen].bounds.size.height
 
+#define NumberAndDecimal @"0123456789.\n"
+#define Number @"0123456789\n"
+#define LetterAndNumber @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\n"
+#define LetterAndNumberAndDecimal @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.\n"
+
 #import "UIView+AutoLayout.h"
 #import "UIButton+Bootstrap.h"
+#import "UIAlertController+Assistant.h"
 
 #import <STPopup.h>
 
@@ -51,9 +57,9 @@
 /**
  地图基础模式
  */
-typedef NS_ENUM(NSInteger, MapMainMode) {
-    MapMainModeMoment = 0,      // 时刻模式
-    MapMainModeLocation         // 地点模式
+typedef NS_ENUM(NSInteger, MapBaseMode) {
+    MapBaseModeMoment = 0,      // 时刻模式
+    MapBaseModeLocation         // 地点模式
 };
 
 /**
@@ -82,17 +88,33 @@ typedef NS_ENUM(NSInteger, LocationMode) {
     LocationModeAll
 };
 
-typedef NS_ENUM(NSInteger,ColorScheme){
-    ColorSchemeClassicGray = 0,
-    ColorSchemeFreshBlue,
-    ColorSchemeDeepBrown
+typedef NS_ENUM(NSInteger,BaseColorScheme){
+    BaseColorSchemeClassicGray = 0,
+    BaseColorSchemeFreshBlue,
+    BaseColorSchemeDeepBrown
 };
 
+typedef NS_ENUM(NSInteger,ExtendedColorScheme){
+    ExtendedColorSchemeBrightRed = 0,
+    ExtendedColorSchemeGrassGreen
+};
+
+
+/*
 typedef NS_ENUM(NSInteger,ShareRepositoryType){
     ShareRepositoryTypeSended = 0,
     ShareRepositoryTypeReceived,
     ShareRepositoryTypeRecorded
 };
+*/
+
+enum {
+    ShareRepositoryTypeSended = (1UL << 0),
+    ShareRepositoryTypeReceived = (1UL << 1),
+    ShareRepositoryTypeRecorded = (1UL << 2),
+};
+typedef NSUInteger ShareRepositoryType;
+
 
 typedef NS_ENUM(NSInteger,ShowUserLocationMode){
     ShowUserLocationModeOn = 0,

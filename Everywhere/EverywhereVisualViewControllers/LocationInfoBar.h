@@ -14,6 +14,13 @@ typedef void(^DidGetMKDirectionsResponseHandler)(MKDirectionsResponse *response)
 
 @interface LocationInfoBar : UIView
 
+@property (copy,nonatomic) DidGetMKDirectionsResponseHandler didGetMKDirectionsResponseHandler;
+@property (strong,nonatomic) UIButton *naviToHereButton;
+
+@property (assign,nonatomic) CLLocationCoordinate2D currentShowCoordinateWGS84;
+
+
+// 2016-07-24 均为GCJ02座标
 @property (assign,nonatomic) CLLocationDegrees latitude;
 @property (assign,nonatomic) CLLocationDegrees longitude;
 @property (assign,nonatomic) CLLocationDistance horizontalAccuracy;
@@ -28,6 +35,5 @@ typedef void(^DidGetMKDirectionsResponseHandler)(MKDirectionsResponse *response)
 @property (strong,nonatomic) UILabel *addressLabel;
 
 @property (assign,nonatomic) CLLocationCoordinate2D userCoord;
-@property (copy,nonatomic) DidGetMKDirectionsResponseHandler didGetMKDirectionsResponseHandler;
 
 @end

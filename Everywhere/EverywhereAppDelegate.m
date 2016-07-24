@@ -45,7 +45,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     assetsMapProVC = [AssetsMapProVC new];
     self.window.rootViewController = assetsMapProVC;
-    self.window.tintColor = [EverywhereSettingManager defaultManager].color;
+    self.window.tintColor = [EverywhereSettingManager defaultManager].baseTintColor;
     [self.window makeKeyAndVisible];
     
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];

@@ -43,7 +43,7 @@
         self.modeSeg = [[UISegmentedControl alloc] initWithItems:segItems];
         self.modeSeg.tintColor = [UIColor whiteColor];
         self.modeSeg.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.modeSeg addTarget:self action:@selector(mapMainModeValueChanged:) forControlEvents:UIControlEventValueChanged];
+        [self.modeSeg addTarget:self action:@selector(mapBaseModeValueChanged:) forControlEvents:UIControlEventValueChanged];
         [middleView addSubview:self.modeSeg];
         self.modeSeg.selectedSegmentIndex = selectedSegIndex;
         
@@ -84,9 +84,9 @@
     return self;
 }
 
-- (void)mapMainModeValueChanged:(UISegmentedControl *)sender{
-    NSLog(@"%@",NSStringFromSelector(_cmd));
-    if (self.mapMainModeChangedHandler) self.mapMainModeChangedHandler(sender);
+- (void)mapBaseModeValueChanged:(UISegmentedControl *)sender{
+    //NSLog(@"%@",NSStringFromSelector(_cmd));
+    if (self.mapBaseModeChangedHandler) self.mapBaseModeChangedHandler(sender);
     
     if (sender.selectedSegmentIndex == 0) {
         self.leftButton.enabled = YES;//self.leftButtonEnabled;
@@ -95,8 +95,6 @@
         self.leftButton.enabled = NO;
         self.rightButton.enabled = YES;// self.rightButtonEnabled;
     }
-    
-    self.infoLabel.text = modeSegItems[sender.selectedSegmentIndex];
 }
 
 - (void)setSelectedSegmentIndex:(NSInteger)selectedSegmentIndex{

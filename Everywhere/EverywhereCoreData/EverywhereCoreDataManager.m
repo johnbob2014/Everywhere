@@ -100,7 +100,9 @@
     
     if (aCoord.latitude > -90 && aCoord.latitude < 90) {
         if (aCoord.longitude > - 180 && aCoord.longitude < 180) {
-            return YES;
+            if (aCoord.latitude != 0 && aCoord.longitude != 0) {
+                return YES;
+            }
         }
     }
     

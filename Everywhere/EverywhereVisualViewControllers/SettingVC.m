@@ -18,9 +18,6 @@
 #import "EverywhereShareRepositoryManager.h"
 #import "WXApi.h"
 
-#define NumberAndDecimal @"0123456789.\n"
-#define Number @"0123456789\n"
-#define kAlphaNum @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\n"
 typedef BOOL (^OnChangeCharacterInRange)(RETextItem *item, NSRange range, NSString *replacementString);
 
 
@@ -75,42 +72,23 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 }
 
 -(void)initSettingUI{
+    WEAKSELF(weakSelf);
+    
     NSString *tempString;
     
     UITableView *settingTableView=[[UITableView alloc]initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     settingTableView.translatesAutoresizingMaskIntoConstraints=NO;
-    //settingTableView.delegate=self;
-    //settingTableView.dataSource=self;
-    
     [self.view addSubview:settingTableView];
     [settingTableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
     
     self.settingTableView=settingTableView;
     
-    //WeakSelf(weakSelf);
-    
     self.reTVManager=[[RETableViewManager alloc]initWithTableView:self.settingTableView delegate:self];
     
 #pragma mark 全局设置
     
-    RETableViewSection *section1=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Globle", @"全局设置")];
+    RETableViewSection *globleSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Globle", @"全局设置")];
     
-#pragma mark 主题颜色
-    
-    NSArray *colorSchemeArray = @[NSLocalizedString(@"Classic Gray",@"经典灰"),NSLocalizedString(@"Fresh Purple",@"清新紫"),NSLocalizedString(@"Deep Brown",@"深沉棕")];
-    NSString *currentCS = colorSchemeArray[self.settingManager.colorScheme < colorSchemeArray.count ? self.settingManager.colorScheme : colorSchemeArray.count - 1];
-    REPickerItem *colorSchemePickerItem = [REPickerItem itemWithTitle:NSLocalizedString(@"Color Scheme",@"颜色方案")
-                                                     value:@[currentCS]
-                                               placeholder:nil
-                                                   options:@[colorSchemeArray]];
-    colorSchemePickerItem.onChange = ^(REPickerItem *item){
-        ColorScheme newCS = [colorSchemeArray indexOfObject:item.value.firstObject];
-        self.settingManager.colorScheme = newCS;
-    };
-    
-    // Use inline picker in iOS 7
-    //
-    colorSchemePickerItem.inlinePicker = YES;
     
 #pragma mark 播放时间间隔
     
@@ -122,9 +100,20 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         self.settingManager.playTimeInterval = [item.value doubleValue];
     };
 
-    [section1 addItemsFromArray:@[colorSchemePickerItem,playTimeIntervalItem]];
     
     
+#pragma mark 地图缩放比例
+    
+    tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.mapViewScaleRate];
+    RETextItem *mapViewScaleRateItem = [RETextItem itemWithTitle:NSLocalizedString(@"Map Scale Rate",@"地图缩放比例") value:tempString placeholder:@""];
+    mapViewScaleRateItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
+    mapViewScaleRateItem.onEndEditing = ^(RETextItem *item){
+        if(DEBUGMODE) NSLog(@"%@",item.value);
+        self.settingManager.mapViewScaleRate = [item.value doubleValue];
+    };
+    
+    [globleSection addItemsFromArray:@[playTimeIntervalItem,mapViewScaleRateItem]];
+
     
 /*
     REBoolItem *useCellularDataItem=[REBoolItem itemWithTitle:NSLocalizedString(@"🌐 使用蜂窝移动数据", @"") value:YES switchValueChangeHandler:^(REBoolItem *item) {
@@ -138,68 +127,113 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         
     }];
 */
-#pragma mark 时刻模式
-    RETableViewSection *mainModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"BaseMode", @"基础模式")];
+#pragma mark 基础模式设置
+    
+#pragma mark 基础模式主题颜色
+    RETableViewSection *baseModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"BaseMode", @"基础模式")];
+    
+    NSArray *baseColorSchemeArray = @[NSLocalizedString(@"Classic Gray",@"经典灰"),NSLocalizedString(@"Fresh Purple",@"清新紫"),NSLocalizedString(@"Deep Brown",@"深沉棕")];
+    NSString *currentCS = baseColorSchemeArray[self.settingManager.baseColorScheme < baseColorSchemeArray.count ? self.settingManager.baseColorScheme : baseColorSchemeArray.count - 1];
+    REPickerItem *baseColorSchemePickerItem = [REPickerItem itemWithTitle:NSLocalizedString(@"BaseColorScheme",@"颜色方案")
+                                                                value:@[currentCS]
+                                                          placeholder:nil
+                                                              options:@[baseColorSchemeArray]];
+    baseColorSchemePickerItem.onChange = ^(REPickerItem *item){
+        BaseColorScheme newCS = [baseColorSchemeArray indexOfObject:item.value.firstObject];
+        self.settingManager.baseColorScheme = newCS;
+    };
+    
+    // Use inline picker in iOS 7
+    //
+    baseColorSchemePickerItem.inlinePicker = YES;
+
+    
+#pragma mark 时刻模式合并距离
     //时刻模式
-    RETableViewSection *momentModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"MomentMode", @"时刻模式")];
+    //RETableViewSection *momentModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"MomentMode", @"时刻模式")];
     //[optionSection setHeaderHeight:30];
     
     tempString = [NSString stringWithFormat:@"%.f",self.settingManager.mergedDistanceForMoment];
-    RETextItem *mergedDistanceForMomentItem = [RETextItem itemWithTitle:NSLocalizedString(@"Merged Distance",@"时刻模式合并距离") value:tempString placeholder:@""];
+    RETextItem *mergedDistanceForMomentItem = [RETextItem itemWithTitle:NSLocalizedString(@"Merged Distance For Moment",@"时刻模式合并距离") value:tempString placeholder:@""];
     mergedDistanceForMomentItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     mergedDistanceForMomentItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
         self.settingManager.mergedDistanceForMoment = [item.value doubleValue];
     };
 
-    //mergedDistanceForMomentItem. = NSTextAlignmentRight;
-    
-    //[momentModeSection addItemsFromArray:@[mergedDistanceForMomentItem]];
-    
-#pragma mark 地址模式
-    
+#pragma mark 地址模式合并距离
     //地址模式
-    RETableViewSection *locationModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"LocationMode", @"地址模式")];
+    //RETableViewSection *locationModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"LocationMode", @"地址模式")];
     //[optionSection setHeaderHeight:30];
     
     tempString = [NSString stringWithFormat:@"%.f",self.settingManager.mergedDistanceForLocation];
-    RETextItem *mergedDistanceForLocationItem = [RETextItem itemWithTitle:NSLocalizedString(@"Merged Distance",@"地址模式合并距离") value:tempString placeholder:@""];
+    RETextItem *mergedDistanceForLocationItem = [RETextItem itemWithTitle:NSLocalizedString(@"Merged Distance For Location",@"地址模式合并距离") value:tempString placeholder:@""];
     mergedDistanceForLocationItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     mergedDistanceForLocationItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
         self.settingManager.mergedDistanceForLocation = [item.value doubleValue];
     };
-    //mergedDistanceForLocationItem.textAlignment = NSTextAlignmentRight;
-    //[locationModeSection addItemsFromArray:@[mergedDistanceForLocationItem]];
     
-    [mainModeSection addItemsFromArray:@[mergedDistanceForMomentItem,mergedDistanceForLocationItem]];
+    [baseModeSection addItemsFromArray:@[baseColorSchemePickerItem,mergedDistanceForMomentItem,mergedDistanceForLocationItem]];
 
-#pragma mark 记录模式
+#pragma mark - 扩展模式设置
     
-    RETableViewSection *extendedModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"RecordMode", @"记录模式")];
-    //self.settingManager.shortestTimeIntervalForRecord
+#pragma mark 扩展模式主题颜色
     
-    tempString = [NSString stringWithFormat:@"%.f",self.settingManager.shortestDistanceForRecord];
-    RETextItem *shortestDistanceForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"Shortest Distance",@"最短距离") value:tempString placeholder:@""];
-    shortestDistanceForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
-    shortestDistanceForRecordItem.onEndEditing = ^(RETextItem *item){
-        if(DEBUGMODE) NSLog(@"%@",item.value);
-        self.settingManager.shortestDistanceForRecord = [item.value doubleValue];
+    NSArray *extendedModeColorSchemeArray = @[NSLocalizedString(@"Bright Red",@"鲜艳红"),NSLocalizedString(@"Grass Green",@"青草绿")];
+    NSString *extendedModeCurrentCS = extendedModeColorSchemeArray[self.settingManager.extendedColorScheme < extendedModeColorSchemeArray.count ? self.settingManager.extendedColorScheme : extendedModeColorSchemeArray.count - 1];
+    REPickerItem *extendedModeColorSchemePickerItem = [REPickerItem itemWithTitle:NSLocalizedString(@"ExtendedColorScheme",@"颜色方案")
+                                                                value:@[extendedModeCurrentCS]
+                                                          placeholder:nil
+                                                              options:@[extendedModeColorSchemeArray]];
+    extendedModeColorSchemePickerItem.onChange = ^(REPickerItem *item){
+        ExtendedColorScheme newCS = [extendedModeColorSchemeArray indexOfObject:item.value.firstObject];
+        self.settingManager.extendedColorScheme = newCS;
     };
     
-    tempString = [NSString stringWithFormat:@"%.f",self.settingManager.shortestTimeIntervalForRecord];
-    RETextItem *shortestTimeIntervalForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"Shortest TimeInterval",@"最短时间间隔") value:tempString placeholder:@""];
-    shortestTimeIntervalForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
-    shortestTimeIntervalForRecordItem.onEndEditing = ^(RETextItem *item){
+    // Use inline picker in iOS 7
+    //
+    extendedModeColorSchemePickerItem.inlinePicker = YES;
+
+    RETableViewSection *extendedModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Extended Mode", @"扩展模式")];
+    //self.settingManager.minTimeIntervalForRecord
+    
+    tempString = [NSString stringWithFormat:@"%.f",self.settingManager.minDistanceForRecord];
+    RETextItem *minDistanceForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"Min Distance",@"最短距离") value:tempString placeholder:@""];
+    minDistanceForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
+    minDistanceForRecordItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
-        self.settingManager.shortestTimeIntervalForRecord = [item.value doubleValue];
+        self.settingManager.minDistanceForRecord = [item.value doubleValue];
+    };
+    
+    tempString = [NSString stringWithFormat:@"%.f",self.settingManager.minTimeIntervalForRecord];
+    RETextItem *minTimeIntervalForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"Min TimeInterval",@"最短时间间隔") value:tempString placeholder:@""];
+    minTimeIntervalForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
+    minTimeIntervalForRecordItem.onEndEditing = ^(RETextItem *item){
+        if(DEBUGMODE) NSLog(@"%@",item.value);
+        self.settingManager.minTimeIntervalForRecord = [item.value doubleValue];
+    };
+    
+    tempString = [NSString stringWithFormat:@"%lu",(long)self.settingManager.maxFootprintsCountForRecord];
+    RETextItem *maxFootprintsCountForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"Max Footprints Count",@"最大足迹点数") value:tempString placeholder:@""];
+    maxFootprintsCountForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:Number];
+    maxFootprintsCountForRecordItem.onEndEditing = ^(RETextItem *item){
+        if(DEBUGMODE) NSLog(@"%@",item.value);
+        self.settingManager.maxFootprintsCountForRecord = [item.value integerValue];
     };
 
     RETableViewItem *clearCatchItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"❌ 清空所有足迹",@"") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
-        [EverywhereShareRepositoryManager setShareRepositoryArray:nil];
+        UIAlertController *alertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Attention", @"警告")
+                                                                                         message:NSLocalizedString(@"All your footprints will be deleted and can not be restored! Are you sure?", @"您分享、接收、记录的所有足迹都将被删除，此操作无法恢复，请务必谨慎。确认删除？")
+                                                                                       okHandler:^(UIAlertAction *action) {
+                                                                                           [EverywhereShareRepositoryManager setShareRepositoryArray:nil];
+                                                                                       }];
+        [weakSelf presentViewController:alertController animated:YES completion:nil];
+        
     }];
-    [extendedModeSection addItemsFromArray:@[shortestDistanceForRecordItem,shortestTimeIntervalForRecordItem,clearCatchItem]];
+    
+    [extendedModeSection addItemsFromArray:@[extendedModeColorSchemePickerItem,minDistanceForRecordItem,minTimeIntervalForRecordItem,maxFootprintsCountForRecordItem,clearCatchItem]];
 
     
 #pragma mark 购买
@@ -207,19 +241,18 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     RETableViewSection *purchaseSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Purchase and Restore", @"购买与恢复")];
     [purchaseSection setHeaderHeight:20];
     
-    WEAKSELF(weakSelf);
     [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"ShareFunctionAndBrowserMode",@"分享功能和浏览模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
-        [weakSelf showPurchaseShareFunctionAlertController];
+        [weakSelf showPurchaseVC:0 transactionType:TransactionTypePurchase];
     }]];
     
     [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"RecordFuntionAndRecordMode",@"足迹记录和记录模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
-        [weakSelf showPurchaseRecordFunctionAlertController];
+        [weakSelf showPurchaseVC:0 transactionType:TransactionTypePurchase];
     }]];
 
 #pragma mark 分享
-    RETableViewSection *shareSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Share <AlbumMaps> to friends", @"分享《相册地图》给朋友")];
+    RETableViewSection *shareSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Share《AlbumMaps》 to friends", @"分享《相册地图》给朋友")];
     [shareSection setHeaderHeight:20];
     [shareSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🍀 WeChat Timeline",@"🍀 微信朋友圈") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
@@ -254,7 +287,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         [self.navigationController pushViewController:aboutVC animated:YES];
     }]];
     
-    [self.reTVManager addSectionsFromArray:@[section1,mainModeSection,extendedModeSection,purchaseSection,shareSection,aboutSection]];
+    [self.reTVManager addSectionsFromArray:@[globleSection,baseModeSection,extendedModeSection,purchaseSection,shareSection,aboutSection]];
 }
 
 #pragma mark - RE Block
@@ -304,49 +337,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     if(DEBUGMODE) NSLog(@"SendMessageToWXReq : %@",succeeded? @"Succeeded" : @"Failed");
 }
 
-#pragma mark - copied From AssetsMapProVC
-
-- (void)showPurchaseShareFunctionAlertController{
-    NSString *alertTitle = NSLocalizedString(@"ShareFunctionAndBrowserMode",@"分享功能和浏览模式");
-    NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",NSLocalizedString(@"You can get utilities below:", @"您将获得如下功能："),NSLocalizedString(@"1.Share your footprints to others", @"1.将足迹分享给他人"),NSLocalizedString(@"2.Store footprints both sended by you and shared by others", @"2.存储足迹，包括自己发送的和别人分享的"),NSLocalizedString(@"3.Unlock Browser Mode and  lookup stored footprints anytime", @"3.解锁浏览模式，随时查看分享足迹"),NSLocalizedString(@"Cost $1.99,continue?", @"价格 ￥12元，是否购买？")];
-    
-    [self showPurchaseAlertControllerWithTitle:alertTitle message:alertMessage productIndex:0];
-}
-
-- (void)showPurchaseRecordFunctionAlertController{
-    NSString *alertTitle = NSLocalizedString(@"RecordFuntionAndRecordMode",@"足迹记录和记录模式");
-    NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",NSLocalizedString(@"You can get utilities below:", @"您将获得如下功能："),NSLocalizedString(@"1.Record your footprints, support background recording", @"1.记录你的运动足迹"),NSLocalizedString(@"2.Intelligently edit your footprints", @"2.足迹智能编辑"),NSLocalizedString(@"3.Unlock Record Mode to manage your recorded footprints", @"3.解锁记录模式，管理你记录的足迹"),NSLocalizedString(@"Cost $1.99,continue?", @"价格 ￥12元，是否购买？")];
-    [self showPurchaseAlertControllerWithTitle:alertTitle message:alertMessage productIndex:1];
-}
-
-- (void)showPurchaseAlertControllerWithTitle:(NSString *)title message:(NSString *)message productIndex:(NSInteger)productIndex{
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *purchaseAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase",@"购买")
-                                                             style:UIAlertActionStyleDefault
-                                                           handler:^(UIAlertAction * action) {
-                                                               [self showPurchaseVC:productIndex transactionType:TransactionTypePurchase];
-                                                           }];
-    UIAlertAction *restoreAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Restore",@"恢复")
-                                                            style:UIAlertActionStyleDefault
-                                                          handler:^(UIAlertAction * action) {
-                                                              [self showPurchaseVC:productIndex transactionType:TransactionTypeRestore];
-                                                          }];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
-    [alertController addAction:purchaseAction];
-    [alertController addAction:restoreAction];
-    [alertController addAction:cancelAction];
-    
-    [self presentViewController:alertController animated:YES completion:nil];
-}
-
-- (void)showInfomationAlertControllerWithTitle:(NSString *)title message:(NSString *)message{
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK",@"确定") style:UIAlertActionStyleDefault handler:nil];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
-    [alertController addAction:okAction];
-    [alertController addAction:cancelAction];
-    [self presentViewController:alertController animated:YES completion:nil];
-}
+#pragma mark - Simple Purchase
 
 - (void)showPurchaseVC:(NSInteger)productIndex transactionType:(enum TransactionType)transactionType{
     InAppPurchaseVC *inAppPurchaseVC = [InAppPurchaseVC new];
@@ -357,28 +348,16 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     inAppPurchaseVC.transactionType = transactionType;
     
     WEAKSELF(weakSelf);
-    inAppPurchaseVC.inAppPurchaseCompletionHandler = ^(BOOL success,NSInteger productIndex,enum TransactionType transactionType){
-        NSString *typeString = transactionType == TransactionTypePurchase ? NSLocalizedString(@"Purchase", @"购买") : NSLocalizedString(@"Restore", @"恢复");
-        NSString *resultString = nil;
-        NSString *productNameString = productIndex == 0 ? NSLocalizedString(@"ShareFunctionAndBrowserMode",@"分享功能和浏览模式"): NSLocalizedString(@"RecordFuntionAndRecordMode",@"足迹记录和记录模式");
-        
-        if (success) {
-            resultString = NSLocalizedString(@"Succeeded", @"成功");
-            if (productIndex == 0) self.settingManager.hasPurchasedShare = YES;
-            if (productIndex == 1) self.settingManager.hasPurchasedRecord = YES;
-        }else{
-            resultString = NSLocalizedString(@"Failed", @"失败");
+    inAppPurchaseVC.inAppPurchaseCompletionHandler = ^(BOOL succeeded,NSInteger productIndex,enum TransactionType transactionType){
+        if (succeeded) {
+            if (productIndex == 0) weakSelf.settingManager.hasPurchasedShare = YES;
+            if (productIndex == 1) weakSelf.settingManager.hasPurchasedRecord = YES;
         }
-        
-        NSString *alertMessage = [NSString stringWithFormat:@"%@ %@ %@",typeString,productNameString,resultString];
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            [weakSelf showInfomationAlertControllerWithTitle:NSLocalizedString(@"Purchase/Restore Result", @"购买/恢复结果") message:alertMessage];
-        });
+        NSLog(@"%@",succeeded? @"用户购买成功！" : @"用户购买失败！");
     };
-    
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:inAppPurchaseVC];
-    [self presentViewController:nav animated:YES completion:nil];
+    [self.navigationController pushViewController:inAppPurchaseVC animated:YES];
+    //UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:inAppPurchaseVC];
+    //[self presentViewController:nav animated:YES completion:nil];
 }
-
 
 @end
