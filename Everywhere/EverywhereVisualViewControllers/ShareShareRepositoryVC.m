@@ -42,7 +42,7 @@
     [sessionBtn addTarget:self action:@selector(wxShare:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:sessionBtn];
     [sessionBtn autoSetDimensionsToSize:CGSizeMake(60, 60)];
-    [sessionBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+    [sessionBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
     [sessionBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
     
     timelineBtn = [UIButton newAutoLayoutView];
@@ -53,6 +53,13 @@
     [timelineBtn autoSetDimensionsToSize:CGSizeMake(60, 60)];
     [timelineBtn autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:sessionBtn withOffset:10];
     [timelineBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+    
+    UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeInfoLight];
+    infoButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [infoButton addTarget:self action:@selector(showInfoAboutWXShareAlertController) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:infoButton];
+    [infoButton autoAlignAxis:ALAxisHorizontal toSameAxisOfView:sessionBtn];
+    [infoButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
     
     titleTF = [UITextField newAutoLayoutView];
     
@@ -115,6 +122,7 @@
     WXMediaMessage *mediaMessage=[WXMediaMessage alloc];
     // WXWebpageObject : 会话显示title、description、thumbData（图标较小)，朋友圈显示title、thumbData（图标较小),两者都发送webpageUrl
     // WXImageObject   : 会话只显示thumbData（图标较大)，朋友圈显示分享的图片,两者都发送imageData
+    //mediaMessage.title = [NSString stringWithFormat:@"%@ : %@",NSLocalizedString(@"I shared my footprints to you!Take a look!", @"我分享了一个足迹给你，快来看看吧！"),titleTF.text];
     mediaMessage.title = titleTF.text;
     mediaMessage.description = NSLocalizedString(@"Tap '···' and choose 'Open In Safari' to open AlbumMaps", @"点击右上角“···”，选择“在Safari中打开”，进入《相册地图》查看");
     mediaMessage.mediaObject = webpageObject;
@@ -137,4 +145,10 @@
     [self dismissViewControllerAnimated:YES completion:nil];
     
 }
+
+- (void)showInfoAboutWXShareAlertController{
+    UIAlertController *infomationAlertController = [UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Because of the limitation of WeChat content , make sure your footprints count within 100 , otherwise share may fail.", @"由于微信分享内容限制为10K，所以请将分享的足迹点数量控制在100个以内，否则可能会分享失败。")];
+    [self presentViewController:infomationAlertController animated:YES completion:nil];
+}
+
 @end

@@ -39,4 +39,15 @@
     [aCoder encodeInteger:self.shareRepositoryType forKey:@"shareRepositoryType"];
 }
 
+- (id)copyWithZone:(NSZone *)zone{
+    EverywhereShareRepository *copyShareRepository = [EverywhereShareRepository allocWithZone:zone];
+    
+    copyShareRepository.shareAnnos = self.shareAnnos;
+    copyShareRepository.radius = self.radius;
+    copyShareRepository.title = self.title;
+    copyShareRepository.creationDate = self.creationDate;
+    copyShareRepository.shareRepositoryType = self.shareRepositoryType;
+    
+    return copyShareRepository;
+}
 @end

@@ -39,25 +39,25 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (CLLocationDistance)mergedDistanceForMoment{
-    CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"mergedDistanceForMoment"];
+- (CLLocationDistance)mergeDistanceForMoment{
+    CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"mergeDistanceForMoment"];
     if (!distance || distance == 0) distance = 200;
     return distance;
 }
 
-- (void)setMergedDistanceForMoment:(CLLocationDistance)mergedDistanceForMoment{
-    [[NSUserDefaults standardUserDefaults] setDouble:mergedDistanceForMoment forKey:@"mergedDistanceForMoment"];
+- (void)setMergeDistanceForMoment:(CLLocationDistance)mergeDistanceForMoment{
+    [[NSUserDefaults standardUserDefaults] setDouble:mergeDistanceForMoment forKey:@"mergeDistanceForMoment"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (CLLocationDistance)mergedDistanceForLocation{
-    CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"mergedDistanceForLocation"];
+- (CLLocationDistance)mergeDistanceForLocation{
+    CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"mergeDistanceForLocation"];
     if (!distance || distance == 0) distance = 1000;
     return distance;
 }
 
-- (void)setMergedDistanceForLocation:(CLLocationDistance)mergedDistanceForLocation{
-    [[NSUserDefaults standardUserDefaults] setDouble:mergedDistanceForLocation forKey:@"mergedDistanceForLocation"];
+- (void)setMergeDistanceForLocation:(CLLocationDistance)mergeDistanceForLocation{
+    [[NSUserDefaults standardUserDefaults] setDouble:mergeDistanceForLocation forKey:@"mergeDistanceForLocation"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -169,8 +169,6 @@
 
 - (BOOL)hasPurchasedShare{
     BOOL ahasPurchasedShare = [[NSUserDefaults standardUserDefaults] boolForKey:@"hasPurchasedShare"];
-//#warning here
-    //return YES;
     return ahasPurchasedShare;
 }
 
@@ -181,8 +179,6 @@
 
 - (BOOL)hasPurchasedRecord{
     BOOL ahasPurchasedRecord = [[NSUserDefaults standardUserDefaults] boolForKey:@"hasPurchasedRecord"];
-//#warning here
-    //return YES;
     return ahasPurchasedRecord;
 }
 
@@ -222,6 +218,15 @@
 
 - (void)setMaxFootprintsCountForRecord:(NSInteger)maxFootprintsCountForRecord{
     [[NSUserDefaults standardUserDefaults] setInteger:maxFootprintsCountForRecord forKey:@"maxFootprintsCountForRecord"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (NSInteger)praiseCount{
+    return [[NSUserDefaults standardUserDefaults] integerForKey:@"praiseCount"];
+}
+
+- (void)setPraiseCount:(NSInteger)praiseCount{
+    [[NSUserDefaults standardUserDefaults] setInteger:praiseCount forKey:@"praiseCount"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

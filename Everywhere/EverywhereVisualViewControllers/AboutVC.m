@@ -36,8 +36,8 @@
     [self.imageView setImage:[UIImage imageNamed:@"地球_300_300"]];
     [self.view addSubview:self.imageView];
     [self.imageView autoSetDimensionsToSize:CGSizeMake(80, 80)];
-    [self.imageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
-    [self.imageView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+    [self.imageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:80];
+    [self.imageView autoAlignAxis:ALAxisVertical toSameAxisOfView:self.view withOffset:-80];
     
     self.nameLabel=[[UILabel alloc]initForAutoLayout];
     self.nameLabel.text=NSLocalizedString(@"AlbumMaps", @"相册地图");
@@ -55,11 +55,11 @@
 
     self.bottomLabel=[[UILabel alloc]initForAutoLayout];
     self.bottomLabel.numberOfLines = 0;
-    self.bottomLabel.text=NSLocalizedString(@"Phone & WeChat : 17096027537\nEmail : johnbob2014@icloud.com\n\n2016 CTP Technology Co.,Ltd", @"");
+    self.bottomLabel.text=NSLocalizedString(@"Phone & WeChat : 17096027537\nEmail : johnbob2014@icloud.com\n2016 CTP Technology Co.,Ltd", @"");
     self.bottomLabel.textAlignment=NSTextAlignmentCenter;
     [self.view addSubview:self.bottomLabel];
-    [self.bottomLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 20, 20, 20) excludingEdge:ALEdgeTop];
-    [self.bottomLabel autoSetDimension:ALDimensionHeight toSize:80];
+    [self.bottomLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
+    [self.bottomLabel autoSetDimension:ALDimensionHeight toSize:100];
     
     self.detailTextView=[[UITextView alloc]initForAutoLayout];
     self.detailTextView.editable=NO;
@@ -69,7 +69,7 @@
     [self.detailTextView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.imageView withOffset:20];
     [self.detailTextView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
     [self.detailTextView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:20];
-    [self.detailTextView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.bottomLabel withOffset:20];
+    [self.detailTextView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.bottomLabel withOffset:-20];
 }
 
 @end

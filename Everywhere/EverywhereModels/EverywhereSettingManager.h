@@ -15,8 +15,8 @@
 @property (assign,nonatomic) MapBaseMode mapBaseMode;
 @property (assign,nonatomic) MapExtendedMode mapExtendedMode;
 
-@property (assign,nonatomic) CLLocationDistance mergedDistanceForMoment;
-@property (assign,nonatomic) CLLocationDistance mergedDistanceForLocation;
+@property (assign,nonatomic) CLLocationDistance mergeDistanceForMoment;
+@property (assign,nonatomic) CLLocationDistance mergeDistanceForLocation;
 
 @property (assign,nonatomic) DateMode dateMode;
 
@@ -39,5 +39,7 @@
 @property (assign,nonatomic) CLLocationDistance minDistanceForRecord;
 @property (assign,nonatomic) NSTimeInterval minTimeIntervalForRecord;
 @property (assign,nonatomic) NSInteger maxFootprintsCountForRecord;
+
+@property (assign,nonatomic) NSInteger praiseCount;
 
 @end

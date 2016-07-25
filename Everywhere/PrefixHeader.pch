@@ -112,6 +112,7 @@ enum {
     ShareRepositoryTypeSended = (1UL << 0),
     ShareRepositoryTypeReceived = (1UL << 1),
     ShareRepositoryTypeRecorded = (1UL << 2),
+    ShareRepositoryTypeEdited = (1UL << 3)
 };
 typedef NSUInteger ShareRepositoryType;
 

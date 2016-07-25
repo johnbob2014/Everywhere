@@ -23,12 +23,16 @@
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
     [alertController addAction:okAction];
     [alertController addAction:cancelAction];
+    
+    alertController.preferredAction = okAction;
+    
     return alertController;
 }
 
-+ (UIAlertController *)renameAlertControllerWithHandler:(void (^)(UIAlertAction *action))handler{
++ (UIAlertController *)renameAlertControllerWithActionHandler:(void (^)(UIAlertAction *action))handler
+                                textFieldConfigurationHandler:(void (^)(UITextField *textField))configurationHandler{
     
-    NSString *alertTitle = NSLocalizedString(@"Rename", @"更名");
+    NSString *alertTitle = NSLocalizedString(@"Rename", @"重命名");
     NSString *alertMessage = NSLocalizedString(@"Enter a new name", @"输入新名称");
     
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
@@ -41,10 +45,9 @@
     [alertController addAction:okAction];
     [alertController addAction:cancelAction];
     
-    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        
-    }];
+    alertController.preferredAction = okAction;
     
+    [alertController addTextFieldWithConfigurationHandler:configurationHandler];
     return alertController;
 }
 

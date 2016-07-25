@@ -12,6 +12,7 @@
 
 #import "EverywhereShareRepositoryManager.h"
 #import "EverywhereSettingManager.h"
+#import "ShareShareRepositoryVC.h"
 
 @interface ShareRepositoryPickerVC () <UITableViewDelegate,UITableViewDataSource>
 
@@ -38,10 +39,11 @@
     // Do any additional setup after loading the view.
     
     switch (self.showShareRepositoryType) {
-        case ShareRepositoryTypeSended|ShareRepositoryTypeReceived|ShareRepositoryTypeRecorded:
+        case ShareRepositoryTypeSended|ShareRepositoryTypeReceived|ShareRepositoryTypeRecorded|ShareRepositoryTypeEdited:
             groupNameArray = @[NSLocalizedString(@"Sended", @"发出的"),
                                NSLocalizedString(@"Received", @"接收的"),
-                               NSLocalizedString(@"Recorded", @"记录的")];
+                               NSLocalizedString(@"Recorded", @"记录的"),
+                               NSLocalizedString(@"Edited", @"编辑的")];
             break;
 
         case ShareRepositoryTypeSended|ShareRepositoryTypeReceived:
@@ -49,8 +51,9 @@
                                NSLocalizedString(@"Received", @"接收的")];
             break;
             
-        case ShareRepositoryTypeRecorded:
-            groupNameArray = @[NSLocalizedString(@"Recorded", @"记录的")];
+        case ShareRepositoryTypeRecorded|ShareRepositoryTypeEdited:
+            groupNameArray = @[NSLocalizedString(@"Recorded", @"记录的"),
+                               NSLocalizedString(@"Edited", @"编辑的")];
             break;
             
         default:
@@ -100,6 +103,7 @@
     NSMutableArray *sendedArray = [NSMutableArray new];
     NSMutableArray *receivedArray = [NSMutableArray new];
     NSMutableArray *recordedArray = [NSMutableArray new];
+    NSMutableArray *editedArray = [NSMutableArray new];
     
     shareRepositoryMA = [NSMutableArray arrayWithArray:[EverywhereShareRepositoryManager shareRepositoryArray]];
     
@@ -113,6 +117,9 @@
                 break;
             case ShareRepositoryTypeRecorded:
                 [recordedArray addObject:obj];
+                break;
+            case ShareRepositoryTypeEdited:
+                [editedArray addObject:obj];
                 break;
             default:
                 break;
@@ -132,6 +139,10 @@
         case 2:
             currentGroupArray = recordedArray;
             self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[2],(unsigned long)currentGroupArray.count];
+            break;
+        case 3:
+            currentGroupArray = editedArray;
+            self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[3],(unsigned long)currentGroupArray.count];
             break;
         default:
             break;
@@ -154,15 +165,91 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
     cell.accessoryType = UITableViewCellAccessoryDetailButton;
     EverywhereShareRepository *shareRepository = currentGroupArray[indexPath.row];
-    cell.textLabel.text = shareRepository.title;
+    NSString *headerString;
+    switch (shareRepository.shareRepositoryType) {
+        case ShareRepositoryTypeSended:
+            headerString = @"🏹 ";
+            break;
+        case ShareRepositoryTypeReceived:
+            headerString = @"🎣 ";
+            break;
+        case ShareRepositoryTypeRecorded:
+            headerString = @"🚴 ";
+            break;
+        case ShareRepositoryTypeEdited:
+            headerString = @"✏️ ";
+            break;
+        default:
+            break;
+    }
+    cell.textLabel.text = [headerString stringByAppendingString:shareRepository.title];
     NSString *tempString = NSLocalizedString(@"footprints", @"个足迹点");
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%lu %@ %@",(unsigned long)shareRepository.shareAnnos.count,tempString,[shareRepository.creationDate stringWithDefaultFormat]];
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (self.shareRepositoryDidChangeHandler) self.shareRepositoryDidChangeHandler(currentGroupArray[indexPath.row]);
-    [self dismissViewControllerAnimated:YES completion:nil];
+    EverywhereShareRepository *shareRepository = currentGroupArray[indexPath.row];
+    
+    NSString *alertTitle = NSLocalizedString(@"Items", @"选项");
+    NSString *alertMessage = NSLocalizedString(@"Select an action", @"请选择操作");
+    
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *showAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Show",@"查看")
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:^(UIAlertAction * _Nonnull action) {
+                                                         [self dismissViewControllerAnimated:YES completion:nil];
+                                                         if (self.shareRepositoryDidChangeHandler) self.shareRepositoryDidChangeHandler(currentGroupArray[indexPath.row]);
+                                                     }];
+    
+    UIAlertAction *shareAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Share",@"分享")
+                                                         style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * _Nonnull action) {
+                                                           ShareShareRepositoryVC *ssVC = [ShareShareRepositoryVC new];
+                                                           ssVC.shareRepository = shareRepository;
+                                                           NSData *thumbImageData = UIImageJPEGRepresentation([UIImage imageNamed:@"地球_300_300"], 0.5);
+                                                           ssVC.shareThumbImageData = thumbImageData;
+                                                           
+                                                           ssVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.8, 200);
+                                                           ssVC.landscapeContentSizeInPopup = CGSizeMake(200, ScreenWidth * 0.8);
+                                                           [self.popupController pushViewController:ssVC animated:YES];
+                                                       }];
+    UIAlertAction *renameAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Rename",@"重命名")
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * _Nonnull action) {
+                                                            __block UITextField *tf;
+                                                            UIAlertController *renameAC = [UIAlertController renameAlertControllerWithActionHandler:^(UIAlertAction *action) {
+                                                                
+                                                                EverywhereShareRepository *copyShareRepository = [shareRepository copy];
+                                                                copyShareRepository.title = tf.text;
+                                                                NSLog(@"EverywhereShareRepository new name : %@",copyShareRepository.title);
+                                                                [shareRepositoryMA removeObject:shareRepository];
+                                                                [shareRepositoryMA addObject:copyShareRepository];
+                                                                [EverywhereShareRepositoryManager setShareRepositoryArray:shareRepositoryMA];
+                                                                [self updateDataSource:groupSeg.selectedSegmentIndex];
+                                                                
+                                                            } textFieldConfigurationHandler:^(UITextField *textField) {
+                                                                textField.text = shareRepository.title;
+                                                                tf = textField;
+                                                            }];
+                                                            
+                                                            [self presentViewController:renameAC animated:YES completion:nil];
+                                                        }];
+
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
+    [alertController addAction:showAction];
+    if([EverywhereSettingManager defaultManager].hasPurchasedShare){
+        
+        [alertController addAction:shareAction];
+    }
+    [alertController addAction:renameAction];
+    [alertController addAction:cancelAction];
+    alertController.preferredAction = showAction;
+    
+    [self presentViewController:alertController animated:YES completion:nil];
+ 
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{

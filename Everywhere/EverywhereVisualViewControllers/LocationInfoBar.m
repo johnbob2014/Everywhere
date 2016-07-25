@@ -200,7 +200,7 @@
 - (void)setupButtonsStyle{
     [buttonArray enumerateObjectsUsingBlock:^(UIButton * _Nonnull button, NSUInteger idx, BOOL * _Nonnull stop) {
         
-        CGFloat fontSize = ScreenWidth > 320 ? 16 : 12;
+        CGFloat fontSize = ScreenWidth > 375 ? 16 : 12;
         button.titleLabel.font = [UIFont boldSystemFontOfSize:fontSize];
         
         button.layer.cornerRadius = 3.0;

@@ -32,7 +32,7 @@ UIImageView *imageView;
     [sessionBtn addTarget:self action:@selector(wxShare:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:sessionBtn];
     [sessionBtn autoSetDimensionsToSize:CGSizeMake(60, 60)];
-    [sessionBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+    [sessionBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
     [sessionBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
     
     timelineBtn = [UIButton newAutoLayoutView];

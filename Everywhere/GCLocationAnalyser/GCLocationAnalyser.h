@@ -16,10 +16,10 @@
 
 @interface GCLocationAnalyser : NSObject
 
-+ (NSDictionary <CLLocation *,NSArray *> *)divideLocationsInOrderToDictionary:(NSArray <id<GCLocationAnalyserProtocol>> *)idArray mergedDistance:(CLLocationDistance)mergedDistance;
+//+ (NSDictionary <CLLocation *,NSArray *> *)divideLocationsInOrderToDictionary:(NSArray <id<GCLocationAnalyserProtocol>> *)idArray mergeDistance:(CLLocationDistance)mergeDistance;
 
-+ (NSArray <NSArray *> *)divideLocationsInOrderToArray:(NSArray <id<GCLocationAnalyserProtocol>> *)idArray mergedDistance:(CLLocationDistance) mergedDistance;
++ (NSArray <NSArray *> *)divideLocationsInOrderToArray:(NSArray <id<GCLocationAnalyserProtocol>> *)idArray mergeDistance:(CLLocationDistance) mergeDistance;
 
-+ (NSArray <NSArray *> *)divideLocationsOutOfOrderToArray:(NSArray <id<GCLocationAnalyserProtocol>> *)idArray mergedDistance:(CLLocationDistance)mergedDistance;
++ (NSArray <NSArray *> *)divideLocationsOutOfOrderToArray:(NSArray <id<GCLocationAnalyserProtocol>> *)idArray mergeDistance:(CLLocationDistance)mergeDistance;
 
 @end

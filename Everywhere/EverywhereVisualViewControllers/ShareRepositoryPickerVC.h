@@ -18,4 +18,6 @@ typedef void(^ShareRepositoryDidChangeHandler)(EverywhereShareRepository *choose
 //@property (strong,nonatomic) NSArray <EverywhereShareRepository *> *shareRepositoryArray;
 @property (copy,nonatomic) ShareRepositoryDidChangeHandler shareRepositoryDidChangeHandler;
 
+//@property (assign,nonatomic) BOOL isRecording;
+
 @end

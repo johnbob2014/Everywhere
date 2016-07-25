@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "EverywhereShareAnnotation.h"
 
-@interface EverywhereShareRepository : NSObject <NSCoding>
+@interface EverywhereShareRepository : NSObject <NSCoding,NSCopying>
 
 @property (strong,nonatomic) NSArray <EverywhereShareAnnotation *> *shareAnnos;
 @property (assign,nonatomic) double radius;

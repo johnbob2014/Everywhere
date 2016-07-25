@@ -18,7 +18,7 @@
 @implementation ShareRepositoryEditerVC{
     NSArray <EverywhereShareAnnotation *> *currentGroupArray;
     //NSMutableArray <EverywhereShareAnnotation *> *editedArray;
-    UITextField *mergedDistanceTF;
+    UITextField *mergeDistanceTF;
     NSArray <NSString *> *groupNameArray;
     UISegmentedControl *groupSeg;
     UITableView *myTableView;
@@ -56,25 +56,25 @@
     [myTableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(10, 10, 10, 10) excludingEdge:ALEdgeBottom];
     [myTableView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:containerView withOffset:-10];
     
-    UILabel *mergedDistanceLabel = [UILabel newAutoLayoutView];
-    mergedDistanceLabel.text = NSLocalizedString(@"MergedDistance :", @"合并距离：");
-    [containerView addSubview:mergedDistanceLabel];
-    [mergedDistanceLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
-    [mergedDistanceLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
-    [mergedDistanceLabel autoSetDimension:ALDimensionHeight toSize:30];
+    UILabel *mergeDistanceLabel = [UILabel newAutoLayoutView];
+    mergeDistanceLabel.text = NSLocalizedString(@"MergeDistance :", @"合并距离：");
+    [containerView addSubview:mergeDistanceLabel];
+    [mergeDistanceLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
+    [mergeDistanceLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
+    [mergeDistanceLabel autoSetDimension:ALDimensionHeight toSize:30];
 
-    mergedDistanceTF = [UITextField newAutoLayoutView];
-    mergedDistanceTF.delegate = self;
-    mergedDistanceTF.text = @"200";
-    mergedDistanceTF.textAlignment = NSTextAlignmentCenter;
-    mergedDistanceTF.clearButtonMode = UITextFieldViewModeAlways;
-    mergedDistanceTF.layer.borderWidth = 1;
-    mergedDistanceTF.layer.borderColor = [[EverywhereSettingManager defaultManager].extendedTintColor CGColor];
-    [containerView addSubview: mergedDistanceTF];
-    [mergedDistanceTF autoAlignAxis:ALAxisHorizontal toSameAxisOfView:mergedDistanceLabel];
-    [mergedDistanceTF autoSetDimension:ALDimensionWidth toSize:120];
-    [mergedDistanceTF autoSetDimension:ALDimensionHeight toSize:30];
-    [mergedDistanceTF autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
+    mergeDistanceTF = [UITextField newAutoLayoutView];
+    mergeDistanceTF.delegate = self;
+    mergeDistanceTF.text = @"200";
+    mergeDistanceTF.textAlignment = NSTextAlignmentCenter;
+    mergeDistanceTF.clearButtonMode = UITextFieldViewModeAlways;
+    mergeDistanceTF.layer.borderWidth = 1;
+    mergeDistanceTF.layer.borderColor = [[EverywhereSettingManager defaultManager].extendedTintColor CGColor];
+    [containerView addSubview: mergeDistanceTF];
+    [mergeDistanceTF autoAlignAxis:ALAxisHorizontal toSameAxisOfView:mergeDistanceLabel];
+    [mergeDistanceTF autoSetDimension:ALDimensionWidth toSize:120];
+    [mergeDistanceTF autoSetDimension:ALDimensionHeight toSize:30];
+    [mergeDistanceTF autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
 
     groupNameArray = @[NSLocalizedString(@"Merge By Moment", @"按时刻合并"),
                        NSLocalizedString(@"Merge By Location", @"按位置合并")];
@@ -83,7 +83,7 @@
     [groupSeg addTarget:self action:@selector(segValueChanged:) forControlEvents:UIControlEventValueChanged];
     [containerView addSubview:groupSeg];
     groupSeg.translatesAutoresizingMaskIntoConstraints = NO;
-    [groupSeg autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:mergedDistanceLabel withOffset:10];
+    [groupSeg autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:mergeDistanceLabel withOffset:10];
     [groupSeg autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
     [groupSeg autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
     
@@ -106,8 +106,8 @@
     [mergeButton addTarget:self action:@selector(startMerge) forControlEvents:UIControlEventTouchDown];
     [mergeButton setTitle:NSLocalizedString(@"Start Merge", @"开始合并") forState:UIControlStateNormal];
     [containerView addSubview:mergeButton];
-    [mergeButton autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(10, 10, 10, 10) excludingEdge:ALEdgeTop];
-    [mergeButton autoSetDimension:ALDimensionHeight toSize:40];
+    [mergeButton autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(10, 10, 5, 10) excludingEdge:ALEdgeTop];
+    [mergeButton autoSetDimension:ALDimensionHeight toSize:35];
     
 }
 
@@ -126,8 +126,8 @@
 
 - (void)startMerge{
     
-    float mergedDistance = [mergedDistanceTF.text floatValue];
-    if (mergedDistance == 0) mergedDistance = 200;
+    float mergeDistance = [mergeDistanceTF.text floatValue];
+    if (mergeDistance == 0) mergeDistance = 200;
     
     NSArray *mergeArray = self.shareAnnoMA;
     NSMutableArray *excluedUserManuallyAddedArray = [NSMutableArray new];
@@ -142,9 +142,9 @@
     
     NSArray <NSArray *> *resultArrayArray;
     if (mergeInOrder) {
-        resultArrayArray = [GCLocationAnalyser divideLocationsInOrderToArray:mergeArray mergedDistance:mergedDistance];
+        resultArrayArray = [GCLocationAnalyser divideLocationsInOrderToArray:mergeArray mergeDistance:mergeDistance];
     }else{
-        resultArrayArray = [GCLocationAnalyser divideLocationsOutOfOrderToArray:mergeArray mergedDistance:mergedDistance];
+        resultArrayArray = [GCLocationAnalyser divideLocationsOutOfOrderToArray:mergeArray mergeDistance:mergeDistance];
     }
     
     NSMutableArray *resultArray = [NSMutableArray new];
@@ -167,19 +167,22 @@
         return comparisonResult;
     }];
     
-    NSString *modeString = mergeInOrder ? NSLocalizedString(@"Merged By Moment", @"按时刻合并") : NSLocalizedString(@"Merged By Location", @"位置");
-    NSString *distanceString = NSLocalizedString(@"MergedDistance", @"合并距离");
+    NSString *modeString = mergeInOrder ? NSLocalizedString(@"Merge By Moment", @"按时刻合并") : NSLocalizedString(@"Merge By Location", @"位置");
+    NSString *distanceString = NSLocalizedString(@"Merge Distance", @"合并距离");
     NSString *reserveString = reserveManuallyAddedFootprint ? NSLocalizedString(@"ReserveManuallyAddedFootprint", @"保留手动添加足迹点") : NSLocalizedString(@"MergeManuallyAddedFootprint", @"合并手动添加足迹点");
     
     EverywhereShareRepository *editedShareRepository = [EverywhereShareRepository new];
     editedShareRepository.shareAnnos = resultArray;
+    
+    if (!mergeInOrder) editedShareRepository.radius = mergeDistance / 2.0;
+    
     editedShareRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Edit", @"编辑"),self.shareRepository.title];
     editedShareRepository.creationDate = NOW;
-    editedShareRepository.shareRepositoryType = ShareRepositoryTypeRecorded;
+    editedShareRepository.shareRepositoryType = ShareRepositoryTypeEdited;
     
     [EverywhereShareRepositoryManager addShareRepository:editedShareRepository];
     
-    NSString *alertMessage = [NSString stringWithFormat:@"%@,%@ : %.1f,%@\n%@ : %@",modeString,distanceString,mergedDistance,reserveString,NSLocalizedString(@"Saved As", @"存储为"),editedShareRepository.title];
+    NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@ : %.1f\n%@\n%@ :\n%@",modeString,distanceString,mergeDistance,reserveString,NSLocalizedString(@"Saved As", @"存储为"),editedShareRepository.title];
     
     [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:alertMessage]
                        animated:YES completion:nil];
@@ -199,13 +202,15 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
-    cell.accessoryType = UITableViewCellAccessoryDetailButton;
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
+    //cell.accessoryType = UITableViewCellAccessoryDetailButton;
     EverywhereShareAnnotation *shareAnnotation = currentGroupArray[indexPath.row];
-    cell.textLabel.text = shareAnnotation.customTitle;
+    NSString *headerString = shareAnnotation.isUserManuallyAdded ? @"🚩 " : @"🏳 ";
+    cell.textLabel.text = [headerString stringByAppendingString:shareAnnotation.customTitle];
     cell.detailTextLabel.text = shareAnnotation.title;
     return cell;
 }
+
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     //if (self.shareAnnotationDidChangeHandler) self.shareAnnotationDidChangeHandler(currentGroupArray[indexPath.row]);

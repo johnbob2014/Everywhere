@@ -11,4 +11,6 @@
 @interface UIAlertController (Assistant)
 + (UIAlertController *)infomationAlertControllerWithTitle:(NSString *)title message:(NSString *)message;
 + (UIAlertController *)okCancelAlertControllerWithTitle:(NSString *)title message:(NSString *)message okHandler:(void (^)(UIAlertAction *action))okHandler;
++ (UIAlertController *)renameAlertControllerWithActionHandler:(void (^)(UIAlertAction *action))handler
+                                textFieldConfigurationHandler:(void (^)(UITextField *textField))configurationHandler;
 @end

@@ -51,7 +51,7 @@
         groupSeg.translatesAutoresizingMaskIntoConstraints = NO;
         [groupSeg autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(5, 5, 0,5) excludingEdge:ALEdgeBottom];
         
-        UIFont *labelFont = ScreenWidth > 320 ? [UIFont bodyFontWithSizeMultiplier:1.0] : [UIFont bodyFontWithSizeMultiplier:0.8];
+        UIFont *labelFont = ScreenWidth > 375 ? [UIFont bodyFontWithSizeMultiplier:1.0] : [UIFont bodyFontWithSizeMultiplier:0.8];
         
         sDLabel = [UILabel newAutoLayoutView];
         sDLabel.font = labelFont;
@@ -90,7 +90,7 @@
         [velocityLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:sDLabel withOffset:10];
         [velocityLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
         
-        CGFloat velocitySliderWidth = ScreenWidth > 320 ? 150 : 100;
+        CGFloat velocitySliderWidth = ScreenWidth > 375 ? 120 : 100;
         
         velocitySlider = [UISlider newAutoLayoutView];
         velocitySlider.tintColor = [UIColor whiteColor];
@@ -156,7 +156,7 @@
     _velocitykmPerhour = velocitykmPerhour;
     self.velocitymPerSecond = velocitykmPerhour * 1000.0 / 3600.0;
     self.minTimeInterval = self.minDistance / self.velocitymPerSecond;
-    if (ScreenWidth > 320){
+    if (ScreenWidth > 375){
         velocityLabel.text = [NSString stringWithFormat:@"%@ : %.1fkm/h %.1fm/s",velocityLabelTitle,velocitykmPerhour,self.velocitymPerSecond];
     }else{
         velocityLabel.text = [NSString stringWithFormat:@"%.1fkm/h %.1fm/s",velocitykmPerhour,self.velocitymPerSecond];

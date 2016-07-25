@@ -92,8 +92,8 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     
 #pragma mark 播放时间间隔
     
-    tempString = [NSString stringWithFormat:@"%.f",self.settingManager.playTimeInterval];
-    RETextItem *playTimeIntervalItem = [RETextItem itemWithTitle:NSLocalizedString(@"Play Time Interval",@"播放时间间隔") value:tempString placeholder:@""];
+    tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.playTimeInterval];
+    RETextItem *playTimeIntervalItem = [RETextItem itemWithTitle:NSLocalizedString(@"⏲ Play Time Interval",@"⏲ 播放时间间隔") value:tempString placeholder:@""];
     playTimeIntervalItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     playTimeIntervalItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
@@ -105,7 +105,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 #pragma mark 地图缩放比例
     
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.mapViewScaleRate];
-    RETextItem *mapViewScaleRateItem = [RETextItem itemWithTitle:NSLocalizedString(@"Map Scale Rate",@"地图缩放比例") value:tempString placeholder:@""];
+    RETextItem *mapViewScaleRateItem = [RETextItem itemWithTitle:NSLocalizedString(@"🗺 Map Scale Rate",@"🗺 地图缩放比例") value:tempString placeholder:@""];
     mapViewScaleRateItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     mapViewScaleRateItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
@@ -134,7 +134,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     
     NSArray *baseColorSchemeArray = @[NSLocalizedString(@"Classic Gray",@"经典灰"),NSLocalizedString(@"Fresh Purple",@"清新紫"),NSLocalizedString(@"Deep Brown",@"深沉棕")];
     NSString *currentCS = baseColorSchemeArray[self.settingManager.baseColorScheme < baseColorSchemeArray.count ? self.settingManager.baseColorScheme : baseColorSchemeArray.count - 1];
-    REPickerItem *baseColorSchemePickerItem = [REPickerItem itemWithTitle:NSLocalizedString(@"BaseColorScheme",@"颜色方案")
+    REPickerItem *baseColorSchemePickerItem = [REPickerItem itemWithTitle:NSLocalizedString(@"⛰ BaseColorScheme",@"⛰ 颜色方案")
                                                                 value:@[currentCS]
                                                           placeholder:nil
                                                               options:@[baseColorSchemeArray]];
@@ -153,12 +153,12 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     //RETableViewSection *momentModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"MomentMode", @"时刻模式")];
     //[optionSection setHeaderHeight:30];
     
-    tempString = [NSString stringWithFormat:@"%.f",self.settingManager.mergedDistanceForMoment];
-    RETextItem *mergedDistanceForMomentItem = [RETextItem itemWithTitle:NSLocalizedString(@"Merged Distance For Moment",@"时刻模式合并距离") value:tempString placeholder:@""];
-    mergedDistanceForMomentItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
-    mergedDistanceForMomentItem.onEndEditing = ^(RETextItem *item){
+    tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.mergeDistanceForMoment];
+    RETextItem *mergeDistanceForMomentItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Merge Distance For Moment",@"📏 时刻模式合并距离") value:tempString placeholder:@""];
+    mergeDistanceForMomentItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
+    mergeDistanceForMomentItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
-        self.settingManager.mergedDistanceForMoment = [item.value doubleValue];
+        self.settingManager.mergeDistanceForMoment = [item.value doubleValue];
     };
 
 #pragma mark 地址模式合并距离
@@ -166,15 +166,15 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     //RETableViewSection *locationModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"LocationMode", @"地址模式")];
     //[optionSection setHeaderHeight:30];
     
-    tempString = [NSString stringWithFormat:@"%.f",self.settingManager.mergedDistanceForLocation];
-    RETextItem *mergedDistanceForLocationItem = [RETextItem itemWithTitle:NSLocalizedString(@"Merged Distance For Location",@"地址模式合并距离") value:tempString placeholder:@""];
-    mergedDistanceForLocationItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
-    mergedDistanceForLocationItem.onEndEditing = ^(RETextItem *item){
+    tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.mergeDistanceForLocation];
+    RETextItem *mergeDistanceForLocationItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Merge Distance For Location",@"📏 地址模式合并距离") value:tempString placeholder:@""];
+    mergeDistanceForLocationItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
+    mergeDistanceForLocationItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
-        self.settingManager.mergedDistanceForLocation = [item.value doubleValue];
+        self.settingManager.mergeDistanceForLocation = [item.value doubleValue];
     };
     
-    [baseModeSection addItemsFromArray:@[baseColorSchemePickerItem,mergedDistanceForMomentItem,mergedDistanceForLocationItem]];
+    [baseModeSection addItemsFromArray:@[baseColorSchemePickerItem,mergeDistanceForMomentItem,mergeDistanceForLocationItem]];
 
 #pragma mark - 扩展模式设置
     
@@ -182,7 +182,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     
     NSArray *extendedModeColorSchemeArray = @[NSLocalizedString(@"Bright Red",@"鲜艳红"),NSLocalizedString(@"Grass Green",@"青草绿")];
     NSString *extendedModeCurrentCS = extendedModeColorSchemeArray[self.settingManager.extendedColorScheme < extendedModeColorSchemeArray.count ? self.settingManager.extendedColorScheme : extendedModeColorSchemeArray.count - 1];
-    REPickerItem *extendedModeColorSchemePickerItem = [REPickerItem itemWithTitle:NSLocalizedString(@"ExtendedColorScheme",@"颜色方案")
+    REPickerItem *extendedModeColorSchemePickerItem = [REPickerItem itemWithTitle:NSLocalizedString(@"🏔 ExtendedColorScheme",@"🏔 颜色方案")
                                                                 value:@[extendedModeCurrentCS]
                                                           placeholder:nil
                                                               options:@[extendedModeColorSchemeArray]];
@@ -198,16 +198,16 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     RETableViewSection *extendedModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Extended Mode", @"扩展模式")];
     //self.settingManager.minTimeIntervalForRecord
     
-    tempString = [NSString stringWithFormat:@"%.f",self.settingManager.minDistanceForRecord];
-    RETextItem *minDistanceForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"Min Distance",@"最短距离") value:tempString placeholder:@""];
+    tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.minDistanceForRecord];
+    RETextItem *minDistanceForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Min Distance",@"📏 最短距离") value:tempString placeholder:@""];
     minDistanceForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     minDistanceForRecordItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
         self.settingManager.minDistanceForRecord = [item.value doubleValue];
     };
     
-    tempString = [NSString stringWithFormat:@"%.f",self.settingManager.minTimeIntervalForRecord];
-    RETextItem *minTimeIntervalForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"Min TimeInterval",@"最短时间间隔") value:tempString placeholder:@""];
+    tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.minTimeIntervalForRecord];
+    RETextItem *minTimeIntervalForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"⏱ Min TimeInterval",@"⏱ 最短时间间隔") value:tempString placeholder:@""];
     minTimeIntervalForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     minTimeIntervalForRecordItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
@@ -215,7 +215,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     };
     
     tempString = [NSString stringWithFormat:@"%lu",(long)self.settingManager.maxFootprintsCountForRecord];
-    RETextItem *maxFootprintsCountForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"Max Footprints Count",@"最大足迹点数") value:tempString placeholder:@""];
+    RETextItem *maxFootprintsCountForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"🎚 Max Footprints Count",@"🎚 最大足迹点数") value:tempString placeholder:@""];
     maxFootprintsCountForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:Number];
     maxFootprintsCountForRecordItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
@@ -241,12 +241,12 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     RETableViewSection *purchaseSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Purchase and Restore", @"购买与恢复")];
     [purchaseSection setHeaderHeight:20];
     
-    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"ShareFunctionAndBrowserMode",@"分享功能和浏览模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🎑 ShareFunctionAndBrowserMode",@"🎑 分享功能和浏览模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         [weakSelf showPurchaseVC:0 transactionType:TransactionTypePurchase];
     }]];
     
-    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"RecordFuntionAndRecordMode",@"足迹记录和记录模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🚘 RecordFuntionAndRecordMode",@"🚘 足迹记录和记录模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         [weakSelf showPurchaseVC:0 transactionType:TransactionTypePurchase];
     }]];
@@ -323,7 +323,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     WXMediaMessage *mediaMessage=[WXMediaMessage alloc];
     // WXWebpageObject : 会话显示title、description、thumbData（图标较小)，朋友圈显示title、thumbData（图标较小),两者都发送webpageUrl
     // WXImageObject   : 会话只显示thumbData（图标较大)，朋友圈显示分享的图片,两者都发送imageData
-    mediaMessage.title = NSLocalizedString(@"AlbumMaps——Nice Album and Footprints Manager", @"相册地图——您的相册和足迹管理专家");
+    mediaMessage.title = NSLocalizedString(@"AlbumMaps——Album and Footprints Management Expert", @"相册地图——您的相册和足迹管理专家");
     mediaMessage.description = NSLocalizedString(@"Record your life by albums.Measure the world by footprints.",@"用相册记录人生，用足迹丈量世界");
     mediaMessage.mediaObject = webpageObject;
     mediaMessage.thumbData = UIImageJPEGRepresentation([UIImage imageNamed:@"地球_300_300"], 0.5);

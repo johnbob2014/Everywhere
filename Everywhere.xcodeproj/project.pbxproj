@@ -20,7 +20,6 @@
 		1E65218D1D28BFB500F41860 /* UIFont+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E65218C1D28BFB500F41860 /* UIFont+Assistant.m */; };
 		1E8723A41D42D82E00652757 /* RecordModeSettingBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E8723A31D42D82E00652757 /* RecordModeSettingBar.m */; };
 		1E8723AC1D43603800652757 /* UIAlertController+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E8723AB1D43603800652757 /* UIAlertController+Assistant.m */; };
-		1E8E367D1D3D1C9300B9E30C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1E8E367C1D3D1C9300B9E30C /* Info.plist */; };
 		1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */; };
 		1EEA79511D2791A0002B6291 /* EverywhereAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEA79501D2791A0002B6291 /* EverywhereAnnotation.m */; };
 		1EF62A531D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A501D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m */; };
@@ -30,7 +29,6 @@
 		1EF62A5D1D3BD6DF0084AF66 /* EverywhereShareRepositoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A5C1D3BD6DF0084AF66 /* EverywhereShareRepositoryManager.m */; };
 		2A6563BC8BBF2B5997748106 /* libPods-Everywhere.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E9CF64AE7F289869F003D6F /* libPods-Everywhere.a */; };
 		4B001CDE1D2125FC00DF7287 /* CLPlacemark+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CDD1D2125FC00DF7287 /* CLPlacemark+Assistant.m */; };
-		4B0866281D372AA2000300AD /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4B0866231D372AA2000300AD /* README.txt */; };
 		4B08662B1D373658000300AD /* ShareImageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B08662A1D373658000300AD /* ShareImageVC.m */; };
 		4B08662D1D37388E000300AD /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B08662C1D37388E000300AD /* SystemConfiguration.framework */; };
 		4B08662F1D3738A4000300AD /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B08662E1D3738A4000300AD /* libz.tbd */; };
@@ -679,8 +677,6 @@
 			files = (
 				4BF513091D348870009565EF /* Localizable.strings in Resources */,
 				1E2848081D1ADDB900189A83 /* LaunchScreen.storyboard in Resources */,
-				1E8E367D1D3D1C9300B9E30C /* Info.plist in Resources */,
-				4B0866281D372AA2000300AD /* README.txt in Resources */,
 				4B15B5D31D3F5E5E0096EE89 /* Assets.xcassets in Resources */,
 				4B27FDC31D2CA12000067683 /* FontAwesome.ttf in Resources */,
 			);
