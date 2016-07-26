@@ -27,7 +27,7 @@
 #import <STPopup.h>
 #import "GCLocationAnalyser.h"
 #import "GCPhotoManager.h"
-#import "LocationInfoBar.h"
+#import "LocationInfoWithCoordinateInfoBar.h"
 #import "PlacemarkInfoBar.h"
 #import "CLPlacemark+Assistant.h"
 #import "DatePickerVC.h"
@@ -125,9 +125,9 @@
     UIButton *startPauseRecordButton;
     UILabel *velocityLabel;
     
-    LocationInfoBar *locationInfoBar;
-    float locationInfoBarHeight;
-    BOOL locationInfoBarIsOutOfVisualView;
+    LocationInfoWithCoordinateInfoBar *locationInfoWithCoordinateInfoBar;
+    float locationInfoWithCoordinateInfoBarHeight;
+    BOOL locationInfoWithCoordinateInfoBarIsOutOfVisualView;
     
     PlacemarkInfoBar *placemarkInfoBar;
     float placemarkInfoBarHeight;
@@ -183,7 +183,7 @@
     
     [self initNaviBar];
     
-    [self initLocationInfoBar];
+    [self initLocationInfoWithCoordinateInfoBar];
     
     // PlacemarkInfoBar 位于 MapModeBar 下方10
     [self initPlacemarkInfoBar];
@@ -245,7 +245,7 @@
         
         msBaseModeBar.alpha = 1;
         naviBar.alpha = 1;
-        locationInfoBar.alpha = 1;
+        locationInfoWithCoordinateInfoBar.alpha = 1;
         shareBar.alpha = 0;
         
         appDelegate.window.tintColor = self.settingManager.baseTintColor;
@@ -257,7 +257,7 @@
 }
 
 - (void)updateBarColor:(UIColor *)newColor{
-    locationInfoBar.backgroundColor = newColor;
+    locationInfoWithCoordinateInfoBar.backgroundColor = newColor;
     placemarkInfoBar.backgroundColor = newColor;
     naviBar.backgroundColor = newColor;
     shareBar.backgroundColor = newColor;
@@ -268,11 +268,11 @@
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
     if(toInterfaceOrientation == UIInterfaceOrientationPortrait || toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown){
-        locationInfoBarHeight = 150;
-        locationInfoBar.frame = CGRectMake(5, -locationInfoBarHeight - 40, ScreenWidth - 10 , locationInfoBarHeight);
+        locationInfoWithCoordinateInfoBarHeight = 150;
+        locationInfoWithCoordinateInfoBar.frame = CGRectMake(5, -locationInfoWithCoordinateInfoBarHeight - 40, ScreenWidth - 10 , locationInfoWithCoordinateInfoBarHeight);
     }else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight){
-        locationInfoBarHeight = 90;
-        locationInfoBar.frame = CGRectMake(5, -locationInfoBarHeight - 40, ScreenHeight - 10, locationInfoBarHeight);
+        locationInfoWithCoordinateInfoBarHeight = 90;
+        locationInfoWithCoordinateInfoBar.frame = CGRectMake(5, -locationInfoWithCoordinateInfoBarHeight - 40, ScreenHeight - 10, locationInfoWithCoordinateInfoBarHeight);
     }
 }
 
@@ -312,10 +312,10 @@
     return _locationManagerForRecording;
 }
 
-// ⭕️实时更新locationInfoBar位置信息
+// ⭕️实时更新locationInfoWithCoordinateInfoBar位置信息
 - (void)setUserLocationWGS84:(CLLocation *)userLocationWGS84{
     _userLocationWGS84 = userLocationWGS84;
-    locationInfoBar.userCoord = [WGS84TOGCJ02 transformFromWGSToGCJ:userLocationWGS84.coordinate];
+    locationInfoWithCoordinateInfoBar.userCoordinateWGS84 = userLocationWGS84.coordinate;
     CLLocationSpeed velocitymPerSecond = userLocationWGS84.speed;
     CLLocationSpeed velocitykmPerhour = velocitymPerSecond * 3600.0 / 1000.0;
     velocityLabel.text = [NSString stringWithFormat:@"%.2fkm/h %.2fm/s",velocitykmPerhour,velocitymPerSecond];
@@ -323,7 +323,7 @@
 
 - (void)setUserLocationGCJ02:(CLLocation *)userLocationGCJ02{
     _userLocationGCJ02 = userLocationGCJ02;
-    locationInfoBar.userCoord = userLocationGCJ02.coordinate;
+    //locationInfoWithCoordinateInfoBar.userCoordinateWGS84 = userLocationGCJ02.coordinate;
 }
 
 - (CLLocationDistance)minDistanceForRecord{
@@ -881,19 +881,19 @@
 
 #pragma mark Location Info Bar
 
-- (void)initLocationInfoBar{
-    locationInfoBarHeight = 170;
-    locationInfoBar = [[LocationInfoBar alloc] initWithFrame:CGRectMake(5, -locationInfoBarHeight - 40, ScreenWidth - 10, locationInfoBarHeight)];
-    [self.view addSubview:locationInfoBar];
-    locationInfoBarIsOutOfVisualView = YES;
+- (void)initLocationInfoWithCoordinateInfoBar{
+    locationInfoWithCoordinateInfoBarHeight = 170;
+    locationInfoWithCoordinateInfoBar = [[LocationInfoWithCoordinateInfoBar alloc] initWithFrame:CGRectMake(5, -locationInfoWithCoordinateInfoBarHeight - 40, ScreenWidth - 10, locationInfoWithCoordinateInfoBarHeight)];
+    [self.view addSubview:locationInfoWithCoordinateInfoBar];
+    locationInfoWithCoordinateInfoBarIsOutOfVisualView = YES;
     
-    UISwipeGestureRecognizer *swipeUpGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(locationInfoBarSwipeUp:)];
+    UISwipeGestureRecognizer *swipeUpGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(locationInfoWithCoordinateInfoBarSwipeUp:)];
     swipeUpGR.direction = UISwipeGestureRecognizerDirectionUp;
-    [locationInfoBar addGestureRecognizer:swipeUpGR];
+    [locationInfoWithCoordinateInfoBar addGestureRecognizer:swipeUpGR];
     
     
     WEAKSELF(weakSelf);
-    locationInfoBar.didGetMKDirectionsResponseHandler = ^(MKDirectionsResponse *response){
+    locationInfoWithCoordinateInfoBar.didGetMKDirectionsResponseHandler = ^(MKDirectionsResponse *response){
         MKRoute *route = response.routes.firstObject;
         MKPolyline *routePolyline = route.polyline;
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -901,20 +901,20 @@
         });
     };
     
-    locationInfoBar.naviToHereButton.enabled = NO;
+    locationInfoWithCoordinateInfoBar.naviToHereButton.enabled = NO;
 }
 
-- (void)locationInfoBarSwipeUp:(UISwipeGestureRecognizer *)sender{
-    [self hideLocationInfoBar];
+- (void)locationInfoWithCoordinateInfoBarSwipeUp:(UISwipeGestureRecognizer *)sender{
+    [self hideLocationInfoWithCoordinateInfoBar];
 }
 
-- (void)showHideLocationInfoBar{
-    if (locationInfoBarIsOutOfVisualView) [self showLocationInfoBar];
-    else [self hideLocationInfoBar];
+- (void)showHideLocationInfoWithCoordinateInfoBar{
+    if (locationInfoWithCoordinateInfoBarIsOutOfVisualView) [self showLocationInfoWithCoordinateInfoBar];
+    else [self hideLocationInfoWithCoordinateInfoBar];
 }
 
-- (void)showLocationInfoBar{
-    if (locationInfoBar.hidden) locationInfoBar.hidden = NO;
+- (void)showLocationInfoWithCoordinateInfoBar{
+    if (locationInfoWithCoordinateInfoBar.hidden) locationInfoWithCoordinateInfoBar.hidden = NO;
     
     if (msBaseModeBar.alpha || placemarkInfoBar.alpha) {
         [UIView animateWithDuration:0.2 animations:^{
@@ -937,34 +937,34 @@
                                  options:UIViewKeyframeAnimationOptionBeginFromCurrentState
                               animations:^{
                                   [UIView addKeyframeWithRelativeStartTime:0 relativeDuration:0.4 animations:^{
-                                      locationInfoBar.frame = CGRectMake(5, 20 + 10, ScreenWidth - 10, locationInfoBarHeight);
+                                      locationInfoWithCoordinateInfoBar.frame = CGRectMake(5, 20 + 10, ScreenWidth - 10, locationInfoWithCoordinateInfoBarHeight);
                                   }];
                                   [UIView addKeyframeWithRelativeStartTime:0.4 relativeDuration:0.3 animations:^{
-                                      locationInfoBar.frame = CGRectMake(5, 20, ScreenWidth - 10, locationInfoBarHeight);
+                                      locationInfoWithCoordinateInfoBar.frame = CGRectMake(5, 20, ScreenWidth - 10, locationInfoWithCoordinateInfoBarHeight);
                                   }];
                                   
                               }
                               completion:^(BOOL finished) {
-                                  locationInfoBarIsOutOfVisualView = NO;
+                                  locationInfoWithCoordinateInfoBarIsOutOfVisualView = NO;
                               }];
 
 }
 
-- (void)hideLocationInfoBar{
+- (void)hideLocationInfoWithCoordinateInfoBar{
     [UIView animateKeyframesWithDuration:1
                                    delay:0
                                  options:UIViewKeyframeAnimationOptionBeginFromCurrentState
                               animations:^{
                                   [UIView addKeyframeWithRelativeStartTime:0 relativeDuration:0.3 animations:^{
-                                      locationInfoBar.frame = CGRectMake(5, 20 + 10, ScreenWidth - 10, locationInfoBarHeight);
+                                      locationInfoWithCoordinateInfoBar.frame = CGRectMake(5, 20 + 10, ScreenWidth - 10, locationInfoWithCoordinateInfoBarHeight);
                                   }];
                                   [UIView addKeyframeWithRelativeStartTime:0.3 relativeDuration:0.4 animations:^{
-                                      locationInfoBar.frame = CGRectMake(5, -locationInfoBarHeight, ScreenWidth - 10, locationInfoBarHeight);
+                                      locationInfoWithCoordinateInfoBar.frame = CGRectMake(5, -locationInfoWithCoordinateInfoBarHeight, ScreenWidth - 10, locationInfoWithCoordinateInfoBarHeight);
                                   }];
                                   
                               }
                               completion:^(BOOL finished) {
-                                  locationInfoBarIsOutOfVisualView = YES;
+                                  locationInfoWithCoordinateInfoBarIsOutOfVisualView = YES;
                                   [UIView animateWithDuration:0.2 animations:^{
                                       msBaseModeBar.alpha = 1;
                                       placemarkInfoBar.alpha = 1;
@@ -1067,7 +1067,7 @@
     leftBtn2.alpha = 0.6;
     [leftBtn2 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_MapMarker"] forState:UIControlStateNormal];
     leftBtn2.translatesAutoresizingMaskIntoConstraints = NO;
-    [leftBtn2 addTarget:self action:@selector(showHideLocationInfoBar) forControlEvents:UIControlEventTouchDown];
+    [leftBtn2 addTarget:self action:@selector(showHideLocationInfoWithCoordinateInfoBar) forControlEvents:UIControlEventTouchDown];
     [leftVerticalBar addSubview:leftBtn2];
     [leftBtn2 autoSetDimensionsToSize:ButtionSize];
     [leftBtn2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
@@ -1272,7 +1272,7 @@
         }
         
         // ⭕️决定导航键是否可用
-        locationInfoBar.naviToHereButton.enabled = self.myMapView.showsUserLocation;
+        locationInfoWithCoordinateInfoBar.naviToHereButton.enabled = self.myMapView.showsUserLocation;
         
     }else{
         [[CLLocationManager new] requestWhenInUseAuthorization];
@@ -1526,7 +1526,7 @@
     msBaseModeBar.alpha = 0;
     placemarkInfoBar.alpha = 0;
     naviBar.alpha = 0;
-    locationInfoBar.alpha = 0;
+    locationInfoWithCoordinateInfoBar.alpha = 0;
     
     NSMutableString *ms = [NSMutableString new];
     NSString *titleString = msBaseModeBar.info;
@@ -1807,7 +1807,7 @@
     if(DEBUGMODE) NSLog(@"进入扩展模式");
     self.isInBaseMode = NO;
     
-    if (!locationInfoBarIsOutOfVisualView) locationInfoBar.hidden = YES;
+    if (!locationInfoWithCoordinateInfoBarIsOutOfVisualView) locationInfoWithCoordinateInfoBar.hidden = YES;
     
     // 保存BaseMode数据
     savedTitleForBaseMode = msBaseModeBar.info;
@@ -1830,7 +1830,7 @@
     msExtenedModeBar.hidden = NO;
     
     naviBar.backgroundColor = self.settingManager.extendedTintColor;
-    locationInfoBar.backgroundColor = self.settingManager.extendedTintColor;
+    locationInfoWithCoordinateInfoBar.backgroundColor = self.settingManager.extendedTintColor;
     recordModeSettingBar.backgroundColor = self.settingManager.extendedTintColor;
     velocityLabel.layer.backgroundColor = self.settingManager.extendedTintColor.CGColor;
     velocityLabel.layer.borderColor = self.settingManager.extendedTintColor.CGColor;
@@ -1845,7 +1845,7 @@
     msExtenedModeBar.hidden = YES;
     
     naviBar.backgroundColor = self.settingManager.baseTintColor;
-    locationInfoBar.backgroundColor = self.settingManager.baseTintColor;
+    locationInfoWithCoordinateInfoBar.backgroundColor = self.settingManager.baseTintColor;
     
     // 清理Extended Mode地图
     [self.myMapView removeAnnotations:self.myMapView.annotations];
@@ -2174,7 +2174,7 @@
         //[self.myMapView addAnnotation:anno];
         
         EverywhereShareAnnotation *shareAnno = [EverywhereShareAnnotation new];
-        shareAnno.annotationCoordinate = firstAsset.location.coordinate;
+        shareAnno.coordinateWGS84 = firstAsset.location.coordinate;
         shareAnno.startDate = firstAsset.creationDate;
         if (self.settingManager.mapBaseMode == MapBaseModeLocation) shareAnno.endDate = lastAsset.creationDate;
         [shareAnnotationsToAdd addObject:shareAnno];
@@ -2539,51 +2539,39 @@
             PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:self.cdManager.appMOC];
             if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
             
-            [self updateLocationInfoBarWithPHAssetInfo:assetInfo];
+            [self updateLocationInfoWithCoordinateInfoBarWithPHAssetInfo:assetInfo];
         }else if ([view.annotation isKindOfClass:[EverywhereShareAnnotation class]]){
             EverywhereShareAnnotation *shareAnno = (EverywhereShareAnnotation *)view.annotation;
-            [self updateLocationInfoBarWithGCJCoordinate:shareAnno.coordinate];
+            //[self updateLocationInfoWithCoordinateInfoBarWithGCJCoordinate:shareAnno.coordinate];
+            [self updateLocationInfoWithCoordinateInfoBarWithWSG84Coordinate:shareAnno.coordinateWGS84];
         }
         
-        [self showHideLocationInfoBar];
+        [self showHideLocationInfoWithCoordinateInfoBar];
         
     }
     
 }
 
-- (void)updateLocationInfoBarWithPHAssetInfo:(PHAssetInfo *)assetInfo{
+- (void)updateLocationInfoWithCoordinateInfoBarWithPHAssetInfo:(PHAssetInfo *)assetInfo{
+    CoordinateInfo *coordinateInfo = [CoordinateInfo coordinateInfoWithPHAssetInfo:assetInfo inManagedObjectContext:[EverywhereCoreDataManager defaultManager].appMOC];
     
-    CLLocationCoordinate2D gcjCoord = [WGS84TOGCJ02 transformFromWGSToGCJ:CLLocationCoordinate2DMake([assetInfo.latitude_Coordinate_Location doubleValue], [assetInfo.longitude_Coordinate_Location doubleValue])];
+    if (!coordinateInfo.reverseGeocodeSucceed) {
+        [CoordinateInfo updatePlacemarkForCoordinateInfo:coordinateInfo];
+        [NSThread sleepForTimeInterval:0.3];
+    }
     
-    locationInfoBar.latitude = gcjCoord.latitude;
-    locationInfoBar.longitude = gcjCoord.longitude;
-    locationInfoBar.horizontalAccuracy = [assetInfo.horizontalAccuracy_Location doubleValue];
-    locationInfoBar.altitude = [assetInfo.altitude_Location doubleValue];
-    locationInfoBar.verticalAccuracy = [assetInfo.verticalAccuracy_Location doubleValue];
-    locationInfoBar.level = [assetInfo.level_floor_Location integerValue];
-    locationInfoBar.address = assetInfo.localizedPlaceString_Placemark;
+    locationInfoWithCoordinateInfoBar.currentShowCoordinateInfo = coordinateInfo;
 }
 
-- (void)updateLocationInfoBarWithGCJCoordinate:(CLLocationCoordinate2D)aCoordinate{
+- (void)updateLocationInfoWithCoordinateInfoBarWithWSG84Coordinate:(CLLocationCoordinate2D)aCoordinate{
+    CoordinateInfo *coordinateInfo = [CoordinateInfo coordinateInfoWithLatitude:aCoordinate.latitude longitude:aCoordinate.longitude inManagedObjectContext:[EverywhereCoreDataManager defaultManager].appMOC];
     
-    locationInfoBar.latitude = aCoordinate.latitude;
-    locationInfoBar.longitude = aCoordinate.longitude;
+    if (!coordinateInfo.reverseGeocodeSucceed) {
+        [CoordinateInfo updatePlacemarkForCoordinateInfo:coordinateInfo];
+        [NSThread sleepForTimeInterval:0.3];
+    }
     
-    [[CLGeocoder new] reverseGeocodeLocation:[[CLLocation alloc] initWithLatitude:aCoordinate.latitude longitude:aCoordinate.longitude]
-                                        completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
-                                            
-                                            if (!error) {
-                                                // 解析成功
-                                                CLPlacemark *placemark = placemarks.lastObject;
-                                                locationInfoBar.address = [placemark localizedPlaceString];
-                                            }else{
-                                                // 解析失败
-                                                locationInfoBar.address = error.localizedDescription;
-                                                
-                                            }
-                                            
-                                        }];
-
+    locationInfoWithCoordinateInfoBar.currentShowCoordinateInfo = coordinateInfo;
 }
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay{
@@ -2643,13 +2631,14 @@
         PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:self.cdManager.appMOC];
         if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
         
-        [self updateLocationInfoBarWithPHAssetInfo:assetInfo];
+        [self updateLocationInfoWithCoordinateInfoBarWithPHAssetInfo:assetInfo];
         
     }else if ([view.annotation isKindOfClass:[EverywhereShareAnnotation class]]){
         EverywhereShareAnnotation *shareAnno = (EverywhereShareAnnotation *)view.annotation;
         //self.currentAnnotationIndex = [self.addedEWShareAnnos indexOfObject:shareAnno];
         
-        [self updateLocationInfoBarWithGCJCoordinate:shareAnno.coordinate];
+        //[self updateLocationInfoWithCoordinateInfoBarWithGCJCoordinate:shareAnno.coordinate];
+        [self updateLocationInfoWithCoordinateInfoBarWithWSG84Coordinate:shareAnno.coordinateWGS84];
     }
 }
 
@@ -2713,7 +2702,7 @@
 
 - (void)addRecordedShareAnnosWithLocation:(CLLocation *)newLocation isUserManuallyAdded:(BOOL)isUserManuallyAdded{
     EverywhereShareAnnotation *shareAnno = [EverywhereShareAnnotation new];
-    shareAnno.annotationCoordinate = newLocation.coordinate;
+    shareAnno.coordinateWGS84 = newLocation.coordinate;
     shareAnno.startDate = NOW;
     shareAnno.customTitle = [NSString stringWithFormat:@"Footprint %lu",(unsigned long)(recordedShareAnnos.count + 1)];
     shareAnno.isUserManuallyAdded = isUserManuallyAdded;

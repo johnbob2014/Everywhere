@@ -12,12 +12,11 @@
 @implementation EverywhereShareAnnotation
 
 - (CLLocation *)location{
-    return [[CLLocation alloc] initWithLatitude:self.coordinate.latitude longitude:self.coordinate.longitude];
+    return [[CLLocation alloc] initWithLatitude:self.coordinateWGS84.latitude longitude:self.coordinateWGS84.longitude];
 }
 
 - (CLLocationCoordinate2D)coordinate{
-    CLLocationCoordinate2D originalCoordinate = self.annotationCoordinate;
-    return [WGS84TOGCJ02 transformFromWGSToGCJ:originalCoordinate];
+    return [WGS84TOGCJ02 transformFromWGSToGCJ:self.coordinateWGS84];
 }
 
 - (NSString *)title{
@@ -31,37 +30,25 @@
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder{
-    CGPoint annotationCoordinatePoint = [aDecoder decodeCGPointForKey:@"annotationCoordinatePoint"];
-    //NSTimeInterval startDateTimeInterval = [aDecoder decodeDoubleForKey:@"startDateTimeInterval"];
-    //NSTimeInterval endDateTimeInterval = [aDecoder decodeDoubleForKey:@"endDateTimeInterval"];
+    CGPoint coordinateWGS84Point = [aDecoder decodeCGPointForKey:@"coordinateWGS84Point"];
     
     EverywhereShareAnnotation *shareAnno = [EverywhereShareAnnotation new];
-    shareAnno.annotationCoordinate = CLLocationCoordinate2DMake(annotationCoordinatePoint.x, annotationCoordinatePoint.y);
-    //shareAnno.startDate = [NSDate dateWithTimeIntervalSinceReferenceDate:startDateTimeInterval];
+    shareAnno.coordinateWGS84 = CLLocationCoordinate2DMake(coordinateWGS84Point.x, coordinateWGS84Point.y);
     shareAnno.startDate = [aDecoder decodeObjectForKey:@"startDate"];
     shareAnno.endDate = [aDecoder decodeObjectForKey:@"endDate"];
     shareAnno.customTitle = [aDecoder decodeObjectForKey:@"customTitle"];
     shareAnno.isUserManuallyAdded = [aDecoder decodeBoolForKey:@"isUserManuallyAdded"];
     
-    //if (endDateTimeInterval != 0) shareAnno.endDate = [NSDate dateWithTimeIntervalSinceReferenceDate:endDateTimeInterval];
-    //else shareAnno.endDate = nil;
-    
     return shareAnno;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder{
-    CGPoint annotationCoordinatePoint = CGPointMake(self.annotationCoordinate.latitude, self.annotationCoordinate.longitude);
-    [aCoder encodeCGPoint:annotationCoordinatePoint forKey:@"annotationCoordinatePoint"];
+    CGPoint coordinateWGS84Point = CGPointMake(self.coordinateWGS84.latitude, self.coordinateWGS84.longitude);
+    [aCoder encodeCGPoint:coordinateWGS84Point forKey:@"coordinateWGS84Point"];
     
     [aCoder encodeObject:self.startDate forKey:@"startDate"];
-    /*
-    NSTimeInterval startDateTimeInterval = [self.startDate timeIntervalSinceReferenceDate];
-    [aCoder encodeDouble:startDateTimeInterval forKey:@"startDateTimeInterval"];
-    */
     
     if (self.endDate) {
-        //NSTimeInterval endDateTimeInterval = [self.endDate timeIntervalSinceReferenceDate];
-        //[aCoder encodeDouble:endDateTimeInterval forKey:@"endDateTimeInterval"];
         [aCoder encodeObject:self.endDate forKey:@"endDate"];
     }
     

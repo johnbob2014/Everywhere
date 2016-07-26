@@ -11,7 +11,7 @@
 
 @protocol GCLocationAnalyserProtocol <NSObject>
 @required
-@property (strong,nonatomic) CLLocation *location;
+@property (strong,nonatomic,readonly) CLLocation *location;
 @end
 
 @interface GCLocationAnalyser : NSObject

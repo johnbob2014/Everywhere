@@ -58,6 +58,8 @@
         info.latitude = @([CoordinateInfo truncatedValue:[assetInfo.latitude_Coordinate_Location doubleValue]]);
         info.longitude = @([CoordinateInfo truncatedValue:[assetInfo.longitude_Coordinate_Location doubleValue]]);
         
+        info.altitude = assetInfo.altitude_Location;
+        
         if (assetInfo.reverseGeocodeSucceed) {
             
             info.name_Placemark = assetInfo.name_Placemark;

@@ -23,6 +23,7 @@ typedef void(^DidGetMKDirectionsResponseHandler)(MKDirectionsResponse *response)
 // 2016-07-24 均为GCJ02座标
 @property (assign,nonatomic) CLLocationDegrees latitude;
 @property (assign,nonatomic) CLLocationDegrees longitude;
+
 @property (assign,nonatomic) CLLocationDistance horizontalAccuracy;
 @property (strong,nonatomic) UILabel *coordinateLabel;
 

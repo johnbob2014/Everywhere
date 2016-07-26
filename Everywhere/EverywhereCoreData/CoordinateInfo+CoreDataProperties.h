@@ -2,7 +2,7 @@
 //  CoordinateInfo+CoreDataProperties.h
 //  Everywhere
 //
-//  Created by 张保国 on 16/7/17.
+//  Created by 张保国 on 16/7/26.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -31,6 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSString *subLocality_Placemark;
 @property (nullable, nonatomic, retain) NSString *subThoroughfare_Placemark;
 @property (nullable, nonatomic, retain) NSString *thoroughfare_Placemark;
+@property (nullable, nonatomic, retain) NSNumber *altitude;
+@property (nullable, nonatomic, retain) NSNumber *level;
 
 @end
 

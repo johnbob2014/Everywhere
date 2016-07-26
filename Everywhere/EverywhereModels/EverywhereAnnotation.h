@@ -12,7 +12,7 @@
 @interface EverywhereAnnotation : NSObject <MKAnnotation>
 
 /**
- 必需，该Annotation的location - EverywhereAnnotation
+ 必需，location，座标为WGS84编码格式 - EverywhereAnnotation
  */
 @property (strong,nonatomic) CLLocation *location;
 

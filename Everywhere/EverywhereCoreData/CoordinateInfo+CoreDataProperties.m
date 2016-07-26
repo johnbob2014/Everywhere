@@ -2,7 +2,7 @@
 //  CoordinateInfo+CoreDataProperties.m
 //  Everywhere
 //
-//  Created by 张保国 on 16/7/17.
+//  Created by 张保国 on 16/7/26.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -29,5 +29,7 @@
 @dynamic subLocality_Placemark;
 @dynamic subThoroughfare_Placemark;
 @dynamic thoroughfare_Placemark;
+@dynamic altitude;
+@dynamic level;
 
 @end

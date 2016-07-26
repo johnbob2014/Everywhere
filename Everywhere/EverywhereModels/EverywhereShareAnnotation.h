@@ -14,12 +14,12 @@
 @interface EverywhereShareAnnotation : NSObject <MKAnnotation,NSCoding,GCLocationAnalyserProtocol>
 
 /**
- 必需，coordinate - EverywhereShareAnnotation
+ 必需，coordinateWGS84 - EverywhereShareAnnotation
  */
-@property (assign,nonatomic) CLLocationCoordinate2D annotationCoordinate;
+@property (assign,nonatomic) CLLocationCoordinate2D coordinateWGS84;
 
 /**
- 开始时间 - EverywhereShareAnnotation
+ 必需，开始时间 - EverywhereShareAnnotation
  */
 @property (strong,nonatomic) NSDate *startDate;
 
@@ -29,33 +29,18 @@
 @property (strong,nonatomic) NSDate *endDate;
 
 /**
- 自定义标题 - EverywhereShareAnnotation
+ 自定义标题，如果为空，则返回title - EverywhereShareAnnotation
  */
 @property (strong,nonatomic) NSString *customTitle;
 
 /**
- 标记该ShareAnnotation是否为用户手动添加，主要用于记录模式 - EverywhereShareAnnotation
+ 标记该ShareAnnotation是否为用户手动添加，主要用于记录和编辑 - EverywhereShareAnnotation
  */
 @property (assign,nonatomic) BOOL isUserManuallyAdded;
 
-
 /**
- 利用GCLocationAnalyser进行分组时使用 - EverywhereShareAnnotation
+ 只读，仅用于GCLocationAnalyser进行分组 - EverywhereShareAnnotation
  */
-@property (strong,nonatomic) CLLocation *location;
-/**
- 可选，生成该Annotation时所处的地图模式 - EverywhereShareAnnotation
- */
-//@property (assign,nonatomic) MapBaseMode *mapBaseMode;
-
-/**
- 可选，该Annotation的结束时间 - EverywhereShareAnnotation
- */
-//@property (strong,nonatomic) NSDate *endDate;
-
-/**
- 可选，该Annotation的半径 - EverywhereShareAnnotation
- */
-//@property (assign,nonatomic) CLLocationDistance radius;
+@property (strong,nonatomic,readonly) CLLocation *location;
 
 @end
