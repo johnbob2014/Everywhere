@@ -169,7 +169,8 @@
 
 - (BOOL)hasPurchasedShare{
     BOOL ahasPurchasedShare = [[NSUserDefaults standardUserDefaults] boolForKey:@"hasPurchasedShare"];
-    return ahasPurchasedShare;
+    return YES;
+    //return ahasPurchasedShare;
 }
 
 - (void)setHasPurchasedShare:(BOOL)hasPurchasedShare{
@@ -179,7 +180,8 @@
 
 - (BOOL)hasPurchasedRecord{
     BOOL ahasPurchasedRecord = [[NSUserDefaults standardUserDefaults] boolForKey:@"hasPurchasedRecord"];
-    return ahasPurchasedRecord;
+    return YES;
+    //return ahasPurchasedRecord;
 }
 
 - (void)setHasPurchasedRecord:(BOOL)hasPurchasedRecord{

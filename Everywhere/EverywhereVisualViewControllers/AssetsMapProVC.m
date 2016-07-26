@@ -288,6 +288,7 @@
             _locationManagerForRecording = nil;
         }else{
             _locationManagerForRecording = [CLLocationManager new];
+            
             _locationManagerForRecording.delegate = self;
             _locationManagerForRecording.pausesLocationUpdatesAutomatically = NO;
             _locationManagerForRecording.activityType = CLActivityTypeAutomotiveNavigation;
@@ -298,7 +299,11 @@
             
             CLAuthorizationStatus authorizationStatus = [CLLocationManager authorizationStatus];
             if (authorizationStatus == kCLAuthorizationStatusNotDetermined) {
-                [_locationManagerForRecording requestAlwaysAuthorization];
+                static dispatch_once_t onceToken;
+                dispatch_once(&onceToken, ^{
+                    [_locationManagerForRecording requestAlwaysAuthorization];
+                });
+                
             }else if (authorizationStatus == kCLAuthorizationStatusDenied || authorizationStatus == kCLAuthorizationStatusRestricted){
                 if(DEBUGMODE) NSLog(@"CLLocationManager Denied or Restricted!");
                 _locationManagerForRecording = nil;
@@ -1275,7 +1280,10 @@
         locationInfoWithCoordinateInfoBar.naviToHereButton.enabled = self.myMapView.showsUserLocation;
         
     }else{
-        [[CLLocationManager new] requestWhenInUseAuthorization];
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            [[CLLocationManager new] requestWhenInUseAuthorization];
+        });
     }
 }
 
