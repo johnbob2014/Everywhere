@@ -113,27 +113,27 @@
         
         // 村镇街道
         thoroughfareCell = [CellView newAutoLayoutView];
-        thoroughfareCell.cellTitle = NSLocalizedString(@"St.", @"");
+        thoroughfareCell.cellTitle = NSLocalizedString(@"St.", @"村镇街道");
         [self addSubview:thoroughfareCell];
         
         // 县区
         subLocalityCell = [CellView newAutoLayoutView];
-        subLocalityCell.cellTitle = NSLocalizedString(@"Dist.", @"");
+        subLocalityCell.cellTitle = NSLocalizedString(@"Dist.", @"县区");
         [self addSubview:subLocalityCell];
         
         // 市
         localityCell = [CellView newAutoLayoutView];
-        localityCell.cellTitle = NSLocalizedString(@"City", @"");
+        localityCell.cellTitle = NSLocalizedString(@"City", @"市");
         [self addSubview:localityCell];
 
         // 省、直瞎市
         administrativeAreaCell = [CellView newAutoLayoutView];
-        administrativeAreaCell.cellTitle = NSLocalizedString(@"Prov.", @"");
+        administrativeAreaCell.cellTitle = NSLocalizedString(@"Prov.", @"省");
         [self addSubview:administrativeAreaCell];
         
         // 国家
         countryCell = [CellView newAutoLayoutView];
-        countryCell.cellTitle = NSLocalizedString(@"State", @"");
+        countryCell.cellTitle = NSLocalizedString(@"State", @"国家");
         [self addSubview:countryCell];
         
         // 里程/面积

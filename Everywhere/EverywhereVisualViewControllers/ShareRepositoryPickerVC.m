@@ -40,14 +40,14 @@
     
     switch (self.showShareRepositoryType) {
         case ShareRepositoryTypeSended|ShareRepositoryTypeReceived|ShareRepositoryTypeRecorded|ShareRepositoryTypeEdited:
-            groupNameArray = @[NSLocalizedString(@"Sended", @"发出的"),
+            groupNameArray = @[NSLocalizedString(@"Sended", @"发送的"),
                                NSLocalizedString(@"Received", @"接收的"),
                                NSLocalizedString(@"Recorded", @"记录的"),
                                NSLocalizedString(@"Edited", @"编辑的")];
             break;
 
         case ShareRepositoryTypeSended|ShareRepositoryTypeReceived:
-            groupNameArray = @[NSLocalizedString(@"Sended", @"发出的"),
+            groupNameArray = @[NSLocalizedString(@"Sended", @"发送的"),
                                NSLocalizedString(@"Received", @"接收的")];
             break;
             

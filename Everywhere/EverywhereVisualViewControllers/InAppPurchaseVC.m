@@ -220,7 +220,7 @@
                        animated:YES completion:nil];
     
     if (succeeded) {
-        self.infoString=[[NSString alloc]initWithFormat:NSLocalizedString(@"-----Succeeded-----",@"-----%@成功，请返回使用!-----\n"),typeString];
+        self.infoString=[[NSString alloc]initWithFormat:NSLocalizedString(@"-----%@ Succeeded-----",@"-----%@成功，请返回使用!-----\n"),typeString];
     }else{
         NSString *lst1=NSLocalizedString(@"-----Failed,please try again!-----",@"-----交易失败，请重新尝试-----");
         NSString *lst2=NSLocalizedString(@"Error",@"错误信息");

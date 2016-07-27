@@ -74,6 +74,8 @@
 @property (strong,nonatomic) NSDate *endDate;
 @property (strong,nonatomic) NSString *lastPlacemark;
 
+@property (strong,nonatomic) NSDictionary <NSString *,NSArray<NSString *> *> *placemarkDictionary;
+
 #pragma mark 添加的各种Annos
 @property (strong,nonatomic) NSArray <id<MKAnnotation>> *addedIDAnnos;
 @property (strong,nonatomic) NSArray <EverywhereAnnotation *> *addedEWAnnos;
@@ -213,12 +215,12 @@
         UILocalNotification *noti = [UILocalNotification new];
         NSString *message = [NSString stringWithFormat:@"%@ %lu",NSLocalizedString(@"Add New Photo Count: ", @"新添加照片数量 : "),(long)count];
         noti.alertBody = message;
-        noti.alertAction = NSLocalizedString(@"Action", @"");
+        noti.alertAction = NSLocalizedString(@"Action", @"操作");
         noti.soundName = UILocalNotificationDefaultSoundName;
         //noti.applicationIconBadgeNumber = count;
         [[UIApplication sharedApplication] presentLocalNotificationNow:noti];
         
-        [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"", @"") message:message]
+        [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"AlbumMaps Notes", @"相册地图提示") message:message]
                            animated:YES
                          completion:nil];
     }
@@ -345,6 +347,11 @@
     return _minTimeIntervalForRecord;
 }
 
+- (void)setPlacemarkDictionary:(NSDictionary<NSString *,NSArray<NSString *> *> *)placemarkDictionary{
+    _placemarkDictionary = placemarkDictionary;
+    [self updatePlacemarkInfoBarWithPlacemarkDictionary:placemarkDictionary];
+}
+
 - (void)setAssetInfoArray:(NSArray<PHAssetInfo *> *)assetInfoArray{
     if (!assetInfoArray) return;
     
@@ -364,8 +371,8 @@
         PHFetchResult <PHAsset *> *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:assetIDArry options:options];
         self.assetArray = (NSArray <PHAsset *> *)fetchResult;
         
-        NSDictionary <NSString *,NSArray<NSString *> *> *placemarkDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:assetInfoArray];
-        [self updatePlacemarkInfoBarWithPlacemarkDictionary:placemarkDictionary mapBaseMode:self.settingManager.mapBaseMode];
+        // 更新Placemark信息
+        self.placemarkDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:assetInfoArray];
     }
 }
 
@@ -471,11 +478,11 @@
     NSString *alertMessage = NSLocalizedString(@"Praise me , please!", @"没有广告是不是很清爽？作者也不容易，抽空给个好评呗！🙏");
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
     
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK",@"去给好评") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Praise",@"去给好评") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [[UIApplication sharedApplication]openURL:[NSURL URLWithString:AppDownloadURLString]];
     }];
     
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"残忍拒绝") style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"I'm busy.",@"残忍拒绝") style:UIAlertActionStyleCancel handler:nil];
     [alertController addAction:okAction];
     [alertController addAction:cancelAction];
     
@@ -501,7 +508,7 @@
 - (void)initMapModeBar{
     WEAKSELF(weakSelf);
     
-    msBaseModeBar = [[MapModeBar alloc]initWithModeSegItems:[NSLocalizedString(@"MomentMode LocationMode",@"") componentsSeparatedByString:@" "]
+    msBaseModeBar = [[MapModeBar alloc]initWithModeSegItems:[NSLocalizedString(@"MomentMode LocationMode",@"时刻模式 地点模式") componentsSeparatedByString:@" "]
                                                 selectedSegIndex:self.settingManager.mapBaseMode
                                                  leftButtonImage:[UIImage imageNamed:@"IcoMoon_Calendar"]
                                                 rightButtonImage:[UIImage imageNamed:@"IcoMoon_Dribble3"]];
@@ -525,7 +532,7 @@
         [weakSelf showLocationPicker];
     };
     
-    msExtenedModeBar = [[MapModeBar alloc]initWithModeSegItems:[NSLocalizedString(@"BrowserMode RecordMode",@"") componentsSeparatedByString:@" "]
+    msExtenedModeBar = [[MapModeBar alloc]initWithModeSegItems:[NSLocalizedString(@"BrowserMode RecordMode",@"浏览模式 记录模式") componentsSeparatedByString:@" "]
                                                     selectedSegIndex:self.settingManager.mapExtendedMode
                                                      leftButtonImage:[UIImage imageNamed:@"IcoMoon_DrawerFull"]
                                                     rightButtonImage:[UIImage imageNamed:@"IcoMoon_DrawerEmpty"]];
@@ -998,11 +1005,11 @@
     [placemarkInfoBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
     [placemarkInfoBar autoSetDimension:ALDimensionHeight toSize:placemarkInfoBarHeight];
     
-    NSDictionary <NSString *,NSArray<NSString *> *> *placemarkDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:self.assetInfoArray];
-    [self updatePlacemarkInfoBarWithPlacemarkDictionary:placemarkDictionary mapBaseMode:self.settingManager.mapBaseMode];
+    //NSDictionary <NSString *,NSArray<NSString *> *> *placemarkDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:self.assetInfoArray];
+    //[self updatePlacemarkInfoBarWithPlacemarkDictionary:placemarkDictionary mapBaseMode:self.settingManager.mapBaseMode];
 }
 
-- (void)updatePlacemarkInfoBarWithPlacemarkDictionary:(NSDictionary <NSString *,NSArray<NSString *> *> *)placemarkDictionary mapBaseMode:(enum MapBaseMode)mapBaseMode{
+- (void)updatePlacemarkInfoBarWithPlacemarkDictionary:(NSDictionary <NSString *,NSArray<NSString *> *> *)placemarkDictionary{
     // 更新统计信息
    
     placemarkInfoBar.countryCount = placemarkDictionary[kCountryArray].count;
@@ -1011,14 +1018,17 @@
     placemarkInfoBar.subLocalityCount = placemarkDictionary[kSubLocalityArray].count;
     placemarkInfoBar.thoroughfareCount = placemarkDictionary[kThoroughfareArray].count;
     
-    switch (mapBaseMode) {
+}
+
+- (void)updatePlacemarkInfoBarTotolInfo{
+    switch (self.settingManager.mapBaseMode) {
         case 0:{
-            placemarkInfoBar.totalTitle = NSLocalizedString(@"Distance", @"");
+            placemarkInfoBar.totalTitle = NSLocalizedString(@"Distance", @"里程");
             placemarkInfoBar.totalDistance = totalDistance;
         }
             break;
         case 1:{
-            placemarkInfoBar.totalTitle = NSLocalizedString(@"Area", @"");
+            placemarkInfoBar.totalTitle = NSLocalizedString(@"Area", @"面积");
             totalArea = self.addedEWAnnos.count * M_PI * pow(self.settingManager.mergeDistanceForLocation,2);
             placemarkInfoBar.totalArea = totalArea;
         }
@@ -1458,7 +1468,7 @@
     shareBar.leftImage = [UIImage imageNamed:@"地球_300_300"];
     shareBar.leftText = NSLocalizedString(@"AlbumMaps", @"相册地图");
     shareBar.rightImage = [UIImage imageNamed:@"1136142337"];
-    shareBar.rightText = NSLocalizedString(@"ScanToDL", @"扫描下载");
+    shareBar.rightText = NSLocalizedString(@"ScanToDL", @"扫码下载");
     [self.view addSubview:shareBar];
     [shareBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(5, 5, 0, 5) excludingEdge:ALEdgeBottom];
     [shareBar autoSetDimension:ALDimensionHeight toSize:150];
@@ -1540,35 +1550,64 @@
     NSString *titleString = msBaseModeBar.info;
     
     if (self.settingManager.mapBaseMode == MapBaseModeMoment) {
-        //NSString *dateString = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate];
-        
         if (titleString) [ms appendFormat:@"%@ ",titleString];
-        [ms appendString:NSLocalizedString(@"I have my footprints over ", @"我的足迹遍布 ")];
+        [ms appendString:NSLocalizedString(@"I went to ", @"我到了 ")];
     }else{
-        [ms appendString:NSLocalizedString(@"I have been in ", @"我到了 ")];
+        [ms appendString:NSLocalizedString(@"I've been in ", @"我到过 ")];
         [ms appendFormat:@"%@",titleString];
         [ms appendString:NSLocalizedString(@" for ", @" 的 ")];
     }
+    BOOL hasAddedPlacemarkForMoment = NO;
+    NSString *placemarkStringForMoment = NSLocalizedString(@"the world's", @"全球的");
+    
+    //self.placemarkDictionary[kCountryArray].count
     
     if (placemarkInfoBar.countryCount > 1) {
         [ms appendFormat:@"%ld",(long)placemarkInfoBar.countryCount];
-        [ms appendString:NSLocalizedString(@" States,", @"xx个国家,")];
+        [ms appendString:NSLocalizedString(@" States,", @"个国家,")];
+        
+        hasAddedPlacemarkForMoment = YES;
+    }else if (placemarkInfoBar.countryCount == 1){
+        placemarkStringForMoment = self.placemarkDictionary[kCountryArray].firstObject;
     }
+    
     if (placemarkInfoBar.administrativeAreaCount > 1) {
+        if (!hasAddedPlacemarkForMoment) [ms appendFormat:@"%@%@ ",placemarkStringForMoment,NSLocalizedString(@"'s", " 的")];
+        hasAddedPlacemarkForMoment = YES;
+        
         [ms appendFormat:@"%ld",(long)placemarkInfoBar.administrativeAreaCount];
-        [ms appendString:NSLocalizedString(@" Prov.s,", @"xx个省,")];//AdministrativeAreas
+        [ms appendString:NSLocalizedString(@" Prov.s,", @"个省,")];//AdministrativeAreas
+    }else if (placemarkInfoBar.administrativeAreaCount == 1){
+        placemarkStringForMoment = self.placemarkDictionary[kAdministrativeAreaArray].firstObject;
     }
+    
+    
     if (placemarkInfoBar.localityCount > 1){
+        if (!hasAddedPlacemarkForMoment) [ms appendFormat:@"%@%@ ",placemarkStringForMoment,NSLocalizedString(@"'s", " 的")];
+        hasAddedPlacemarkForMoment = YES;
+        
         [ms appendFormat:@"%ld",(long)placemarkInfoBar.localityCount];
-        [ms appendString:NSLocalizedString(@" Cities,", @"xx个市,")];
+        [ms appendString:NSLocalizedString(@" Cities,", @"个市,")];
+    }else if (placemarkInfoBar.localityCount == 1){
+        placemarkStringForMoment = self.placemarkDictionary[kLocalityArray].firstObject;
     }
+    
     if (placemarkInfoBar.subLocalityCount > 1) {
+        if (!hasAddedPlacemarkForMoment) [ms appendFormat:@"%@%@ ",placemarkStringForMoment,NSLocalizedString(@"'s", " 的")];
+        hasAddedPlacemarkForMoment = YES;
+        
         [ms appendFormat:@"%ld",(long)placemarkInfoBar.subLocalityCount];
-        [ms appendString:NSLocalizedString(@" Dist.s,", @"xx个县区,")];//SubLocalities
+        [ms appendString:NSLocalizedString(@" Dist.s,", @"个县区,")];//SubLocalities
+    }else if (placemarkInfoBar.subLocalityCount == 1){
+        placemarkStringForMoment = self.placemarkDictionary[kSubLocalityArray].firstObject;
     }
+    
     if (placemarkInfoBar.thoroughfareCount > 1) {
+        if (!hasAddedPlacemarkForMoment) [ms appendFormat:@"%@%@ ",placemarkStringForMoment,NSLocalizedString(@"'s", " 的")];
+        hasAddedPlacemarkForMoment = YES;
+        
         [ms appendFormat:@"%ld",(long)placemarkInfoBar.thoroughfareCount];
-        [ms appendString:NSLocalizedString(@" St.s", @"xx个村镇街道")];//Thoroughfares
+        [ms appendString:NSLocalizedString(@" St.s", @"个村镇街道")];//Thoroughfares
     }
     
     [ms appendString:NSLocalizedString(@"\nTotal ", @"\n总")];
@@ -1775,7 +1814,7 @@
     NSString *alertTitle = NSLocalizedString(@"Receive Shared Footprints",@"收到分享的足迹");
     NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@ %lu %@%@",shareRepository.title,NSLocalizedString(@"There are", @"该足迹共有"),(unsigned long)shareRepository.shareAnnos.count,NSLocalizedString(@"footprints.", @"个足迹点，"), NSLocalizedString(@"Would you like to accept the footprints and enter Browser Mode?", @"是否接收足迹并进入浏览模式？")];
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK",@"")
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Receive",@"接收")
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction * action) {
                                                          [self enterExtendedMode];
@@ -1787,7 +1826,7 @@
                                                          [self showShowShareRepositoryAlertController:shareRepository];
                                                      }];
     
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"") style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
     [alertController addAction:okAction];
     [alertController addAction:cancelAction];
     
@@ -1891,7 +1930,7 @@
         [self showShareRepository:shareRepository];
         return;
     }else if (self.isInRecordMode) {
-        UIAlertController *okCancelAlertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Alert", @"警告")  message:NSLocalizedString(@"There are recorded footprints now and they will be cleared if show selected footprints.Show or not?", @"当前处于记录模式并且有记录的足迹点，如需显示所选足迹，记录的足迹点将被清空，是否显示？") okHandler:^(UIAlertAction *action) {
+        UIAlertController *okCancelAlertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Attention", @"警告")  message:NSLocalizedString(@"There are recorded footprints now and they will be cleared if show selected footprints.Show or not?", @"当前处于记录模式并且有记录的足迹点，如需显示所选足迹，记录的足迹点将被清空，是否显示？") okHandler:^(UIAlertAction *action) {
             [self showShareRepository:shareRepository];
         }];
         
@@ -1950,7 +1989,7 @@
                                                            [self quiteShareMode];
                                                        }];
      */
-    UIAlertAction *purchaseAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase",@"购买")
+    UIAlertAction *purchaseAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase ShareFunctionAndBroswserMode",@"购买 分享功能和浏览模式")
                                                              style:UIAlertActionStyleDefault
                                                            handler:^(UIAlertAction * action) {
                                                                [self showPurchaseShareFunctionAlertController];
@@ -2386,7 +2425,7 @@
             }];// 结束循环
             
             NSString *total;
-            NSString *totalString = NSLocalizedString(@"Total:", @"总行程:");
+            NSString *totalString = NSLocalizedString(@"Total:", @"总里程:");
             if (totalDistance >=1000) {
                 total = [NSString stringWithFormat:@"%@ %.2f km",totalString,totalDistance/1000];
             }else{
@@ -2405,8 +2444,10 @@
     if (self.addedEWAnnos.count > 0) {
         
         [self updateMapModeBar];
-        NSDictionary <NSString *,NSArray<NSString *> *> *placemarkDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:self.assetInfoArray];
-        [self updatePlacemarkInfoBarWithPlacemarkDictionary:placemarkDictionary mapBaseMode:self.settingManager.mapBaseMode];
+        //NSDictionary <NSString *,NSArray<NSString *> *> *placemarkDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:self.assetInfoArray];
+        //[self updatePlacemarkInfoBarWithPlacemarkDictionary:placemarkDictionary mapBaseMode:self.settingManager.mapBaseMode];
+        
+        [self updatePlacemarkInfoBarTotolInfo];
         
         if (self.settingManager.mapBaseMode == MapBaseModeLocation){
             maxDistance = self.settingManager.mergeDistanceForLocation * 8.0;

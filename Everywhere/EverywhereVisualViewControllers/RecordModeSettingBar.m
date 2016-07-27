@@ -90,7 +90,7 @@
         [velocityLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:sDLabel withOffset:10];
         [velocityLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
         
-        CGFloat velocitySliderWidth = ScreenWidth > 375 ? 120 : 100;
+        CGFloat velocitySliderWidth = ScreenWidth > 375 ? 150 : 100;
         
         velocitySlider = [UISlider newAutoLayoutView];
         velocitySlider.tintColor = [UIColor whiteColor];

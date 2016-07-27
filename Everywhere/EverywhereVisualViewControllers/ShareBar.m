@@ -87,7 +87,7 @@
     [middleView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
     [middleView autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:leftView];
     [middleView autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:rightView];
-    [middleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+    [middleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
     
     // 距父视图顶部3
     [titleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(3, 0, 0, 0) excludingEdge:ALEdgeBottom];

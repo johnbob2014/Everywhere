@@ -282,11 +282,11 @@
 
 -(void)updateCoordinateLabel{
     NSMutableString *ma = [NSMutableString new];
-    [ma appendString:[self.currentShowCoordinateInfo.latitude doubleValue] > 0 ? NSLocalizedString(@"N. ", @""):NSLocalizedString(@"S. ", @"")];
+    [ma appendString:[self.currentShowCoordinateInfo.latitude doubleValue] > 0 ? NSLocalizedString(@"N. ", @"北纬 "):NSLocalizedString(@"S. ", @"南纬 ")];
     [ma appendString:[LocationInfoWithCoordinateInfoBar dmsStringWithDegrees:[self.currentShowCoordinateInfo.latitude doubleValue]]];
     [ma appendFormat:@" (%.4f°)",fabs([self.currentShowCoordinateInfo.latitude doubleValue])];
     [ma appendFormat:@"\n"];
-    [ma appendString:[self.currentShowCoordinateInfo.longitude doubleValue] > 0 ? NSLocalizedString(@"E. ", @""):NSLocalizedString(@"W. ", @"")];
+    [ma appendString:[self.currentShowCoordinateInfo.longitude doubleValue] > 0 ? NSLocalizedString(@"E. ", @"东经 "):NSLocalizedString(@"W. ", @"西经 ")];
     [ma appendString:[LocationInfoWithCoordinateInfoBar dmsStringWithDegrees:[self.currentShowCoordinateInfo.longitude doubleValue]]];
     [ma appendFormat:@" (%.4f°)",fabs([self.currentShowCoordinateInfo.longitude doubleValue])];
     self.coordinateLabel.text = ma;

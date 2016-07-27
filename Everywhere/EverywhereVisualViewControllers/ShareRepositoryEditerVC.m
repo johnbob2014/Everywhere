@@ -167,7 +167,7 @@
         return comparisonResult;
     }];
     
-    NSString *modeString = mergeInOrder ? NSLocalizedString(@"Merge By Moment", @"按时刻合并") : NSLocalizedString(@"Merge By Location", @"位置");
+    NSString *modeString = mergeInOrder ? NSLocalizedString(@"Merge By Moment", @"按时刻合并") : NSLocalizedString(@"Merge By Location", @"按位置合并");
     NSString *distanceString = NSLocalizedString(@"Merge Distance", @"合并距离");
     NSString *reserveString = reserveManuallyAddedFootprint ? NSLocalizedString(@"ReserveManuallyAddedFootprint", @"保留手动添加足迹点") : NSLocalizedString(@"MergeManuallyAddedFootprint", @"合并手动添加足迹点");
     
@@ -187,7 +187,7 @@
     [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:alertMessage]
                        animated:YES completion:nil];
     
-    [mergeButton setTitle:NSLocalizedString(@"Succeeded", @"合并成功") forState:UIControlStateNormal];
+    [mergeButton setTitle:NSLocalizedString(@"Merge Succeeded", @"合并成功") forState:UIControlStateNormal];
 }
 
 #pragma mark - TableView
@@ -227,7 +227,7 @@
     EverywhereShareAnnotation *shareAnnotation = currentGroupArray[indexPath.row];
     
     UITableViewRowAction *renameRA = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault
-                                                                         title:NSLocalizedString(@"Rename", @"更名")
+                                                                         title:NSLocalizedString(@"Rename", @"重命名")
                                                                        handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
                                                                            UIAlertController *alertController = [self createRenameAlertControllerWithHandler:^(UIAlertAction *action) {
                                                                                NSLog(@"%@",alertController.textFields.firstObject.text);

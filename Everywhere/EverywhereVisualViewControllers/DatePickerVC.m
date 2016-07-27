@@ -83,7 +83,7 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     
-    self.title = NSLocalizedString(@"Date Picker", @"");
+    self.title = NSLocalizedString(@"Date Picker", @"日期选择器");
     
     // Month
     //lastIndex = 2;
@@ -103,11 +103,11 @@
 }
 
 - (void)initDateModeSeg{
-    NSArray <NSString *> *dateModeNameArray = @[NSLocalizedString(@"Day", @""),
-                                                NSLocalizedString(@"Week", @""),
-                                                NSLocalizedString(@"Month", @""),
-                                                NSLocalizedString(@"Year", @""),
-                                                NSLocalizedString(@"All", @"")];
+    NSArray <NSString *> *dateModeNameArray = @[NSLocalizedString(@"Day", @"日"),
+                                                NSLocalizedString(@"Week", @"周"),
+                                                NSLocalizedString(@"Month", @"月"),
+                                                NSLocalizedString(@"Year", @"年"),
+                                                NSLocalizedString(@"All", @"全部")];
     dateModeSeg = [[UISegmentedControl alloc] initWithItems:dateModeNameArray];
     dateModeSeg.selectedSegmentIndex = [EverywhereSettingManager defaultManager].dateMode;
     [dateModeSeg addTarget:self action:@selector(segValueChanged:) forControlEvents:UIControlEventValueChanged];
@@ -160,7 +160,7 @@
 - (void)initOKButton{
     okButton = [UIButton newAutoLayoutView];
     [okButton primaryStyle];
-    [okButton setTitle:NSLocalizedString(@"OK", @"") forState:UIControlStateNormal];
+    [okButton setTitle:NSLocalizedString(@"OK", @"确定") forState:UIControlStateNormal];
     [okButton addTarget:self action:@selector(okButtonTouchDown:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:okButton];
     [okButton autoSetDimension:ALDimensionHeight toSize:40];

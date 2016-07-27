@@ -22,11 +22,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    groupNameArray = @[NSLocalizedString(@"St.", @""),
-                       NSLocalizedString(@"Dist.", @""),
-                       NSLocalizedString(@"City", @""),
-                       NSLocalizedString(@"Prov.", @""),
-                       NSLocalizedString(@"State", @"")];
+    groupNameArray = @[NSLocalizedString(@"St.", @"村镇街道"),
+                       NSLocalizedString(@"Dist.", @"县区"),
+                       NSLocalizedString(@"City", @"市"),
+                       NSLocalizedString(@"Prov.", @"省"),
+                       NSLocalizedString(@"State", @"国家")];
     
     //currentGroupArray = self.placemarkInfoDictionary[kLocalityArray];
     //self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[self.initLocationMode],(unsigned long)currentGroupArray.count];

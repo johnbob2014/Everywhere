@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#define BaiduMapCompanyName NSLocalizedString(@"CTP", @"CTP Technology Co.,Ltd")
-#define BaiduMapAppName NSLocalizedString(@"AlbumMaps", @"相册地图")
+#define BaiduMapCompanyName @"CTP Technology Co.,Ltd"
+#define BaiduMapAppName @"AlbumMaps"
 
 #define BaiduMapDirectionModeWalking @"walking"
 #define BaiduMapDirectionModeTransit @"transit"
