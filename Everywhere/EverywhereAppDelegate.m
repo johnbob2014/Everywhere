@@ -42,6 +42,11 @@
     BOOL wx=[WXApi registerApp:@"wxa1b9c5632d24039a"];
     if(DEBUGMODE) NSLog(@"WeChat Rigister：%@",wx? @"Succeeded" : @"Failed");
     
+#warning Fix Before Submit
+    [EverywhereSettingManager defaultManager].hasPurchasedRecord = YES;
+    [EverywhereSettingManager defaultManager].hasPurchasedShare = YES;
+    
+    
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     assetsMapProVC = [AssetsMapProVC new];
     self.window.rootViewController = assetsMapProVC;

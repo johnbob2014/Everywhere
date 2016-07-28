@@ -21,6 +21,7 @@
 		1E8723A41D42D82E00652757 /* RecordModeSettingBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E8723A31D42D82E00652757 /* RecordModeSettingBar.m */; };
 		1E8723AC1D43603800652757 /* UIAlertController+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E8723AB1D43603800652757 /* UIAlertController+Assistant.m */; };
 		1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */; };
+		1ECE892D1D4ACF55004B5875 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1ECE892F1D4ACF55004B5875 /* Localizable.strings */; };
 		1ED1EE451D47A6D80068F0C6 /* LocationInfoWithCoordinateInfoBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ED1EE441D47A6D80068F0C6 /* LocationInfoWithCoordinateInfoBar.m */; };
 		1EEA79511D2791A0002B6291 /* EverywhereAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEA79501D2791A0002B6291 /* EverywhereAnnotation.m */; };
 		1EF62A531D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A501D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m */; };
@@ -64,7 +65,6 @@
 		4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */; };
 		4BE88A9F1D332B38009501CE /* EverywhereSettingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE88A9E1D332B38009501CE /* EverywhereSettingManager.m */; };
 		4BE88AA21D333A46009501CE /* MapModeBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE88AA11D333A46009501CE /* MapModeBar.m */; };
-		4BF513091D348870009565EF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4BF5130B1D348870009565EF /* Localizable.strings */; };
 		4BF8DC151D37882E00BC7B64 /* ShareBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF8DC141D37882E00BC7B64 /* ShareBar.m */; };
 		4BFA36911D4A165300E3D9B3 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4BFA368C1D49F4A800E3D9B3 /* Info.plist */; };
 		4BFA4EB31D33791A007DDA87 /* LocationPickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */; };
@@ -75,7 +75,7 @@
 
 /* Begin PBXFileReference section */
 		1E2847F21D1ADDB900189A83 /* Everywhere.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Everywhere.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		1E2847F61D1ADDB900189A83 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		1E2847F61D1ADDB900189A83 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1E2847F81D1ADDB900189A83 /* EverywhereAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EverywhereAppDelegate.h; sourceTree = "<group>"; };
 		1E2847F91D1ADDB900189A83 /* EverywhereAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EverywhereAppDelegate.m; sourceTree = "<group>"; };
 		1E2848021D1ADDB900189A83 /* Everywhere.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Everywhere.xcdatamodel; sourceTree = "<group>"; };
@@ -104,6 +104,8 @@
 		1E9CF64AE7F289869F003D6F /* libPods-Everywhere.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Everywhere.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E9D5D401D1E2AFE00E8B630 /* WGS84TOGCJ02.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WGS84TOGCJ02.h; path = WGS84TOGCJ02/WGS84TOGCJ02.h; sourceTree = "<group>"; };
 		1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WGS84TOGCJ02.m; path = WGS84TOGCJ02/WGS84TOGCJ02.m; sourceTree = "<group>"; };
+		1ECE892E1D4ACF55004B5875 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		1ECE89301D4ACF5E004B5875 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		1ED1EE431D47A6D80068F0C6 /* LocationInfoWithCoordinateInfoBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationInfoWithCoordinateInfoBar.h; path = EverywhereVisualViewControllers/LocationInfoWithCoordinateInfoBar.h; sourceTree = "<group>"; };
 		1ED1EE441D47A6D80068F0C6 /* LocationInfoWithCoordinateInfoBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationInfoWithCoordinateInfoBar.m; path = EverywhereVisualViewControllers/LocationInfoWithCoordinateInfoBar.m; sourceTree = "<group>"; };
 		1EEA794F1D2791A0002B6291 /* EverywhereAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereAnnotation.h; path = EverywhereModels/EverywhereAnnotation.h; sourceTree = "<group>"; };
@@ -193,8 +195,6 @@
 		4BE88A9E1D332B38009501CE /* EverywhereSettingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereSettingManager.m; path = EverywhereModels/EverywhereSettingManager.m; sourceTree = "<group>"; };
 		4BE88AA01D333A46009501CE /* MapModeBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapModeBar.h; path = EverywhereVisualViewControllers/MapModeBar.h; sourceTree = "<group>"; };
 		4BE88AA11D333A46009501CE /* MapModeBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapModeBar.m; path = EverywhereVisualViewControllers/MapModeBar.m; sourceTree = "<group>"; };
-		4BF5130A1D348870009565EF /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
-		4BF5130C1D348872009565EF /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		4BF8DC131D37882E00BC7B64 /* ShareBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareBar.h; path = EverywhereVisualViewControllers/ShareBar.h; sourceTree = "<group>"; };
 		4BF8DC141D37882E00BC7B64 /* ShareBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShareBar.m; path = EverywhereVisualViewControllers/ShareBar.m; sourceTree = "<group>"; };
 		4BFA368B1D49F4A800E3D9B3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
@@ -267,7 +267,7 @@
 				1E2847F81D1ADDB900189A83 /* EverywhereAppDelegate.h */,
 				1E2847F91D1ADDB900189A83 /* EverywhereAppDelegate.m */,
 				4B0620771D2CE36C00545FCE /* PrefixHeader.pch */,
-				4BF5130B1D348870009565EF /* Localizable.strings */,
+				1ECE892F1D4ACF55004B5875 /* Localizable.strings */,
 				1E2847F61D1ADDB900189A83 /* main.m */,
 				4BFA368C1D49F4A800E3D9B3 /* Info.plist */,
 				1E2848061D1ADDB900189A83 /* LaunchScreen.storyboard */,
@@ -678,7 +678,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4BF513091D348870009565EF /* Localizable.strings in Resources */,
+				1ECE892D1D4ACF55004B5875 /* Localizable.strings in Resources */,
 				1E2848081D1ADDB900189A83 /* LaunchScreen.storyboard in Resources */,
 				4B15B5D31D3F5E5E0096EE89 /* Assets.xcassets in Resources */,
 				4BFA36911D4A165300E3D9B3 /* Info.plist in Resources */,
@@ -803,15 +803,14 @@
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
-		4BF5130B1D348870009565EF /* Localizable.strings */ = {
+		1ECE892F1D4ACF55004B5875 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				4BF5130A1D348870009565EF /* Base */,
-				4BF5130C1D348872009565EF /* zh-Hans */,
+				1ECE892E1D4ACF55004B5875 /* Base */,
+				1ECE89301D4ACF5E004B5875 /* zh-Hans */,
 			);
 			name = Localizable.strings;
-			path = "/Users/BobZhang/编程/100iOS/Everywhere/Everywhere";
-			sourceTree = "<absolute>";
+			sourceTree = "<group>";
 		};
 		4BFA368C1D49F4A800E3D9B3 /* Info.plist */ = {
 			isa = PBXVariantGroup;
