@@ -83,7 +83,7 @@
     [rightIV autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
     [rightIV autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:rightLabel withOffset:0];
     
-    [middleView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:20];
+    [middleView autoPinEdge:ALEdgeTop toEdge:ALEdgeTop ofView:leftView withOffset:0];
     [middleView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
     [middleView autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:leftView];
     [middleView autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:rightView];

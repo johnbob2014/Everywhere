@@ -23,6 +23,8 @@
     
     shareRepository.shareRepositoryType = [aDecoder decodeIntegerForKey:@"shareRepositoryType"];
     
+    shareRepository.placemarkInfo = [aDecoder decodeObjectForKey:@"placemarkInfo"];
+    
     return shareRepository;
 }
 
@@ -37,6 +39,8 @@
     [aCoder encodeObject:self.creationDate forKey:@"creationDate"];
     
     [aCoder encodeInteger:self.shareRepositoryType forKey:@"shareRepositoryType"];
+    
+    if (self.placemarkInfo) [aCoder encodeObject:self.placemarkInfo forKey:@"placemarkInfo"];
 }
 
 - (id)copyWithZone:(NSZone *)zone{
@@ -47,6 +51,7 @@
     copyShareRepository.title = self.title;
     copyShareRepository.creationDate = self.creationDate;
     copyShareRepository.shareRepositoryType = self.shareRepositoryType;
+    copyShareRepository.placemarkInfo = self.placemarkInfo;
     
     return copyShareRepository;
 }

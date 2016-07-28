@@ -161,13 +161,13 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         self.settingManager.mergeDistanceForMoment = [item.value doubleValue];
     };
 
-#pragma mark 地址模式合并距离
-    //地址模式
-    //RETableViewSection *locationModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"LocationMode", @"地址模式")];
+#pragma mark 地点模式合并距离
+    //地点模式
+    //RETableViewSection *locationModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"LocationMode", @"地点模式")];
     //[optionSection setHeaderHeight:30];
     
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.mergeDistanceForLocation];
-    RETextItem *mergeDistanceForLocationItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Merge Distance For Location",@"📏 地址模式合并距离") value:tempString placeholder:@""];
+    RETextItem *mergeDistanceForLocationItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Merge Distance For Location",@"📏 地点模式合并距离") value:tempString placeholder:@""];
     mergeDistanceForLocationItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     mergeDistanceForLocationItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
@@ -241,15 +241,32 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     RETableViewSection *purchaseSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Purchase and Restore", @"购买与恢复")];
     [purchaseSection setHeaderHeight:20];
     
-    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🎑 ShareFunctionAndBrowserMode",@"🎑 分享功能和浏览模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🎑 Purchase ShareFunctionAndBrowserMode",@"🎑 购买 分享功能和浏览模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         [weakSelf showPurchaseVC:0 transactionType:TransactionTypePurchase];
     }]];
     
-    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🚘 RecordFuntionAndRecordMode",@"🚘 足迹记录和记录模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🎑 Restore ShareFunctionAndBrowserMode",@"🎑 恢复 分享功能和浏览模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
-        [weakSelf showPurchaseVC:0 transactionType:TransactionTypePurchase];
+        [weakSelf showPurchaseVC:0 transactionType:TransactionTypeRestore];
     }]];
+    
+    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🚘 Purchase RecordFuntionAndRecordMode",@"🚘 购买 足迹记录和记录模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        [weakSelf showPurchaseVC:1 transactionType:TransactionTypePurchase];
+    }]];
+    
+    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🚘 Restore RecordFuntionAndRecordMode",@"🚘 恢复 足迹记录和记录模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        [weakSelf showPurchaseVC:1 transactionType:TransactionTypeRestore];
+    }]];
+
+    /*
+    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"⛲️ Restore Purchases",@"⛲️ 恢复已购") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        [weakSelf showPurchaseVC:0 transactionType:TransactionTypeRestore];
+    }]];
+     */
 
 #pragma mark 分享
     RETableViewSection *shareSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Share《AlbumMaps》 to friends", @"分享《相册地图》给朋友")];

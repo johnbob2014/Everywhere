@@ -31,4 +31,9 @@ typedef void(^UpdatePlacemarkForPHAssetInfoCompletionBlock)(NSInteger reverseGeo
  */
 - (void)asyncUpdatePlacemarkForPHAssetInfoWithCompletionBlock:(UpdatePlacemarkForPHAssetInfoCompletionBlock)completionBlock;
 
+/**
+ 地址信息
+ */
++ (NSString *)placemarkInfoStringForPlacemarkDictionary:(NSDictionary <NSString *,NSArray<NSString *> *> *)placemarkDictionary;
+
 @end

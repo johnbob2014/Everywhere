@@ -66,6 +66,7 @@
 		4BE88AA21D333A46009501CE /* MapModeBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE88AA11D333A46009501CE /* MapModeBar.m */; };
 		4BF513091D348870009565EF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4BF5130B1D348870009565EF /* Localizable.strings */; };
 		4BF8DC151D37882E00BC7B64 /* ShareBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF8DC141D37882E00BC7B64 /* ShareBar.m */; };
+		4BFA36911D4A165300E3D9B3 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4BFA368C1D49F4A800E3D9B3 /* Info.plist */; };
 		4BFA4EB31D33791A007DDA87 /* LocationPickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */; };
 		4BFA4EB61D33982A007DDA87 /* DatePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA4EB51D33982A007DDA87 /* DatePickerVC.m */; };
 		4BFC352C1D3C851200F111EE /* ShareShareRepositoryVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFC352B1D3C851200F111EE /* ShareShareRepositoryVC.m */; };
@@ -100,7 +101,6 @@
 		1E8723A31D42D82E00652757 /* RecordModeSettingBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RecordModeSettingBar.m; path = EverywhereVisualViewControllers/RecordModeSettingBar.m; sourceTree = "<group>"; };
 		1E8723AA1D43603800652757 /* UIAlertController+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIAlertController+Assistant.h"; path = "UIAlertController+Assistant/UIAlertController+Assistant.h"; sourceTree = "<group>"; };
 		1E8723AB1D43603800652757 /* UIAlertController+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIAlertController+Assistant.m"; path = "UIAlertController+Assistant/UIAlertController+Assistant.m"; sourceTree = "<group>"; };
-		1E8E367C1D3D1C9300B9E30C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1E9CF64AE7F289869F003D6F /* libPods-Everywhere.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Everywhere.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E9D5D401D1E2AFE00E8B630 /* WGS84TOGCJ02.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WGS84TOGCJ02.h; path = WGS84TOGCJ02/WGS84TOGCJ02.h; sourceTree = "<group>"; };
 		1E9D5D411D1E2AFE00E8B630 /* WGS84TOGCJ02.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WGS84TOGCJ02.m; path = WGS84TOGCJ02/WGS84TOGCJ02.m; sourceTree = "<group>"; };
@@ -197,6 +197,8 @@
 		4BF5130C1D348872009565EF /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		4BF8DC131D37882E00BC7B64 /* ShareBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareBar.h; path = EverywhereVisualViewControllers/ShareBar.h; sourceTree = "<group>"; };
 		4BF8DC141D37882E00BC7B64 /* ShareBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShareBar.m; path = EverywhereVisualViewControllers/ShareBar.m; sourceTree = "<group>"; };
+		4BFA368B1D49F4A800E3D9B3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
+		4BFA368D1D49F4B100E3D9B3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "zh-Hans"; path = "zh-Hans.lproj/Info.plist"; sourceTree = "<group>"; };
 		4BFA4EB11D33791A007DDA87 /* LocationPickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationPickerVC.h; path = EverywhereVisualViewControllers/LocationPickerVC.h; sourceTree = "<group>"; };
 		4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationPickerVC.m; path = EverywhereVisualViewControllers/LocationPickerVC.m; sourceTree = "<group>"; };
 		4BFA4EB41D33982A007DDA87 /* DatePickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DatePickerVC.h; path = EverywhereVisualViewControllers/DatePickerVC.h; sourceTree = "<group>"; };
@@ -267,7 +269,7 @@
 				4B0620771D2CE36C00545FCE /* PrefixHeader.pch */,
 				4BF5130B1D348870009565EF /* Localizable.strings */,
 				1E2847F61D1ADDB900189A83 /* main.m */,
-				1E8E367C1D3D1C9300B9E30C /* Info.plist */,
+				4BFA368C1D49F4A800E3D9B3 /* Info.plist */,
 				1E2848061D1ADDB900189A83 /* LaunchScreen.storyboard */,
 			);
 			path = Everywhere;
@@ -679,6 +681,7 @@
 				4BF513091D348870009565EF /* Localizable.strings in Resources */,
 				1E2848081D1ADDB900189A83 /* LaunchScreen.storyboard in Resources */,
 				4B15B5D31D3F5E5E0096EE89 /* Assets.xcassets in Resources */,
+				4BFA36911D4A165300E3D9B3 /* Info.plist in Resources */,
 				4B27FDC31D2CA12000067683 /* FontAwesome.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -807,7 +810,18 @@
 				4BF5130C1D348872009565EF /* zh-Hans */,
 			);
 			name = Localizable.strings;
-			sourceTree = "<group>";
+			path = "/Users/BobZhang/编程/100iOS/Everywhere/Everywhere";
+			sourceTree = "<absolute>";
+		};
+		4BFA368C1D49F4A800E3D9B3 /* Info.plist */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4BFA368B1D49F4A800E3D9B3 /* Base */,
+				4BFA368D1D49F4B100E3D9B3 /* zh-Hans */,
+			);
+			name = Info.plist;
+			path = Everywhere;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXVariantGroup section */
 

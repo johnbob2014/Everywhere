@@ -146,6 +146,63 @@
     }
 }
 
-#pragma mark - CoordInfo Data
+#pragma mark - PlacemarkInfo String
+
++ (NSString *)placemarkInfoStringForPlacemarkDictionary:(NSDictionary <NSString *,NSArray<NSString *> *> *)placemarkDictionary{
+    NSMutableString *ms = [NSMutableString new];
+    
+    BOOL hasAddedPlacemarkForMoment = NO;
+    NSString *placemarkStringForMoment = NSLocalizedString(@"the world's", @"全球的");
+    
+    if (placemarkDictionary[kCountryArray].count > 1) {
+        [ms appendFormat:@"%ld",(long)placemarkDictionary[kCountryArray].count];
+        [ms appendString:NSLocalizedString(@" States,", @"个国家,")];
+        
+        hasAddedPlacemarkForMoment = YES;
+    }else if (placemarkDictionary[kCountryArray].count == 1){
+        placemarkStringForMoment = placemarkDictionary[kCountryArray].firstObject;
+    }
+    
+    if (placemarkDictionary[kAdministrativeAreaArray].count > 1) {
+        if (!hasAddedPlacemarkForMoment) [ms appendFormat:@"%@%@ ",placemarkStringForMoment,NSLocalizedString(@"'s", " 的")];
+        hasAddedPlacemarkForMoment = YES;
+        
+        [ms appendFormat:@"%ld",(long)placemarkDictionary[kAdministrativeAreaArray].count];
+        [ms appendString:NSLocalizedString(@" Prov.s,", @"个省,")];//AdministrativeAreas
+    }else if (placemarkDictionary[kAdministrativeAreaArray].count == 1){
+        placemarkStringForMoment = placemarkDictionary[kAdministrativeAreaArray].firstObject;
+    }
+    
+    
+    if (placemarkDictionary[kLocalityArray].count > 1){
+        if (!hasAddedPlacemarkForMoment) [ms appendFormat:@"%@%@ ",placemarkStringForMoment,NSLocalizedString(@"'s", " 的")];
+        hasAddedPlacemarkForMoment = YES;
+        
+        [ms appendFormat:@"%ld",(long)placemarkDictionary[kLocalityArray].count];
+        [ms appendString:NSLocalizedString(@" Cities,", @"个市,")];
+    }else if (placemarkDictionary[kLocalityArray].count == 1){
+        placemarkStringForMoment = placemarkDictionary[kLocalityArray].firstObject;
+    }
+    
+    if (placemarkDictionary[kSubLocalityArray].count > 1) {
+        if (!hasAddedPlacemarkForMoment) [ms appendFormat:@"%@%@ ",placemarkStringForMoment,NSLocalizedString(@"'s", " 的")];
+        hasAddedPlacemarkForMoment = YES;
+        
+        [ms appendFormat:@"%ld",(long)placemarkDictionary[kSubLocalityArray].count];
+        [ms appendString:NSLocalizedString(@" Dist.s,", @"个县区,")];//SubLocalities
+    }else if (placemarkDictionary[kSubLocalityArray].count == 1){
+        placemarkStringForMoment = placemarkDictionary[kSubLocalityArray].firstObject;
+    }
+    
+    if (placemarkDictionary[kThoroughfareArray].count > 1) {
+        if (!hasAddedPlacemarkForMoment) [ms appendFormat:@"%@%@ ",placemarkStringForMoment,NSLocalizedString(@"'s", " 的")];
+        hasAddedPlacemarkForMoment = YES;
+        
+        [ms appendFormat:@"%ld",(long)placemarkDictionary[kThoroughfareArray].count];
+        [ms appendString:NSLocalizedString(@" St.s", @"个村镇街道")];//Thoroughfares
+    }
+    
+    return [NSString stringWithString:ms];
+}
 
 @end

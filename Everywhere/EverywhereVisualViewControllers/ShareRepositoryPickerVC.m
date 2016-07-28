@@ -39,15 +39,15 @@
     // Do any additional setup after loading the view.
     
     switch (self.showShareRepositoryType) {
-        case ShareRepositoryTypeSended|ShareRepositoryTypeReceived|ShareRepositoryTypeRecorded|ShareRepositoryTypeEdited:
-            groupNameArray = @[NSLocalizedString(@"Sended", @"发送的"),
+        case ShareRepositoryTypeSent|ShareRepositoryTypeReceived|ShareRepositoryTypeRecorded|ShareRepositoryTypeEdited:
+            groupNameArray = @[NSLocalizedString(@"Sent", @"发送的"),
                                NSLocalizedString(@"Received", @"接收的"),
                                NSLocalizedString(@"Recorded", @"记录的"),
                                NSLocalizedString(@"Edited", @"编辑的")];
             break;
 
-        case ShareRepositoryTypeSended|ShareRepositoryTypeReceived:
-            groupNameArray = @[NSLocalizedString(@"Sended", @"发送的"),
+        case ShareRepositoryTypeSent|ShareRepositoryTypeReceived:
+            groupNameArray = @[NSLocalizedString(@"Sent", @"发送的"),
                                NSLocalizedString(@"Received", @"接收的")];
             break;
             
@@ -100,7 +100,7 @@
 }
 
 - (void)updateDataSource:(NSInteger)index{
-    NSMutableArray *sendedArray = [NSMutableArray new];
+    NSMutableArray *sentArray = [NSMutableArray new];
     NSMutableArray *receivedArray = [NSMutableArray new];
     NSMutableArray *recordedArray = [NSMutableArray new];
     NSMutableArray *editedArray = [NSMutableArray new];
@@ -109,8 +109,8 @@
     
     [shareRepositoryMA enumerateObjectsUsingBlock:^(EverywhereShareRepository * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         switch (obj.shareRepositoryType) {
-            case ShareRepositoryTypeSended:
-                [sendedArray addObject:obj];
+            case ShareRepositoryTypeSent:
+                [sentArray addObject:obj];
                 break;
             case ShareRepositoryTypeReceived:
                 [receivedArray addObject:obj];
@@ -128,7 +128,7 @@
     
     switch (index) {
         case 0:
-            currentGroupArray = sendedArray;
+            currentGroupArray = sentArray;
             if (self.showShareRepositoryType == ShareRepositoryTypeRecorded) currentGroupArray = recordedArray;
             self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[0],(unsigned long)currentGroupArray.count];
             break;
@@ -167,7 +167,7 @@
     EverywhereShareRepository *shareRepository = currentGroupArray[indexPath.row];
     NSString *headerString;
     switch (shareRepository.shareRepositoryType) {
-        case ShareRepositoryTypeSended:
+        case ShareRepositoryTypeSent:
             headerString = @"🏹 ";
             break;
         case ShareRepositoryTypeReceived:

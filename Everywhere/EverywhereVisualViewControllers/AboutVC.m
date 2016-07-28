@@ -55,7 +55,7 @@
 
     self.bottomLabel=[[UILabel alloc]initForAutoLayout];
     self.bottomLabel.numberOfLines = 0;
-    self.bottomLabel.text=NSLocalizedString(@"Phone & WeChat : 17096027537\nEmail : johnbob2014@icloud.com\n2016 CTP Technology Co.,Ltd", @"");
+    self.bottomLabel.text=NSLocalizedString(@"Phone & WeChat : 17096027537\nEmail : johnbob2014@icloud.com\n2016 CTP Technology Co.,Ltd", @"手机 & 微信 : 17096027537\n邮箱 : johnbob2014@icloud.com\n2016 CTP Technology Co.,Ltd");
     self.bottomLabel.textAlignment=NSTextAlignmentCenter;
     [self.view addSubview:self.bottomLabel];
     [self.bottomLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
@@ -64,7 +64,7 @@
     self.detailTextView=[[UITextView alloc]initForAutoLayout];
     self.detailTextView.editable=NO;
     self.detailTextView.font=[UIFont bodyFontWithSizeMultiplier:0.8];
-    self.detailTextView.text=NSLocalizedString(@"      ", @"");
+    self.detailTextView.text=NSLocalizedString(@"Your Album and Footprints Management Expert.", @"您的相册和足迹管理专家。");
     [self.view addSubview:self.detailTextView];
     [self.detailTextView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.imageView withOffset:20];
     [self.detailTextView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];

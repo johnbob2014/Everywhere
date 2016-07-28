@@ -47,9 +47,9 @@
                             <constraint firstItem="0x9-nw-iS6" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Skp-Mr-hzR"/>
                             <constraint firstItem="0x9-nw-iS6" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="topMargin" id="VnJ-9a-ZRw"/>
                             <constraint firstItem="GnF-Ib-Ffp" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="b9g-PR-edz"/>
+                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="0x9-nw-iS6" secondAttribute="bottom" id="fDZ-7h-2kE"/>
                             <constraint firstItem="n08-r1-EdQ" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="jiy-Sp-hFu"/>
                             <constraint firstItem="n08-r1-EdQ" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="lJZ-DL-A6F"/>
-                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="0x9-nw-iS6" secondAttribute="bottom" id="ugM-Wg-au5"/>
                             <constraint firstItem="0x9-nw-iS6" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="xyG-ru-CdS"/>
                         </constraints>
                         <variation key="default">

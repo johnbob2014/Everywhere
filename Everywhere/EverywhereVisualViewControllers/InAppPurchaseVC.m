@@ -159,21 +159,30 @@
     //监听购买结果
     //[[SKPaymentQueue defaultQueue] addTransactionObserver:self];
     
+    if (!productTitle) {
+        //leftBarButtonItem.enabled = YES;
+        //rightBarButtonItem.enabled = YES;
+        return;
+    }
+
+    
     self.infoString=NSLocalizedString(@"-----Receive payment result from iTunes Store-----\n",@"-----收到iTunes Store反馈的交易结果-----\n");
     
+    /*
     //NSLog(@"交易数量:%lu",(unsigned long)[transactions count]);
     if (self.transactionType == TransactionTypeRestore && transactions.count == 0) {
         self.infoString=NSLocalizedString(@"-----No Product that can be restored!-----\n",@"-----您没有可供恢复的项目！-----\n");
     }
+    */
     
+    __block SKPaymentTransaction *transaction = nil;
     
+    [transactions enumerateObjectsUsingBlock:^(SKPaymentTransaction *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj.payment.productIdentifier isEqualToString:self.productIDs[self.productIndex]])
+            transaction = obj;
+    }];
     
-    SKPaymentTransaction *transaction = transactions.firstObject;
-    
-    if (!transaction) {
-        [self completeTransaction:nil succeeded:NO];
-        return;
-    }
+    if (!transaction) return;
     
     BOOL succeeded = NO;
     
@@ -216,7 +225,7 @@
     
     NSString *alertMessage = [NSString stringWithFormat:@"%@ %@ %@",typeString,productTitle,resultString];
     
-    [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:alertMessage]
+    if (productTitle) [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:alertMessage]
                        animated:YES completion:nil];
     
     if (succeeded) {
@@ -281,6 +290,11 @@
     NSString *lst1=NSLocalizedString(@"-----Restore failed,try again please-----",@"-----iTunes Store恢复失败，请重新尝试-----");
     NSString *lst2=NSLocalizedString(@"Error",@"错误信息");
     self.infoString=[[NSString alloc]initWithFormat:@"%@\n-----%@：%@-----\n",lst1,lst2,error.localizedDescription];
+    
+    leftBarButtonItem.enabled = YES;
+    rightBarButtonItem.enabled = YES;
+    
+    [rightBarButtonItem setTitle:NSLocalizedString(@"Try Again",@"重试")];
 }
 
 @end

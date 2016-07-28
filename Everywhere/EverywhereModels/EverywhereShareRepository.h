@@ -16,6 +16,8 @@
 
 @property (strong,nonatomic) NSString *title;
 
+@property (strong,nonatomic) NSString *placemarkInfo;
+
 @property (strong,nonatomic) NSDate *creationDate;
 
 @property (assign,nonatomic) ShareRepositoryType shareRepositoryType;
