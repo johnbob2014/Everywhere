@@ -10,19 +10,17 @@
 
 @interface GCPhotoManager : NSObject
 
-@property (strong,nonatomic) NSString *GCAssetCollectionID_UserLibrary;
-@property (nonatomic,strong) NSArray <NSString *> *GCAssetCollectionIDs_Album;
-
-+ (instancetype)defaultManager;
++ (NSString *)GCAssetCollectionID_UserLibrary;
++ (NSArray <NSString *> *)GCAssetCollectionIDs_Album;
 
 /**
  获取 assetCollectionID : assetIDArray 字典
  */
-- (NSDictionary <NSString *,NSArray *> *)fetchAssetIDsFormStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate fromAssetCollectionIDs:(NSArray <NSString *> *)assetCollectionIDs;
++ (NSDictionary <NSString *,NSArray *> *)fetchAssetIDsFormStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate fromAssetCollectionIDs:(NSArray <NSString *> *)assetCollectionIDs;
 
 /**
  获取 assetCollectionID : assetArray 字典
  */
-- (NSDictionary <NSString *,NSArray *> *)fetchAssetsFormStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate fromAssetCollectionIDs:(NSArray <NSString *> *)assetCollectionIDs;
++ (NSDictionary <NSString *,NSArray *> *)fetchAssetsFormStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate fromAssetCollectionIDs:(NSArray <NSString *> *)assetCollectionIDs;
 
 @end

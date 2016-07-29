@@ -38,9 +38,13 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
+    
+        
     //向微信注册id
     BOOL wx=[WXApi registerApp:@"wxa1b9c5632d24039a"];
     if(DEBUGMODE) NSLog(@"WeChat Rigister：%@",wx? @"Succeeded" : @"Failed");
+    
+    [EverywhereSettingManager updateAppLinkData];
     
 #warning Fix Before Submit
     [EverywhereSettingManager defaultManager].hasPurchasedRecord = YES;

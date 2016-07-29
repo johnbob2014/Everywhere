@@ -1,0 +1,13 @@
+/* 
+  InfoPlist.strings
+  Everywhere
+
+  Created by BobZhang on 16/7/29.
+  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
+*/
+
+CFBundleDisplayName = "相册地图";
+
+NSLocationAlwaysUsageDescription = "相册地图的足迹记录功能需要在后台持续使用GPS来实时获取位置信息，否则无法在后台记录数据。";
+
+NSLocationWhenInUseUsageDescription = "相册地图需要使用GPS位置信息来显示您的位置。";

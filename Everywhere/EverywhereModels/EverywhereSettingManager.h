@@ -12,6 +12,11 @@
 
 + (instancetype)defaultManager;
 
++ (void)updateAppLinkData;
+
+@property (strong,nonatomic) NSString *appURLString;
+@property (strong,nonatomic) UIImage *appQRCodeImage;
+
 @property (assign,nonatomic) MapBaseMode mapBaseMode;
 @property (assign,nonatomic) MapExtendedMode mapExtendedMode;
 

@@ -13,15 +13,13 @@
 
 @import Photos;
 
-@interface GCPhotoManager()
-
-@end
-
 @implementation GCPhotoManager
 
+/*
 + (instancetype)defaultManager{
     static id instance;
     static dispatch_once_t onceToken;
+    
     dispatch_once(&onceToken, ^{
         instance = [[self alloc]init];
         PHAuthorizationStatus authorizationStatus = [PHPhotoLibrary authorizationStatus];
@@ -31,59 +29,42 @@
             [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
                 //authorized = status == PHAuthorizationStatusAuthorized;
             }];
-            /*
-            while (!authorized) {
-                [NSThread sleepForTimeInterval:1.0];
-            }
-             */
+            
             instance = nil;
         }else if (authorizationStatus == PHAuthorizationStatusDenied || authorizationStatus == PHAuthorizationStatusRestricted){
             NSLog(@"无法访问相册");
             instance = nil;
         }
     });
+    
     return instance;
 }
+*/
 
--(instancetype)init{
-    self=[super init];
-    if (self) {
-        //code here
-    }
-    return self;
-}
-
-- (NSString *)GCAssetCollectionID_UserLibrary{
++ (NSString *)GCAssetCollectionID_UserLibrary{
     if (Authorized == NO) return nil;
     
-    if (!_GCAssetCollectionID_UserLibrary) {
-        PHFetchResult <PHAssetCollection *> *fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
-        _GCAssetCollectionID_UserLibrary = fetchResultArray.firstObject.localIdentifier;
-    }
-    return _GCAssetCollectionID_UserLibrary;
+    PHFetchResult <PHAssetCollection *> *fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
+    return fetchResultArray.firstObject.localIdentifier;
 }
 
-- (NSArray <NSString *> *)GCAssetCollectionIDs_Album{
++ (NSArray <NSString *> *)GCAssetCollectionIDs_Album{
     if (Authorized == NO) return nil;
-    if (!_GCAssetCollectionIDs_Album) {
-        NSMutableArray <NSString *> *ma = [NSMutableArray new];
-        PHFetchResult <PHAssetCollection *> *fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
-        [fetchResultArray enumerateObjectsUsingBlock:^(PHAssetCollection * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if (obj.localIdentifier) [ma addObject:obj.localIdentifier];
-        }];
-        _GCAssetCollectionIDs_Album = [NSArray arrayWithArray:ma];
-    }
-    return _GCAssetCollectionIDs_Album;
+    
+    NSMutableArray <NSString *> *ma = [NSMutableArray new];
+    PHFetchResult <PHAssetCollection *> *fetchResultArray = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
+    [fetchResultArray enumerateObjectsUsingBlock:^(PHAssetCollection * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.localIdentifier) [ma addObject:obj.localIdentifier];
+    }];
+    return ma;
 }
 
 #pragma mark - Fetch by Date
 
-- (NSDictionary <NSString *,NSArray *> *)fetchAssetIDsFormStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate fromAssetCollectionIDs:(NSArray <NSString *> *)assetCollectionIDs{
++ (NSDictionary <NSString *,NSArray *> *)fetchAssetIDsFormStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate fromAssetCollectionIDs:(NSArray <NSString *> *)assetCollectionIDs{
     if (Authorized == NO) return nil;
     PHFetchOptions *assetOptions = [PHFetchOptions new];
-    //startDate = [startDate dateAtStartOfToday];
-    //endDate = [endDate dateAtEndOfToday];
-    //NSString *predicateFormat = nil;
+   
     if (startDate && endDate) {
         assetOptions.predicate = [NSPredicate predicateWithFormat:@" (creationDate >= %@) && (creationDate <= %@)",startDate,endDate];
     }else if (startDate) {
@@ -113,12 +94,10 @@
     return mDic;
 }
 
-- (NSDictionary <NSString *,NSArray *> *)fetchAssetsFormStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate fromAssetCollectionIDs:(NSArray <NSString *> *)assetCollectionIDs{
++ (NSDictionary <NSString *,NSArray *> *)fetchAssetsFormStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate fromAssetCollectionIDs:(NSArray <NSString *> *)assetCollectionIDs{
     if (Authorized == NO) return nil;
     PHFetchOptions *assetOptions = [PHFetchOptions new];
-    //startDate = [startDate dateAtStartOfToday];
-    //endDate = [endDate dateAtEndOfToday];
-    //NSString *predicateFormat = nil;
+    
     if (startDate && endDate) {
         assetOptions.predicate = [NSPredicate predicateWithFormat:@" (creationDate >= %@) && (creationDate <= %@)",startDate,endDate];
     }else if (startDate) {
@@ -143,19 +122,5 @@
     //NSLog(@"%@",mDic);
     return mDic;
 }
-
-/*
-- (NSArray <NSString *> *)fetchToday:(NSDate *)today fromAssetCollection:(PHAssetCollection *)assetCollection{
-    return [self fetchAssetLocalIdentifiersFormStartDate:today toEndDate:today fromAssetCollection:assetCollection];
-}
-
-- (NSArray <NSString *> *)fetchMonth:(NSDate *)oneDayInThisMonth fromAssetCollection:(PHAssetCollection *)assetCollection{
-    return [self fetchAssetLocalIdentifiersFormStartDate:[oneDayInThisMonth dateAtStartOfThisMonth] toEndDate:[oneDayInThisMonth dateAtEndOfThisMonth] fromAssetCollection:assetCollection];
-}
-
-- (NSArray <NSString *> *)fetchYear:(NSDate *)oneDayInThisYear fromAssetCollection:(PHAssetCollection *)assetCollection{
-    return [self fetchAssetLocalIdentifiersFormStartDate:[oneDayInThisYear dateAtStartOfThisYear] toEndDate:[oneDayInThisYear dateAtEndOfThisYear] fromAssetCollection:assetCollection];
-}
- */
 
 @end

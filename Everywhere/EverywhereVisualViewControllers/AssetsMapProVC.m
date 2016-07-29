@@ -97,20 +97,27 @@
     
     CLLocationManager *locationManagerForUserLocation;
     UIButton *userLocationButton;
+    NSTimer *checkAuthorizationStatusTimer;
     
 #pragma mark 用于模式转换时恢复数据
     NSString *savedTitleForBaseMode;
     NSArray<id<MKAnnotation>> *savedAnnotationsForBaseMode;
     NSArray<id<MKAnnotation>> *savedShareAnnotationsForBaseMode;
     NSArray<id<MKOverlay>> *savedOverlaysForBaseMode;
+    NSDate *savedStartDateForBaseMode;
+    NSDate *savedEndDateForBaseMode;
     
     NSString *savedTitleForMomentMode;
     NSArray<id<MKAnnotation>> *savedAnnotationsForMomentMode;
     NSArray<id<MKOverlay>> *savedOverlaysForMomentMode;
+    NSDate *savedStartDateForMomentMode;
+    NSDate *savedEndDateForMomentMode;
     
     NSString *savedTitleForLocationMode;
     NSArray<id<MKAnnotation>> *savedAnnotationsForLocationMode;
     NSArray<id<MKOverlay>> *savedOverlaysForLocationMode;
+    NSDate *savedStartDateForLocationMode;
+    NSDate *savedEndDateForLocationMode;
 
 #pragma mark 用于RecordMode
     CLLocation *lastRecordLocation;
@@ -166,22 +173,20 @@
 #pragma mark - Life Cycle
 
 - (void)didReceiveMemoryWarning{
+    /*
     [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Receive Memory Warning.AlbumMaps will clear map data.", @"足迹点较多，收到内存警告提醒，相册地图将进行内存清理，请重新选择日期或地点！")]
                        animated:YES
                      completion:nil];
-    [self clearMapData];
+     */
+    
+    //[self clearMapData];
 }
 
 - (void)viewDidLoad{
     [super viewDidLoad];
-    NSLog(@"%@",NSStringFromSelector(_cmd));
     
     self.cdManager = [EverywhereCoreDataManager defaultManager];
     self.settingManager = [EverywhereSettingManager defaultManager];
-    
-    // 更新照片数据
-    
-    NSNumber *addedPHAssetInfoCountNumber = @([self.cdManager updatePHAssetInfoFromPhotoLibrary]);
     
     self.isInBaseMode = YES;
     
@@ -213,27 +218,7 @@
     
     [self initShareBar];
     
-    [self performSelector:@selector(showNotification:) withObject:addedPHAssetInfoCountNumber afterDelay:3.0];
-    //[self showNotification:addedPHAssetInfoCount];
 }
-
-- (void)showNotification:(NSNumber *)countNumber{
-    NSInteger count = [countNumber integerValue];
-    if (count > 0){
-        UILocalNotification *noti = [UILocalNotification new];
-        NSString *message = [NSString stringWithFormat:@"\n%@ %lu",NSLocalizedString(@"Add New Photo Count: ", @"新添加照片数量 : "),(long)count];
-        noti.alertBody = message;
-        noti.alertAction = NSLocalizedString(@"Action", @"操作");
-        noti.soundName = UILocalNotificationDefaultSoundName;
-        //noti.applicationIconBadgeNumber = count;
-        [[UIApplication sharedApplication] presentLocalNotificationNow:noti];
-        
-        [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"AlbumMaps Notes", @"相册地图提示") message:message]
-                           animated:YES
-                         completion:nil];
-    }
-}
-
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
@@ -275,6 +260,89 @@
     msBaseModeBar.contentViewBackgroundColor = newColor;
     msExtenedModeBar.contentViewBackgroundColor = self.settingManager.extendedTintColor;
 }
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
+    if ([self checkPHAuthorizationStatus]){
+        // 更新照片数据
+        [self showNotification:@([self.cdManager updatePHAssetInfoFromPhotoLibrary])];
+        
+        /*
+        NSNumber *addedPHAssetInfoCountNumber = @([self.cdManager updatePHAssetInfoFromPhotoLibrary]);
+        [self performSelector:@selector(showNotification:) withObject:addedPHAssetInfoCountNumber afterDelay:3.0];
+        //[self showNotification:addedPHAssetInfoCount];
+         */
+
+    }
+}
+
+- (BOOL)checkPHAuthorizationStatus{
+    BOOL authorized = YES;
+    
+    PHAuthorizationStatus authorizationStatus = [PHPhotoLibrary authorizationStatus];
+    
+    if (authorizationStatus == PHAuthorizationStatusDenied || authorizationStatus == PHAuthorizationStatusRestricted){
+        authorized = NO;
+        
+       UIAlertController *alertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Attention", @"警告")
+                                                                                        message:NSLocalizedString(@"You denied AlbumMaps to access your album so it can not show your album footprints.Please change the authorization status in iOS Settings.", @"您未允许相册地图访问您的相册，无法显示您的相册足迹，请前往设置更改。")
+                                                                                      okHandler:^(UIAlertAction *action) {
+                                                                                           NSURL*url=[NSURL URLWithString:UIApplicationOpenSettingsURLString];
+                                                                                           [[UIApplication sharedApplication] openURL:url];
+        }];
+        
+        [self presentViewController:alertController animated:YES completion:nil];
+        
+    }else if(authorizationStatus == PHAuthorizationStatusNotDetermined){
+        authorized = NO;
+        
+        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+            
+        }];
+        
+        checkAuthorizationStatusTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(observePHAuthorizationStatus) userInfo:nil repeats:YES];
+    }
+    
+    return authorized;
+
+}
+
+- (void)observePHAuthorizationStatus{
+    if ([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusAuthorized ){
+        
+        [self showNotification:@([self.cdManager updatePHAssetInfoFromPhotoLibrary])];
+        
+        [checkAuthorizationStatusTimer invalidate];
+        checkAuthorizationStatusTimer = nil;
+    }
+}
+
+- (void)showNotification:(NSNumber *)countNumber{
+    NSInteger count = [countNumber integerValue];
+    if (count > 0){
+        NSString *secondLastUpdateDateString = nil;
+        if (self.cdManager.secondLastUpdateDate)
+            secondLastUpdateDateString = [NSString stringWithFormat:@"%@ : %@",NSLocalizedString(@"Last update time", @"上次更新时间"),[self.cdManager.secondLastUpdateDate stringWithFormat:@"yyyy-MM-dd hh:mm:ss"]];
+        
+        UILocalNotification *noti = [UILocalNotification new];
+        
+        NSMutableString *messageMS = [NSMutableString new];
+        [messageMS appendFormat:@"\n%@ %lu",NSLocalizedString(@"Added New Photo Count: ", @"新添加照片数量 : "),(long)count];
+        if (secondLastUpdateDateString) [messageMS appendFormat:@"\n%@",secondLastUpdateDateString];
+        
+        noti.alertBody = messageMS;
+        noti.alertAction = NSLocalizedString(@"Action", @"操作");
+        noti.soundName = UILocalNotificationDefaultSoundName;
+        //noti.applicationIconBadgeNumber = count;
+        [[UIApplication sharedApplication] presentLocalNotificationNow:noti];
+        
+        [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"AlbumMaps Notes", @"相册地图提示") message:messageMS]
+                           animated:YES
+                         completion:nil];
+    }
+}
+
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
     if(toInterfaceOrientation == UIInterfaceOrientationPortrait || toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown){
@@ -381,6 +449,10 @@
         PHFetchOptions *options = [PHFetchOptions new];
         options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
         PHFetchResult <PHAsset *> *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:assetIDArry options:options];
+        
+        self.startDate = fetchResult.firstObject.creationDate;
+        self.endDate = fetchResult.lastObject.creationDate;
+        
         self.assetArray = (NSArray <PHAsset *> *)fetchResult;
     }
 }
@@ -488,14 +560,14 @@
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Praise",@"去给好评") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [[UIApplication sharedApplication]openURL:[NSURL URLWithString:AppDownloadURLString]];
+        [[UIApplication sharedApplication]openURL:[NSURL URLWithString:self.settingManager.appURLString]];
     }];
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"I'm busy.",@"残忍拒绝") style:UIAlertActionStyleCancel handler:nil];
     [alertController addAction:okAction];
     [alertController addAction:cancelAction];
     
-    alertController.preferredAction = okAction;
+    if (iOS9) alertController.preferredAction = okAction;
     
     [self presentViewController:alertController animated:YES completion:nil];
 }
@@ -585,11 +657,15 @@
         savedTitleForLocationMode = msBaseModeBar.info;
         savedAnnotationsForLocationMode = self.addedEWAnnos;
         savedOverlaysForLocationMode = self.myMapView.overlays;
+        savedStartDateForLocationMode = self.startDate;
+        savedEndDateForBaseMode = self.endDate;
     }else{
         // 保存MomentMode数据
         savedTitleForMomentMode = msBaseModeBar.info;
         savedAnnotationsForMomentMode = self.addedEWAnnos;
         savedOverlaysForMomentMode = self.myMapView.overlays;
+        savedStartDateForMomentMode = self.startDate;
+        savedEndDateForMomentMode = self.endDate;
     }
     
     [self clearMapData];
@@ -598,6 +674,8 @@
     if (mapBaseMode == MapBaseModeMoment){
         // 恢复MomentMode数据
         msBaseModeBar.info = savedTitleForMomentMode;
+        self.startDate = savedStartDateForMomentMode;
+        self.endDate = savedEndDateForMomentMode;
         self.addedEWAnnos = savedAnnotationsForMomentMode;
         self.addedIDAnnos = savedAnnotationsForMomentMode;
         [self.myMapView addAnnotations:self.addedEWAnnos];
@@ -605,6 +683,8 @@
     }else{
         // 恢复LocationMode数据
         msBaseModeBar.info = savedTitleForLocationMode;
+        self.startDate = savedStartDateForLocationMode;
+        self.endDate = savedEndDateForLocationMode;
         self.addedEWAnnos = savedAnnotationsForLocationMode;
         self.addedIDAnnos = savedAnnotationsForLocationMode;
         [self.myMapView addAnnotations:self.addedEWAnnos];
@@ -639,14 +719,17 @@
     switch (self.settingManager.mapBaseMode) {
         case MapBaseModeMoment:
             msBaseModeBar.info = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate];
+            savedTitleForMomentMode = msBaseModeBar.info;
             break;
         case MapBaseModeLocation:
             msBaseModeBar.info = self.lastPlacemark;
+            savedTitleForLocationMode = msBaseModeBar.info;
             break;
         default:
             break;
     }
 }
+
 
 - (void)showDatePicker{
     DatePickerVC *datePickerVC = [DatePickerVC new];
@@ -662,7 +745,7 @@
         //settingManager.mapBaseMode = MapBaseModeMoment;
         weakSelf.startDate = choosedStartDate;
         weakSelf.endDate = choosedEndDate;
-        weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:weakSelf.startDate toEndDate:weakSelf.endDate inManagedObjectContext:weakSelf.cdManager.appMOC];
+        weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:weakSelf.startDate toEndDate:weakSelf.endDate inManagedObjectContext:weakSelf.cdManager.appDelegateMOC];
     };
     
     datePickerVC.contentSizeInPopup = CGSizeMake(300, 400);
@@ -675,7 +758,7 @@
 - (void)showLocationPicker{
     WEAKSELF(weakSelf);
     LocationPickerVC *locationPickerVC = [LocationPickerVC new];
-    NSArray <PHAssetInfo *> *allAssetInfoArray = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:weakSelf.cdManager.appMOC];
+    NSArray <PHAssetInfo *> *allAssetInfoArray = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:weakSelf.cdManager.appDelegateMOC];
     locationPickerVC.placemarkInfoDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:allAssetInfoArray];
     
     locationPickerVC.locationModeDidChangeHandler = ^(LocationMode choosedLocationMode){
@@ -685,7 +768,7 @@
     locationPickerVC.locationDidChangeHandler = ^(NSString *choosedLocation){
         weakSelf.settingManager.lastPlacemark = choosedLocation;
         weakSelf.lastPlacemark = choosedLocation;
-        weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:choosedLocation inManagedObjectContext:weakSelf.cdManager.appMOC];
+        weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:choosedLocation inManagedObjectContext:weakSelf.cdManager.appDelegateMOC];
     };
     
     locationPickerVC.contentSizeInPopup = CGSizeMake(300, 400);
@@ -1487,16 +1570,17 @@
 
 - (void)initShareBar{
     shareBar = [ShareBar newAutoLayoutView];
-    shareBar.sideViewShrinkRate = 0.8;
+    shareBar.sideViewShrinkRate = 0.8;//(ScreenWidth > 320 ? 1.0 : 0.8);
     shareBar.title =  NSLocalizedString(@"Measure the world by footprints.",@"用相册记录人生，用足迹丈量世界");
     shareBar.titleFont = [UIFont bodyFontWithSizeMultiplier:1.0];
     shareBar.leftImage = [UIImage imageNamed:@"地球_300_300"];
     shareBar.leftText = NSLocalizedString(@"AlbumMaps", @"相册地图");
-    shareBar.rightImage = [UIImage imageNamed:@"1136142337"];
+    shareBar.rightImage = self.settingManager.appQRCodeImage; //[UIImage imageNamed:@"1136142337"];
     shareBar.rightText = NSLocalizedString(@"ScanToDL", @"扫码下载");
     [self.view addSubview:shareBar];
     [shareBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(5, 5, 0, 5) excludingEdge:ALEdgeBottom];
-    [shareBar autoSetDimension:ALDimensionHeight toSize:150];
+    CGFloat shareBarHeight = (ScreenWidth > 320 ? 170 : 150);
+    [shareBar autoSetDimension:ALDimensionHeight toSize:shareBarHeight];
     //[shareBar autoMatchDimension:ALDimensionHeight toDimension:ALDimensionHeight ofView:self.view withMultiplier:0.2];
 }
 
@@ -1539,13 +1623,13 @@
                     break;
             }
             
-            self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:self.startDate toEndDate:self.endDate inManagedObjectContext:self.cdManager.appMOC];
+            self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:self.startDate toEndDate:self.endDate inManagedObjectContext:self.cdManager.appDelegateMOC];
         }
             break;
         case MapBaseModeLocation:{
             // 位置模式初始化
             self.lastPlacemark = self.settingManager.lastPlacemark;
-            self.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:self.settingManager.lastPlacemark inManagedObjectContext:self.cdManager.appMOC];
+            self.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:self.settingManager.lastPlacemark inManagedObjectContext:self.cdManager.appDelegateMOC];
         }
             break;
         default:
@@ -1572,16 +1656,19 @@
     locationInfoWithCoordinateInfoBar.alpha = 0;
     
     NSMutableString *ms = [NSMutableString new];
+    /*
     if (self.settingManager.mapBaseMode == MapBaseModeMoment) {
         [ms appendFormat:@"%@ ",msBaseModeBar.info];
         [ms appendString:NSLocalizedString(@"I went to ", @"我到了 ")];
     }else{
         [ms appendString:NSLocalizedString(@"I've been in ", @"我到过 ")];
-        /*
-         [ms appendFormat:@"%@",titleString];
-         [ms appendString:NSLocalizedString(@" for ", @" 的 ")];
-         */
     }
+    */
+    NSString *dateString = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate];
+    if (dateString) [ms appendFormat:@"%@ ",dateString];
+    
+    [ms appendString:NSLocalizedString(@"I went to ", @"我到了 ")];
+    
     [ms appendString:[EverywhereCoreDataManager placemarkInfoStringForPlacemarkDictionary:self.placemarkDictionary]];
     if (placemarkInfoBar.totalTitle){
         [ms appendString:NSLocalizedString(@"\nTotal ", @"\n总")];
@@ -1602,7 +1689,13 @@
     
     UIGraphicsEndImageContext();
     
-    NSData *thumbImageData=UIImageJPEGRepresentation([UIImage imageNamed:@"地球_300_300"], 0.5);
+    //CGFloat resizeRate = (ScreenWidth > 320 ? 0.2 : 0.3);
+    
+    // 生成缩略图
+    //UIImage *thumbImage = [contentImage resizableImageWithCapInsets:UIEdgeInsetsMake(contentImage.size.height * resizeRate, contentImage.size.width * resizeRate , contentImage.size.height * resizeRate, contentImage.size.width * resizeRate) resizingMode:UIImageResizingModeStretch];
+    
+    UIImage *thumbImage = [UIImage thumbImageFromImage:contentImage limitSize:CGSizeMake(200, 350)];
+    NSData *thumbImageData = UIImageJPEGRepresentation(thumbImage, 0.5);
     
     ShareImageVC *ssVC = [ShareImageVC new];
     ssVC.shareImage = contentImage;
@@ -1733,8 +1826,15 @@
     shareRepository.shareRepositoryType = ShareRepositoryTypeSent;
     shareRepository.placemarkInfo = ms;
     
-    if (self.settingManager.mapBaseMode == MapBaseModeMoment) shareRepository.title = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate];
+    /*
+    if (self.settingManager.mapBaseMode == MapBaseModeMoment)
+        shareRepository.title = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate];
     else shareRepository.title = self.lastPlacemark;
+    */
+    
+    shareRepository.title = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate];
+    if (self.settingManager.mapBaseMode == MapBaseModeLocation) shareRepository.title = [shareRepository.title stringByAppendingFormat:@" %@",self.lastPlacemark];
+
     
     ShareShareRepositoryVC *ssVC = [ShareShareRepositoryVC new];
     ssVC.shareRepository = shareRepository;
@@ -1850,6 +1950,8 @@
     savedAnnotationsForBaseMode = self.addedEWAnnos;
     savedShareAnnotationsForBaseMode = self.addedEWShareAnnos;
     savedOverlaysForBaseMode = self.myMapView.overlays;
+    savedStartDateForBaseMode = self.startDate;
+    savedEndDateForBaseMode = self.endDate;
     
     // 清理BaseMode地图
     [self.myMapView removeAnnotations:self.myMapView.annotations];
@@ -1894,6 +1996,8 @@
     self.addedEWShareAnnos = (NSArray <EverywhereShareAnnotation*> *)savedShareAnnotationsForBaseMode;
     [self.myMapView addOverlays:savedOverlaysForBaseMode];
     self.addedIDAnnos = savedAnnotationsForBaseMode;
+    self.startDate = savedStartDateForBaseMode;
+    self.endDate = savedEndDateForBaseMode;
     
     [self updateVisualViewForEWAnnos];
     
@@ -2437,7 +2541,7 @@
     // 自己的
     if (self.addedEWAnnos.count > 0) {
         
-        [self updateMapModeBar];
+        //[self updateMapModeBar];
         
         [self updatePlacemarkInfoBarTotolInfo];
         
@@ -2577,7 +2681,7 @@
         if ([view.annotation isKindOfClass:[EverywhereAnnotation class]]) {
             EverywhereAnnotation *anno = (EverywhereAnnotation *)view.annotation;
             
-            PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:self.cdManager.appMOC];
+            PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:self.cdManager.appDelegateMOC];
             if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
             
             [self updateLocationInfoWithCoordinateInfoBarWithPHAssetInfo:assetInfo];
@@ -2594,7 +2698,7 @@
 }
 
 - (void)updateLocationInfoWithCoordinateInfoBarWithPHAssetInfo:(PHAssetInfo *)assetInfo{
-    CoordinateInfo *coordinateInfo = [CoordinateInfo coordinateInfoWithPHAssetInfo:assetInfo inManagedObjectContext:[EverywhereCoreDataManager defaultManager].appMOC];
+    CoordinateInfo *coordinateInfo = [CoordinateInfo coordinateInfoWithPHAssetInfo:assetInfo inManagedObjectContext:[EverywhereCoreDataManager defaultManager].appDelegateMOC];
     
     if (!coordinateInfo.reverseGeocodeSucceed) {
         [CoordinateInfo updatePlacemarkForCoordinateInfo:coordinateInfo];
@@ -2605,7 +2709,7 @@
 }
 
 - (void)updateLocationInfoWithCoordinateInfoBarWithWSG84Coordinate:(CLLocationCoordinate2D)aCoordinate{
-    CoordinateInfo *coordinateInfo = [CoordinateInfo coordinateInfoWithLatitude:aCoordinate.latitude longitude:aCoordinate.longitude inManagedObjectContext:[EverywhereCoreDataManager defaultManager].appMOC];
+    CoordinateInfo *coordinateInfo = [CoordinateInfo coordinateInfoWithLatitude:aCoordinate.latitude longitude:aCoordinate.longitude inManagedObjectContext:[EverywhereCoreDataManager defaultManager].appDelegateMOC];
     
     if (!coordinateInfo.reverseGeocodeSucceed) {
         [CoordinateInfo updatePlacemarkForCoordinateInfo:coordinateInfo];
@@ -2669,7 +2773,7 @@
         //self.currentAnnotationIndex = [self.addedEWAnnos indexOfObject:view.annotation];
         
         EverywhereAnnotation *anno = (EverywhereAnnotation *)view.annotation;
-        PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:self.cdManager.appMOC];
+        PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:self.cdManager.appDelegateMOC];
         if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
         
         [self updateLocationInfoWithCoordinateInfoBarWithPHAssetInfo:assetInfo];

@@ -14,12 +14,13 @@ typedef void(^UpdatePlacemarkForPHAssetInfoCompletionBlock)(NSInteger reverseGeo
 
 @interface EverywhereCoreDataManager : NSObject
 
-@property (strong,nonatomic) NSManagedObjectContext *appMOC;
+@property (strong,nonatomic,readonly) NSManagedObjectContext *appDelegateMOC;
 
-@property (strong,nonatomic) NSDate *lastUpdateDate;
+@property (strong,nonatomic,readonly) NSDate *lastUpdateDate;
+
+@property (strong,nonatomic,readonly) NSDate *secondLastUpdateDate;
 
 + (instancetype)defaultManager;
-
 
 /**
  从照片库智能更新PHAssetInfo数据，返回本次更新的数据；如果照片库无法访问，直接返回0 - EverywhereCoreDataManager

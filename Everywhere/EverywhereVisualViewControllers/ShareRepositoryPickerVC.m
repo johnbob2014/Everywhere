@@ -246,7 +246,7 @@
     }
     [alertController addAction:renameAction];
     [alertController addAction:cancelAction];
-    alertController.preferredAction = showAction;
+    if (iOS9) alertController.preferredAction = showAction;
     
     [self presentViewController:alertController animated:YES completion:nil];
  

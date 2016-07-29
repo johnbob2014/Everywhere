@@ -66,6 +66,11 @@
 		4BE88A9F1D332B38009501CE /* EverywhereSettingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE88A9E1D332B38009501CE /* EverywhereSettingManager.m */; };
 		4BE88AA21D333A46009501CE /* MapModeBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE88AA11D333A46009501CE /* MapModeBar.m */; };
 		4BF8DC151D37882E00BC7B64 /* ShareBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF8DC141D37882E00BC7B64 /* ShareBar.m */; };
+		4BFA063D1D4B306900AE8000 /* NSString+Hashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA063A1D4B306900AE8000 /* NSString+Hashing.m */; };
+		4BFA063E1D4B306900AE8000 /* Qiniu.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA063C1D4B306900AE8000 /* Qiniu.m */; };
+		4BFA06411D4B30CD00AE8000 /* GTM_Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA06401D4B30CD00AE8000 /* GTM_Base64.m */; };
+		4BFA06451D4B56A600AE8000 /* UIImage+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA06441D4B56A600AE8000 /* UIImage+Assistant.m */; };
+		4BFA06481D4B5CA500AE8000 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4BFA064A1D4B5CA500AE8000 /* InfoPlist.strings */; };
 		4BFA36911D4A165300E3D9B3 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4BFA368C1D49F4A800E3D9B3 /* Info.plist */; };
 		4BFA4EB31D33791A007DDA87 /* LocationPickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */; };
 		4BFA4EB61D33982A007DDA87 /* DatePickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA4EB51D33982A007DDA87 /* DatePickerVC.m */; };
@@ -156,7 +161,6 @@
 		4B1B4BE31D387C6800CCD842 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		4B1D5E7D1D3645A70011552F /* SettingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingVC.h; path = EverywhereVisualViewControllers/SettingVC.h; sourceTree = "<group>"; };
 		4B1D5E7E1D3645A70011552F /* SettingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingVC.m; path = EverywhereVisualViewControllers/SettingVC.m; sourceTree = "<group>"; };
-		4B216FF41D347F7D003DCDBC /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.storyboard"; sourceTree = "<group>"; };
 		4B27FDBE1D2CA12000067683 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
 		4B27FDBF1D2CA12000067683 /* NSString+FontAwesome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+FontAwesome.h"; sourceTree = "<group>"; };
 		4B27FDC01D2CA12000067683 /* NSString+FontAwesome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+FontAwesome.m"; sourceTree = "<group>"; };
@@ -197,8 +201,18 @@
 		4BE88AA11D333A46009501CE /* MapModeBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapModeBar.m; path = EverywhereVisualViewControllers/MapModeBar.m; sourceTree = "<group>"; };
 		4BF8DC131D37882E00BC7B64 /* ShareBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareBar.h; path = EverywhereVisualViewControllers/ShareBar.h; sourceTree = "<group>"; };
 		4BF8DC141D37882E00BC7B64 /* ShareBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShareBar.m; path = EverywhereVisualViewControllers/ShareBar.m; sourceTree = "<group>"; };
+		4BFA06391D4B306900AE8000 /* NSString+Hashing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Hashing.h"; sourceTree = "<group>"; };
+		4BFA063A1D4B306900AE8000 /* NSString+Hashing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Hashing.m"; sourceTree = "<group>"; };
+		4BFA063B1D4B306900AE8000 /* Qiniu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Qiniu.h; sourceTree = "<group>"; };
+		4BFA063C1D4B306900AE8000 /* Qiniu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Qiniu.m; sourceTree = "<group>"; };
+		4BFA063F1D4B30CD00AE8000 /* GTM_Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTM_Base64.h; sourceTree = "<group>"; };
+		4BFA06401D4B30CD00AE8000 /* GTM_Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTM_Base64.m; sourceTree = "<group>"; };
+		4BFA06431D4B56A600AE8000 /* UIImage+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+Assistant.h"; path = "UIImage+Assistant/UIImage+Assistant.h"; sourceTree = "<group>"; };
+		4BFA06441D4B56A600AE8000 /* UIImage+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Assistant.m"; path = "UIImage+Assistant/UIImage+Assistant.m"; sourceTree = "<group>"; };
+		4BFA06491D4B5CA500AE8000 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4BFA064B1D4B5CA700AE8000 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		4BFA064C1D4B5F0600AE8000 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		4BFA368B1D49F4A800E3D9B3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
-		4BFA368D1D49F4B100E3D9B3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "zh-Hans"; path = "zh-Hans.lproj/Info.plist"; sourceTree = "<group>"; };
 		4BFA4EB11D33791A007DDA87 /* LocationPickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationPickerVC.h; path = EverywhereVisualViewControllers/LocationPickerVC.h; sourceTree = "<group>"; };
 		4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationPickerVC.m; path = EverywhereVisualViewControllers/LocationPickerVC.m; sourceTree = "<group>"; };
 		4BFA4EB41D33982A007DDA87 /* DatePickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DatePickerVC.h; path = EverywhereVisualViewControllers/DatePickerVC.h; sourceTree = "<group>"; };
@@ -270,6 +284,7 @@
 				1ECE892F1D4ACF55004B5875 /* Localizable.strings */,
 				1E2847F61D1ADDB900189A83 /* main.m */,
 				4BFA368C1D49F4A800E3D9B3 /* Info.plist */,
+				4BFA064A1D4B5CA500AE8000 /* InfoPlist.strings */,
 				1E2848061D1ADDB900189A83 /* LaunchScreen.storyboard */,
 			);
 			path = Everywhere;
@@ -523,6 +538,7 @@
 		4B3AF9CE1D2F3EBA009BD545 /* GeneralCategory */ = {
 			isa = PBXGroup;
 			children = (
+				4BFA06421D4B564B00AE8000 /* UIImage+Assistant */,
 				1E8723A91D435FF900652757 /* UIAlertController+Assistant */,
 				4B27FDBD1D2CA12000067683 /* UIButton+Bootstrap */,
 				4B30E2A51D24A960002C2DE7 /* NSDate+Assistant */,
@@ -537,6 +553,7 @@
 		4B3AF9CF1D2F3ECE009BD545 /* GeneralClass */ = {
 			isa = PBXGroup;
 			children = (
+				4BFA06381D4B306900AE8000 /* Qiniu */,
 				4BFE711E1D42292900F5AA2F /* BaiduMap */,
 				1E74C3021D268377000A9790 /* VCFloatingActionButton */,
 				4B001CCA1D21002700DF7287 /* CTPImageBrowser */,
@@ -576,6 +593,28 @@
 				4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */,
 			);
 			name = EverywhereCoreData;
+			sourceTree = "<group>";
+		};
+		4BFA06381D4B306900AE8000 /* Qiniu */ = {
+			isa = PBXGroup;
+			children = (
+				4BFA063F1D4B30CD00AE8000 /* GTM_Base64.h */,
+				4BFA06401D4B30CD00AE8000 /* GTM_Base64.m */,
+				4BFA06391D4B306900AE8000 /* NSString+Hashing.h */,
+				4BFA063A1D4B306900AE8000 /* NSString+Hashing.m */,
+				4BFA063B1D4B306900AE8000 /* Qiniu.h */,
+				4BFA063C1D4B306900AE8000 /* Qiniu.m */,
+			);
+			path = Qiniu;
+			sourceTree = "<group>";
+		};
+		4BFA06421D4B564B00AE8000 /* UIImage+Assistant */ = {
+			isa = PBXGroup;
+			children = (
+				4BFA06431D4B56A600AE8000 /* UIImage+Assistant.h */,
+				4BFA06441D4B56A600AE8000 /* UIImage+Assistant.m */,
+			);
+			name = "UIImage+Assistant";
 			sourceTree = "<group>";
 		};
 		4BFE711E1D42292900F5AA2F /* BaiduMap */ = {
@@ -679,6 +718,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1ECE892D1D4ACF55004B5875 /* Localizable.strings in Resources */,
+				4BFA06481D4B5CA500AE8000 /* InfoPlist.strings in Resources */,
 				1E2848081D1ADDB900189A83 /* LaunchScreen.storyboard in Resources */,
 				4B15B5D31D3F5E5E0096EE89 /* Assets.xcassets in Resources */,
 				4BFA36911D4A165300E3D9B3 /* Info.plist in Resources */,
@@ -744,6 +784,7 @@
 				4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */,
 				4B30E2A81D24A999002C2DE7 /* NSDate+Assistant.m in Sources */,
 				4BE88A9F1D332B38009501CE /* EverywhereSettingManager.m in Sources */,
+				4BFA06451D4B56A600AE8000 /* UIImage+Assistant.m in Sources */,
 				4B3AF9C91D2F3E70009BD545 /* GCLocationAnalyser.m in Sources */,
 				4BD51FC81D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m in Sources */,
 				1E9D5D421D1E2AFE00E8B630 /* WGS84TOGCJ02.m in Sources */,
@@ -759,6 +800,7 @@
 				4BE88AA21D333A46009501CE /* MapModeBar.m in Sources */,
 				4B27FDC81D2CAB5500067683 /* AssetDetailVC.m in Sources */,
 				4B3AF9CB1D2F3E70009BD545 /* GCPolyline.m in Sources */,
+				4BFA063D1D4B306900AE8000 /* NSString+Hashing.m in Sources */,
 				4BFA4EB61D33982A007DDA87 /* DatePickerVC.m in Sources */,
 				1E2848031D1ADDB900189A83 /* Everywhere.xcdatamodeld in Sources */,
 				4B3AF9CC1D2F3E70009BD545 /* GCRoutePolyline.m in Sources */,
@@ -767,6 +809,8 @@
 				4BFC352C1D3C851200F111EE /* ShareShareRepositoryVC.m in Sources */,
 				1E63B77C1D2E9D90003E355B /* PlacemarkInfoBar.m in Sources */,
 				1EF62A571D3B902A0084AF66 /* CoordinateInfo+Assistant.m in Sources */,
+				4BFA06411D4B30CD00AE8000 /* GTM_Base64.m in Sources */,
+				4BFA063E1D4B306900AE8000 /* Qiniu.m in Sources */,
 				4BFE71211D42297A00F5AA2F /* BaiduMap.m in Sources */,
 				4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */,
 				1E2847FA1D1ADDB900189A83 /* EverywhereAppDelegate.m in Sources */,
@@ -798,7 +842,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				1E2848071D1ADDB900189A83 /* Base */,
-				4B216FF41D347F7D003DCDBC /* zh-Hans */,
+				4BFA064C1D4B5F0600AE8000 /* zh-Hans */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -812,11 +856,19 @@
 			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
+		4BFA064A1D4B5CA500AE8000 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4BFA06491D4B5CA500AE8000 /* Base */,
+				4BFA064B1D4B5CA700AE8000 /* zh-Hans */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		4BFA368C1D49F4A800E3D9B3 /* Info.plist */ = {
 			isa = PBXVariantGroup;
 			children = (
 				4BFA368B1D49F4A800E3D9B3 /* Base */,
-				4BFA368D1D49F4B100E3D9B3 /* zh-Hans */,
 			);
 			name = Info.plist;
 			path = Everywhere;

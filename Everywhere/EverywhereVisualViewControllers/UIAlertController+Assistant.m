@@ -24,7 +24,7 @@
     [alertController addAction:okAction];
     [alertController addAction:cancelAction];
     
-    if (iOS9) alertController.preferredAction = okAction;
+    alertController.preferredAction = okAction;
     
     return alertController;
 }
@@ -45,7 +45,7 @@
     [alertController addAction:okAction];
     [alertController addAction:cancelAction];
     
-    if (iOS9) alertController.preferredAction = okAction;
+    alertController.preferredAction = okAction;
     
     [alertController addTextFieldWithConfigurationHandler:configurationHandler];
     return alertController;

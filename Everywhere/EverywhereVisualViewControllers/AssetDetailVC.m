@@ -24,6 +24,8 @@
     
     UIButton *playButton;
     
+    UILabel *noteLabel;
+    
     AVPlayerItem *playerItem;
 }
 
@@ -52,6 +54,8 @@
             playButton.hidden = YES;
         }
         
+        if (currentIndex > 1) noteLabel.hidden = YES;
+        else noteLabel.hidden = NO;
     }
 }
 
@@ -88,6 +92,14 @@
     [playButton autoCenterInSuperview];
     [playButton autoSetDimensionsToSize:CGSizeMake(50, 50)];
     playButton.hidden = YES;
+    
+    noteLabel = [UILabel newAutoLayoutView];
+    noteLabel.textColor = [UIColor whiteColor];
+    noteLabel.textAlignment = NSTextAlignmentCenter;
+    noteLabel.font = [UIFont bodyFontWithSizeMultiplier:1.2];
+    noteLabel.text = NSLocalizedString(@"Swipe up to quite", @"上滑退出");
+    [self.view addSubview:noteLabel];
+    [noteLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 0, 0, 0) excludingEdge:ALEdgeBottom];
     
     self.currentIndex = 0;
 }

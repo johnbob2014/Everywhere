@@ -19,6 +19,44 @@
     return instance;
 }
 
++ (void)updateAppLinkData{
+    NSString *appInfoURLString = @"http://www.7xpt9o.com1.z0.glb.clouddn.com/AppInfo.json";
+    NSError *error1;
+    NSData *appInfoData = [NSData dataWithContentsOfURL:[NSURL URLWithString:appInfoURLString] options:NSDataReadingMapped error:&error1];
+    NSError *error2;
+    NSArray *appInfoDictionaryArray = [NSJSONSerialization JSONObjectWithData:appInfoData options:NSJSONReadingMutableContainers error:&error2];
+    
+    NSDictionary *appInfoDictionary = nil;
+    
+    for (NSDictionary *dic in appInfoDictionaryArray) {
+        if ([dic[@"AppID"] isEqualToString:AppID]) {
+            appInfoDictionary = dic;
+            break;
+        }
+    }
+    
+    NSLog(@"%@",appInfoDictionary);
+    
+    [[NSUserDefaults standardUserDefaults] setValue:appInfoDictionary[@"AppURLString"] forKey:@"AppURLString"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    NSString *appQRCodeImageURLString = @"http://www.7xpt9o.com1.z0.glb.clouddn.com/AlbumMapsQRCodeImage.png";
+    NSError *error3;
+    NSData *appQRCodeImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:appQRCodeImageURLString] options:NSDataReadingMapped error:&error3];
+    [[NSUserDefaults standardUserDefaults] setValue:appQRCodeImageData forKey:@"appQRCodeImageData"];
+    
+}
+
+- (NSString *)appURLString{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:@"AppURLString"];
+}
+
+- (UIImage *)appQRCodeImage{
+    NSData *appQRCodeImageData = [[NSUserDefaults standardUserDefaults] valueForKey:@"appQRCodeImageData"];
+    return [UIImage imageWithData:appQRCodeImageData];
+    return nil;
+}
+
 - (MapBaseMode)mapBaseMode{
     MapBaseMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"mapBaseMode"];
     return mode;
@@ -169,7 +207,6 @@
 
 - (BOOL)hasPurchasedShare{
     BOOL hasPurchasedShare = [[NSUserDefaults standardUserDefaults] boolForKey:@"hasPurchasedShare"];
-    //return YES;
     return hasPurchasedShare;
 }
 
@@ -180,7 +217,6 @@
 
 - (BOOL)hasPurchasedRecord{
     BOOL hasPurchasedRecord = [[NSUserDefaults standardUserDefaults] boolForKey:@"hasPurchasedRecord"];
-    //return YES;
     return hasPurchasedRecord;
 }
 

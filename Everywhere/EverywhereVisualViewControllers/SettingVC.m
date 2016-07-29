@@ -85,10 +85,19 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     
     self.reTVManager=[[RETableViewManager alloc]initWithTableView:self.settingTableView delegate:self];
     
-#pragma mark 全局设置
+#pragma mark - 全局设置
     
     RETableViewSection *globleSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Globle", @"全局设置")];
+
+#pragma mark 系统设置
     
+    RETableViewItem *systemSettingItem = [RETableViewItem itemWithTitle:NSLocalizedString(@"⚙ App Authorization",@"⚙ 更改应用授权") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        
+        NSURL*url=[NSURL URLWithString:UIApplicationOpenSettingsURLString];
+        [[UIApplication sharedApplication] openURL:url];
+
+    }];
     
 #pragma mark 播放时间间隔
     
@@ -112,7 +121,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         self.settingManager.mapViewScaleRate = [item.value doubleValue];
     };
     
-    [globleSection addItemsFromArray:@[playTimeIntervalItem,mapViewScaleRateItem]];
+    [globleSection addItemsFromArray:@[systemSettingItem,playTimeIntervalItem,mapViewScaleRateItem]];
 
     
 /*
@@ -268,6 +277,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     }]];
      */
 
+   /*
 #pragma mark 分享
     RETableViewSection *shareSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Share《AlbumMaps》 to friends", @"分享《相册地图》给朋友")];
     [shareSection setHeaderHeight:20];
@@ -281,7 +291,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         
         [self wxShare:WXSceneSession];
     }]];
-    /*
+    
      [shareSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"✉️ 短信",@"") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
      [item deselectRowAnimated:YES];
      
@@ -294,7 +304,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     [aboutSection setHeaderHeight:20];
     [aboutSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"💖 Praise me!", @"💖 给个好评") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
-        [[UIApplication sharedApplication]openURL:[NSURL URLWithString:AppDownloadURLString]];
+        [[UIApplication sharedApplication]openURL:[NSURL URLWithString:self.settingManager.appURLString]];
     }]];
     
     [aboutSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🎉 About", @"🎉 关于") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
@@ -304,7 +314,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         [self.navigationController pushViewController:aboutVC animated:YES];
     }]];
     
-    [self.reTVManager addSectionsFromArray:@[globleSection,baseModeSection,extendedModeSection,purchaseSection,shareSection,aboutSection]];
+    [self.reTVManager addSectionsFromArray:@[globleSection,baseModeSection,extendedModeSection,purchaseSection,aboutSection]];
 }
 
 #pragma mark - RE Block
@@ -335,7 +345,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     }
     
     WXWebpageObject *webpageObject=[WXWebpageObject new];
-    webpageObject.webpageUrl = AppDownloadURLString;
+    webpageObject.webpageUrl = self.settingManager.appURLString;
     
     WXMediaMessage *mediaMessage=[WXMediaMessage alloc];
     // WXWebpageObject : 会话显示title、description、thumbData（图标较小)，朋友圈显示title、thumbData（图标较小),两者都发送webpageUrl
