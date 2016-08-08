@@ -39,6 +39,14 @@
     // Do any additional setup after loading the view.
     
     switch (self.showShareRepositoryType) {
+        case ShareRepositoryTypeSent|ShareRepositoryTypeReceived|ShareRepositoryTypeRecorded|ShareRepositoryTypeEdited|ShareRepositoryTypeImported:
+            groupNameArray = @[NSLocalizedString(@"Sent", @"发送的"),
+                               NSLocalizedString(@"Received", @"接收的"),
+                               NSLocalizedString(@"Recorded", @"记录的"),
+                               NSLocalizedString(@"Edited", @"编辑的"),
+                               NSLocalizedString(@"Imported", @"导入的")];
+            break;
+        
         case ShareRepositoryTypeSent|ShareRepositoryTypeReceived|ShareRepositoryTypeRecorded|ShareRepositoryTypeEdited:
             groupNameArray = @[NSLocalizedString(@"Sent", @"发送的"),
                                NSLocalizedString(@"Received", @"接收的"),
@@ -104,6 +112,7 @@
     NSMutableArray *receivedArray = [NSMutableArray new];
     NSMutableArray *recordedArray = [NSMutableArray new];
     NSMutableArray *editedArray = [NSMutableArray new];
+    NSMutableArray *importedArray = [NSMutableArray new];
     
     shareRepositoryMA = [NSMutableArray arrayWithArray:[EverywhereShareRepositoryManager shareRepositoryArray]];
     
@@ -121,6 +130,9 @@
             case ShareRepositoryTypeEdited:
                 [editedArray addObject:obj];
                 break;
+            case ShareRepositoryTypeImported:
+                [importedArray addObject:obj];
+                break;
             default:
                 break;
         }
@@ -130,24 +142,26 @@
         case 0:
             currentGroupArray = sentArray;
             if (self.showShareRepositoryType == ShareRepositoryTypeRecorded) currentGroupArray = recordedArray;
-            self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[0],(unsigned long)currentGroupArray.count];
             break;
         case 1:
             currentGroupArray = receivedArray;
-            self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[1],(unsigned long)currentGroupArray.count];
             break;
         case 2:
             currentGroupArray = recordedArray;
-            self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[2],(unsigned long)currentGroupArray.count];
             break;
         case 3:
             currentGroupArray = editedArray;
-            self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[3],(unsigned long)currentGroupArray.count];
+            break;
+        case 4:
+            currentGroupArray = importedArray;
             break;
         default:
             break;
             
     }
+    
+    self.title = [NSString stringWithFormat:@"%@ (%ld)",groupNameArray[index],(unsigned long)currentGroupArray.count];
+    
     [myTableView reloadData];
 }
 
@@ -168,23 +182,24 @@
     NSString *headerString;
     switch (shareRepository.shareRepositoryType) {
         case ShareRepositoryTypeSent:
-            headerString = @"🏹 ";
+            headerString = @"📤";
             break;
         case ShareRepositoryTypeReceived:
-            headerString = @"🎣 ";
+            headerString = @"📥";
             break;
         case ShareRepositoryTypeRecorded:
-            headerString = @"🚴 ";
+            headerString = @"🎥";
             break;
         case ShareRepositoryTypeEdited:
-            headerString = @"✏️ ";
+            headerString = @"📦";
             break;
         default:
             break;
     }
-    cell.textLabel.text = [headerString stringByAppendingString:shareRepository.title];
-    NSString *tempString = NSLocalizedString(@"footprints", @"个足迹点");
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%lu %@ %@",(unsigned long)shareRepository.shareAnnos.count,tempString,[shareRepository.creationDate stringWithDefaultFormat]];
+    
+    cell.textLabel.text = [NSString stringWithFormat:@"%000lu %@ %@",indexPath.row + 1,headerString,shareRepository.title];
+    
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ : %lu , %@ : %@",NSLocalizedString(@"Footprints Count", @"足迹点数"),(unsigned long)shareRepository.shareAnnos.count,NSLocalizedString(@"Modification Date", @"修改时间"),[shareRepository.modificatonDate stringWithDefaultFormat]];
     return cell;
 }
 
@@ -213,8 +228,11 @@
                                                            
                                                            ssVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.8, 200);
                                                            ssVC.landscapeContentSizeInPopup = CGSizeMake(200, ScreenWidth * 0.8);
-                                                           [self.popupController pushViewController:ssVC animated:YES];
+                                                           
+                                                           if(self.popupController) [self.popupController pushViewController:ssVC animated:YES];
+                                                           
                                                        }];
+    
     UIAlertAction *renameAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Rename",@"重命名")
                                                           style:UIAlertActionStyleDefault
                                                         handler:^(UIAlertAction * _Nonnull action) {
@@ -259,8 +277,8 @@
     if ([EverywhereSettingManager defaultManager].hasPurchasedRecord) {
         ShareRepositoryEditerVC *shareRepositoryEditerVC = [ShareRepositoryEditerVC new];
         shareRepositoryEditerVC.shareRepository = currentGroupArray[indexPath.row];
-        shareRepositoryEditerVC.contentSizeInPopup = CGSizeMake(300, 400);
-        shareRepositoryEditerVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
+        shareRepositoryEditerVC.contentSizeInPopup = self.contentSizeInPopup;
+        shareRepositoryEditerVC.landscapeContentSizeInPopup = self.landscapeContentSizeInPopup;
         [self.popupController pushViewController:shareRepositoryEditerVC animated:YES];
     }else{
         [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"You haven't got RecordFucntionAndRecordMode so you can not edit it.", @"您没有购买足迹记录和记录模式，无法编辑。")]

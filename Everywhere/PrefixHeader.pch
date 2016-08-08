@@ -21,6 +21,9 @@
 
 #define VCBackgroundColor [UIColor groupTableViewBackgroundColor]
 
+#define Path_Documents [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
+#define Path_Inbox [Path_Documents stringByAppendingPathComponent:@"Inbox"]
+
 #define WEAKSELF(weakSelf)  __weak __typeof (&*self)weakSelf = self;
 
 #define iOS8 ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0 ? YES : NO)
@@ -100,22 +103,22 @@ typedef NS_ENUM(NSInteger,ExtendedColorScheme){
     ExtendedColorSchemeGrassGreen
 };
 
-
-/*
-typedef NS_ENUM(NSInteger,ShareRepositoryType){
-    ShareRepositoryTypeSent = 0,
-    ShareRepositoryTypeReceived,
-    ShareRepositoryTypeRecorded
-};
-*/
-
 enum {
     ShareRepositoryTypeSent = (1UL << 0),
     ShareRepositoryTypeReceived = (1UL << 1),
     ShareRepositoryTypeRecorded = (1UL << 2),
-    ShareRepositoryTypeEdited = (1UL << 3)
+    ShareRepositoryTypeEdited = (1UL << 3),
+    ShareRepositoryTypeImported = (1UL << 4)
 };
 typedef NSUInteger ShareRepositoryType;
+
+typedef NS_ENUM(NSInteger,DefaultTransport){
+    DefaultTransportCustom = 0,
+    DefaultTransportWalk,
+    DefaultTransportRide,
+    DefaultTransportDrive,
+    DefaultTransportHighSpeed
+};
 
 
 typedef NS_ENUM(NSInteger,ShowUserLocationMode){

@@ -10,6 +10,11 @@
 
 @implementation EverywhereShareRepository
 
+- (NSDate *)modificatonDate{
+    if(_modificatonDate) return _modificatonDate;
+    else return self.creationDate;
+}
+
 - (instancetype)initWithCoder:(NSCoder *)aDecoder{
     EverywhereShareRepository *shareRepository = [EverywhereShareRepository new];
     
@@ -20,6 +25,8 @@
     shareRepository.title = [aDecoder decodeObjectForKey:@"title"];
     
     shareRepository.creationDate = [aDecoder decodeObjectForKey:@"creationDate"];
+    
+    shareRepository.modificatonDate = [aDecoder decodeObjectForKey:@"modificatonDate"];
     
     shareRepository.shareRepositoryType = [aDecoder decodeIntegerForKey:@"shareRepositoryType"];
     
@@ -38,6 +45,8 @@
     
     [aCoder encodeObject:self.creationDate forKey:@"creationDate"];
     
+    [aCoder encodeObject:self.modificatonDate forKey:@"modificatonDate"];
+    
     [aCoder encodeInteger:self.shareRepositoryType forKey:@"shareRepositoryType"];
     
     if (self.placemarkInfo) [aCoder encodeObject:self.placemarkInfo forKey:@"placemarkInfo"];
@@ -50,6 +59,7 @@
     copyShareRepository.radius = self.radius;
     copyShareRepository.title = self.title;
     copyShareRepository.creationDate = self.creationDate;
+    copyShareRepository.modificatonDate = self.modificatonDate;
     copyShareRepository.shareRepositoryType = self.shareRepositoryType;
     copyShareRepository.placemarkInfo = self.placemarkInfo;
     

@@ -7,7 +7,20 @@
 	<key>CFBundleDisplayName</key>
 	<string>AlbumMaps</string>
 	<key>CFBundleDocumentTypes</key>
-	<array/>
+	<array>
+		<dict>
+			<key>CFBundleTypeIconFiles</key>
+			<array/>
+			<key>CFBundleTypeName</key>
+			<string>abf</string>
+			<key>LSHandleRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.ZhangBaoGuo.AlbumMaps.abf</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIcons</key>
@@ -34,6 +47,14 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>wxa1b9c5632d24039a</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>albummaps</string>
 			</array>
 		</dict>
 	</array>
@@ -64,6 +85,8 @@
 		<string>fetch</string>
 		<string>location</string>
 	</array>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -83,6 +106,23 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>abf</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.ZhangBaoGuo.AlbumMaps.abf</string>
+			<key>UTTypeSize320IconFile</key>
+			<string>地球_320_320</string>
+			<key>UTTypeSize64IconFile</key>
+			<string>地球_64_64</string>
+		</dict>
 	</array>
 </dict>
 </plist>

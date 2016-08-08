@@ -98,7 +98,6 @@
 }
 
 - (void)setSelectedSegmentIndex:(NSInteger)selectedSegmentIndex{
-    NSLog(@"%@",NSStringFromSelector(_cmd));
     self.modeSeg.selectedSegmentIndex = selectedSegmentIndex;
 }
 

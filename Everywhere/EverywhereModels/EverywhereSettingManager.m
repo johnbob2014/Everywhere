@@ -19,12 +19,23 @@
     return instance;
 }
 
-+ (void)updateAppLinkData{
++ (void)updateAppInfoAndAppQRCodeImageData{
+    // 更新下载链接
     NSString *appInfoURLString = @"http://www.7xpt9o.com1.z0.glb.clouddn.com/AppInfo.json";
-    NSError *error1;
-    NSData *appInfoData = [NSData dataWithContentsOfURL:[NSURL URLWithString:appInfoURLString] options:NSDataReadingMapped error:&error1];
-    NSError *error2;
-    NSArray *appInfoDictionaryArray = [NSJSONSerialization JSONObjectWithData:appInfoData options:NSJSONReadingMutableContainers error:&error2];
+    
+    NSError *readDataError;
+    NSData *appInfoData = [NSData dataWithContentsOfURL:[NSURL URLWithString:appInfoURLString] options:NSDataReadingMapped error:&readDataError];
+    if (!appInfoData){
+        NSLog(@"从网络获取AppInfo数据出错 : %@",readDataError.localizedDescription);
+        return;
+    }
+    
+    NSError *parseJSONError;
+    NSArray *appInfoDictionaryArray = [NSJSONSerialization JSONObjectWithData:appInfoData options:NSJSONReadingMutableContainers error:&parseJSONError];
+    if (!appInfoDictionaryArray){
+        NSLog(@"解析AppInfo数据出错 : %@",parseJSONError.localizedDescription);
+        return;
+    }
     
     NSDictionary *appInfoDictionary = nil;
     
@@ -35,14 +46,20 @@
         }
     }
     
-    NSLog(@"%@",appInfoDictionary);
+    NSLog(@"\n%@",appInfoDictionary);
     
     [[NSUserDefaults standardUserDefaults] setValue:appInfoDictionary[@"AppURLString"] forKey:@"AppURLString"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
+    // 更新二维码图片
     NSString *appQRCodeImageURLString = @"http://www.7xpt9o.com1.z0.glb.clouddn.com/AlbumMapsQRCodeImage.png";
-    NSError *error3;
-    NSData *appQRCodeImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:appQRCodeImageURLString] options:NSDataReadingMapped error:&error3];
+    NSError *readImageDataError;
+    NSData *appQRCodeImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:appQRCodeImageURLString] options:NSDataReadingMapped error:&readImageDataError];
+    if (!appQRCodeImageData){
+        NSLog(@"从网络获取appQRCodeImage数据出错 : %@",readImageDataError.localizedDescription);
+        return;
+    }
+    
     [[NSUserDefaults standardUserDefaults] setValue:appQRCodeImageData forKey:@"appQRCodeImageData"];
     
 }
@@ -132,7 +149,7 @@
 
 - (NSTimeInterval)playTimeInterval{
     NSTimeInterval playTI = [[NSUserDefaults standardUserDefaults] doubleForKey:@"playTimeInterval"];
-    if (!playTI || playTI == 0) playTI = 2;
+    if (!playTI || playTI == 0) playTI = 2.0;
     return playTI;
 }
 
@@ -239,7 +256,7 @@
 
 - (NSTimeInterval)minTimeIntervalForRecord{
     NSTimeInterval minTI = [[NSUserDefaults standardUserDefaults] doubleForKey:@"minTimeIntervalForRecord"];
-    if (!minTI || minTI == 0) minTI = 2;
+    if (!minTI || minTI == 0) minTI = 5;
     return minTI;
 }
 
@@ -265,6 +282,16 @@
 
 - (void)setPraiseCount:(NSInteger)praiseCount{
     [[NSUserDefaults standardUserDefaults] setInteger:praiseCount forKey:@"praiseCount"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (DefaultTransport)defaultTransport{
+    return [[NSUserDefaults standardUserDefaults] integerForKey:@"defaultTransport"];
+}
+
+- (void)setDefaultTransport:(DefaultTransport)defaultTransport{
+    NSLog(@"%ld",(long)defaultTransport);
+    [[NSUserDefaults standardUserDefaults] setInteger:defaultTransport forKey:@"defaultTransport"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

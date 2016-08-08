@@ -140,6 +140,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     
 #pragma mark 基础模式主题颜色
     RETableViewSection *baseModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"BaseMode", @"基础模式")];
+    [baseModeSection setHeaderHeight:20];
     
     NSArray *baseColorSchemeArray = @[NSLocalizedString(@"Classic Gray",@"经典灰"),NSLocalizedString(@"Fresh Purple",@"清新紫"),NSLocalizedString(@"Deep Brown",@"深沉棕")];
     NSString *currentCS = baseColorSchemeArray[self.settingManager.baseColorScheme < baseColorSchemeArray.count ? self.settingManager.baseColorScheme : baseColorSchemeArray.count - 1];
@@ -186,6 +187,8 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     [baseModeSection addItemsFromArray:@[baseColorSchemePickerItem,mergeDistanceForMomentItem,mergeDistanceForLocationItem]];
 
 #pragma mark - 扩展模式设置
+    RETableViewSection *extendedModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Extended Mode", @"扩展模式")];
+    [extendedModeSection setHeaderHeight:20];
     
 #pragma mark 扩展模式主题颜色
     
@@ -204,7 +207,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     //
     extendedModeColorSchemePickerItem.inlinePicker = YES;
 
-    RETableViewSection *extendedModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Extended Mode", @"扩展模式")];
+    
     //self.settingManager.minTimeIntervalForRecord
     
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.minDistanceForRecord];
@@ -230,8 +233,36 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         if(DEBUGMODE) NSLog(@"%@",item.value);
         self.settingManager.maxFootprintsCountForRecord = [item.value integerValue];
     };
+    
+    [extendedModeSection addItemsFromArray:@[extendedModeColorSchemePickerItem,minDistanceForRecordItem,minTimeIntervalForRecordItem,maxFootprintsCountForRecordItem]];
+    
+#pragma mark - 足迹包管理
+    RETableViewSection *managementSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Footpinrt Repository Management", @"足迹包管理")];
+    [managementSection setHeaderHeight:20];
+    
+    RETableViewItem *exportRepositoryItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📤 Export Repository",@"📤 导出足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        
+        NSUInteger count = [EverywhereShareRepositoryManager exportShareRepositoryToFilesAtPath:Path_Documents];
+        
+        NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully export repository count", @"成功导出足迹包数量"),count];
+        UIAlertController *alertController = [UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
+                                                                                           message:alertMessage];
+        [weakSelf presentViewController:alertController animated:YES completion:nil];
+    }];
+    
+    RETableViewItem *importRepositoryItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📥 Import Repository",@"📥 导入足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        
+        NSUInteger count = [EverywhereShareRepositoryManager importShareRepositoryFromFilesAtPath:Path_Documents];
+        
+        NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully import repository count", @"成功导入足迹包数量"),count];
+        UIAlertController *alertController = [UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
+                                                                                           message:alertMessage];
+        [weakSelf presentViewController:alertController animated:YES completion:nil];
+    }];
 
-    RETableViewItem *clearCatchItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"❌ 清空所有足迹",@"") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+    RETableViewItem *clearCatchItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"❌ 清空所有足迹包",@"❌ Clear All Footprints Repository") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         UIAlertController *alertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Attention", @"警告")
                                                                                          message:NSLocalizedString(@"All your footprints will be deleted and can not be restored! Are you sure?", @"您分享、接收、记录的所有足迹都将被删除，此操作无法恢复，请务必谨慎。确认删除？")
@@ -242,7 +273,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         
     }];
     
-    [extendedModeSection addItemsFromArray:@[extendedModeColorSchemePickerItem,minDistanceForRecordItem,minTimeIntervalForRecordItem,maxFootprintsCountForRecordItem,clearCatchItem]];
+    [managementSection addItemsFromArray:@[exportRepositoryItem,importRepositoryItem,clearCatchItem]];
 
     
 #pragma mark 购买
@@ -314,7 +345,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         [self.navigationController pushViewController:aboutVC animated:YES];
     }]];
     
-    [self.reTVManager addSectionsFromArray:@[globleSection,baseModeSection,extendedModeSection,purchaseSection,aboutSection]];
+    [self.reTVManager addSectionsFromArray:@[globleSection,baseModeSection,extendedModeSection,managementSection,purchaseSection,aboutSection]];
 }
 
 #pragma mark - RE Block

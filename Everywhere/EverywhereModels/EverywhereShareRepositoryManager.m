@@ -43,11 +43,15 @@
 
 
 + (void)addShareRepository:(EverywhereShareRepository *)shareRepository{
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:shareRepository];
-    NSMutableArray *tempMA = [EverywhereShareRepositoryManager shareRepositoryDataArray];
-    [tempMA insertObject:data atIndex:0];
-    [[NSUserDefaults standardUserDefaults] setValue:tempMA forKey:@"shareRepositoryDataArray"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    if (![EverywhereShareRepositoryManager shareRepositoryExists:shareRepository]){
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:shareRepository];
+        NSMutableArray *tempMA = [EverywhereShareRepositoryManager shareRepositoryDataArray];
+        [tempMA insertObject:data atIndex:0];
+        [[NSUserDefaults standardUserDefaults] setValue:tempMA forKey:@"shareRepositoryDataArray"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }else{
+        NSLog(@"addShareRepository error : duplicate shareRepository");
+    }
 }
 
 + (void)removeLastAddedShareRepository{
@@ -76,4 +80,84 @@
     [[NSUserDefaults standardUserDefaults] setValue:ma forKey:@"shareRepositoryDataArray"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
+
++ (NSUInteger)exportShareRepositoryToFilesAtPath:(NSString *)directoryPath{
+    __block NSUInteger count = 0;
+    
+    [[EverywhereShareRepositoryManager shareRepositoryDataArray] enumerateObjectsUsingBlock:^(NSData * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        EverywhereShareRepository *shareRepository = (EverywhereShareRepository *)[NSKeyedUnarchiver unarchiveObjectWithData:obj];
+        NSString *filePath = [directoryPath stringByAppendingPathComponent:shareRepository.title];
+        filePath = [filePath stringByAppendingString:@".abf"];
+        
+        // 如果有重名文件
+        if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+#warning fix here!
+            NSString *newName = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"D.N.", @"重名"),shareRepository.title];
+            filePath = [directoryPath stringByAppendingPathComponent:newName];
+            filePath = [filePath stringByAppendingString:@".abf"];
+        }
+        
+        if ([obj writeToFile:filePath atomically:YES]){
+            count++;
+        }
+        
+    }];
+    
+    return  count;
+}
+
++ (NSUInteger)importShareRepositoryFromFilesAtPath:(NSString *)directoryPath{
+    NSError *error;
+    NSArray *fileNameArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directoryPath error:&error];
+    
+    if (!fileNameArray){
+        NSLog(@"Error reading contents at path : %@\n%@",directoryPath,error.localizedFailureReason);
+        return 0;
+    }
+    
+    NSMutableArray *tempMA = [EverywhereShareRepositoryManager shareRepositoryDataArray];
+    //[tempMA insertObject:data atIndex:0];
+    
+    NSUInteger count = 0;
+    
+    for (NSString *fileName in fileNameArray) {
+        //NSLog(@"fileName : %@",fileName);
+        
+        NSString *filePath = [directoryPath stringByAppendingPathComponent:fileName];
+        
+        if ([[filePath pathExtension] isEqualToString:@"abf"]){
+            NSData *shareRepositoryData = [NSData dataWithContentsOfFile:filePath];
+            EverywhereShareRepository *shareRepository = (EverywhereShareRepository *)[NSKeyedUnarchiver unarchiveObjectWithData:shareRepositoryData];
+            
+            if (shareRepository && ![EverywhereShareRepositoryManager shareRepositoryExists:shareRepository]){
+                
+                count++;
+                
+                [tempMA insertObject:shareRepositoryData atIndex:0];
+                
+                NSError *removeError;
+                [[NSFileManager defaultManager] removeItemAtPath:filePath error:&removeError];
+
+            }
+            
+        }
+        
+    }
+    
+    [[NSUserDefaults standardUserDefaults] setValue:tempMA forKey:@"shareRepositoryDataArray"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    return count;
+}
+
++ (BOOL)shareRepositoryExists:(EverywhereShareRepository *)shareRepository{
+    
+    for (EverywhereShareRepository *obj in [EverywhereShareRepositoryManager shareRepositoryArray]) {
+        if ([obj.title isEqualToString:shareRepository.title] && obj.shareAnnos.count == shareRepository.shareAnnos.count)
+            return YES;
+    }
+    
+    return NO;
+}
+
 @end

@@ -39,13 +39,6 @@
     // Override point for customization after application launch.
     if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     
-        
-    //向微信注册id
-    BOOL wx=[WXApi registerApp:@"wxa1b9c5632d24039a"];
-    if(DEBUGMODE) NSLog(@"WeChat Rigister：%@",wx? @"Succeeded" : @"Failed");
-    
-    [EverywhereSettingManager updateAppLinkData];
-    
 #warning Fix Before Submit
     [EverywhereSettingManager defaultManager].hasPurchasedRecord = YES;
     [EverywhereSettingManager defaultManager].hasPurchasedShare = YES;
@@ -57,12 +50,23 @@
     self.window.tintColor = [EverywhereSettingManager defaultManager].baseTintColor;
     [self.window makeKeyAndVisible];
     
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
+    // 需要访问网络，在后台进行
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        //向微信注册id
+        BOOL wx=[WXApi registerApp:@"wxa1b9c5632d24039a"];
+        if(DEBUGMODE) NSLog(@"WeChat Rigister：%@",wx? @"Succeeded" : @"Failed");
+        
+        //从网络更新应用数据
+        [EverywhereSettingManager updateAppInfoAndAppQRCodeImageData];
+    });
+    
+    //[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
     
     if ([EverywhereSettingManager defaultManager].praiseCount != 0) {
         if ([UIApplication instancesRespondToSelector:@selector(registerUserNotificationSettings:)])
         {
-            [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound categories:nil]];
+            [application registerUserNotificationSettings:
+             [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound categories:nil]];
         }
 
     }
@@ -121,6 +125,10 @@
     if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     // Saves changes in the application's managed object context before the application terminates.
+    
+    // 程序退出时保存记录的足迹
+    [assetsMapProVC intelligentlySaveRecordedShareAnnosAndClearCatche];
+    
     [self saveContext];
 }
 

@@ -798,9 +798,9 @@
     shareRepositoryPickerVC.shareRepositoryDidChangeHandler = ^(EverywhereShareRepository *choosedShareRepository){
         [weakSelf showShowShareRepositoryAlertController:choosedShareRepository];
     };
-    
-    shareRepositoryPickerVC.contentSizeInPopup = CGSizeMake(300, 400);
-    shareRepositoryPickerVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
+   
+    shareRepositoryPickerVC.contentSizeInPopup = CGSizeMake(ScreenWidth - 10, ScreenHeight - 10 - 80);//CGSizeMake(300, 400);
+    shareRepositoryPickerVC.landscapeContentSizeInPopup = CGSizeMake(ScreenHeight - 10 - 80, ScreenWidth - 10);//CGSizeMake(400, 320);
     popupController = [[STPopupController alloc] initWithRootViewController:shareRepositoryPickerVC];
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
@@ -2040,6 +2040,8 @@
     // 添加要显示的ShareAnnotations
     [self.myMapView addAnnotations:shareRepository.shareAnnos];
     
+    msExtenedModeBar.info = shareRepository.title;
+    
     // 设置addedIDAnnos，用于导航
     self.addedIDAnnos = shareRepository.shareAnnos;
     self.addedEWShareAnnos = shareRepository.shareAnnos;
@@ -2150,6 +2152,9 @@
     if (self.isRecording) {
         // 开始记录
         if(DEBUGMODE) NSLog(@"开始记录");
+        // 防止自动锁屏
+        [UIApplication sharedApplication].idleTimerDisabled = YES;
+        
         [self.locationManagerForRecording startUpdatingLocation];
         
         msExtenedModeBar.info = NSLocalizedString(@"Recording", @"记录中");
@@ -2159,6 +2164,7 @@
         
     }else{
         // 暂停记录
+        [UIApplication sharedApplication].idleTimerDisabled = NO;
         msExtenedModeBar.info = NSLocalizedString(@"Paused", @"已暂停");
         if(DEBUGMODE) NSLog(@"暂停记录");
         [self.locationManagerForRecording stopUpdatingLocation];
@@ -2210,7 +2216,7 @@
     
     [self intelligentlySaveRecordedShareAnnosAndClearCatche];
     self.allowBrowserMode = YES;
-    recordedShareAnnos = [NSMutableArray new];
+    //recordedShareAnnos = [NSMutableArray new];
     
     [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"The recorded footprints has been saved.", @"足迹保存成功。")]
                        animated:YES completion:nil];
@@ -2229,7 +2235,7 @@
     NSString *alertMessage = NSLocalizedString(@"Save the recorded footprints?", @"是否保存足迹?");
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
     
-     UIAlertAction *saveAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Save",@"保存")
+    UIAlertAction *saveAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Save",@"保存")
                                                          style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * action) {
                                                              [self intelligentlySaveRecordedShareAnnosAndClearCatche];
@@ -2237,6 +2243,8 @@
                                                              [self quiteRecordMode];
                                                              [self quiteExtendedMode];
                                                          }];
+    
+    /*
     UIAlertAction *dropAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Drop",@"丢弃")
                                                          style:UIAlertActionStyleDefault
                                                        handler:^(UIAlertAction * action) {
@@ -2244,11 +2252,12 @@
                                                            [self quiteRecordMode];
                                                            [self quiteExtendedMode];
                                                        }];
+    */
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
     
     [alertController addAction:saveAction];
-    [alertController addAction:dropAction];
+    //[alertController addAction:dropAction];
     [alertController addAction:cancelAction];
     
     [self presentViewController:alertController animated:YES completion:nil];
@@ -2268,8 +2277,20 @@
     [EverywhereShareRepositoryManager addShareRepository:shareRepository];
     if(DEBUGMODE) NSLog(@"记录已经保存");
     
-    // 设置保存为空
-    recordedShareAnnos = nil;
+    // 显示保存通知
+    UILocalNotification *noti = [UILocalNotification new];
+    
+    NSMutableString *messageMS = [NSMutableString new];
+    [messageMS appendFormat:@"%@\n%@\n%@ %lu",NSLocalizedString(@"Record has been sucessfully saved :", @"记录保存成功 :"),shareRepository.title,NSLocalizedString(@"Footprints Count: ", @"足迹点数量 : "),(long)recordedShareAnnos.count];
+    
+    noti.alertBody = messageMS;
+    noti.alertAction = NSLocalizedString(@"Action", @"操作");
+    noti.soundName = UILocalNotificationDefaultSoundName;
+    //noti.applicationIconBadgeNumber = count;
+    [[UIApplication sharedApplication] presentLocalNotificationNow:noti];
+
+    // 清空存储的足迹点
+    recordedShareAnnos = [NSMutableArray new];
 }
 
 - (void)quiteRecordMode{
@@ -2550,7 +2571,7 @@
         }
     
         // 移动地图到第一个点
-        NSLog(@"self.addedEWAnnos.count : %lu",(unsigned long)self.addedEWAnnos.count);
+        //NSLog(@"self.addedEWAnnos.count : %lu",(unsigned long)self.addedEWAnnos.count);
     
         EverywhereAnnotation *firstAnnotation = self.addedEWAnnos.firstObject;
         MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(firstAnnotation.coordinate, maxDistance, maxDistance);
@@ -2864,7 +2885,7 @@
     // 如果达到设置最大数据，重新开始一条新的记录，用于节省内存，防止崩溃
     if (recordedShareAnnos.count == self.settingManager.maxFootprintsCountForRecord) {
         [self intelligentlySaveRecordedShareAnnosAndClearCatche];
-        recordedShareAnnos = [NSMutableArray new];
+        //recordedShareAnnos = [NSMutableArray new];
     }
 }
 

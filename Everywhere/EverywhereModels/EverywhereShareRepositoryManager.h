@@ -16,4 +16,9 @@
 + (NSArray <EverywhereShareRepository *> *)shareRepositoryArray;
 + (void)setShareRepositoryArray:(NSArray <EverywhereShareRepository *> *)shareRepositoryArray;
 
++ (BOOL)shareRepositoryExists:(EverywhereShareRepository *)shareRepository;
+
++ (NSUInteger)exportShareRepositoryToFilesAtPath:(NSString *)directoryPath;
++ (NSUInteger)importShareRepositoryFromFilesAtPath:(NSString *)directoryPath;
+
 @end

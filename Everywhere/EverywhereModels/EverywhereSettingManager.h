@@ -12,7 +12,7 @@
 
 + (instancetype)defaultManager;
 
-+ (void)updateAppLinkData;
++ (void)updateAppInfoAndAppQRCodeImageData;
 
 @property (strong,nonatomic) NSString *appURLString;
 @property (strong,nonatomic) UIImage *appQRCodeImage;
@@ -46,5 +46,7 @@
 @property (assign,nonatomic) NSInteger maxFootprintsCountForRecord;
 
 @property (assign,nonatomic) NSInteger praiseCount;
+
+@property (assign,nonatomic) DefaultTransport defaultTransport;
 
 @end

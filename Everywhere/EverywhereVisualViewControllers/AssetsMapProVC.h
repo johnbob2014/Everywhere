@@ -16,6 +16,7 @@
 
 @property (assign,nonatomic) BOOL isRecording;
 
-- (void)didReceiveShareRepositoryString:(NSString *)footprintstring;
+- (void)didReceiveShareRepositoryString:(NSString *)shareRepositoryString;
+- (void)intelligentlySaveRecordedShareAnnosAndClearCatche;
 
 @end

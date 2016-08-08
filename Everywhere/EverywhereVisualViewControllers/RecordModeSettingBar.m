@@ -7,6 +7,7 @@
 //
 
 #import "RecordModeSettingBar.h"
+#import "EverywhereSettingManager.h"
 
 @interface RecordModeSettingBar ()
 
@@ -45,7 +46,7 @@
         
         groupSeg = [[UISegmentedControl alloc] initWithItems:groupNameArray];
         groupSeg.tintColor = [UIColor whiteColor];
-        groupSeg.selectedSegmentIndex = 0;
+        groupSeg.selectedSegmentIndex = [EverywhereSettingManager defaultManager].defaultTransport;
         [groupSeg addTarget:self action:@selector(segValueChanged:) forControlEvents:UIControlEventValueChanged];
         [self addSubview:groupSeg];
         groupSeg.translatesAutoresizingMaskIntoConstraints = NO;
@@ -103,6 +104,8 @@
         [velocitySlider autoAlignAxis:ALAxisHorizontal toSameAxisOfView:velocityLabel];
         [velocitySlider autoSetDimension:ALDimensionWidth toSize:velocitySliderWidth];
         [velocitySlider autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
+        
+        [self updateData:groupSeg.selectedSegmentIndex];
 
     }
     return self;
@@ -119,6 +122,8 @@
 }
 
 - (void)updateData:(NSInteger)index{
+    [EverywhereSettingManager defaultManager].defaultTransport = index;
+    
     switch (index) {
         case 0:
             // 注意这里的速度计算

@@ -6,6 +6,8 @@
   Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 */
 
+CFBundleName = "相册地图";
+
 CFBundleDisplayName = "相册地图";
 
 NSLocationAlwaysUsageDescription = "相册地图的足迹记录功能需要在后台持续使用GPS来实时获取位置信息，否则无法在后台记录数据。";
