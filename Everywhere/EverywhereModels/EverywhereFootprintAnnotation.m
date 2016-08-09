@@ -1,15 +1,15 @@
 //
-//  EverywhereShareAnnotation.m
+//  EverywhereFootprintAnnotation.m
 //  Everywhere
 //
 //  Created by BobZhang on 16/7/15.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#import "EverywhereShareAnnotation.h"
+#import "EverywhereFootprintAnnotation.h"
 #import "WGS84TOGCJ02.h"
 
-@implementation EverywhereShareAnnotation
+@implementation EverywhereFootprintAnnotation
 
 - (CLLocation *)location{
     return [[CLLocation alloc] initWithLatitude:self.coordinateWGS84.latitude longitude:self.coordinateWGS84.longitude];
@@ -32,7 +32,7 @@
 - (instancetype)initWithCoder:(NSCoder *)aDecoder{
     CGPoint coordinateWGS84Point = [aDecoder decodeCGPointForKey:@"coordinateWGS84Point"];
     
-    EverywhereShareAnnotation *shareAnno = [EverywhereShareAnnotation new];
+    EverywhereFootprintAnnotation *shareAnno = [EverywhereFootprintAnnotation new];
     shareAnno.coordinateWGS84 = CLLocationCoordinate2DMake(coordinateWGS84Point.x, coordinateWGS84Point.y);
     shareAnno.startDate = [aDecoder decodeObjectForKey:@"startDate"];
     shareAnno.endDate = [aDecoder decodeObjectForKey:@"endDate"];

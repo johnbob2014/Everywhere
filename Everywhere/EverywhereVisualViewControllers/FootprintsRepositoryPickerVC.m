@@ -1,29 +1,29 @@
 //
-//  ShareRepositoryPickerVC.m
+//  FootprintsRepositoryPickerVC.m
 //  Everywhere
 //
 //  Created by BobZhang on 16/7/18.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#import "ShareRepositoryPickerVC.h"
+#import "FootprintsRepositoryPickerVC.h"
 
-#import "ShareRepositoryEditerVC.h"
+#import "FootprintsRepositoryEditerVC.h"
 
-#import "EverywhereShareRepositoryManager.h"
+#import "EverywhereFootprintsRepositoryManager.h"
 #import "EverywhereSettingManager.h"
-#import "ShareShareRepositoryVC.h"
+#import "ShareFootprintsRepositoryVC.h"
 
-@interface ShareRepositoryPickerVC () <UITableViewDelegate,UITableViewDataSource>
+@interface FootprintsRepositoryPickerVC () <UITableViewDelegate,UITableViewDataSource>
 
 @end
 
-@implementation ShareRepositoryPickerVC{
+@implementation FootprintsRepositoryPickerVC{
     UISegmentedControl *groupSeg;
     NSArray <NSString *> *groupNameArray;
-    NSArray <EverywhereShareRepository *> *currentGroupArray;
+    NSArray <EverywhereFootprintsRepository *> *currentGroupArray;
     
-    NSMutableArray <EverywhereShareRepository *> *shareRepositoryMA;
+    NSMutableArray <EverywhereFootprintsRepository *> *footprintsRepositoryMA;
 
     UITableView *myTableView;
     
@@ -38,8 +38,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    switch (self.showShareRepositoryType) {
-        case ShareRepositoryTypeSent|ShareRepositoryTypeReceived|ShareRepositoryTypeRecorded|ShareRepositoryTypeEdited|ShareRepositoryTypeImported:
+    switch (self.showFootprintsRepositoryType) {
+        case FootprintsRepositoryTypeSent|FootprintsRepositoryTypeReceived|FootprintsRepositoryTypeRecorded|FootprintsRepositoryTypeEdited|FootprintsRepositoryTypeImported:
             groupNameArray = @[NSLocalizedString(@"Sent", @"发送的"),
                                NSLocalizedString(@"Received", @"接收的"),
                                NSLocalizedString(@"Recorded", @"记录的"),
@@ -47,19 +47,19 @@
                                NSLocalizedString(@"Imported", @"导入的")];
             break;
         
-        case ShareRepositoryTypeSent|ShareRepositoryTypeReceived|ShareRepositoryTypeRecorded|ShareRepositoryTypeEdited:
+        case FootprintsRepositoryTypeSent|FootprintsRepositoryTypeReceived|FootprintsRepositoryTypeRecorded|FootprintsRepositoryTypeEdited:
             groupNameArray = @[NSLocalizedString(@"Sent", @"发送的"),
                                NSLocalizedString(@"Received", @"接收的"),
                                NSLocalizedString(@"Recorded", @"记录的"),
                                NSLocalizedString(@"Edited", @"编辑的")];
             break;
 
-        case ShareRepositoryTypeSent|ShareRepositoryTypeReceived:
+        case FootprintsRepositoryTypeSent|FootprintsRepositoryTypeReceived:
             groupNameArray = @[NSLocalizedString(@"Sent", @"发送的"),
                                NSLocalizedString(@"Received", @"接收的")];
             break;
             
-        case ShareRepositoryTypeRecorded|ShareRepositoryTypeEdited:
+        case FootprintsRepositoryTypeRecorded|FootprintsRepositoryTypeEdited:
             groupNameArray = @[NSLocalizedString(@"Recorded", @"记录的"),
                                NSLocalizedString(@"Edited", @"编辑的")];
             break;
@@ -112,26 +112,22 @@
     NSMutableArray *receivedArray = [NSMutableArray new];
     NSMutableArray *recordedArray = [NSMutableArray new];
     NSMutableArray *editedArray = [NSMutableArray new];
-    NSMutableArray *importedArray = [NSMutableArray new];
     
-    shareRepositoryMA = [NSMutableArray arrayWithArray:[EverywhereShareRepositoryManager shareRepositoryArray]];
+    footprintsRepositoryMA = [NSMutableArray arrayWithArray:[EverywhereFootprintsRepositoryManager footprintsRepositoryArray]];
     
-    [shareRepositoryMA enumerateObjectsUsingBlock:^(EverywhereShareRepository * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        switch (obj.shareRepositoryType) {
-            case ShareRepositoryTypeSent:
+    [footprintsRepositoryMA enumerateObjectsUsingBlock:^(EverywhereFootprintsRepository * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        switch (obj.footprintsRepositoryType) {
+            case FootprintsRepositoryTypeSent:
                 [sentArray addObject:obj];
                 break;
-            case ShareRepositoryTypeReceived:
+            case FootprintsRepositoryTypeReceived:
                 [receivedArray addObject:obj];
                 break;
-            case ShareRepositoryTypeRecorded:
+            case FootprintsRepositoryTypeRecorded:
                 [recordedArray addObject:obj];
                 break;
-            case ShareRepositoryTypeEdited:
+            case FootprintsRepositoryTypeEdited:
                 [editedArray addObject:obj];
-                break;
-            case ShareRepositoryTypeImported:
-                [importedArray addObject:obj];
                 break;
             default:
                 break;
@@ -141,19 +137,17 @@
     switch (index) {
         case 0:
             currentGroupArray = sentArray;
-            if (self.showShareRepositoryType == ShareRepositoryTypeRecorded) currentGroupArray = recordedArray;
+            if (self.showFootprintsRepositoryType == (FootprintsRepositoryTypeRecorded|FootprintsRepositoryTypeEdited)) currentGroupArray = recordedArray;
             break;
         case 1:
             currentGroupArray = receivedArray;
+            if (self.showFootprintsRepositoryType == (FootprintsRepositoryTypeRecorded|FootprintsRepositoryTypeEdited)) currentGroupArray = editedArray;
             break;
         case 2:
             currentGroupArray = recordedArray;
             break;
         case 3:
             currentGroupArray = editedArray;
-            break;
-        case 4:
-            currentGroupArray = importedArray;
             break;
         default:
             break;
@@ -178,33 +172,34 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
     cell.accessoryType = UITableViewCellAccessoryDetailButton;
-    EverywhereShareRepository *shareRepository = currentGroupArray[indexPath.row];
+    EverywhereFootprintsRepository *footprintsRepository = currentGroupArray[indexPath.row];
     NSString *headerString;
-    switch (shareRepository.shareRepositoryType) {
-        case ShareRepositoryTypeSent:
+    
+    switch (footprintsRepository.footprintsRepositoryType) {
+        case FootprintsRepositoryTypeSent:
             headerString = @"📤";
             break;
-        case ShareRepositoryTypeReceived:
+        case FootprintsRepositoryTypeReceived:
             headerString = @"📥";
             break;
-        case ShareRepositoryTypeRecorded:
+        case FootprintsRepositoryTypeRecorded:
             headerString = @"🎥";
             break;
-        case ShareRepositoryTypeEdited:
+        case FootprintsRepositoryTypeEdited:
             headerString = @"📦";
             break;
         default:
             break;
     }
     
-    cell.textLabel.text = [NSString stringWithFormat:@"%000lu %@ %@",indexPath.row + 1,headerString,shareRepository.title];
+    cell.textLabel.text = [NSString stringWithFormat:@"%d %@ %@",indexPath.row + 1,headerString,footprintsRepository.title];
     
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ : %lu , %@ : %@",NSLocalizedString(@"Footprints Count", @"足迹点数"),(unsigned long)shareRepository.shareAnnos.count,NSLocalizedString(@"Modification Date", @"修改时间"),[shareRepository.modificatonDate stringWithDefaultFormat]];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ : %lu , %@ : %@",NSLocalizedString(@"Footprints Count", @"足迹点数"),(unsigned long)footprintsRepository.footprintAnnotations.count,NSLocalizedString(@"Modification Date", @"修改时间"),[footprintsRepository.modificatonDate stringWithDefaultFormat]];
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    EverywhereShareRepository *shareRepository = currentGroupArray[indexPath.row];
+    EverywhereFootprintsRepository *footprintsRepository = currentGroupArray[indexPath.row];
     
     NSString *alertTitle = NSLocalizedString(@"Items", @"选项");
     NSString *alertMessage = NSLocalizedString(@"Select an action", @"请选择操作");
@@ -215,21 +210,25 @@
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction * _Nonnull action) {
                                                          [self dismissViewControllerAnimated:YES completion:nil];
-                                                         if (self.shareRepositoryDidChangeHandler) self.shareRepositoryDidChangeHandler(currentGroupArray[indexPath.row]);
+                                                         if (self.footprintsRepositoryDidChangeHandler) self.footprintsRepositoryDidChangeHandler(currentGroupArray[indexPath.row]);
                                                      }];
     
     UIAlertAction *shareAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Share",@"分享")
                                                          style:UIAlertActionStyleDefault
                                                        handler:^(UIAlertAction * _Nonnull action) {
-                                                           ShareShareRepositoryVC *ssVC = [ShareShareRepositoryVC new];
-                                                           ssVC.shareRepository = shareRepository;
-                                                           NSData *thumbImageData = UIImageJPEGRepresentation([UIImage imageNamed:@"地球_300_300"], 0.5);
-                                                           ssVC.shareThumbImageData = thumbImageData;
+                                                           ShareFootprintsRepositoryVC *shareFRVC = [ShareFootprintsRepositoryVC new];
+                                                           shareFRVC.footprintsRepository = [footprintsRepository copy];
+                                                           shareFRVC.thumbImage = [UIImage imageNamed:@"地球_300_300"];
                                                            
-                                                           ssVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.8, 200);
-                                                           ssVC.landscapeContentSizeInPopup = CGSizeMake(200, ScreenWidth * 0.8);
+                                                           shareFRVC.userDidSelectedPurchaseShareFunctionHandler = ^(){
+                                                               UIAlertController *alertController = [UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note",@"提示") message:NSLocalizedString(@"You haven't puchased ShareFunctionAndBrowserMode.",@"您尚未购买分享功能和浏览模式！")];
+                                                               [self presentViewController:alertController animated:YES completion:nil];
+                                                           };
                                                            
-                                                           if(self.popupController) [self.popupController pushViewController:ssVC animated:YES];
+                                                           shareFRVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.9, 200);
+                                                           shareFRVC.landscapeContentSizeInPopup = CGSizeMake(200, ScreenWidth * 0.9);
+                                                           
+                                                           if(self.popupController) [self.popupController pushViewController:shareFRVC animated:YES];
                                                            
                                                        }];
     
@@ -239,16 +238,16 @@
                                                             __block UITextField *tf;
                                                             UIAlertController *renameAC = [UIAlertController renameAlertControllerWithActionHandler:^(UIAlertAction *action) {
                                                                 
-                                                                EverywhereShareRepository *copyShareRepository = [shareRepository copy];
-                                                                copyShareRepository.title = tf.text;
-                                                                NSLog(@"EverywhereShareRepository new name : %@",copyShareRepository.title);
-                                                                [shareRepositoryMA removeObject:shareRepository];
-                                                                [shareRepositoryMA addObject:copyShareRepository];
-                                                                [EverywhereShareRepositoryManager setShareRepositoryArray:shareRepositoryMA];
+                                                                EverywhereFootprintsRepository *copyFootprintsRepository = [footprintsRepository copy];
+                                                                copyFootprintsRepository.title = tf.text;
+                                                                NSLog(@"EverywhereFootprintsRepository new name : %@",copyFootprintsRepository.title);
+                                                                [footprintsRepositoryMA removeObject:footprintsRepository];
+                                                                [footprintsRepositoryMA addObject:copyFootprintsRepository];
+                                                                [EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:footprintsRepositoryMA];
                                                                 [self updateDataSource:groupSeg.selectedSegmentIndex];
                                                                 
                                                             } textFieldConfigurationHandler:^(UITextField *textField) {
-                                                                textField.text = shareRepository.title;
+                                                                textField.text = footprintsRepository.title;
                                                                 tf = textField;
                                                             }];
                                                             
@@ -258,10 +257,7 @@
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
     [alertController addAction:showAction];
-    if([EverywhereSettingManager defaultManager].hasPurchasedShare){
-        
-        [alertController addAction:shareAction];
-    }
+    [alertController addAction:shareAction];
     [alertController addAction:renameAction];
     [alertController addAction:cancelAction];
     if (iOS9) alertController.preferredAction = showAction;
@@ -271,15 +267,14 @@
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
-    //UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    //NSLog(@"%@",cell.accessoryView);
-    //NSLog(@"%@",NSStringFromSelector(_cmd));
+    EverywhereFootprintsRepository *footprintsRepository = currentGroupArray[indexPath.row];
+    
     if ([EverywhereSettingManager defaultManager].hasPurchasedRecord) {
-        ShareRepositoryEditerVC *shareRepositoryEditerVC = [ShareRepositoryEditerVC new];
-        shareRepositoryEditerVC.shareRepository = currentGroupArray[indexPath.row];
-        shareRepositoryEditerVC.contentSizeInPopup = self.contentSizeInPopup;
-        shareRepositoryEditerVC.landscapeContentSizeInPopup = self.landscapeContentSizeInPopup;
-        [self.popupController pushViewController:shareRepositoryEditerVC animated:YES];
+        FootprintsRepositoryEditerVC *footprintsRepositoryEditerVC = [FootprintsRepositoryEditerVC new];
+        footprintsRepositoryEditerVC.footprintsRepository = [footprintsRepository copy];
+        footprintsRepositoryEditerVC.contentSizeInPopup = self.contentSizeInPopup;
+        footprintsRepositoryEditerVC.landscapeContentSizeInPopup = self.landscapeContentSizeInPopup;
+        [self.popupController pushViewController:footprintsRepositoryEditerVC animated:YES];
     }else{
         [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"You haven't got RecordFucntionAndRecordMode so you can not edit it.", @"您没有购买足迹记录和记录模式，无法编辑。")]
                            animated:YES
@@ -303,9 +298,9 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        EverywhereShareRepository *shareRepository = currentGroupArray[indexPath.row];
-        [shareRepositoryMA removeObject:shareRepository];
-        [EverywhereShareRepositoryManager setShareRepositoryArray:shareRepositoryMA];
+        EverywhereFootprintsRepository *footprintsRepository = currentGroupArray[indexPath.row];
+        [footprintsRepositoryMA removeObject:footprintsRepository];
+        [EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:footprintsRepositoryMA];
         
         [self updateDataSource:groupSeg.selectedSegmentIndex];
     }

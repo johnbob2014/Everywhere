@@ -1,23 +1,23 @@
 //
-//  ShareRepositoryEditerVC.m
+//  FootprintsRepositoryEditerVC.m
 //  Everywhere
 //
 //  Created by BobZhang on 16/7/20.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#import "ShareRepositoryEditerVC.h"
+#import "FootprintsRepositoryEditerVC.h"
 #import "EverywhereSettingManager.h"
-#import "EverywhereShareRepositoryManager.h"
+#import "EverywhereFootprintsRepositoryManager.h"
 #import "GCLocationAnalyser.h"
 
-@interface ShareRepositoryEditerVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
-@property (strong,nonatomic) NSMutableArray <EverywhereShareAnnotation *> *shareAnnoMA;
+@interface FootprintsRepositoryEditerVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
+@property (strong,nonatomic) NSMutableArray <EverywhereFootprintAnnotation *> *shareAnnoMA;
 @end
 
-@implementation ShareRepositoryEditerVC{
-    NSArray <EverywhereShareAnnotation *> *currentGroupArray;
-    //NSMutableArray <EverywhereShareAnnotation *> *editedArray;
+@implementation FootprintsRepositoryEditerVC{
+    NSArray <EverywhereFootprintAnnotation *> *currentGroupArray;
+    //NSMutableArray <EverywhereFootprintAnnotation *> *editedArray;
     UITextField *mergeDistanceTF;
     NSArray <NSString *> *groupNameArray;
     UISegmentedControl *groupSeg;
@@ -38,10 +38,10 @@
     // 默认合并时保留用户手动添加的足迹点
     reserveManuallyAddedFootprint = YES;
     
-    self.shareAnnoMA = [NSMutableArray arrayWithArray:self.shareRepository.shareAnnos];
+    self.shareAnnoMA = [NSMutableArray arrayWithArray:self.footprintsRepository.footprintAnnotations];
     currentGroupArray = self.shareAnnoMA.reverseObjectEnumerator.allObjects;
     
-    self.title = self.shareRepository.title;
+    self.title = self.footprintsRepository.title;
     
     UIView *containerView = [UIView newAutoLayoutView];
     [self.view addSubview:containerView];
@@ -133,7 +133,7 @@
     NSMutableArray *excluedUserManuallyAddedArray = [NSMutableArray new];
     NSMutableArray *userManuallyAddedArray = [NSMutableArray new];
     if (reserveManuallyAddedFootprint) {
-        [self.shareAnnoMA enumerateObjectsUsingBlock:^(EverywhereShareAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [self.shareAnnoMA enumerateObjectsUsingBlock:^(EverywhereFootprintAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if (obj.isUserManuallyAdded) [userManuallyAddedArray addObject:obj];
             else [excluedUserManuallyAddedArray addObject:obj];
         }];
@@ -159,7 +159,7 @@
     [resultArray sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
         NSComparisonResult comparisonResult;
         
-        NSTimeInterval ti = [((EverywhereShareAnnotation *)obj1).startDate timeIntervalSinceDate:((EverywhereShareAnnotation *)obj2).startDate];
+        NSTimeInterval ti = [((EverywhereFootprintAnnotation *)obj1).startDate timeIntervalSinceDate:((EverywhereFootprintAnnotation *)obj2).startDate];
         
         if (ti < 0) comparisonResult = NSOrderedAscending;
         else comparisonResult = NSOrderedDescending;
@@ -171,18 +171,18 @@
     NSString *distanceString = NSLocalizedString(@"Merge Distance", @"合并距离");
     NSString *reserveString = reserveManuallyAddedFootprint ? NSLocalizedString(@"ReserveManuallyAddedFootprint", @"保留手动添加足迹点") : NSLocalizedString(@"MergeManuallyAddedFootprint", @"合并手动添加足迹点");
     
-    EverywhereShareRepository *editedShareRepository = [EverywhereShareRepository new];
-    editedShareRepository.shareAnnos = resultArray;
+    EverywhereFootprintsRepository *editedFootprintsRepository = [EverywhereFootprintsRepository new];
+    editedFootprintsRepository.footprintAnnotations = resultArray;
     
-    if (!mergeInOrder) editedShareRepository.radius = mergeDistance / 2.0;
+    if (!mergeInOrder) editedFootprintsRepository.radius = mergeDistance / 2.0;
     
-    editedShareRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Edit", @"编辑"),self.shareRepository.title];
-    editedShareRepository.creationDate = NOW;
-    editedShareRepository.shareRepositoryType = ShareRepositoryTypeEdited;
+    editedFootprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Edit", @"编辑"),self.footprintsRepository.title];
+    editedFootprintsRepository.creationDate = NOW;
+    editedFootprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeEdited;
     
-    [EverywhereShareRepositoryManager addShareRepository:editedShareRepository];
+    [EverywhereFootprintsRepositoryManager addFootprintsRepository:editedFootprintsRepository];
     
-    NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@ : %.1f\n%@\n%@ :\n%@",modeString,distanceString,mergeDistance,reserveString,NSLocalizedString(@"Saved As", @"存储为"),editedShareRepository.title];
+    NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@ : %.1f\n%@\n%@ :\n%@",modeString,distanceString,mergeDistance,reserveString,NSLocalizedString(@"Saved As", @"存储为"),editedFootprintsRepository.title];
     
     [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:alertMessage]
                        animated:YES completion:nil];
@@ -204,16 +204,16 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
     //cell.accessoryType = UITableViewCellAccessoryDetailButton;
-    EverywhereShareAnnotation *shareAnnotation = currentGroupArray[indexPath.row];
-    NSString *headerString = shareAnnotation.isUserManuallyAdded ? @"🚩 " : @"🏳 ";
-    cell.textLabel.text = [headerString stringByAppendingString:shareAnnotation.customTitle];
-    cell.detailTextLabel.text = shareAnnotation.title;
+    EverywhereFootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
+    NSString *headerString = footprintAnnotation.isUserManuallyAdded ? @"🚩 " : @"🏳 ";
+    cell.textLabel.text = [headerString stringByAppendingString:footprintAnnotation.customTitle];
+    cell.detailTextLabel.text = footprintAnnotation.title;
     return cell;
 }
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    //if (self.shareAnnotationDidChangeHandler) self.shareAnnotationDidChangeHandler(currentGroupArray[indexPath.row]);
+    //if (self.footprintAnnotationDidChangeHandler) self.footprintAnnotationDidChangeHandler(currentGroupArray[indexPath.row]);
     //[self dismissViewControllerAnimated:YES completion:nil];
     
 }
@@ -224,14 +224,14 @@
 
 /*
 - (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath{
-    EverywhereShareAnnotation *shareAnnotation = currentGroupArray[indexPath.row];
+    EverywhereFootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
     
     UITableViewRowAction *renameRA = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault
                                                                          title:NSLocalizedString(@"Rename", @"重命名")
                                                                        handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
                                                                            UIAlertController *alertController = [self createRenameAlertControllerWithHandler:^(UIAlertAction *action) {
                                                                                NSLog(@"%@",alertController.textFields.firstObject.text);
-                                                                               shareAnnotation.customTitle = alertController.textFields.firstObject.text;
+                                                                               footprintAnnotation.customTitle = alertController.textFields.firstObject.text;
                                                                            }];
                                                                            [self presentViewController:alertController animated:YES completion:nil];
                                                                        }];
@@ -254,8 +254,8 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        EverywhereShareAnnotation *shareAnnotation = currentGroupArray[indexPath.row];
-        [self.shareAnnoMA removeObject:shareAnnotation];
+        EverywhereFootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
+        [self.shareAnnoMA removeObject:footprintAnnotation];
         [self updateData];
     }
 }

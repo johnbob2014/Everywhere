@@ -290,7 +290,7 @@
 }
 
 - (void)setDefaultTransport:(DefaultTransport)defaultTransport{
-    NSLog(@"%ld",(long)defaultTransport);
+    //NSLog(@"%ld",(long)defaultTransport);
     [[NSUserDefaults standardUserDefaults] setInteger:defaultTransport forKey:@"defaultTransport"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }

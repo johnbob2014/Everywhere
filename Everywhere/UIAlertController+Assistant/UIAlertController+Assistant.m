@@ -17,9 +17,9 @@
     return alertController;
 }
 
-+ (UIAlertController *)okCancelAlertControllerWithTitle:(NSString *)title message:(NSString *)message okHandler:(void (^)(UIAlertAction *action))okHandler{
++ (UIAlertController *)okCancelAlertControllerWithTitle:(NSString *)title message:(NSString *)message okActionHandler:(void (^)(UIAlertAction *action))okActionHandler{
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK",@"确定") style:UIAlertActionStyleDefault handler:okHandler];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK",@"确定") style:UIAlertActionStyleDefault handler:okActionHandler];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
     [alertController addAction:okAction];
     [alertController addAction:cancelAction];

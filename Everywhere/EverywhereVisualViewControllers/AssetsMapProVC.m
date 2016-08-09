@@ -7,6 +7,17 @@
 //
 #define DEBUGMODE 1
 
+#define ContentSizeInPopup_Big CGSizeMake(ScreenWidth - 10, ScreenHeight - 10 - 80)
+#define LandscapeContentSizeInPopup_Big CGSizeMake(ScreenHeight - 10 - 80, ScreenWidth - 10)
+
+#define NaviBarButtonSize CGSizeMake(30, 30)
+#define NaviBarButtonOffset ScreenWidth > 375 ? 30 : 15
+
+#define ButtonPlaceholderHeight (ScreenHeight > 568 ? 60 : 43)
+#define ButtionSize (ScreenHeight > 568 ? CGSizeMake(44, 44) : CGSizeMake(36, 36))
+#define ButtionEdgeLength (ScreenHeight > 568 ? 44 : 36)
+#define VerticalButtonOffset (ScreenHeight > 568 ? 16 : 8)
+
 #import "AssetsMapProVC.h"
 @import Photos;
 @import MapKit;
@@ -15,9 +26,9 @@
 
 #import "EverywhereAnnotation.h"
 #import "EverywhereSettingManager.h"
-#import "EverywhereShareAnnotation.h"
-#import "EverywhereShareRepository.h"
-#import "EverywhereShareRepositoryManager.h"
+#import "EverywhereFootprintAnnotation.h"
+#import "EverywhereFootprintsRepository.h"
+#import "EverywhereFootprintsRepositoryManager.h"
 
 #import "NSDate+Assistant.h"
 #import "UIView+AutoLayout.h"
@@ -37,11 +48,11 @@
 #import "LocationPickerVC.h"
 #import "SettingVC.h"
 #import "ShareImageVC.h"
-#import "ShareShareRepositoryVC.h"
+#import "ShareFootprintsRepositoryVC.h"
 #import "ShareBar.h"
 #import "InAppPurchaseVC.h"
-#import "ShareRepositoryPickerVC.h"
-#import "ShareRepositoryEditerVC.h"
+#import "FootprintsRepositoryPickerVC.h"
+#import "FootprintsRepositoryEditerVC.h"
 #import "WGS84TOGCJ02.h"
 #import "CLPlacemark+Assistant.h"
 #import "RecordModeSettingBar.h"
@@ -79,7 +90,7 @@
 #pragma mark 添加的各种Annos
 @property (strong,nonatomic) NSArray <id<MKAnnotation>> *addedIDAnnos;
 @property (strong,nonatomic) NSArray <EverywhereAnnotation *> *addedEWAnnos;
-@property (strong,nonatomic) NSArray <EverywhereShareAnnotation *> *addedEWShareAnnos;
+@property (strong,nonatomic) NSArray <EverywhereFootprintAnnotation *> *addedEWShareAnnos;
 @property (assign,nonatomic) NSInteger currentAnnotationIndex;
 
 #pragma mark 用于模式转换
@@ -102,7 +113,7 @@
 #pragma mark 用于模式转换时恢复数据
     NSString *savedTitleForBaseMode;
     NSArray<id<MKAnnotation>> *savedAnnotationsForBaseMode;
-    NSArray<id<MKAnnotation>> *savedShareAnnotationsForBaseMode;
+    NSArray<id<MKAnnotation>> *savedFootprintAnnotationsForBaseMode;
     NSArray<id<MKOverlay>> *savedOverlaysForBaseMode;
     NSDate *savedStartDateForBaseMode;
     NSDate *savedEndDateForBaseMode;
@@ -122,7 +133,7 @@
 #pragma mark 用于RecordMode
     CLLocation *lastRecordLocation;
     NSDate *lastRecordDate;
-    NSMutableArray <EverywhereShareAnnotation *> *recordedShareAnnos;
+    NSMutableArray <EverywhereFootprintAnnotation *> *recordedShareAnnos;
 
 #pragma mark 各种Bar
     STPopupController *popupController;
@@ -287,7 +298,7 @@
         
        UIAlertController *alertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Attention", @"警告")
                                                                                         message:NSLocalizedString(@"You denied AlbumMaps to access your album so it can not show your album footprints.Please change the authorization status in iOS Settings.", @"您未允许相册地图访问您的相册，无法显示您的相册足迹，请前往设置更改。")
-                                                                                      okHandler:^(UIAlertAction *action) {
+                                                                                      okActionHandler:^(UIAlertAction *action) {
                                                                                            NSURL*url=[NSURL URLWithString:UIApplicationOpenSettingsURLString];
                                                                                            [[UIApplication sharedApplication] openURL:url];
         }];
@@ -634,14 +645,14 @@
     };
     
     msExtenedModeBar.leftButtonTouchDownHandler = ^(UIButton *sender) {
-        if (weakSelf.settingManager.hasPurchasedShare && weakSelf.settingManager.hasPurchasedRecord) [weakSelf showShareRepositoryPickerAllType];
-        else if (weakSelf.settingManager.hasPurchasedShare) [weakSelf showShareRepositoryPickerSentReceived];
+        if (weakSelf.settingManager.hasPurchasedShare && weakSelf.settingManager.hasPurchasedRecord) [weakSelf showFootprintsRepositoryPickerAllType];
+        else if (weakSelf.settingManager.hasPurchasedShare) [weakSelf showFootprintsRepositoryPickerSentReceived];
         else [weakSelf showPurchaseShareFunctionAlertController];
     };
     
     msExtenedModeBar.rightButtonTouchDownHandler = ^(UIButton *sender){
-        if (weakSelf.settingManager.hasPurchasedShare && weakSelf.settingManager.hasPurchasedRecord) [weakSelf showShareRepositoryPickerAllType];
-        else if (weakSelf.settingManager.hasPurchasedRecord) [weakSelf showShareRepositoryPickerRecordedEdited];
+        if (weakSelf.settingManager.hasPurchasedShare && weakSelf.settingManager.hasPurchasedRecord) [weakSelf showFootprintsRepositoryPickerAllType];
+        else if (weakSelf.settingManager.hasPurchasedRecord) [weakSelf showFootprintsRepositoryPickerRecordedEdited];
         else [weakSelf showPurchaseRecordFunctionAlertController];
     };
     
@@ -748,8 +759,8 @@
         weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:weakSelf.startDate toEndDate:weakSelf.endDate inManagedObjectContext:weakSelf.cdManager.appDelegateMOC];
     };
     
-    datePickerVC.contentSizeInPopup = CGSizeMake(300, 400);
-    datePickerVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
+    datePickerVC.contentSizeInPopup = ContentSizeInPopup_Big;
+    datePickerVC.landscapeContentSizeInPopup = LandscapeContentSizeInPopup_Big;
     popupController = [[STPopupController alloc] initWithRootViewController:datePickerVC];
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
@@ -771,58 +782,56 @@
         weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:choosedLocation inManagedObjectContext:weakSelf.cdManager.appDelegateMOC];
     };
     
-    locationPickerVC.contentSizeInPopup = CGSizeMake(300, 400);
-    locationPickerVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
+    locationPickerVC.contentSizeInPopup = ContentSizeInPopup_Big;
+    locationPickerVC.landscapeContentSizeInPopup = LandscapeContentSizeInPopup_Big;
     popupController = [[STPopupController alloc] initWithRootViewController:locationPickerVC];
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
 }
 
-- (void)showShareRepositoryPickerAllType{
-    [self showShareRepositoryPicker:ShareRepositoryTypeSent|ShareRepositoryTypeReceived|ShareRepositoryTypeRecorded|ShareRepositoryTypeEdited];
+- (void)showFootprintsRepositoryPickerAllType{
+    [self showFootprintsRepositoryPicker:FootprintsRepositoryTypeSent|FootprintsRepositoryTypeReceived|FootprintsRepositoryTypeRecorded|FootprintsRepositoryTypeEdited];
 }
 
-- (void)showShareRepositoryPickerSentReceived{
-    [self showShareRepositoryPicker:ShareRepositoryTypeSent|ShareRepositoryTypeReceived];
+- (void)showFootprintsRepositoryPickerSentReceived{
+    [self showFootprintsRepositoryPicker:FootprintsRepositoryTypeSent|FootprintsRepositoryTypeReceived];
 }
 
-- (void)showShareRepositoryPickerRecordedEdited{
-    [self showShareRepositoryPicker:ShareRepositoryTypeRecorded|ShareRepositoryTypeEdited];
+- (void)showFootprintsRepositoryPickerRecordedEdited{
+    [self showFootprintsRepositoryPicker:FootprintsRepositoryTypeRecorded|FootprintsRepositoryTypeEdited];
 }
 
-- (void)showShareRepositoryPicker:(NSUInteger)showShareRepositoryType{
+- (void)showFootprintsRepositoryPicker:(NSUInteger)showFootprintsRepositoryType{
     WEAKSELF(weakSelf);
     
-    ShareRepositoryPickerVC *shareRepositoryPickerVC = [ShareRepositoryPickerVC new];
-    shareRepositoryPickerVC.showShareRepositoryType = showShareRepositoryType;
-    shareRepositoryPickerVC.shareRepositoryDidChangeHandler = ^(EverywhereShareRepository *choosedShareRepository){
-        [weakSelf showShowShareRepositoryAlertController:choosedShareRepository];
+    FootprintsRepositoryPickerVC *footprintsRepositoryPickerVC = [FootprintsRepositoryPickerVC new];
+    footprintsRepositoryPickerVC.showFootprintsRepositoryType = showFootprintsRepositoryType;
+    footprintsRepositoryPickerVC.footprintsRepositoryDidChangeHandler = ^(EverywhereFootprintsRepository *choosedFootprintsRepository){
+        [weakSelf checkBeforeShowFootprintsRepository:choosedFootprintsRepository];
     };
    
-    shareRepositoryPickerVC.contentSizeInPopup = CGSizeMake(ScreenWidth - 10, ScreenHeight - 10 - 80);//CGSizeMake(300, 400);
-    shareRepositoryPickerVC.landscapeContentSizeInPopup = CGSizeMake(ScreenHeight - 10 - 80, ScreenWidth - 10);//CGSizeMake(400, 320);
-    popupController = [[STPopupController alloc] initWithRootViewController:shareRepositoryPickerVC];
+    footprintsRepositoryPickerVC.contentSizeInPopup = ContentSizeInPopup_Big;//CGSizeMake(300, 400);
+    footprintsRepositoryPickerVC.landscapeContentSizeInPopup = LandscapeContentSizeInPopup_Big;//CGSizeMake(400, 320);
+    popupController = [[STPopupController alloc] initWithRootViewController:footprintsRepositoryPickerVC];
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
 }
 
 /*
-- (void)showShareAnnotationPicker{
+- (void)showFootprintAnnotationPicker{
     //WEAKSELF(weakSelf);
     
-    ShareRepositoryEditerVC *shareRepositoryEditerVC = [ShareRepositoryEditerVC new];
-    shareRepositoryEditerVC.shareRepository = nil;
+    FootprintsRepositoryEditerVC *footprintsRepositoryEditerVC = [FootprintsRepositoryEditerVC new];
+    footprintsRepositoryEditerVC.footprintsRepository = nil;
     
-    shareRepositoryEditerVC.contentSizeInPopup = CGSizeMake(300, 400);
-    shareRepositoryEditerVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
-    popupController = [[STPopupController alloc] initWithRootViewController:shareRepositoryEditerVC];
+    footprintsRepositoryEditerVC.contentSizeInPopup = CGSizeMake(300, 400);
+    footprintsRepositoryEditerVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
+    popupController = [[STPopupController alloc] initWithRootViewController:footprintsRepositoryEditerVC];
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
 }
 */
 #pragma mark Navigation Bar
-#define NaviBarButtonSize CGSizeMake(30, 30)
-#define NaviBarButtonOffset ScreenWidth > 375 ? 30 : 15
 
 - (void)initNaviBar{
     
@@ -1134,11 +1143,6 @@
 
 #pragma mark Vertical Bars
 
-#define ButtonPlaceholderHeight (ScreenHeight > 568 ? 60 : 43)
-#define ButtionSize (ScreenHeight > 568 ? CGSizeMake(44, 44) : CGSizeMake(36, 36))
-#define ButtionEdgeLength (ScreenHeight > 568 ? 44 : 36)
-#define VerticalButtonOffset (ScreenHeight > 568 ? 16 : 8)
-
 - (void)initVerticalBars{
 
 #pragma mark userLocationButton 屏幕左下方，naviBar上方
@@ -1267,7 +1271,7 @@
     rightBtn2.alpha = 0.6;
     [rightBtn2 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share2_WBG"] forState:UIControlStateNormal];
     rightBtn2.translatesAutoresizingMaskIntoConstraints = NO;
-    [rightBtn2 addTarget:self action:@selector(showShareShareRepositoryVC) forControlEvents:UIControlEventTouchDown];
+    [rightBtn2 addTarget:self action:@selector(showShareFootprintsRepositoryVC) forControlEvents:UIControlEventTouchDown];
     [rightVerticalBar addSubview:rightBtn2];
     [rightBtn2 autoSetDimensionsToSize:ButtionSize];
     [rightBtn2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
@@ -1700,8 +1704,8 @@
     ShareImageVC *ssVC = [ShareImageVC new];
     ssVC.shareImage = contentImage;
     ssVC.shareThumbData = thumbImageData;
-    ssVC.contentSizeInPopup = CGSizeMake(ScreenWidth - 10, ScreenHeight - 10 - 80);
-    ssVC.landscapeContentSizeInPopup = CGSizeMake(ScreenHeight - 10 - 80, ScreenWidth - 10);
+    ssVC.contentSizeInPopup = ContentSizeInPopup_Big;
+    ssVC.landscapeContentSizeInPopup = LandscapeContentSizeInPopup_Big;
 
     popupController = [[STPopupController alloc] initWithRootViewController:ssVC];
     popupController.containerView.layer.cornerRadius = 4;
@@ -1797,12 +1801,7 @@
 
 #pragma mark Share and Receive
 
-- (void)showShareShareRepositoryVC{
-    // 如果没有分享功能
-    if (!self.settingManager.hasPurchasedShare) {
-        [self showPurchaseShareFunctionAlertController];
-        return;
-    }
+- (void)showShareFootprintsRepositoryVC{
     
     if (!self.addedEWShareAnnos || self.addedEWShareAnnos.count == 0) {
         [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"No footprints yet.Please choose a date or a location to add your album footprints.", @"您还没有添加足迹点，请选择日期或地址添加您的相册足迹。")]
@@ -1818,78 +1817,89 @@
     [ms appendFormat:@"%@ %@",placemarkInfoBar.totalTitle,placemarkInfoBar.totalString];
 
     // 生成分享对象
-    EverywhereShareRepository *shareRepository = [EverywhereShareRepository new];
-    shareRepository.shareAnnos = self.addedEWShareAnnos;
-    if (self.settingManager.mapBaseMode == MapBaseModeMoment) shareRepository.radius = 0;
-    else shareRepository.radius = self.settingManager.mergeDistanceForLocation / 2.0;
-    shareRepository.creationDate = NOW;
-    shareRepository.shareRepositoryType = ShareRepositoryTypeSent;
-    shareRepository.placemarkInfo = ms;
+    EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
+    footprintsRepository.footprintAnnotations = self.addedEWShareAnnos;
+    if (self.settingManager.mapBaseMode == MapBaseModeMoment) footprintsRepository.radius = 0;
+    else footprintsRepository.radius = self.settingManager.mergeDistanceForLocation / 2.0;
+    footprintsRepository.creationDate = NOW;
+    footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeSent;
+    footprintsRepository.placemarkInfo = ms;
     
-    /*
-    if (self.settingManager.mapBaseMode == MapBaseModeMoment)
-        shareRepository.title = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate];
-    else shareRepository.title = self.lastPlacemark;
-    */
+    footprintsRepository.title = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate];
+    if (self.settingManager.mapBaseMode == MapBaseModeLocation) footprintsRepository.title = [footprintsRepository.title stringByAppendingFormat:@" %@",self.lastPlacemark];
     
-    shareRepository.title = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate];
-    if (self.settingManager.mapBaseMode == MapBaseModeLocation) shareRepository.title = [shareRepository.title stringByAppendingFormat:@" %@",self.lastPlacemark];
-
+    ShareFootprintsRepositoryVC *shareFRVC = [ShareFootprintsRepositoryVC new];
+    shareFRVC.footprintsRepository = [footprintsRepository copy];
+    shareFRVC.thumbImage = [UIImage imageNamed:@"地球_300_300"];
     
-    ShareShareRepositoryVC *ssVC = [ShareShareRepositoryVC new];
-    ssVC.shareRepository = shareRepository;
-    NSData *thumbImageData = UIImageJPEGRepresentation([UIImage imageNamed:@"地球_300_300"], 0.5);
-    ssVC.shareThumbImageData = thumbImageData;
+    WEAKSELF(weakSelf);
+    shareFRVC.userDidSelectedPurchaseShareFunctionHandler = ^(){
+        [weakSelf dismissViewControllerAnimated:YES completion:nil];
+        [weakSelf showPurchaseShareFunctionAlertController];
+    };
     
-    ssVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.8, 200);
-    ssVC.landscapeContentSizeInPopup = CGSizeMake(200, ScreenWidth * 0.8);
-    popupController = [[STPopupController alloc] initWithRootViewController:ssVC];
+    shareFRVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.9, 200);
+    shareFRVC.landscapeContentSizeInPopup = CGSizeMake(200, ScreenWidth * 0.9);
+    
+    popupController = [[STPopupController alloc] initWithRootViewController:shareFRVC];
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
-    
-    // 测试使用
-    //
 }
 
-- (void)didReceiveShareRepositoryString:(NSString *)receivedString{
-    NSString *shareRepositoryString = nil;
+/*
+- (void)didReceiveFootprintsRepositoryString:(NSString *)receivedString{
+    NSString *footprintsRepositoryString = nil;
     //CLLocationDistance sharedRadius = 0;
     
     NSString *headerString = [NSString stringWithFormat:@"%@://AlbumMaps/",WXAppID];
     
-       shareRepositoryString = [receivedString stringByReplacingOccurrencesOfString:headerString withString:@""];
+    if (![receivedString containsString:headerString]){
+        NSLog(@"接收到的字符串无法解析！");
+        return;
+    }
+    
+    footprintsRepositoryString = [receivedString stringByReplacingOccurrencesOfString:headerString withString:@""];
     // For iOS9
-    shareRepositoryString = [shareRepositoryString stringByReplacingOccurrencesOfString:@"%0D%0A" withString:@"\n"];
+    footprintsRepositoryString = [footprintsRepositoryString stringByReplacingOccurrencesOfString:@"%0D%0A" withString:@"\n"];
     // For iOS8
-    shareRepositoryString = [shareRepositoryString stringByReplacingOccurrencesOfString:@"%20" withString:@"\n"];
+    footprintsRepositoryString = [footprintsRepositoryString stringByReplacingOccurrencesOfString:@"%20" withString:@"\n"];
     
-    //if (DEBUGMODE) NSLog(@"\n%@",shareRepositoryString);
+    //if (DEBUGMODE) NSLog(@"\n%@",footprintsRepositoryString);
     
-    NSData *shareRepositoryData = [[NSData alloc] initWithBase64EncodedString:shareRepositoryString options:NSDataBase64DecodingIgnoreUnknownCharacters];
+    NSData *footprintsRepositoryData = [[NSData alloc] initWithBase64EncodedString:footprintsRepositoryString options:NSDataBase64DecodingIgnoreUnknownCharacters];
     
     // 获取接收到的分享对象
-    EverywhereShareRepository *shareRepository = nil;
+    EverywhereFootprintsRepository *footprintsRepository = nil;
     
     // 解析数据可能出错
     @try {
-        shareRepository = [NSKeyedUnarchiver unarchiveObjectWithData:shareRepositoryData];
+        footprintsRepository = [NSKeyedUnarchiver unarchiveObjectWithData:footprintsRepositoryData];
     } @catch (NSException *exception) {
         
     } @finally {
         
     }
     
-    //if (DEBUGMODE) NSLog(@"received shareAnnotation count : %lu",(unsigned long)receivedEWShareAnnos.count);
+    //if (DEBUGMODE) NSLog(@"received footprintAnnotation count : %lu",(unsigned long)receivedEWShareAnnos.count);
     
-    if (!shareRepository) return;
+    [self didReceiveFootprintsRepository:footprintsRepository];
+}
+
+- (void)didReceiveFootprintsRepositoryFile:(NSString *)filePath{
+    [self didReceiveFootprintsRepository:[EverywhereFootprintsRepository importFromFile:filePath]];
+}
+*/
+
+- (void)didReceiveFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository{
+    if (!footprintsRepository) return;
     // 成功获取分享的数据
     
     // 修改属性
-    shareRepository.shareRepositoryType = ShareRepositoryTypeReceived;
+    footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeReceived;
     
-    // 新接收到，先保存shareRepository，如果用户选择丢弃，再删除掉
-    [EverywhereShareRepositoryManager addShareRepository:shareRepository];
-    if (DEBUGMODE) NSLog(@"shareRepositoryArray count : %lu",(unsigned long)[EverywhereShareRepositoryManager shareRepositoryArray].count);
+    // 新接收到，先保存footprintsRepository，如果用户选择丢弃，再删除掉
+    [EverywhereFootprintsRepositoryManager addFootprintsRepository:footprintsRepository];
+    if (DEBUGMODE) NSLog(@"footprintsRepositoryArray count : %lu",(unsigned long)[EverywhereFootprintsRepositoryManager footprintsRepositoryArray].count);
     
     // 显示主界面
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -1897,8 +1907,8 @@
     NSString *alertTitle = NSLocalizedString(@"Receive Shared Footprints",@"收到分享的足迹");
     
     NSMutableString *ms = [NSMutableString new];
-    [ms appendFormat:@"\n%@ : %@\n%@ : %lu\n",NSLocalizedString(@"Title", @"标题"),shareRepository.title,NSLocalizedString(@"Footprints Count", @"足迹点数"),(unsigned long)shareRepository.shareAnnos.count];
-    if (shareRepository.placemarkInfo) [ms appendFormat:@"%@ : %@\n",NSLocalizedString(@"Statistics Info", @"统计信息"),shareRepository.placemarkInfo];
+    [ms appendFormat:@"\n%@ : %@\n%@ : %lu\n",NSLocalizedString(@"Title", @"标题"),footprintsRepository.title,NSLocalizedString(@"Footprints Count", @"足迹点数"),(unsigned long)footprintsRepository.footprintAnnotations.count];
+    if (footprintsRepository.placemarkInfo) [ms appendFormat:@"%@ : %@\n",NSLocalizedString(@"Statistics Info", @"统计信息"),footprintsRepository.placemarkInfo];
     [ms appendString:NSLocalizedString(@"Would you like to accept the footprints and enter Browser Mode?\n", @"是否接收足迹并进入浏览模式？\n")];
     NSString *alertMessage = ms;
     
@@ -1912,7 +1922,7 @@
                                                          // msExtenedModeBar是扩展模式转换控制器，它来调用enterBrowserMode 和 enterRecordMode 方法
                                                          msExtenedModeBar.selectedSegmentIndex = 0;
                                                          [self enterBrowserMode];
-                                                         [self showShowShareRepositoryAlertController:shareRepository];
+                                                         [self checkBeforeShowFootprintsRepository:footprintsRepository];
                                                      }];
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
@@ -1948,7 +1958,7 @@
     // 保存BaseMode数据
     savedTitleForBaseMode = msBaseModeBar.info;
     savedAnnotationsForBaseMode = self.addedEWAnnos;
-    savedShareAnnotationsForBaseMode = self.addedEWShareAnnos;
+    savedFootprintAnnotationsForBaseMode = self.addedEWShareAnnos;
     savedOverlaysForBaseMode = self.myMapView.overlays;
     savedStartDateForBaseMode = self.startDate;
     savedEndDateForBaseMode = self.endDate;
@@ -1993,7 +2003,7 @@
     // 恢复Main Mode地图
     msBaseModeBar.info = savedTitleForBaseMode;
     [self.myMapView addAnnotations:savedAnnotationsForBaseMode];
-    self.addedEWShareAnnos = (NSArray <EverywhereShareAnnotation*> *)savedShareAnnotationsForBaseMode;
+    self.addedEWShareAnnos = (NSArray <EverywhereFootprintAnnotation*> *)savedFootprintAnnotationsForBaseMode;
     [self.myMapView addOverlays:savedOverlaysForBaseMode];
     self.addedIDAnnos = savedAnnotationsForBaseMode;
     self.startDate = savedStartDateForBaseMode;
@@ -2017,14 +2027,14 @@
     
 }
 
-- (void)showShowShareRepositoryAlertController:(EverywhereShareRepository *)shareRepository{
+- (void)checkBeforeShowFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository{
     
     if (!recordedShareAnnos || recordedShareAnnos.count == 0) {
-        [self showShareRepository:shareRepository];
+        [self showFootprintsRepository:footprintsRepository];
         return;
     }else if (self.isInRecordMode) {
-        UIAlertController *okCancelAlertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Attention", @"警告")  message:NSLocalizedString(@"There are recorded footprints now and they will be cleared if show selected footprints.Show or not?", @"当前处于记录模式并且有记录的足迹点，如需显示所选足迹，记录的足迹点将被清空，是否显示？") okHandler:^(UIAlertAction *action) {
-            [self showShareRepository:shareRepository];
+        UIAlertController *okCancelAlertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Attention", @"警告")  message:NSLocalizedString(@"There are recorded footprints now and they will be cleared if show selected footprints.Show or not?", @"当前处于记录模式并且有记录的足迹点，如需显示所选足迹，记录的足迹点将被清空，是否显示？") okActionHandler:^(UIAlertAction *action) {
+            [self showFootprintsRepository:footprintsRepository];
         }];
         
         [self presentViewController:okCancelAlertController animated:YES completion:nil];
@@ -2032,27 +2042,27 @@
     
 }
 
-- (void)showShareRepository:(EverywhereShareRepository *)shareRepository{
+- (void)showFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository{
     // 清理地图
     self.addedEWAnnos = nil;
     [self.myMapView removeAnnotations:self.myMapView.annotations];
     
-    // 添加要显示的ShareAnnotations
-    [self.myMapView addAnnotations:shareRepository.shareAnnos];
+    // 添加要显示的FootprintAnnotations
+    [self.myMapView addAnnotations:footprintsRepository.footprintAnnotations];
     
-    msExtenedModeBar.info = shareRepository.title;
+    msExtenedModeBar.info = footprintsRepository.title;
     
     // 设置addedIDAnnos，用于导航
-    self.addedIDAnnos = shareRepository.shareAnnos;
-    self.addedEWShareAnnos = shareRepository.shareAnnos;
+    self.addedIDAnnos = footprintsRepository.footprintAnnotations;
+    self.addedEWShareAnnos = footprintsRepository.footprintAnnotations;
     
     // 添加Overlays
-    if (shareRepository.radius == 0){
+    if (footprintsRepository.radius == 0){
         // 时刻模式 分享的足迹
-        [self addLineOverlaysPro:shareRepository.shareAnnos];
+        [self addLineOverlaysPro:footprintsRepository.footprintAnnotations];
     }else{
         // 地点模式 分享的足迹
-        [self addCircleOverlaysPro:shareRepository.shareAnnos radius:shareRepository.radius];
+        [self addCircleOverlaysPro:footprintsRepository.footprintAnnotations radius:footprintsRepository.radius];
     }
     
     [self updateVisualViewForEWShareAnnos];
@@ -2092,8 +2102,8 @@
     UIAlertAction *dropAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Drop",@"丢弃")
                                                          style:UIAlertActionStyleDefault
                                                        handler:^(UIAlertAction * action) {
-                                                           // 用户选择丢弃，则删除保存的shareRepository
-                                                           [EverywhereShareRepositoryManager removeLastAddedShareRepository];
+                                                           // 用户选择丢弃，则删除保存的footprintsRepository
+                                                           [EverywhereFootprintsRepositoryManager removeLastAddedFootprintsRepository];
                                                            [self quiteBrowserMode];
                                                            [self quiteExtendedMode];
                                                        }];
@@ -2268,20 +2278,20 @@
     if (!recordedShareAnnos || recordedShareAnnos.count == 0) return;
     
     //if (recordedShareAnnos.count > 1){}
-    EverywhereShareRepository *shareRepository = [EverywhereShareRepository new];
-    shareRepository.shareAnnos = recordedShareAnnos;
-    shareRepository.creationDate = NOW;
-    shareRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Record", @"记录"),[shareRepository.creationDate stringWithDefaultFormat]];
-    shareRepository.shareRepositoryType = ShareRepositoryTypeRecorded;
+    EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
+    footprintsRepository.footprintAnnotations = recordedShareAnnos;
+    footprintsRepository.creationDate = NOW;
+    footprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Record", @"记录"),[footprintsRepository.creationDate stringWithDefaultFormat]];
+    footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeRecorded;
     
-    [EverywhereShareRepositoryManager addShareRepository:shareRepository];
+    [EverywhereFootprintsRepositoryManager addFootprintsRepository:footprintsRepository];
     if(DEBUGMODE) NSLog(@"记录已经保存");
     
     // 显示保存通知
     UILocalNotification *noti = [UILocalNotification new];
     
     NSMutableString *messageMS = [NSMutableString new];
-    [messageMS appendFormat:@"%@\n%@\n%@ %lu",NSLocalizedString(@"Record has been sucessfully saved :", @"记录保存成功 :"),shareRepository.title,NSLocalizedString(@"Footprints Count: ", @"足迹点数量 : "),(long)recordedShareAnnos.count];
+    [messageMS appendFormat:@"%@\n%@\n%@ %lu",NSLocalizedString(@"Record has been sucessfully saved :", @"记录保存成功 :"),footprintsRepository.title,NSLocalizedString(@"Footprints Count: ", @"足迹点数量 : "),(long)recordedShareAnnos.count];
     
     noti.alertBody = messageMS;
     noti.alertAction = NSLocalizedString(@"Action", @"操作");
@@ -2314,7 +2324,7 @@
     self.addedEWAnnos = nil;
     self.addedEWShareAnnos = nil;
     NSMutableArray <EverywhereAnnotation *> *annotationsToAdd = [NSMutableArray new];
-    NSMutableArray <EverywhereShareAnnotation *> *shareAnnotationsToAdd = [NSMutableArray new];
+    NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationsToAdd = [NSMutableArray new];
     // 添加 MKAnnotations
     [self.myMapView removeAnnotations:self.myMapView.annotations];
     
@@ -2339,18 +2349,18 @@
         [annotationsToAdd addObject:anno];
         //[self.myMapView addAnnotation:anno];
         
-        EverywhereShareAnnotation *shareAnno = [EverywhereShareAnnotation new];
+        EverywhereFootprintAnnotation *shareAnno = [EverywhereFootprintAnnotation new];
         shareAnno.coordinateWGS84 = firstAsset.location.coordinate;
         shareAnno.startDate = firstAsset.creationDate;
         if (self.settingManager.mapBaseMode == MapBaseModeLocation) shareAnno.endDate = lastAsset.creationDate;
-        [shareAnnotationsToAdd addObject:shareAnno];
+        [footprintAnnotationsToAdd addObject:shareAnno];
     }];
     
     if (!annotationsToAdd || !annotationsToAdd.count) return;
     [self.myMapView addAnnotations:annotationsToAdd];
     self.addedIDAnnos = annotationsToAdd;
     self.addedEWAnnos = annotationsToAdd;
-    self.addedEWShareAnnos = shareAnnotationsToAdd;
+    self.addedEWShareAnnos = footprintAnnotationsToAdd;
 }
 
 - (void)addLineOverlaysPro:(NSArray <id<MKAnnotation>> *)annotationArray{
@@ -2588,16 +2598,16 @@
         //NSDictionary <NSString *,NSArray<NSString *> *> *placemarkDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:self.assetInfoArray];
         //[self updatePlacemarkInfoBarWithPlacemarkDictionary:placemarkDictionary mapBaseMode:self.settingManager.mapBaseMode];
         
-        EverywhereShareAnnotation *firstShareAnnotation = self.addedEWShareAnnos.firstObject;
+        EverywhereFootprintAnnotation *firstFootprintAnnotation = self.addedEWShareAnnos.firstObject;
         
         if (self.addedEWShareAnnos.count > 1) {
-            EverywhereShareAnnotation *secondShareAnnotation = self.addedEWShareAnnos[1];
-            maxDistance = fabs(MKMetersBetweenMapPoints(MKMapPointForCoordinate(firstShareAnnotation.coordinate), MKMapPointForCoordinate(secondShareAnnotation.coordinate))) * 8.0;
+            EverywhereFootprintAnnotation *secondFootprintAnnotation = self.addedEWShareAnnos[1];
+            maxDistance = fabs(MKMetersBetweenMapPoints(MKMapPointForCoordinate(firstFootprintAnnotation.coordinate), MKMapPointForCoordinate(secondFootprintAnnotation.coordinate))) * 8.0;
         }
         
-        MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(firstShareAnnotation.coordinate, maxDistance, maxDistance);
+        MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(firstFootprintAnnotation.coordinate, maxDistance, maxDistance);
         [self.myMapView setRegion:showRegion animated:NO];
-        [self.myMapView selectAnnotation:firstShareAnnotation animated:YES];
+        [self.myMapView selectAnnotation:firstFootprintAnnotation animated:YES];
     }
 
 }
@@ -2645,12 +2655,12 @@
         
         //MKAnnotationView *annoView = (MKAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"annoView"];
         
-    }else if ([annotation isKindOfClass:[EverywhereShareAnnotation class]]){
+    }else if ([annotation isKindOfClass:[EverywhereFootprintAnnotation class]]){
         
         MKPinAnnotationView *pinAV = (MKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"pinShareAV"];
         if (!pinAV) pinAV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pinShareAV"];
         
-        EverywhereShareAnnotation *shareAnno = (EverywhereShareAnnotation *)annotation;
+        EverywhereFootprintAnnotation *shareAnno = (EverywhereFootprintAnnotation *)annotation;
         
         pinAV.animatesDrop = NO;
         
@@ -2706,8 +2716,8 @@
             if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
             
             [self updateLocationInfoWithCoordinateInfoBarWithPHAssetInfo:assetInfo];
-        }else if ([view.annotation isKindOfClass:[EverywhereShareAnnotation class]]){
-            EverywhereShareAnnotation *shareAnno = (EverywhereShareAnnotation *)view.annotation;
+        }else if ([view.annotation isKindOfClass:[EverywhereFootprintAnnotation class]]){
+            EverywhereFootprintAnnotation *shareAnno = (EverywhereFootprintAnnotation *)view.annotation;
             //[self updateLocationInfoWithCoordinateInfoBarWithGCJCoordinate:shareAnno.coordinate];
             [self updateLocationInfoWithCoordinateInfoBarWithWSG84Coordinate:shareAnno.coordinateWGS84];
         }
@@ -2799,8 +2809,8 @@
         
         [self updateLocationInfoWithCoordinateInfoBarWithPHAssetInfo:assetInfo];
         
-    }else if ([view.annotation isKindOfClass:[EverywhereShareAnnotation class]]){
-        EverywhereShareAnnotation *shareAnno = (EverywhereShareAnnotation *)view.annotation;
+    }else if ([view.annotation isKindOfClass:[EverywhereFootprintAnnotation class]]){
+        EverywhereFootprintAnnotation *shareAnno = (EverywhereFootprintAnnotation *)view.annotation;
         //self.currentAnnotationIndex = [self.addedEWShareAnnos indexOfObject:shareAnno];
         
         //[self updateLocationInfoWithCoordinateInfoBarWithGCJCoordinate:shareAnno.coordinate];
@@ -2867,7 +2877,7 @@
 }
 
 - (void)addRecordedShareAnnosWithLocation:(CLLocation *)newLocation isUserManuallyAdded:(BOOL)isUserManuallyAdded{
-    EverywhereShareAnnotation *shareAnno = [EverywhereShareAnnotation new];
+    EverywhereFootprintAnnotation *shareAnno = [EverywhereFootprintAnnotation new];
     shareAnno.coordinateWGS84 = newLocation.coordinate;
     shareAnno.startDate = NOW;
     shareAnno.customTitle = [NSString stringWithFormat:@"Footprint %lu",(unsigned long)(recordedShareAnnos.count + 1)];
@@ -2877,7 +2887,7 @@
     
     if (recordedShareAnnos.count > 1){
         //NSInteger lastIndex = [recordedShareAnnos indexOfObject:shareAnno];
-        EverywhereShareAnnotation *lastAnno = recordedShareAnnos[recordedShareAnnos.count - 2];
+        EverywhereFootprintAnnotation *lastAnno = recordedShareAnnos[recordedShareAnnos.count - 2];
         [self.myMapView addOverlay:[AssetsMapProVC createLineMKPolylineBetweenStartCoordinate:lastAnno.coordinate endCoordinate:shareAnno.coordinate]];
         [self.myMapView addOverlay:[AssetsMapProVC createArrowMKPolygonBetweenStartCoordinate:lastAnno.coordinate endCoordinate:shareAnno.coordinate]];
     }

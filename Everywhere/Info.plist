@@ -10,7 +10,9 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeIconFiles</key>
-			<array/>
+			<array>
+				<string>/Users/BobZhang/Pictures/地球_64_64.png</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>abf</string>
 			<key>LSHandleRank</key>
@@ -18,6 +20,18 @@
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>com.ZhangBaoGuo.AlbumMaps.abf</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeIconFiles</key>
+			<array>
+				<string>/Users/BobZhang/Pictures/地球_64_64.png</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>all</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.data</string>
 			</array>
 		</dict>
 	</array>

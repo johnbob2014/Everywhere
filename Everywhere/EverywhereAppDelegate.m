@@ -10,13 +10,9 @@
 
 #import "EverywhereAppDelegate.h"
 
-//#import "GCPhotoManager.h"
-//#import "NSDate+Assistant.h"
-
 #import "EverywhereCoreDataManager.h"
-//#import "PHAssetInfo.h"
-
 #import "EverywhereSettingManager.h"
+#import "EverywhereFootprintsRepositoryManager.h"
 
 #import "AssetsMapProVC.h"
 
@@ -40,8 +36,8 @@
     if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     
 #warning Fix Before Submit
-    [EverywhereSettingManager defaultManager].hasPurchasedRecord = YES;
-    [EverywhereSettingManager defaultManager].hasPurchasedShare = YES;
+    [EverywhereSettingManager defaultManager].hasPurchasedRecord = YES;//NO;//
+    [EverywhereSettingManager defaultManager].hasPurchasedShare = YES;//NO;//
     
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -74,20 +70,21 @@
     return YES;
 }
 
-
+// iOS9
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options{
     if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     //NSLog(@"%@",url);
-    
-    [assetsMapProVC didReceiveShareRepositoryString:url.absoluteString];
+    NSLog(@"options : %@",options);
+    [self didReceiveFootprintsRepositoryString:url.absoluteString];
     return YES;
 }
 
+// iOS8
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
     if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
-    //NSLog(@"%@",url);
+    NSLog(@"openURL : %@",url);
     
-    [assetsMapProVC didReceiveShareRepositoryString:url.absoluteString];
+    [self didReceiveFootprintsRepositoryString:url.absoluteString];
     return YES;
 }
 
@@ -119,6 +116,27 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:Path_Inbox]) return;
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        NSArray <EverywhereFootprintsRepository *> *importedArray = [EverywhereFootprintsRepositoryManager importFootprintsRepositoryFromFilesAtPath:Path_Inbox];
+        
+        if (importedArray && importedArray.count > 0){
+            NSLog(@"收到足迹包文件数 : %lu",(unsigned long)importedArray.count);
+            dispatch_async(dispatch_get_main_queue(),^{
+                [assetsMapProVC didReceiveFootprintsRepository:importedArray.firstObject];
+            });
+        }
+        
+        NSError *removeError;
+        BOOL success = [[NSFileManager defaultManager] removeItemAtPath:Path_Inbox error:&removeError];
+        if (!success){
+            NSLog(@"Error removing inbox: %@", removeError.localizedFailureReason);
+        }
+
+    });
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -131,6 +149,115 @@
     
     [self saveContext];
 }
+
+- (void)didReceiveFootprintsRepositoryString:(NSString *)receivedString{
+    NSString *footprintsRepositoryString = nil;
+    //CLLocationDistance sharedRadius = 0;
+    
+    NSString *headerString = [NSString stringWithFormat:@"%@://AlbumMaps/",WXAppID];
+    
+    if (![receivedString containsString:headerString]){
+        NSLog(@"接收到的字符串无法解析！");
+        return;
+    }
+    
+    footprintsRepositoryString = [receivedString stringByReplacingOccurrencesOfString:headerString withString:@""];
+    // For iOS9
+    footprintsRepositoryString = [footprintsRepositoryString stringByReplacingOccurrencesOfString:@"%0D%0A" withString:@"\n"];
+    // For iOS8
+    footprintsRepositoryString = [footprintsRepositoryString stringByReplacingOccurrencesOfString:@"%20" withString:@"\n"];
+    
+    //if (DEBUGMODE) NSLog(@"\n%@",footprintsRepositoryString);
+    
+    NSData *footprintsRepositoryData = [[NSData alloc] initWithBase64EncodedString:footprintsRepositoryString options:NSDataBase64DecodingIgnoreUnknownCharacters];
+    
+    // 获取接收到的分享对象
+    EverywhereFootprintsRepository *footprintsRepository = nil;
+    
+    // 解析数据可能出错
+    @try {
+        footprintsRepository = [NSKeyedUnarchiver unarchiveObjectWithData:footprintsRepositoryData];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
+    
+    [assetsMapProVC didReceiveFootprintsRepository:footprintsRepository];
+
+}
+/*
++ (void)checkAndProcessInbox{
+    NSError *error;
+    BOOL success;
+    BOOL isDir;
+    NSFileManager *defaultFM = [NSFileManager defaultManager];
+    
+    // Does the inbox folder exist? If not, we're done here.
+    if (![defaultFM fileExistsAtPath:Path_Inbox isDirectory:&isDir]) return;
+    
+    // It exists. Is it a dir?
+    if (!isDir){
+        // 如果 Inbox 不是文件夹而是一个文件，那么删除这个文件
+        if (![defaultFM removeItemAtPath:Path_Inbox error:&error]){
+            // 如果删除失败，返回
+            NSLog(@"Error deleting Inbox file (not directory): %@", error.localizedFailureReason);
+            return;
+        }
+    }
+    
+    NSArray *fileNameArray = [defaultFM contentsOfDirectoryAtPath:Path_Inbox error:&error];
+    if (!fileNameArray) {
+        NSLog(@"Error reading contents of Inbox: %@", error.localizedFailureReason);
+        return;
+    }
+    
+    NSUInteger initialCount = fileNameArray.count;
+    
+    for (NSString *fileName in fileNameArray) {
+        NSString *sourcePath = [Path_Inbox stringByAppendingPathComponent:fileName];
+        NSString *destPath = [Path_Documents stringByAppendingPathComponent:fileName];
+        
+        if ([defaultFM fileExistsAtPath:destPath]) {
+            destPath = nil;
+        }
+        
+        if (!destPath) {
+            NSLog(@"Error. File name conflict could not be resolved for %@. Bailing", fileName);
+            continue;
+        }
+        
+        if (![defaultFM moveItemAtPath:sourcePath toPath:destPath error:&error]) {
+            NSLog(@"Error moving file %@ to Documents from Inbox: %@", fileName, error.localizedFailureReason);
+            continue;
+        }
+    }
+    
+    // Inbox should now be empty
+    fileNameArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:Path_Inbox error:&error];
+    if (!fileNameArray)
+    {
+        NSLog(@"Error reading contents of Inbox: %@", error.localizedFailureReason);
+        return;
+    }
+    
+    if (fileNameArray.count)
+    {
+        NSLog(@"Error clearing out inbox. %lu items still remain", (unsigned long)fileNameArray.count);
+        return;
+    }
+    
+    // Remove the inbox
+    success = [[NSFileManager defaultManager] removeItemAtPath:Path_Inbox error:&error];
+    if (!success)
+    {
+        NSLog(@"Error removing inbox: %@", error.localizedFailureReason);
+        return;
+    }
+    
+    NSLog(@"Moved %lu items from the Inbox to the Documents folder", (unsigned long)initialCount);
+}
+*/
 
 #pragma mark - Core Data stack
 

@@ -15,7 +15,7 @@
 #import "AboutVC.h"
 
 #import "EverywhereSettingManager.h"
-#import "EverywhereShareRepositoryManager.h"
+#import "EverywhereFootprintsRepositoryManager.h"
 #import "WXApi.h"
 
 typedef BOOL (^OnChangeCharacterInRange)(RETextItem *item, NSRange range, NSString *replacementString);
@@ -190,7 +190,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     RETableViewSection *extendedModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Extended Mode", @"扩展模式")];
     [extendedModeSection setHeaderHeight:20];
     
-#pragma mark 扩展模式主题颜色
+#pragma mark 主题颜色
     
     NSArray *extendedModeColorSchemeArray = @[NSLocalizedString(@"Bright Red",@"鲜艳红"),NSLocalizedString(@"Grass Green",@"青草绿")];
     NSString *extendedModeCurrentCS = extendedModeColorSchemeArray[self.settingManager.extendedColorScheme < extendedModeColorSchemeArray.count ? self.settingManager.extendedColorScheme : extendedModeColorSchemeArray.count - 1];
@@ -208,8 +208,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     extendedModeColorSchemePickerItem.inlinePicker = YES;
 
     
-    //self.settingManager.minTimeIntervalForRecord
-    
+#pragma mark 最短距离
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.minDistanceForRecord];
     RETextItem *minDistanceForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Min Distance",@"📏 最短距离") value:tempString placeholder:@""];
     minDistanceForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
@@ -217,7 +216,8 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         if(DEBUGMODE) NSLog(@"%@",item.value);
         self.settingManager.minDistanceForRecord = [item.value doubleValue];
     };
-    
+
+#pragma mark 最短时间间隔
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.minTimeIntervalForRecord];
     RETextItem *minTimeIntervalForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"⏱ Min TimeInterval",@"⏱ 最短时间间隔") value:tempString placeholder:@""];
     minTimeIntervalForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
@@ -226,6 +226,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         self.settingManager.minTimeIntervalForRecord = [item.value doubleValue];
     };
     
+#pragma mark 最大足迹点数
     tempString = [NSString stringWithFormat:@"%lu",(long)self.settingManager.maxFootprintsCountForRecord];
     RETextItem *maxFootprintsCountForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"🎚 Max Footprints Count",@"🎚 最大足迹点数") value:tempString placeholder:@""];
     maxFootprintsCountForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:Number];
@@ -243,9 +244,9 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     RETableViewItem *exportRepositoryItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📤 Export Repository",@"📤 导出足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         
-        NSUInteger count = [EverywhereShareRepositoryManager exportShareRepositoryToFilesAtPath:Path_Documents];
+        NSUInteger count = [EverywhereFootprintsRepositoryManager exportFootprintsRepositoryToFilesAtPath:Path_Documents];
         
-        NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully export repository count", @"成功导出足迹包数量"),count];
+        NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully export repository count", @"成功导出足迹包数量"),(unsigned long)count];
         UIAlertController *alertController = [UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
                                                                                            message:alertMessage];
         [weakSelf presentViewController:alertController animated:YES completion:nil];
@@ -254,26 +255,62 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     RETableViewItem *importRepositoryItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📥 Import Repository",@"📥 导入足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         
-        NSUInteger count = [EverywhereShareRepositoryManager importShareRepositoryFromFilesAtPath:Path_Documents];
+        NSArray <EverywhereFootprintsRepository *> *importedArray = [EverywhereFootprintsRepositoryManager importFootprintsRepositoryFromFilesAtPath:Path_Documents];
+        NSArray <EverywhereFootprintsRepository *> *newArray = [[EverywhereFootprintsRepositoryManager footprintsRepositoryArray] arrayByAddingObjectsFromArray:importedArray];
+        [EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:newArray];
         
-        NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully import repository count", @"成功导入足迹包数量"),count];
+        NSUInteger count = importedArray.count;
+        NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully import repository count", @"成功导入足迹包数量"),(unsigned long)count];
         UIAlertController *alertController = [UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
                                                                                            message:alertMessage];
         [weakSelf presentViewController:alertController animated:YES completion:nil];
     }];
 
-    RETableViewItem *clearCatchItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"❌ 清空所有足迹包",@"❌ Clear All Footprints Repository") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+    RETableViewItem *clearCatchItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"❌ Clear All Footprints Repository",@"❌ 清空所有足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
+        
+        UIAlertActionHandler okActionHandler = ^(UIAlertAction *action) {
+            
+            NSUInteger count = [EverywhereFootprintsRepositoryManager footprintsRepositoryArray].count;
+            
+            [EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:nil];
+            
+            NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Delete footprints repository count", @"删除足迹包数量"),(unsigned long)count];
+            UIAlertController *alertController = [UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
+                                                                                               message:alertMessage];
+            [weakSelf presentViewController:alertController animated:YES completion:nil];
+            
+        };
+        
         UIAlertController *alertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Attention", @"警告")
                                                                                          message:NSLocalizedString(@"All your footprints will be deleted and can not be restored! Are you sure?", @"您分享、接收、记录的所有足迹都将被删除，此操作无法恢复，请务必谨慎。确认删除？")
-                                                                                       okHandler:^(UIAlertAction *action) {
-                                                                                           [EverywhereShareRepositoryManager setShareRepositoryArray:nil];
-                                                                                       }];
+                                                                                       okActionHandler:okActionHandler];
         [weakSelf presentViewController:alertController animated:YES completion:nil];
         
     }];
     
-    [managementSection addItemsFromArray:@[exportRepositoryItem,importRepositoryItem,clearCatchItem]];
+    RETableViewItem *clearDocumentsItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"❌ Clear Documents Directory",@"❌ 清空文档目录") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        
+        UIAlertActionHandler okActionHandler = ^(UIAlertAction *action) {
+            NSUInteger count = [EverywhereFootprintsRepositoryManager clearFootprintsRepositoryFilesAtPath:Path_Documents];
+            
+            NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Delete footprints repository files count", @"删除足迹包文件数量"),(unsigned long)count];
+            UIAlertController *alertController = [UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
+                                                                                               message:alertMessage];
+            [weakSelf presentViewController:alertController animated:YES completion:nil];
+            
+        };
+        
+        UIAlertController *alertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Attention", @"警告")
+                                                                                         message:NSLocalizedString(@"All your footprints repository files in Documents directory will be deleted and can not be restored! Are you sure?", @"您用户文档中的所有足迹包文件都将被删除，此操作无法恢复，请务必谨慎。确认删除？")
+                                                                                       okActionHandler:okActionHandler];
+        [weakSelf presentViewController:alertController animated:YES completion:nil];
+        
+    }];
+    
+    
+    [managementSection addItemsFromArray:@[exportRepositoryItem,importRepositoryItem,clearCatchItem,clearDocumentsItem]];
 
     
 #pragma mark 购买

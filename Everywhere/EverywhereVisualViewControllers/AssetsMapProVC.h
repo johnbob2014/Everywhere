@@ -8,15 +8,16 @@
 
 #import <UIKit/UIKit.h>
 @import Photos;
+@class EverywhereFootprintsRepository;
 
 @interface AssetsMapProVC : UIViewController
 
 @property (strong,nonatomic) CLLocationManager *locationManagerForRecording;
 
-
 @property (assign,nonatomic) BOOL isRecording;
 
-- (void)didReceiveShareRepositoryString:(NSString *)shareRepositoryString;
+- (void)didReceiveFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository;
+
 - (void)intelligentlySaveRecordedShareAnnosAndClearCatche;
 
 @end

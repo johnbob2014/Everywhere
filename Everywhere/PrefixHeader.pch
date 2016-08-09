@@ -18,11 +18,13 @@
 #define AppID @"1136142337"
 //#define AppDownloadURLString @"https://itunes.apple.com/app/1136142337"
 #define ProductIDs @[@"com.ZhangBaoGuo.AlbumMaps.ShareFunctionAndBrowserMode",@"com.ZhangBaoGuo.AlbumMaps.RecordFuntionAndRecordMode"]
+#define ABFUTI @"com.ZhangBaoGuo.AlbumMaps.abf"
 
 #define VCBackgroundColor [UIColor groupTableViewBackgroundColor]
 
 #define Path_Documents [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
 #define Path_Inbox [Path_Documents stringByAppendingPathComponent:@"Inbox"]
+#define Path_Caches [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches"]
 
 #define WEAKSELF(weakSelf)  __weak __typeof (&*self)weakSelf = self;
 
@@ -104,13 +106,13 @@ typedef NS_ENUM(NSInteger,ExtendedColorScheme){
 };
 
 enum {
-    ShareRepositoryTypeSent = (1UL << 0),
-    ShareRepositoryTypeReceived = (1UL << 1),
-    ShareRepositoryTypeRecorded = (1UL << 2),
-    ShareRepositoryTypeEdited = (1UL << 3),
-    ShareRepositoryTypeImported = (1UL << 4)
+    FootprintsRepositoryTypeSent = (1UL << 0),
+    FootprintsRepositoryTypeReceived = (1UL << 1),
+    FootprintsRepositoryTypeRecorded = (1UL << 2),
+    FootprintsRepositoryTypeEdited = (1UL << 3),
+    FootprintsRepositoryTypeImported = (1UL << 4)
 };
-typedef NSUInteger ShareRepositoryType;
+typedef NSUInteger FootprintsRepositoryType;
 
 typedef NS_ENUM(NSInteger,DefaultTransport){
     DefaultTransportCustom = 0,
