@@ -45,4 +45,6 @@ static const NSTimeInterval TI_WEEK;
 - (NSString *) stringWithFormat: (NSString *) format;
 - (NSString *) stringWithDateStyle: (NSDateFormatterStyle) dateStyle timeStyle: (NSDateFormatterStyle) timeStyle;
 + (NSString *) localizedStringWithFormat:(NSString *)format startDate:(NSDate *)startDate endDate:(NSDate *)endDate;
+
++ (NSDate *)dateFromGPXTimeString:(NSString *)timeString;
 @end

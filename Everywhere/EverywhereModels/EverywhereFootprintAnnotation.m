@@ -32,14 +32,15 @@
 - (instancetype)initWithCoder:(NSCoder *)aDecoder{
     CGPoint coordinateWGS84Point = [aDecoder decodeCGPointForKey:@"coordinateWGS84Point"];
     
-    EverywhereFootprintAnnotation *shareAnno = [EverywhereFootprintAnnotation new];
-    shareAnno.coordinateWGS84 = CLLocationCoordinate2DMake(coordinateWGS84Point.x, coordinateWGS84Point.y);
-    shareAnno.startDate = [aDecoder decodeObjectForKey:@"startDate"];
-    shareAnno.endDate = [aDecoder decodeObjectForKey:@"endDate"];
-    shareAnno.customTitle = [aDecoder decodeObjectForKey:@"customTitle"];
-    shareAnno.isUserManuallyAdded = [aDecoder decodeBoolForKey:@"isUserManuallyAdded"];
+    EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation new];
+    footprintAnnotation.coordinateWGS84 = CLLocationCoordinate2DMake(coordinateWGS84Point.x, coordinateWGS84Point.y);
+    footprintAnnotation.startDate = [aDecoder decodeObjectForKey:@"startDate"];
+    footprintAnnotation.endDate = [aDecoder decodeObjectForKey:@"endDate"];
+    footprintAnnotation.customTitle = [aDecoder decodeObjectForKey:@"customTitle"];
+    footprintAnnotation.isUserManuallyAdded = [aDecoder decodeBoolForKey:@"isUserManuallyAdded"];
+    footprintAnnotation.altitude = [aDecoder decodeDoubleForKey:@"altitude"];
     
-    return shareAnno;
+    return footprintAnnotation;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder{
@@ -59,5 +60,63 @@
     if (self.isUserManuallyAdded){
         [aCoder encodeBool:self.isUserManuallyAdded forKey:@"isUserManuallyAdded"];
     }
+    
+    if (self.altitude != 0){
+        [aCoder encodeDouble:self.altitude forKey:@"altitude"];
+    }
 }
+
+- (NSString *)gpx_wpt_String{
+    NSMutableString *gpx_wpt_String = [NSMutableString new];
+    [gpx_wpt_String appendFormat:@"\n    "];
+    [gpx_wpt_String appendFormat:@"<wpt lat=\"%.9f\" lon=\"%.9f\">",self.coordinateWGS84.latitude,self.coordinateWGS84.longitude];
+    [gpx_wpt_String appendFormat:@"\n    "];
+    [gpx_wpt_String appendFormat:@"<ele>%.2f</ele>",self.altitude];
+    [gpx_wpt_String appendFormat:@"\n    "];
+    [gpx_wpt_String appendFormat:@"<name>%@</name>",self.title];
+    [gpx_wpt_String appendFormat:@"\n    "];
+    [gpx_wpt_String appendFormat:@"<time>%@T%@Z</time>",[self.startDate stringWithFormat:@"yyyy-MM-dd"],[self.startDate stringWithFormat:@"hh:mm:ss"]];
+    [gpx_wpt_String appendFormat:@"\n    "];
+    [gpx_wpt_String appendFormat:@"</wpt>"];
+    return gpx_wpt_String;
+}
+
+- (NSString *)gpx_trk_trkseg_trkpt_String{
+    NSMutableString *gpx_trk_trkseg_trkpt_String = [NSMutableString new];
+    [gpx_trk_trkseg_trkpt_String appendFormat:@"\n            "];
+    [gpx_trk_trkseg_trkpt_String appendFormat:@"<trkpt lat=\"%.9f\" lon=\"%.9f\">",self.coordinateWGS84.latitude,self.coordinateWGS84.longitude];
+    [gpx_trk_trkseg_trkpt_String appendFormat:@"<ele>%.2f</ele>",self.altitude];
+    [gpx_trk_trkseg_trkpt_String appendFormat:@"\n            "];
+    [gpx_trk_trkseg_trkpt_String appendFormat:@"<time>%@T%@Z</time>",[self.startDate stringWithFormat:@"yyyy-MM-dd"],[self.startDate stringWithFormat:@"hh:mm:ss"]];
+    [gpx_trk_trkseg_trkpt_String appendFormat:@"\n            "];
+    [gpx_trk_trkseg_trkpt_String appendFormat:@"</trkpt>"];
+    return gpx_trk_trkseg_trkpt_String;
+}
+
++ (EverywhereFootprintAnnotation *)footprintAnnotationFromGPXPointDictionary:(NSDictionary *)pointDictionary isUserManuallyAdded:(BOOL)isUserManuallyAdded{
+    
+    EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation new];
+    
+    footprintAnnotation.isUserManuallyAdded = isUserManuallyAdded;
+    
+    if ([pointDictionary.allKeys containsObject:@"name"])
+        footprintAnnotation.customTitle = pointDictionary[@"name"];
+    
+    if ([pointDictionary.allKeys containsObject:@"_lat"] && [pointDictionary.allKeys containsObject:@"_lon"]){
+        footprintAnnotation.coordinateWGS84 = CLLocationCoordinate2DMake([pointDictionary[@"_lat"] doubleValue], [pointDictionary[@"_lon"] doubleValue]);
+    }
+    
+    if ([pointDictionary.allKeys containsObject:@"ele"])
+        footprintAnnotation.altitude = [pointDictionary[@"ele"] doubleValue];
+    
+    if ([pointDictionary.allKeys containsObject:@"time"]){
+        NSString *timeString = pointDictionary[@"time"];
+        footprintAnnotation.startDate = [NSDate dateFromGPXTimeString:timeString];
+    }else{
+        footprintAnnotation.startDate = NOW;
+    }
+    
+    return footprintAnnotation;
+}
+
 @end

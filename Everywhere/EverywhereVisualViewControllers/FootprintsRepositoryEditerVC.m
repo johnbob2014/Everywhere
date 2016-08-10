@@ -12,7 +12,7 @@
 #import "GCLocationAnalyser.h"
 
 @interface FootprintsRepositoryEditerVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
-@property (strong,nonatomic) NSMutableArray <EverywhereFootprintAnnotation *> *shareAnnoMA;
+@property (strong,nonatomic) NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationMA;
 @end
 
 @implementation FootprintsRepositoryEditerVC{
@@ -38,8 +38,8 @@
     // 默认合并时保留用户手动添加的足迹点
     reserveManuallyAddedFootprint = YES;
     
-    self.shareAnnoMA = [NSMutableArray arrayWithArray:self.footprintsRepository.footprintAnnotations];
-    currentGroupArray = self.shareAnnoMA.reverseObjectEnumerator.allObjects;
+    self.footprintAnnotationMA = [NSMutableArray arrayWithArray:self.footprintsRepository.footprintAnnotations];
+    currentGroupArray = self.footprintAnnotationMA.reverseObjectEnumerator.allObjects;
     
     self.title = self.footprintsRepository.title;
     
@@ -129,11 +129,11 @@
     float mergeDistance = [mergeDistanceTF.text floatValue];
     if (mergeDistance == 0) mergeDistance = 200;
     
-    NSArray *mergeArray = self.shareAnnoMA;
+    NSArray *mergeArray = self.footprintAnnotationMA;
     NSMutableArray *excluedUserManuallyAddedArray = [NSMutableArray new];
     NSMutableArray *userManuallyAddedArray = [NSMutableArray new];
     if (reserveManuallyAddedFootprint) {
-        [self.shareAnnoMA enumerateObjectsUsingBlock:^(EverywhereFootprintAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [self.footprintAnnotationMA enumerateObjectsUsingBlock:^(EverywhereFootprintAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if (obj.isUserManuallyAdded) [userManuallyAddedArray addObject:obj];
             else [excluedUserManuallyAddedArray addObject:obj];
         }];
@@ -193,7 +193,7 @@
 #pragma mark - TableView
 
 - (void)updateData{
-    currentGroupArray = self.shareAnnoMA;
+    currentGroupArray = self.footprintAnnotationMA;
     [myTableView reloadData];
 }
 
@@ -255,7 +255,7 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         EverywhereFootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
-        [self.shareAnnoMA removeObject:footprintAnnotation];
+        [self.footprintAnnotationMA removeObject:footprintAnnotation];
         [self updateData];
     }
 }

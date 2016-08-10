@@ -29,6 +29,11 @@
 @property (strong,nonatomic) NSDate *endDate;
 
 /**
+ 高度 - EverywhereFootprintAnnotation
+ */
+@property (assign,nonatomic) CLLocationDistance altitude;
+
+/**
  自定义标题，如果为空，则返回title - EverywhereFootprintAnnotation
  */
 @property (strong,nonatomic) NSString *customTitle;
@@ -42,5 +47,11 @@
  只读，仅用于GCLocationAnalyser进行分组 - EverywhereFootprintAnnotation
  */
 @property (strong,nonatomic,readonly) CLLocation *location;
+
+- (NSString *)gpx_wpt_String;
+
+- (NSString *)gpx_trk_trkseg_trkpt_String;
+
++ (EverywhereFootprintAnnotation *)footprintAnnotationFromGPXPointDictionary:(NSDictionary *)pointDictionary isUserManuallyAdded:(BOOL)isUserManuallyAdded;
 
 @end

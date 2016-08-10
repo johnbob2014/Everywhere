@@ -81,27 +81,27 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+ (NSUInteger)exportFootprintsRepositoryToFilesAtPath:(NSString *)directoryPath{
++ (NSUInteger)exportFootprintsRepositoryToABFRFilesAtPath:(NSString *)directoryPath{
     __block NSUInteger count = 0;
     
     for (EverywhereFootprintsRepository *footprintsRepository in [EverywhereFootprintsRepositoryManager footprintsRepositoryArray]) {
         NSString *filePath = [directoryPath stringByAppendingPathComponent:footprintsRepository.title];
-        filePath = [filePath stringByAppendingString:@".abf"];
+        filePath = [filePath stringByAppendingString:@".abfr"];
         
         // 如果有重名文件
         if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
             
             // 如果已经存在这个足迹包，跳出本次循环
-            EverywhereFootprintsRepository *footprintsRepositoryFromExistsFile = [EverywhereFootprintsRepository importFromFile:filePath];
+            EverywhereFootprintsRepository *footprintsRepositoryFromExistsFile = [EverywhereFootprintsRepository importFromABFRFile:filePath];
             if ([EverywhereFootprintsRepositoryManager footprintsRepositoryExists:footprintsRepositoryFromExistsFile]) continue;
             
             // 如果不存在，更改一个名称来存储
             NSString *newName = [NSString stringWithFormat:@"%@(%@%.0f)",footprintsRepository.title,NSLocalizedString(@"Exported", @"导出"),[[NSDate date] timeIntervalSinceReferenceDate]*10000];
             filePath = [directoryPath stringByAppendingPathComponent:newName];
-            filePath = [filePath stringByAppendingString:@".abf"];
+            filePath = [filePath stringByAppendingString:@".abfr"];
         }
         
-        if ([footprintsRepository exportToFile:filePath]){
+        if ([footprintsRepository exportToABFRFile:filePath]){
             count++;
         }
 
@@ -110,7 +110,7 @@
     return  count;
 }
 
-+ (NSArray <EverywhereFootprintsRepository *> *)importFootprintsRepositoryFromFilesAtPath:(NSString *)directoryPath{
++ (NSArray <EverywhereFootprintsRepository *> *)importFootprintsRepositoryFromABFRFilesAtPath:(NSString *)directoryPath{
     NSError *error;
     NSArray *fileNameArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directoryPath error:&error];
     
@@ -129,7 +129,7 @@
         
         NSString *filePath = [directoryPath stringByAppendingPathComponent:fileName];
         
-        if ([[filePath pathExtension] isEqualToString:@"abf"]){
+        if ([[filePath pathExtension] isEqualToString:@"abfr"]){
             //NSData *footprintsRepositoryData = [NSData dataWithContentsOfFile:filePath];
             EverywhereFootprintsRepository *footprintsRepository = (EverywhereFootprintsRepository *)[NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
             
@@ -182,7 +182,7 @@
     for (NSString *fileName in fileNameArray) {
         NSString *filePath = [directoryPath stringByAppendingPathComponent:fileName];
         
-        if ([[filePath pathExtension] isEqualToString:@"abf"]){
+        if ([[filePath pathExtension] isEqualToString:@"abfr"]){
             NSError *removeError;
             if ([[NSFileManager defaultManager] removeItemAtPath:filePath error:&removeError]) count++;
             else NSLog(@"remove %@ error : %@",[filePath lastPathComponent],removeError.localizedDescription);

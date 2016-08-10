@@ -119,8 +119,44 @@
     
     if (![[NSFileManager defaultManager] fileExistsAtPath:Path_Inbox]) return;
     
+    NSError *readContentsError;
+    NSArray <NSString *> *fileNameArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:Path_Inbox error:&readContentsError];
+    
+    if (!fileNameArray){
+        NSLog(@"readContentsError : %@",readContentsError.localizedDescription);
+        return;
+    }
+    
+    if (fileNameArray.count == 0){
+        NSLog(@"No file in Inbox!");
+        return;
+    }else if (fileNameArray.count == 1){
+        
+    }else if (fileNameArray.count > 1){
+        NSLog(@"Inbox file count > 1!");
+    }
+    
+    NSString *filePath = [Path_Inbox stringByAppendingPathComponent:fileNameArray.firstObject];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) return;
+    
+    EverywhereFootprintsRepository *footprintsRepository = nil;
+    NSString *pathExtension = [[filePath pathExtension] lowercaseString];
+    
+    if ([pathExtension isEqualToString:@"abfr"]){
+        footprintsRepository = [EverywhereFootprintsRepository importFromABFRFile:filePath];
+    }else if ([pathExtension isEqualToString:@"gpx"]){
+        footprintsRepository = [EverywhereFootprintsRepository importFromGPXFile:filePath];
+    }else{
+        
+    }
+    
+    [assetsMapProVC didReceiveFootprintsRepository:footprintsRepository];
+    
+    [[NSFileManager defaultManager] removeItemAtPath:filePath error:NULL];
+    
+    /*
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        NSArray <EverywhereFootprintsRepository *> *importedArray = [EverywhereFootprintsRepositoryManager importFootprintsRepositoryFromFilesAtPath:Path_Inbox];
+        NSArray <EverywhereFootprintsRepository *> *importedArray = [EverywhereFootprintsRepositoryManager importFootprintsRepositoryFromABFRFilesAtPath:Path_Inbox];
         
         if (importedArray && importedArray.count > 0){
             NSLog(@"收到足迹包文件数 : %lu",(unsigned long)importedArray.count);
@@ -129,13 +165,15 @@
             });
         }
         
-        NSError *removeError;
-        BOOL success = [[NSFileManager defaultManager] removeItemAtPath:Path_Inbox error:&removeError];
-        if (!success){
-            NSLog(@"Error removing inbox: %@", removeError.localizedFailureReason);
-        }
-
+        
     });
+    
+    NSError *removeError;
+    BOOL success = [[NSFileManager defaultManager] removeItemAtPath:Path_Inbox error:&removeError];
+    if (!success){
+        NSLog(@"Error removing inbox: %@", removeError.localizedFailureReason);
+    }
+     */
     
 }
 
@@ -145,7 +183,7 @@
     // Saves changes in the application's managed object context before the application terminates.
     
     // 程序退出时保存记录的足迹
-    [assetsMapProVC intelligentlySaveRecordedShareAnnosAndClearCatche];
+    [assetsMapProVC intelligentlySaveRecordedFootprintAnnotationsAndClearCatche];
     
     [self saveContext];
 }
@@ -157,7 +195,7 @@
     NSString *headerString = [NSString stringWithFormat:@"%@://AlbumMaps/",WXAppID];
     
     if (![receivedString containsString:headerString]){
-        NSLog(@"接收到的字符串无法解析！");
+        //NSLog(@"接收到的字符串无法解析！");
         return;
     }
     

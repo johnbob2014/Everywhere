@@ -47,13 +47,23 @@
 @property (assign,nonatomic) FootprintsRepositoryType footprintsRepositoryType;
 
 /**
- 写入文件 - EverywhereFootprintsRepository
+ 写入ABFR文件 - EverywhereFootprintsRepository
  */
-- (BOOL)exportToFile:(NSString *)filePath;
+- (BOOL)exportToABFRFile:(NSString *)filePath;
 
 /**
- 从文件生成新实例 - EverywhereFootprintsRepository
+ 从ABFR文件生成新实例 - EverywhereFootprintsRepository
  */
-+ (EverywhereFootprintsRepository *)importFromFile:(NSString *)filePath;
++ (EverywhereFootprintsRepository *)importFromABFRFile:(NSString *)filePath;
+
+/**
+ 写入GPX文件 - EverywhereFootprintsRepository
+ */
+- (BOOL)exportToGPXFile:(NSString *)filePath;
+
+/**
+ 从GPX文件生成新实例 - EverywhereFootprintsRepository
+ */
++ (EverywhereFootprintsRepository *)importFromGPXFile:(NSString *)filePath;
 
 @end

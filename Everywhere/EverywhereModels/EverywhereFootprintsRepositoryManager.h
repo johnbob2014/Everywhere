@@ -18,8 +18,8 @@
 
 + (BOOL)footprintsRepositoryExists:(EverywhereFootprintsRepository *)footprintsRepository;
 
-+ (NSUInteger)exportFootprintsRepositoryToFilesAtPath:(NSString *)directoryPath;
-+ (NSArray <EverywhereFootprintsRepository *> *)importFootprintsRepositoryFromFilesAtPath:(NSString *)directoryPath;
++ (NSUInteger)exportFootprintsRepositoryToABFRFilesAtPath:(NSString *)directoryPath;
++ (NSArray <EverywhereFootprintsRepository *> *)importFootprintsRepositoryFromABFRFilesAtPath:(NSString *)directoryPath;
 
 + (NSUInteger)clearFootprintsRepositoryFilesAtPath:(NSString *)directoryPath;
 

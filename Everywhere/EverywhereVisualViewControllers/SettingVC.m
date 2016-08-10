@@ -244,7 +244,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     RETableViewItem *exportRepositoryItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📤 Export Repository",@"📤 导出足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         
-        NSUInteger count = [EverywhereFootprintsRepositoryManager exportFootprintsRepositoryToFilesAtPath:Path_Documents];
+        NSUInteger count = [EverywhereFootprintsRepositoryManager exportFootprintsRepositoryToABFRFilesAtPath:Path_Documents];
         
         NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully export repository count", @"成功导出足迹包数量"),(unsigned long)count];
         UIAlertController *alertController = [UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
@@ -255,7 +255,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     RETableViewItem *importRepositoryItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📥 Import Repository",@"📥 导入足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         
-        NSArray <EverywhereFootprintsRepository *> *importedArray = [EverywhereFootprintsRepositoryManager importFootprintsRepositoryFromFilesAtPath:Path_Documents];
+        NSArray <EverywhereFootprintsRepository *> *importedArray = [EverywhereFootprintsRepositoryManager importFootprintsRepositoryFromABFRFilesAtPath:Path_Documents];
         NSArray <EverywhereFootprintsRepository *> *newArray = [[EverywhereFootprintsRepositoryManager footprintsRepositoryArray] arrayByAddingObjectsFromArray:importedArray];
         [EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:newArray];
         

@@ -10,25 +10,27 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeIconFiles</key>
-			<array>
-				<string>/Users/BobZhang/Pictures/地球_64_64.png</string>
-			</array>
+			<array/>
 			<key>CFBundleTypeName</key>
-			<string>abf</string>
-			<key>LSHandleRank</key>
+			<string>AlbumMaps Footprints Repository File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>com.ZhangBaoGuo.AlbumMaps.abf</string>
+				<string>com.ZhangBaoGuo.AlbumMaps.abfr</string>
 			</array>
 		</dict>
 		<dict>
 			<key>CFBundleTypeIconFiles</key>
-			<array>
-				<string>/Users/BobZhang/Pictures/地球_64_64.png</string>
-			</array>
+			<array/>
 			<key>CFBundleTypeName</key>
-			<string>all</string>
+			<string>All</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>public.data</string>
@@ -124,14 +126,21 @@
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>
+			<key>UITypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>abfr</string>
+				</array>
+			</dict>
 			<key>UTTypeConformsTo</key>
 			<array>
 				<string>public.data</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>abf</string>
+			<string>AlbumMaps Footprints Repository File</string>
 			<key>UTTypeIdentifier</key>
-			<string>com.ZhangBaoGuo.AlbumMaps.abf</string>
+			<string>com.ZhangBaoGuo.AlbumMaps.abfr</string>
 			<key>UTTypeSize320IconFile</key>
 			<string>地球_320_320</string>
 			<key>UTTypeSize64IconFile</key>

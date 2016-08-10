@@ -18,6 +18,6 @@
 
 - (void)didReceiveFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository;
 
-- (void)intelligentlySaveRecordedShareAnnosAndClearCatche;
+- (void)intelligentlySaveRecordedFootprintAnnotationsAndClearCatche;
 
 @end

@@ -40,6 +40,7 @@
 		4B0866331D373987000300AD /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B0866321D373987000300AD /* CoreTelephony.framework */; };
 		4B0866351D373993000300AD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B0866341D373993000300AD /* Security.framework */; };
 		4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */; };
+		4B12E6FD1D5AC8400035D16D /* XMLDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B12E6FC1D5AC8400035D16D /* XMLDictionary.m */; };
 		4B15B5D31D3F5E5E0096EE89 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B15B5D21D3F5E5E0096EE89 /* Assets.xcassets */; };
 		4B15B5D61D3F79CF0096EE89 /* FootprintsRepositoryEditerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B15B5D51D3F79CF0096EE89 /* FootprintsRepositoryEditerVC.m */; };
 		4B1B4BDC1D3879FE00CCD842 /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B1B4BDB1D3879FE00CCD842 /* libWeChatSDK.a */; };
@@ -154,6 +155,8 @@
 		4B0866341D373993000300AD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		4B0D09261D23C94D0047D7E0 /* PHAsset+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PHAsset+Assistant.h"; path = "PHAsset+Assistant/PHAsset+Assistant.h"; sourceTree = "<group>"; };
 		4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PHAsset+Assistant.m"; path = "PHAsset+Assistant/PHAsset+Assistant.m"; sourceTree = "<group>"; };
+		4B12E6FB1D5AC8400035D16D /* XMLDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLDictionary.h; sourceTree = "<group>"; };
+		4B12E6FC1D5AC8400035D16D /* XMLDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLDictionary.m; sourceTree = "<group>"; };
 		4B15B5D21D3F5E5E0096EE89 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4B15B5D41D3F79CF0096EE89 /* FootprintsRepositoryEditerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FootprintsRepositoryEditerVC.h; path = EverywhereVisualViewControllers/FootprintsRepositoryEditerVC.h; sourceTree = "<group>"; };
 		4B15B5D51D3F79CF0096EE89 /* FootprintsRepositoryEditerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FootprintsRepositoryEditerVC.m; path = EverywhereVisualViewControllers/FootprintsRepositoryEditerVC.m; sourceTree = "<group>"; };
@@ -496,6 +499,15 @@
 			name = "PHAsset+Assistant";
 			sourceTree = "<group>";
 		};
+		4B12E6FA1D5AC8400035D16D /* XMLDictionary */ = {
+			isa = PBXGroup;
+			children = (
+				4B12E6FB1D5AC8400035D16D /* XMLDictionary.h */,
+				4B12E6FC1D5AC8400035D16D /* XMLDictionary.m */,
+			);
+			path = XMLDictionary;
+			sourceTree = "<group>";
+		};
 		4B27FDBD1D2CA12000067683 /* UIButton+Bootstrap */ = {
 			isa = PBXGroup;
 			children = (
@@ -566,6 +578,7 @@
 		4B3AF9CF1D2F3ECE009BD545 /* GeneralClass */ = {
 			isa = PBXGroup;
 			children = (
+				4B12E6FA1D5AC8400035D16D /* XMLDictionary */,
 				4BFA06381D4B306900AE8000 /* Qiniu */,
 				4BFE711E1D42292900F5AA2F /* BaiduMap */,
 				1E74C3021D268377000A9790 /* VCFloatingActionButton */,
@@ -808,6 +821,7 @@
 				4B1B4BE21D387A4200CCD842 /* InAppPurchaseVC.m in Sources */,
 				1E41FD211D2AB66100E1A5B9 /* LocationInfoBar.m in Sources */,
 				1EF62A541D3B8FD50084AF66 /* CoordinateInfo.m in Sources */,
+				4B12E6FD1D5AC8400035D16D /* XMLDictionary.m in Sources */,
 				1EF62A5A1D3BB90F0084AF66 /* EverywhereFootprintsRepository.m in Sources */,
 				4BFA4EB31D33791A007DDA87 /* LocationPickerVC.m in Sources */,
 				4BD51FC91D2B47B900F18244 /* PHAssetInfo.m in Sources */,

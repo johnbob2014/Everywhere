@@ -280,4 +280,14 @@ static const NSInteger BIG_MONTH[7] = {1,3,5,7,8,10,12};
     [ms appendString:[endDate stringWithFormat:format]];
     return ms;
 }
+
+// 将格式 2007-10-14T10:10:50Z 转化为NSDate
++ (NSDate *)dateFromGPXTimeString:(NSString *)timeString{
+    timeString = [timeString stringByReplacingOccurrencesOfString:@"T" withString:@" "];
+    timeString = [timeString stringByReplacingOccurrencesOfString:@"Z" withString:@""];
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+    return [dateFormatter dateFromString:timeString];
+}
+
 @end

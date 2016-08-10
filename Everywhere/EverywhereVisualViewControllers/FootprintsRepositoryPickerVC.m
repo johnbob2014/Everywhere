@@ -225,8 +225,10 @@
                                                                [self presentViewController:alertController animated:YES completion:nil];
                                                            };
                                                            
+                                                           /*
                                                            shareFRVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.9, 200);
                                                            shareFRVC.landscapeContentSizeInPopup = CGSizeMake(200, ScreenWidth * 0.9);
+                                                           */
                                                            
                                                            if(self.popupController) [self.popupController pushViewController:shareFRVC animated:YES];
                                                            

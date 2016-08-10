@@ -90,7 +90,7 @@
 #pragma mark 添加的各种Annos
 @property (strong,nonatomic) NSArray <id<MKAnnotation>> *addedIDAnnos;
 @property (strong,nonatomic) NSArray <EverywhereAnnotation *> *addedEWAnnos;
-@property (strong,nonatomic) NSArray <EverywhereFootprintAnnotation *> *addedEWShareAnnos;
+@property (strong,nonatomic) NSArray <EverywhereFootprintAnnotation *> *addedEWFootprintAnnotations;
 @property (assign,nonatomic) NSInteger currentAnnotationIndex;
 
 #pragma mark 用于模式转换
@@ -133,7 +133,7 @@
 #pragma mark 用于RecordMode
     CLLocation *lastRecordLocation;
     NSDate *lastRecordDate;
-    NSMutableArray <EverywhereFootprintAnnotation *> *recordedShareAnnos;
+    NSMutableArray <EverywhereFootprintAnnotation *> *recordedFootprintAnnotations;
 
 #pragma mark 各种Bar
     STPopupController *popupController;
@@ -490,7 +490,7 @@
     _assetsArray = assetsArray;
     
     self.addedEWAnnos = nil;
-    self.addedEWShareAnnos = nil;
+    self.addedEWFootprintAnnotations = nil;
     [self addAnnotations];
     
     switch (self.settingManager.mapBaseMode) {
@@ -711,7 +711,7 @@
     self.assetsArray = nil;
     
     self.addedEWAnnos = nil;
-    self.addedEWShareAnnos = nil;
+    self.addedEWFootprintAnnotations = nil;
     self.addedIDAnnos = nil;
     
     self.endDate = nil;
@@ -1505,7 +1505,7 @@
         return;
     }
     
-    if (self.userLocationWGS84) [self addRecordedShareAnnosWithLocation:self.userLocationWGS84 isUserManuallyAdded:YES];
+    if (self.userLocationWGS84) [self addRecordedFootprintAnnotationsWithLocation:self.userLocationWGS84 isUserManuallyAdded:YES];
     else{
         [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Haven't got current location!", @"尚未定位，无法添加！")]
                            animated:YES
@@ -1803,7 +1803,7 @@
 
 - (void)showShareFootprintsRepositoryVC{
     
-    if (!self.addedEWShareAnnos || self.addedEWShareAnnos.count == 0) {
+    if (!self.addedEWFootprintAnnotations || self.addedEWFootprintAnnotations.count == 0) {
         [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"No footprints yet.Please choose a date or a location to add your album footprints.", @"您还没有添加足迹点，请选择日期或地址添加您的相册足迹。")]
                            animated:YES completion:nil];
         
@@ -1818,7 +1818,7 @@
 
     // 生成分享对象
     EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
-    footprintsRepository.footprintAnnotations = self.addedEWShareAnnos;
+    footprintsRepository.footprintAnnotations = self.addedEWFootprintAnnotations;
     if (self.settingManager.mapBaseMode == MapBaseModeMoment) footprintsRepository.radius = 0;
     else footprintsRepository.radius = self.settingManager.mergeDistanceForLocation / 2.0;
     footprintsRepository.creationDate = NOW;
@@ -1838,8 +1838,10 @@
         [weakSelf showPurchaseShareFunctionAlertController];
     };
     
-    shareFRVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.9, 200);
-    shareFRVC.landscapeContentSizeInPopup = CGSizeMake(200, ScreenWidth * 0.9);
+    /*
+    shareFRVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.9, 240);
+    shareFRVC.landscapeContentSizeInPopup = CGSizeMake(240, ScreenWidth * 0.9);
+    */
     
     popupController = [[STPopupController alloc] initWithRootViewController:shareFRVC];
     popupController.containerView.layer.cornerRadius = 4;
@@ -1880,7 +1882,7 @@
         
     }
     
-    //if (DEBUGMODE) NSLog(@"received footprintAnnotation count : %lu",(unsigned long)receivedEWShareAnnos.count);
+    //if (DEBUGMODE) NSLog(@"received footprintAnnotation count : %lu",(unsigned long)receivedEWFootprintAnnotations.count);
     
     [self didReceiveFootprintsRepository:footprintsRepository];
 }
@@ -1899,7 +1901,7 @@
     
     // 新接收到，先保存footprintsRepository，如果用户选择丢弃，再删除掉
     [EverywhereFootprintsRepositoryManager addFootprintsRepository:footprintsRepository];
-    if (DEBUGMODE) NSLog(@"footprintsRepositoryArray count : %lu",(unsigned long)[EverywhereFootprintsRepositoryManager footprintsRepositoryArray].count);
+    //if (DEBUGMODE) NSLog(@"footprintsRepositoryArray count : %lu",(unsigned long)[EverywhereFootprintsRepositoryManager footprintsRepositoryArray].count);
     
     // 显示主界面
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -1958,7 +1960,7 @@
     // 保存BaseMode数据
     savedTitleForBaseMode = msBaseModeBar.info;
     savedAnnotationsForBaseMode = self.addedEWAnnos;
-    savedFootprintAnnotationsForBaseMode = self.addedEWShareAnnos;
+    savedFootprintAnnotationsForBaseMode = self.addedEWFootprintAnnotations;
     savedOverlaysForBaseMode = self.myMapView.overlays;
     savedStartDateForBaseMode = self.startDate;
     savedEndDateForBaseMode = self.endDate;
@@ -1967,7 +1969,7 @@
     [self.myMapView removeAnnotations:self.myMapView.annotations];
     [self.myMapView removeOverlays:self.myMapView.overlays];
     
-    self.addedEWShareAnnos = nil;
+    self.addedEWFootprintAnnotations = nil;
     self.addedIDAnnos = nil;
 
     msBaseModeBar.hidden = YES;
@@ -1998,12 +2000,12 @@
     // 清理Extended Mode地图
     [self.myMapView removeAnnotations:self.myMapView.annotations];
     [self.myMapView removeOverlays:self.myMapView.overlays];
-    self.addedEWShareAnnos = nil;
+    self.addedEWFootprintAnnotations = nil;
     
     // 恢复Main Mode地图
     msBaseModeBar.info = savedTitleForBaseMode;
     [self.myMapView addAnnotations:savedAnnotationsForBaseMode];
-    self.addedEWShareAnnos = (NSArray <EverywhereFootprintAnnotation*> *)savedFootprintAnnotationsForBaseMode;
+    self.addedEWFootprintAnnotations = (NSArray <EverywhereFootprintAnnotation*> *)savedFootprintAnnotationsForBaseMode;
     [self.myMapView addOverlays:savedOverlaysForBaseMode];
     self.addedIDAnnos = savedAnnotationsForBaseMode;
     self.startDate = savedStartDateForBaseMode;
@@ -2029,7 +2031,7 @@
 
 - (void)checkBeforeShowFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository{
     
-    if (!recordedShareAnnos || recordedShareAnnos.count == 0) {
+    if (!recordedFootprintAnnotations || recordedFootprintAnnotations.count == 0) {
         [self showFootprintsRepository:footprintsRepository];
         return;
     }else if (self.isInRecordMode) {
@@ -2054,7 +2056,7 @@
     
     // 设置addedIDAnnos，用于导航
     self.addedIDAnnos = footprintsRepository.footprintAnnotations;
-    self.addedEWShareAnnos = footprintsRepository.footprintAnnotations;
+    self.addedEWFootprintAnnotations = footprintsRepository.footprintAnnotations;
     
     // 添加Overlays
     if (footprintsRepository.radius == 0){
@@ -2065,13 +2067,13 @@
         [self addCircleOverlaysPro:footprintsRepository.footprintAnnotations radius:footprintsRepository.radius];
     }
     
-    [self updateVisualViewForEWShareAnnos];
+    [self updateVisualViewForEWFootprintAnnotations];
     
 }
 
 - (void)showQuiteBrowserModeAlertController{
     
-    if (!self.addedEWShareAnnos || self.addedEWShareAnnos.count == 0){
+    if (!self.addedEWFootprintAnnotations || self.addedEWFootprintAnnotations.count == 0){
         [self quiteBrowserMode];
         [self quiteExtendedMode];
         return;
@@ -2144,7 +2146,7 @@
     self.isRecording = NO;
     lastRecordLocation = nil;
     lastRecordDate = nil;
-    recordedShareAnnos = [NSMutableArray new];
+    recordedFootprintAnnotations = [NSMutableArray new];
 
 }
 
@@ -2224,9 +2226,9 @@
         return;
     }
     
-    [self intelligentlySaveRecordedShareAnnosAndClearCatche];
+    [self intelligentlySaveRecordedFootprintAnnotationsAndClearCatche];
     self.allowBrowserMode = YES;
-    //recordedShareAnnos = [NSMutableArray new];
+    //recordedFootprintAnnotations = [NSMutableArray new];
     
     [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"The recorded footprints has been saved.", @"足迹保存成功。")]
                        animated:YES completion:nil];
@@ -2234,7 +2236,7 @@
 
 - (void)showQuiteRecordModeAlertController{
     
-    if (!recordedShareAnnos || recordedShareAnnos.count == 0){
+    if (!recordedFootprintAnnotations || recordedFootprintAnnotations.count == 0){
         self.allowBrowserMode = YES;
         [self quiteRecordMode];
         [self quiteExtendedMode];
@@ -2248,7 +2250,7 @@
     UIAlertAction *saveAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Save",@"保存")
                                                          style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * action) {
-                                                             [self intelligentlySaveRecordedShareAnnosAndClearCatche];
+                                                             [self intelligentlySaveRecordedFootprintAnnotationsAndClearCatche];
                                                              self.allowBrowserMode = YES;
                                                              [self quiteRecordMode];
                                                              [self quiteExtendedMode];
@@ -2274,12 +2276,12 @@
 }
 
 // 智能保存
-- (void)intelligentlySaveRecordedShareAnnosAndClearCatche{
-    if (!recordedShareAnnos || recordedShareAnnos.count == 0) return;
+- (void)intelligentlySaveRecordedFootprintAnnotationsAndClearCatche{
+    if (!recordedFootprintAnnotations || recordedFootprintAnnotations.count == 0) return;
     
-    //if (recordedShareAnnos.count > 1){}
+    //if (recordedFootprintAnnotations.count > 1){}
     EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
-    footprintsRepository.footprintAnnotations = recordedShareAnnos;
+    footprintsRepository.footprintAnnotations = recordedFootprintAnnotations;
     footprintsRepository.creationDate = NOW;
     footprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Record", @"记录"),[footprintsRepository.creationDate stringWithDefaultFormat]];
     footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeRecorded;
@@ -2291,7 +2293,7 @@
     UILocalNotification *noti = [UILocalNotification new];
     
     NSMutableString *messageMS = [NSMutableString new];
-    [messageMS appendFormat:@"%@\n%@\n%@ %lu",NSLocalizedString(@"Record has been sucessfully saved :", @"记录保存成功 :"),footprintsRepository.title,NSLocalizedString(@"Footprints Count: ", @"足迹点数量 : "),(long)recordedShareAnnos.count];
+    [messageMS appendFormat:@"%@\n%@\n%@ %lu",NSLocalizedString(@"Record has been sucessfully saved :", @"记录保存成功 :"),footprintsRepository.title,NSLocalizedString(@"Footprints Count: ", @"足迹点数量 : "),(long)recordedFootprintAnnotations.count];
     
     noti.alertBody = messageMS;
     noti.alertAction = NSLocalizedString(@"Action", @"操作");
@@ -2300,7 +2302,7 @@
     [[UIApplication sharedApplication] presentLocalNotificationNow:noti];
 
     // 清空存储的足迹点
-    recordedShareAnnos = [NSMutableArray new];
+    recordedFootprintAnnotations = [NSMutableArray new];
 }
 
 - (void)quiteRecordMode{
@@ -2322,7 +2324,7 @@
 - (void)addAnnotations{
     // 清理数组
     self.addedEWAnnos = nil;
-    self.addedEWShareAnnos = nil;
+    self.addedEWFootprintAnnotations = nil;
     NSMutableArray <EverywhereAnnotation *> *annotationsToAdd = [NSMutableArray new];
     NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationsToAdd = [NSMutableArray new];
     // 添加 MKAnnotations
@@ -2349,18 +2351,22 @@
         [annotationsToAdd addObject:anno];
         //[self.myMapView addAnnotation:anno];
         
-        EverywhereFootprintAnnotation *shareAnno = [EverywhereFootprintAnnotation new];
-        shareAnno.coordinateWGS84 = firstAsset.location.coordinate;
-        shareAnno.startDate = firstAsset.creationDate;
-        if (self.settingManager.mapBaseMode == MapBaseModeLocation) shareAnno.endDate = lastAsset.creationDate;
-        [footprintAnnotationsToAdd addObject:shareAnno];
+        EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation new];
+        footprintAnnotation.coordinateWGS84 = firstAsset.location.coordinate;
+        footprintAnnotation.startDate = firstAsset.creationDate;
+        if (self.settingManager.mapBaseMode == MapBaseModeLocation) footprintAnnotation.endDate = lastAsset.creationDate;
+        
+        //NSLog(@"\n%@",footprintAnnotation.gpx_wpt_String);
+        //NSLog(@"\n%@",footprintAnnotation.gpx_trk_trkseg_trkpt_String);
+        
+        [footprintAnnotationsToAdd addObject:footprintAnnotation];
     }];
     
     if (!annotationsToAdd || !annotationsToAdd.count) return;
     [self.myMapView addAnnotations:annotationsToAdd];
     self.addedIDAnnos = annotationsToAdd;
     self.addedEWAnnos = annotationsToAdd;
-    self.addedEWShareAnnos = footprintAnnotationsToAdd;
+    self.addedEWFootprintAnnotations = footprintAnnotationsToAdd;
 }
 
 - (void)addLineOverlaysPro:(NSArray <id<MKAnnotation>> *)annotationArray{
@@ -2591,17 +2597,17 @@
     
 }
 
-- (void)updateVisualViewForEWShareAnnos{
+- (void)updateVisualViewForEWFootprintAnnotations{
     // 分享的
-    if (self.addedEWShareAnnos.count > 0) {
-        NSLog(@"self.addedEWShareAnnos.count : %lu",(unsigned long)self.addedEWShareAnnos.count);
+    if (self.addedEWFootprintAnnotations.count > 0) {
+        NSLog(@"self.addedEWFootprintAnnotations.count : %lu",(unsigned long)self.addedEWFootprintAnnotations.count);
         //NSDictionary <NSString *,NSArray<NSString *> *> *placemarkDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:self.assetInfoArray];
         //[self updatePlacemarkInfoBarWithPlacemarkDictionary:placemarkDictionary mapBaseMode:self.settingManager.mapBaseMode];
         
-        EverywhereFootprintAnnotation *firstFootprintAnnotation = self.addedEWShareAnnos.firstObject;
+        EverywhereFootprintAnnotation *firstFootprintAnnotation = self.addedEWFootprintAnnotations.firstObject;
         
-        if (self.addedEWShareAnnos.count > 1) {
-            EverywhereFootprintAnnotation *secondFootprintAnnotation = self.addedEWShareAnnos[1];
+        if (self.addedEWFootprintAnnotations.count > 1) {
+            EverywhereFootprintAnnotation *secondFootprintAnnotation = self.addedEWFootprintAnnotations[1];
             maxDistance = fabs(MKMetersBetweenMapPoints(MKMapPointForCoordinate(firstFootprintAnnotation.coordinate), MKMapPointForCoordinate(secondFootprintAnnotation.coordinate))) * 8.0;
         }
         
@@ -2660,11 +2666,11 @@
         MKPinAnnotationView *pinAV = (MKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"pinShareAV"];
         if (!pinAV) pinAV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pinShareAV"];
         
-        EverywhereFootprintAnnotation *shareAnno = (EverywhereFootprintAnnotation *)annotation;
+        EverywhereFootprintAnnotation *footprintAnnotation = (EverywhereFootprintAnnotation *)annotation;
         
         pinAV.animatesDrop = NO;
         
-        pinAV.pinColor = shareAnno.isUserManuallyAdded ? MKPinAnnotationColorRed : MKPinAnnotationColorPurple;
+        pinAV.pinColor = footprintAnnotation.isUserManuallyAdded ? MKPinAnnotationColorRed : MKPinAnnotationColorPurple;
         
         pinAV.canShowCallout = YES;
         
@@ -2717,9 +2723,9 @@
             
             [self updateLocationInfoWithCoordinateInfoBarWithPHAssetInfo:assetInfo];
         }else if ([view.annotation isKindOfClass:[EverywhereFootprintAnnotation class]]){
-            EverywhereFootprintAnnotation *shareAnno = (EverywhereFootprintAnnotation *)view.annotation;
-            //[self updateLocationInfoWithCoordinateInfoBarWithGCJCoordinate:shareAnno.coordinate];
-            [self updateLocationInfoWithCoordinateInfoBarWithWSG84Coordinate:shareAnno.coordinateWGS84];
+            EverywhereFootprintAnnotation *footprintAnnotation = (EverywhereFootprintAnnotation *)view.annotation;
+            //[self updateLocationInfoWithCoordinateInfoBarWithGCJCoordinate:footprintAnnotation.coordinate];
+            [self updateLocationInfoWithCoordinateInfoBarWithWSG84Coordinate:footprintAnnotation.coordinateWGS84];
         }
         
         [self showHideLocationInfoWithCoordinateInfoBar];
@@ -2810,11 +2816,11 @@
         [self updateLocationInfoWithCoordinateInfoBarWithPHAssetInfo:assetInfo];
         
     }else if ([view.annotation isKindOfClass:[EverywhereFootprintAnnotation class]]){
-        EverywhereFootprintAnnotation *shareAnno = (EverywhereFootprintAnnotation *)view.annotation;
-        //self.currentAnnotationIndex = [self.addedEWShareAnnos indexOfObject:shareAnno];
+        EverywhereFootprintAnnotation *footprintAnnotation = (EverywhereFootprintAnnotation *)view.annotation;
+        //self.currentAnnotationIndex = [self.addedEWFootprintAnnotations indexOfObject:footprintAnnotation];
         
-        //[self updateLocationInfoWithCoordinateInfoBarWithGCJCoordinate:shareAnno.coordinate];
-        [self updateLocationInfoWithCoordinateInfoBarWithWSG84Coordinate:shareAnno.coordinateWGS84];
+        //[self updateLocationInfoWithCoordinateInfoBarWithGCJCoordinate:footprintAnnotation.coordinate];
+        [self updateLocationInfoWithCoordinateInfoBarWithWSG84Coordinate:footprintAnnotation.coordinateWGS84];
     }
 }
 
@@ -2857,7 +2863,7 @@
     if (!lastRecordLocation) {
         lastRecordLocation = lastLocation;
         lastRecordDate = NOW;
-        [self addRecordedShareAnnosWithLocation:lastRecordLocation isUserManuallyAdded:NO];
+        [self addRecordedFootprintAnnotationsWithLocation:lastRecordLocation isUserManuallyAdded:NO];
     }
     
     CLLocation *currentLocation = lastLocation;
@@ -2865,7 +2871,7 @@
     if ([currentLocation distanceFromLocation:lastRecordLocation] > self.minDistanceForRecord) {
         // 满足最小记录时间条件
         if([NOW timeIntervalSinceDate:lastRecordDate] > self.minTimeIntervalForRecord){
-            [self addRecordedShareAnnosWithLocation:currentLocation isUserManuallyAdded:NO];
+            [self addRecordedFootprintAnnotationsWithLocation:currentLocation isUserManuallyAdded:NO];
             
             // 记录新足迹点后，再更新
             lastRecordLocation = currentLocation;
@@ -2876,26 +2882,26 @@
     //NSLog(@"%@",NSStringFromSelector(_cmd));
 }
 
-- (void)addRecordedShareAnnosWithLocation:(CLLocation *)newLocation isUserManuallyAdded:(BOOL)isUserManuallyAdded{
-    EverywhereFootprintAnnotation *shareAnno = [EverywhereFootprintAnnotation new];
-    shareAnno.coordinateWGS84 = newLocation.coordinate;
-    shareAnno.startDate = NOW;
-    shareAnno.customTitle = [NSString stringWithFormat:@"Footprint %lu",(unsigned long)(recordedShareAnnos.count + 1)];
-    shareAnno.isUserManuallyAdded = isUserManuallyAdded;
-    [recordedShareAnnos addObject:shareAnno];
-    [self.myMapView addAnnotation:shareAnno];
+- (void)addRecordedFootprintAnnotationsWithLocation:(CLLocation *)newLocation isUserManuallyAdded:(BOOL)isUserManuallyAdded{
+    EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation new];
+    footprintAnnotation.coordinateWGS84 = newLocation.coordinate;
+    footprintAnnotation.startDate = NOW;
+    footprintAnnotation.customTitle = [NSString stringWithFormat:@"Footprint %lu",(unsigned long)(recordedFootprintAnnotations.count + 1)];
+    footprintAnnotation.isUserManuallyAdded = isUserManuallyAdded;
+    [recordedFootprintAnnotations addObject:footprintAnnotation];
+    [self.myMapView addAnnotation:footprintAnnotation];
     
-    if (recordedShareAnnos.count > 1){
-        //NSInteger lastIndex = [recordedShareAnnos indexOfObject:shareAnno];
-        EverywhereFootprintAnnotation *lastAnno = recordedShareAnnos[recordedShareAnnos.count - 2];
-        [self.myMapView addOverlay:[AssetsMapProVC createLineMKPolylineBetweenStartCoordinate:lastAnno.coordinate endCoordinate:shareAnno.coordinate]];
-        [self.myMapView addOverlay:[AssetsMapProVC createArrowMKPolygonBetweenStartCoordinate:lastAnno.coordinate endCoordinate:shareAnno.coordinate]];
+    if (recordedFootprintAnnotations.count > 1){
+        //NSInteger lastIndex = [recordedFootprintAnnotations indexOfObject:footprintAnnotation];
+        EverywhereFootprintAnnotation *lastAnno = recordedFootprintAnnotations[recordedFootprintAnnotations.count - 2];
+        [self.myMapView addOverlay:[AssetsMapProVC createLineMKPolylineBetweenStartCoordinate:lastAnno.coordinate endCoordinate:footprintAnnotation.coordinate]];
+        [self.myMapView addOverlay:[AssetsMapProVC createArrowMKPolygonBetweenStartCoordinate:lastAnno.coordinate endCoordinate:footprintAnnotation.coordinate]];
     }
     
     // 如果达到设置最大数据，重新开始一条新的记录，用于节省内存，防止崩溃
-    if (recordedShareAnnos.count == self.settingManager.maxFootprintsCountForRecord) {
-        [self intelligentlySaveRecordedShareAnnosAndClearCatche];
-        //recordedShareAnnos = [NSMutableArray new];
+    if (recordedFootprintAnnotations.count == self.settingManager.maxFootprintsCountForRecord) {
+        [self intelligentlySaveRecordedFootprintAnnotationsAndClearCatche];
+        //recordedFootprintAnnotations = [NSMutableArray new];
     }
 }
 
