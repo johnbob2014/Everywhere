@@ -12,7 +12,7 @@
 
 + (UIAlertController *)infomationAlertControllerWithTitle:(NSString *)title message:(NSString *)message{
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *iKnowAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"I Konw",@"我知道了") style:UIAlertActionStyleDefault handler:nil];
+    UIAlertAction *iKnowAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"I Know",@"我知道了") style:UIAlertActionStyleDefault handler:nil];
     [alertController addAction:iKnowAction];
     return alertController;
 }

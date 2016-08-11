@@ -192,7 +192,7 @@
             break;
     }
     
-    cell.textLabel.text = [NSString stringWithFormat:@"%d %@ %@",indexPath.row + 1,headerString,footprintsRepository.title];
+    cell.textLabel.text = [NSString stringWithFormat:@"%ld %@ %@",indexPath.row + 1,headerString,footprintsRepository.title];
     
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ : %lu , %@ : %@",NSLocalizedString(@"Footprints Count", @"足迹点数"),(unsigned long)footprintsRepository.footprintAnnotations.count,NSLocalizedString(@"Modification Date", @"修改时间"),[footprintsRepository.modificatonDate stringWithDefaultFormat]];
     return cell;

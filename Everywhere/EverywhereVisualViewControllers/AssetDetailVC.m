@@ -54,9 +54,12 @@
             playButton.hidden = YES;
         }
         
-        if (currentIndex > 1) noteLabel.hidden = YES;
-        else noteLabel.hidden = NO;
+        if (currentIndex > 0) noteLabel.text = [NSString stringWithFormat:@"%ld/%lu",currentIndex + 1,(unsigned long)assetArray.count];
     }
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
+    return UIInterfaceOrientationMaskAllButUpsideDown;
 }
 
 - (void)viewDidLoad{

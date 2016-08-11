@@ -183,6 +183,10 @@
 
 #pragma mark - Life Cycle
 
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
 - (void)didReceiveMemoryWarning{
     /*
     [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Receive Memory Warning.AlbumMaps will clear map data.", @"足迹点较多，收到内存警告提醒，相册地图将进行内存清理，请重新选择日期或地点！")]

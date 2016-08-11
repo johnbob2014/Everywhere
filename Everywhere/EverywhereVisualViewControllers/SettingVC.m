@@ -13,6 +13,7 @@
 #import "ShareImageVC.h"
 #import "InAppPurchaseVC.h"
 #import "AboutVC.h"
+#import "GCFileBrowser.h"
 
 #import "EverywhereSettingManager.h"
 #import "EverywhereFootprintsRepositoryManager.h"
@@ -289,9 +290,14 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         
     }];
     
-    RETableViewItem *clearDocumentsItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"❌ Clear Documents Directory",@"❌ 清空文档目录") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+    RETableViewItem *documentsItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"❌ Clear Documents Directory",@"❌ 清空文档目录") accessoryType:UITableViewCellAccessoryDisclosureIndicator  selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         
+        GCFileBrowser *fileBrowser = [GCFileBrowser new];
+        fileBrowser.edgesForExtendedLayout = UIRectEdgeNone;
+        
+        [self.navigationController pushViewController:fileBrowser animated:YES];
+        /*
         UIAlertActionHandler okActionHandler = ^(UIAlertAction *action) {
             NSUInteger count = [EverywhereFootprintsRepositoryManager clearFootprintsRepositoryFilesAtPath:Path_Documents];
             
@@ -306,11 +312,12 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
                                                                                          message:NSLocalizedString(@"All your footprints repository files in Documents directory will be deleted and can not be restored! Are you sure?", @"您用户文档中的所有足迹包文件都将被删除，此操作无法恢复，请务必谨慎。确认删除？")
                                                                                        okActionHandler:okActionHandler];
         [weakSelf presentViewController:alertController animated:YES completion:nil];
+         */
         
     }];
     
     
-    [managementSection addItemsFromArray:@[exportRepositoryItem,importRepositoryItem,clearCatchItem,clearDocumentsItem]];
+    [managementSection addItemsFromArray:@[exportRepositoryItem,importRepositoryItem,clearCatchItem,documentsItem]];
 
     
 #pragma mark 购买
