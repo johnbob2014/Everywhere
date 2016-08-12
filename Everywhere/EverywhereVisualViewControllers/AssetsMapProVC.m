@@ -7,6 +7,9 @@
 //
 #define DEBUGMODE 1
 
+#define MKPolylineTitleSearched @"MKPolylineTitleSearched"
+#define MKPolylineTitleSavedForRecored @"MKPolylineTitleSavedForRecored"
+
 #define ContentSizeInPopup_Big CGSizeMake(ScreenWidth - 10, ScreenHeight - 10 - 80)
 #define LandscapeContentSizeInPopup_Big CGSizeMake(ScreenHeight - 10 - 80, ScreenWidth - 10)
 
@@ -134,6 +137,7 @@
     CLLocation *lastRecordLocation;
     NSDate *lastRecordDate;
     NSMutableArray <EverywhereFootprintAnnotation *> *recordedFootprintAnnotations;
+    NSTimer *timerForRecord;
 
 #pragma mark 各种Bar
     STPopupController *popupController;
@@ -189,7 +193,7 @@
 
 - (void)didReceiveMemoryWarning{
     /*
-    [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Receive Memory Warning.AlbumMaps will clear map data.", @"足迹点较多，收到内存警告提醒，相册地图将进行内存清理，请重新选择日期或地点！")]
+    [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Receive Memory Warning.AlbumMaps will clear map data.", @"足迹点较多，收到内存警告提醒，相册地图将进行内存清理，请重新选择日期或地点！")]
                        animated:YES
                      completion:nil];
      */
@@ -352,7 +356,7 @@
         //noti.applicationIconBadgeNumber = count;
         [[UIApplication sharedApplication] presentLocalNotificationNow:noti];
         
-        [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"AlbumMaps Notes", @"相册地图提示") message:messageMS]
+        [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"AlbumMaps Notes", @"相册地图提示") message:messageMS]
                            animated:YES
                          completion:nil];
     }
@@ -1015,6 +1019,7 @@
     locationInfoWithCoordinateInfoBar.didGetMKDirectionsResponseHandler = ^(MKDirectionsResponse *response){
         MKRoute *route = response.routes.firstObject;
         MKPolyline *routePolyline = route.polyline;
+        routePolyline.title = MKPolylineTitleSearched;
         dispatch_async(dispatch_get_main_queue(), ^{
             if(routePolyline) [weakSelf.myMapView addOverlay:routePolyline];
         });
@@ -1511,7 +1516,7 @@
     
     if (self.userLocationWGS84) [self addRecordedFootprintAnnotationsWithLocation:self.userLocationWGS84 isUserManuallyAdded:YES];
     else{
-        [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Haven't got current location!", @"尚未定位，无法添加！")]
+        [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Haven't got current location!", @"尚未定位，无法添加！")]
                            animated:YES
                          completion:nil];
     }
@@ -1724,12 +1729,12 @@
     NSString *alertTitle = NSLocalizedString(@"Can not enter extended mode",@"无法进入扩展模式");
     NSString *alertMessage = [NSString stringWithFormat:@"%@",NSLocalizedString(@"Please choose a purchase item", @"请选择购买项目")];
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *purchaseShareFunctionAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase ShareFunctionAndBrowserMode",@"购买 分享功能和浏览模式")
+    UIAlertAction *purchaseShareFunctionAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase FileShare & BrowserMode",@"购买 文件分享 & 浏览模式")
                                                                           style:UIAlertActionStyleDefault
                                                                         handler:^(UIAlertAction * action) {
                                                                             [self showPurchaseShareFunctionAlertController];
                                                                         }];
-    UIAlertAction *purchaseRecordFunctionAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase RecordFuntionAndRecordMode",@"购买 记录功能和记录模式")
+    UIAlertAction *purchaseRecordFunctionAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase FootprintsRecord & RecordMode",@"购买 记录功能和记录模式")
                                                                            style:UIAlertActionStyleDefault
                                                                          handler:^(UIAlertAction * action) {
                                                                              [self showPurchaseRecordFunctionAlertController];
@@ -1746,14 +1751,14 @@
 */
 
 - (void)showPurchaseShareFunctionAlertController{
-    NSString *alertTitle = NSLocalizedString(@"ShareFunctionAndBrowserMode",@"分享功能和浏览模式");
+    NSString *alertTitle = NSLocalizedString(@"FileShare & BrowserMode",@"文件分享 & 浏览模式");
     NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",NSLocalizedString(@"You can get utilities below:", @"您将获得如下功能："),NSLocalizedString(@"1.Share your footprints to others", @"1.将足迹分享给他人"),NSLocalizedString(@"2.Store footprints both sent by you and shared by others", @"2.存储足迹，包括自己发送的和别人分享的"),NSLocalizedString(@"3.Unlock Browser Mode and  lookup stored footprints anytime", @"3.解锁浏览模式，随时查看分享足迹"),NSLocalizedString(@"Cost $1.99,continue?", @"价格 ￥12元，是否购买？")];
     
     [self showPurchaseAlertControllerWithTitle:alertTitle message:alertMessage productIndex:0];
 }
 
 - (void)showPurchaseRecordFunctionAlertController{
-    NSString *alertTitle = NSLocalizedString(@"RecordFuntionAndRecordMode",@"足迹记录和记录模式");
+    NSString *alertTitle = NSLocalizedString(@"FootprintsRecord & RecordMode",@"足迹记录 & 记录模式");
     NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",NSLocalizedString(@"You can get utilities below:", @"您将获得如下功能："),NSLocalizedString(@"1.Record your footprints, support background recording", @"1.记录你的运动足迹"),NSLocalizedString(@"2.Intelligently edit your footprints", @"2.足迹智能编辑"),NSLocalizedString(@"3.Unlock Record Mode to manage your recorded footprints", @"3.解锁记录模式，管理你记录的足迹"),NSLocalizedString(@"Cost $1.99,continue?", @"价格 ￥12元，是否购买？")];
     [self showPurchaseAlertControllerWithTitle:alertTitle message:alertMessage productIndex:1];
 }
@@ -1764,20 +1769,50 @@
     UIAlertAction *purchaseAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase",@"购买")
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction * action) {
-                                                         [weakSelf showPurchaseVC:productIndex transactionType:TransactionTypePurchase];
+                                                         [weakSelf showPurchaseVC:TransactionTypePurchase productIndexArray:@[@(productIndex)]];
                                                      }];
+    /*
     UIAlertAction *restoreAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Restore",@"恢复")
                                                              style:UIAlertActionStyleDefault
                                                            handler:^(UIAlertAction * action) {
                                                                [weakSelf showPurchaseVC:productIndex transactionType:TransactionTypeRestore];
                                                            }];
+    */
+    
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
     [alertController addAction:purchaseAction];
-    [alertController addAction:restoreAction];
+    //[alertController addAction:restoreAction];
     [alertController addAction:cancelAction];
+    
+    if (iOS9) alertController.preferredAction = purchaseAction;
+    
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
+- (void)showPurchaseVC:(enum TransactionType)transactionType productIndexArray:(NSArray <NSNumber *> *)productIndexArray{
+    InAppPurchaseVC *inAppPurchaseVC = [InAppPurchaseVC new];
+    inAppPurchaseVC.edgesForExtendedLayout = UIRectEdgeNone;
+    
+    inAppPurchaseVC.productIDs = ProductIDs;
+    inAppPurchaseVC.transactionType = transactionType;
+    inAppPurchaseVC.productIndexArray = productIndexArray;
+    
+    WEAKSELF(weakSelf);
+    inAppPurchaseVC.inAppPurchaseCompletionHandler = ^(enum TransactionType transactionType,NSInteger productIndex,BOOL succeeded){
+        if (succeeded) {
+            if (productIndex == 0) weakSelf.settingManager.hasPurchasedShare = YES;
+            if (productIndex == 1) weakSelf.settingManager.hasPurchasedRecord = YES;
+        }
+        NSLog(@"%@",succeeded? @"用户购买成功！" : @"用户购买失败！");
+    };
+    
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:inAppPurchaseVC];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+
+
+/*
 
 - (void)showPurchaseVC:(NSInteger)productIndex transactionType:(enum TransactionType)transactionType{
     InAppPurchaseVC *inAppPurchaseVC = [InAppPurchaseVC new];
@@ -1799,7 +1834,7 @@
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:inAppPurchaseVC];
     [self presentViewController:nav animated:YES completion:nil];
 }
-
+*/
 
 #pragma mark - Extended Mode
 
@@ -1808,7 +1843,7 @@
 - (void)showShareFootprintsRepositoryVC{
     
     if (!self.addedEWFootprintAnnotations || self.addedEWFootprintAnnotations.count == 0) {
-        [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"No footprints yet.Please choose a date or a location to add your album footprints.", @"您还没有添加足迹点，请选择日期或地址添加您的相册足迹。")]
+        [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"No footprints yet.Please choose a date or a location to add your album footprints.", @"您还没有添加足迹点，请选择日期或地址添加您的相册足迹。")]
                            animated:YES completion:nil];
         
         return;
@@ -2038,10 +2073,16 @@
     if (!recordedFootprintAnnotations || recordedFootprintAnnotations.count == 0) {
         [self showFootprintsRepository:footprintsRepository];
         return;
-    }else if (self.isInRecordMode) {
+    }else if (self.isRecording) {
+        /*
         UIAlertController *okCancelAlertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Attention", @"警告")  message:NSLocalizedString(@"There are recorded footprints now and they will be cleared if show selected footprints.Show or not?", @"当前处于记录模式并且有记录的足迹点，如需显示所选足迹，记录的足迹点将被清空，是否显示？") okActionHandler:^(UIAlertAction *action) {
             [self showFootprintsRepository:footprintsRepository];
         }];
+        
+        [self presentViewController:okCancelAlertController animated:YES completion:nil];
+        */
+        
+        UIAlertController *okCancelAlertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")  message:NSLocalizedString(@"There are recorded footprints now and can not show footprints repository.", @"当前处于记录模式并且有记录的足迹点，无法显示足迹包。")];
         
         [self presentViewController:okCancelAlertController animated:YES completion:nil];
     }
@@ -2100,7 +2141,7 @@
                                                            [self quiteShareMode];
                                                        }];
      */
-    UIAlertAction *purchaseAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase ShareFunctionAndBroswserMode",@"购买 分享功能和浏览模式")
+    UIAlertAction *purchaseAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase ShareFunctionAndBroswserMode",@"购买 文件分享 & 浏览模式")
                                                              style:UIAlertActionStyleDefault
                                                            handler:^(UIAlertAction * action) {
                                                                [self showPurchaseShareFunctionAlertController];
@@ -2171,6 +2212,9 @@
         // 防止自动锁屏
         [UIApplication sharedApplication].idleTimerDisabled = YES;
         
+        // 开始检查时间
+        timerForRecord = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(check) userInfo:nil repeats:YES];
+        
         [self.locationManagerForRecording startUpdatingLocation];
         
         msExtenedModeBar.info = NSLocalizedString(@"Recording", @"记录中");
@@ -2181,12 +2225,32 @@
     }else{
         // 暂停记录
         [UIApplication sharedApplication].idleTimerDisabled = NO;
+        [timerForRecord invalidate];
+        timerForRecord = nil;
+        
         msExtenedModeBar.info = NSLocalizedString(@"Paused", @"已暂停");
         if(DEBUGMODE) NSLog(@"暂停记录");
         [self.locationManagerForRecording stopUpdatingLocation];
         
         //msExtenedModeBar.modeSegEnabled = YES;
         [startPauseRecordButton setBackgroundImage:[UIImage imageNamed:@"Paused"] forState:UIControlStateNormal];
+    }
+}
+
+- (void)check{
+    if ([NOW timeIntervalSinceDate:lastRecordDate] > 600){
+        // 提醒通知
+        UILocalNotification *noti = [UILocalNotification new];
+        /*
+        NSMutableString *messageMS = [NSMutableString new];
+        [messageMS appendFormat:@"%@\n%@\n%@ %lu",NSLocalizedString(@"Record has been sucessfully saved :", @"记录保存成功 :"),footprintsRepository.title,NSLocalizedString(@"Footprints Count: ", @"足迹点数量 : "),(long)recordedFootprintAnnotations.count];
+        */
+        
+        noti.alertBody = NSLocalizedString(@"It has past 10 minutes since last record time.Please pause recording to save energy.", @"已经超过10分钟没有新记录点，请及时暂停记录以节省电量。");
+        noti.alertAction = NSLocalizedString(@"Action", @"操作");
+        noti.soundName = UILocalNotificationDefaultSoundName;
+        //noti.applicationIconBadgeNumber = count;
+        [[UIApplication sharedApplication] presentLocalNotificationNow:noti];
     }
 }
 
@@ -2224,18 +2288,25 @@
         return;
     }
     
+    [self intelligentlySaveRecordedFootprintAnnotationsAndClearCatche];
+    
+    /*
     if (self.isRecording) {
-        [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Recording now.Please pause recording before save footprints.", @"正在记录足迹中，为确保数据完整性，请先选择暂停记录再保存。")]
+        [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Recording now.Please pause recording before save footprints.", @"正在记录足迹中，为确保数据完整性，请先选择暂停记录再保存。")]
                            animated:YES completion:nil];
         return;
     }
     
-    [self intelligentlySaveRecordedFootprintAnnotationsAndClearCatche];
-    self.allowBrowserMode = YES;
-    //recordedFootprintAnnotations = [NSMutableArray new];
+    // 保存前先暂停
+    self.isRecording = NO;
+    // 保存
     
-    [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"The recorded footprints has been saved.", @"足迹保存成功。")]
+    // 保存完成，继续记录
+    self.isRecording = YES;
+    
+    [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"The recorded footprints has been saved.", @"足迹保存成功。")]
                        animated:YES completion:nil];
+     */
 }
 
 - (void)showQuiteRecordModeAlertController{
@@ -2276,6 +2347,8 @@
     //[alertController addAction:dropAction];
     [alertController addAction:cancelAction];
     
+    if (iOS9) alertController.preferredAction = saveAction;
+    
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
@@ -2283,6 +2356,9 @@
 - (void)intelligentlySaveRecordedFootprintAnnotationsAndClearCatche{
     if (!recordedFootprintAnnotations || recordedFootprintAnnotations.count == 0) return;
     
+    // 保存前先暂停
+    self.isRecording = NO;
+
     //if (recordedFootprintAnnotations.count > 1){}
     EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
     footprintsRepository.footprintAnnotations = recordedFootprintAnnotations;
@@ -2304,12 +2380,31 @@
     noti.soundName = UILocalNotificationDefaultSoundName;
     //noti.applicationIconBadgeNumber = count;
     [[UIApplication sharedApplication] presentLocalNotificationNow:noti];
+    
+    
+    // 清理地图
+    [self.myMapView removeAnnotations:self.myMapView.annotations];
+    [self.myMapView removeOverlays:self.myMapView.overlays];
+    
+    // 把刚刚保存的轨迹显示到地图上
+    CLLocationCoordinate2D coordinates[recordedFootprintAnnotations.count];
+    NSInteger i = 0;
+    for (EverywhereFootprintAnnotation *fpAnnotation in recordedFootprintAnnotations) {
+        coordinates[i++] = fpAnnotation.coordinate;
+    }
+    MKPolyline *polyline = [MKPolyline polylineWithCoordinates:coordinates count:recordedFootprintAnnotations.count];
+    polyline.title = MKPolylineTitleSavedForRecored;
+    [self.myMapView addOverlay:polyline];
 
     // 清空存储的足迹点
     recordedFootprintAnnotations = [NSMutableArray new];
+    
+    // 保存完成，继续记录
+    self.isRecording = YES;
 }
 
 - (void)quiteRecordMode{
+    self.isRecording = NO;
     
     msExtenedModeBar.leftButtonEnabled = YES;
     
@@ -2357,6 +2452,7 @@
         
         EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation new];
         footprintAnnotation.coordinateWGS84 = firstAsset.location.coordinate;
+        footprintAnnotation.altitude = firstAsset.location.altitude;
         footprintAnnotation.startDate = firstAsset.creationDate;
         if (self.settingManager.mapBaseMode == MapBaseModeLocation) footprintAnnotation.endDate = lastAsset.creationDate;
         
@@ -2765,11 +2861,14 @@
         MKPolylineRenderer *polylineRenderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
         MKPolyline *polyline = (MKPolyline *)overlay;
         
-        if (polyline.pointCount > 2) {
+        if ([polyline.title isEqualToString:MKPolylineTitleSavedForRecored]) {
+            // 记录的且已经保存的路线
+            polylineRenderer.lineWidth = 2;
+            polylineRenderer.strokeColor = [UIColor randomColor];
+        }else if ([polyline.title isEqualToString:MKPolylineTitleSearched]) {
             // 查找的路线
-            polylineRenderer.lineWidth = 3;
+            polylineRenderer.lineWidth = 2;
             polylineRenderer.strokeColor = [[UIColor magentaColor] colorWithAlphaComponent:0.6];
-            polylineRenderer.fillColor = [[UIColor cyanColor] colorWithAlphaComponent:0.6];
         }else{
             // 箭头路线
             polylineRenderer.lineWidth = 1;
@@ -2889,6 +2988,7 @@
 - (void)addRecordedFootprintAnnotationsWithLocation:(CLLocation *)newLocation isUserManuallyAdded:(BOOL)isUserManuallyAdded{
     EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation new];
     footprintAnnotation.coordinateWGS84 = newLocation.coordinate;
+    footprintAnnotation.altitude = newLocation.altitude;
     footprintAnnotation.startDate = NOW;
     footprintAnnotation.customTitle = [NSString stringWithFormat:@"Footprint %lu",(unsigned long)(recordedFootprintAnnotations.count + 1)];
     footprintAnnotation.isUserManuallyAdded = isUserManuallyAdded;
@@ -2897,6 +2997,7 @@
     
     if (recordedFootprintAnnotations.count > 1){
         //NSInteger lastIndex = [recordedFootprintAnnotations indexOfObject:footprintAnnotation];
+        // 显示出两点之间的箭头
         EverywhereFootprintAnnotation *lastAnno = recordedFootprintAnnotations[recordedFootprintAnnotations.count - 2];
         [self.myMapView addOverlay:[AssetsMapProVC createLineMKPolylineBetweenStartCoordinate:lastAnno.coordinate endCoordinate:footprintAnnotation.coordinate]];
         [self.myMapView addOverlay:[AssetsMapProVC createArrowMKPolygonBetweenStartCoordinate:lastAnno.coordinate endCoordinate:footprintAnnotation.coordinate]];
@@ -2905,7 +3006,6 @@
     // 如果达到设置最大数据，重新开始一条新的记录，用于节省内存，防止崩溃
     if (recordedFootprintAnnotations.count == self.settingManager.maxFootprintsCountForRecord) {
         [self intelligentlySaveRecordedFootprintAnnotationsAndClearCatche];
-        //recordedFootprintAnnotations = [NSMutableArray new];
     }
 }
 

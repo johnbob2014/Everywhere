@@ -66,6 +66,8 @@
     }
 }
 
+#pragma mark - Export To and Import From GPX File
+
 - (NSString *)gpx_wpt_String{
     NSMutableString *gpx_wpt_String = [NSMutableString new];
     [gpx_wpt_String appendFormat:@"\n    "];
@@ -76,6 +78,8 @@
     [gpx_wpt_String appendFormat:@"<name>%@</name>",self.title];
     [gpx_wpt_String appendFormat:@"\n    "];
     [gpx_wpt_String appendFormat:@"<time>%@T%@Z</time>",[self.startDate stringWithFormat:@"yyyy-MM-dd"],[self.startDate stringWithFormat:@"hh:mm:ss"]];
+    [gpx_wpt_String appendFormat:@"\n    "];
+    [gpx_wpt_String appendFormat:@"<endtime>%@T%@Z</endtime>",[self.endDate stringWithFormat:@"yyyy-MM-dd"],[self.endDate stringWithFormat:@"hh:mm:ss"]];
     [gpx_wpt_String appendFormat:@"\n    "];
     [gpx_wpt_String appendFormat:@"</wpt>"];
     return gpx_wpt_String;
@@ -114,6 +118,12 @@
         footprintAnnotation.startDate = [NSDate dateFromGPXTimeString:timeString];
     }else{
         footprintAnnotation.startDate = NOW;
+    }
+    
+    // AlbumMaps特有属性 endtime endDate
+    if ([pointDictionary.allKeys containsObject:@"endtime"]){
+        NSString *timeString = pointDictionary[@"endtime"];
+        footprintAnnotation.endDate = [NSDate dateFromGPXTimeString:timeString];
     }
     
     return footprintAnnotation;

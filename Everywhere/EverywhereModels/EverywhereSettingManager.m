@@ -256,7 +256,7 @@
 
 - (NSTimeInterval)minTimeIntervalForRecord{
     NSTimeInterval minTI = [[NSUserDefaults standardUserDefaults] doubleForKey:@"minTimeIntervalForRecord"];
-    if (!minTI || minTI == 0) minTI = 5;
+    if (!minTI || minTI == 0) minTI = 2;
     return minTI;
 }
 

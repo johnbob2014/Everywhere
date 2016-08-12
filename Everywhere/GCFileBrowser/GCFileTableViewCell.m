@@ -10,10 +10,10 @@
 #define GCCOLOR_FILES_SUBTITLE_VALUE [UIColor colorWithRed:0.694 green:0.639 blue:0.6 alpha:1] /*#b1a399*/
 #define GCCOLOR_FILES_SUBTITLE_VALUE_SHADOW [UIColor colorWithRed:1 green:1 blue:1 alpha:1] /*#ffffff*/
 
-#define GCFONT_FILES_TITLE [UIFont fontWithName:@"HelveticaNeue" size:22.0f]
-#define GCFONT_FILES_COUNTER [UIFont fontWithName:@"HelveticaNeue-Bold" size:12.0f]
-#define GCFONT_FILES_SUBTITLE [UIFont fontWithName:@"HelveticaNeue-Bold" size:13.0f]
-#define GCFONT_FILES_SUBTITLE_VALUE [UIFont fontWithName:@"HelveticaNeue" size:13.0f]
+#define GCFONT_FILES_TITLE [UIFont fontWithName:@"HelveticaNeue" size:(ScreenWidth > 375 ? 22.0f : 16.0f)]
+#define GCFONT_FILES_COUNTER [UIFont fontWithName:@"HelveticaNeue-Bold" size:(ScreenWidth > 375 ? 14.0f : 10.0f)]
+#define GCFONT_FILES_SUBTITLE [UIFont fontWithName:@"HelveticaNeue-Bold" size:(ScreenWidth > 375 ? 14.0f : 10.0f)]
+#define GCFONT_FILES_SUBTITLE_VALUE [UIFont fontWithName:@"HelveticaNeue" size:(ScreenWidth > 375 ? 14.0f : 10.0f)]
 
 @implementation GCFileTableViewCell
 
@@ -30,11 +30,10 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         // Initialization code
-		
 		backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"file-cell-short"]];
 		[backgroundImageView setContentMode:UIViewContentModeTopRight];
-		
-		[self setBackgroundView:backgroundImageView];
+        [self setBackgroundView:backgroundImageView];
+        
 		[self setSelectionStyle:UITableViewCellSelectionStyleNone];
 		[self.contentView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
 		
@@ -47,7 +46,6 @@
         [iconButton autoSetDimensionsToSize:CGSizeMake(60, 60)];
         [iconButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
         [iconButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-		
         
         titleTextField = [UITextField newAutoLayoutView];
 		[titleTextField setFont:GCFONT_FILES_TITLE];
@@ -111,6 +109,7 @@
         [sizeValueLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:sizeLabel];
         [sizeValueLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:sizeLabel withOffset:10];
 		
+        /*
 		changedLabel = [UILabel newAutoLayoutView];
 		[changedLabel setText:@"Changed:"];
 		[changedLabel setFont:GCFONT_FILES_SUBTITLE];
@@ -133,6 +132,7 @@
         [changedValueLabel sizeToFit];
         [changedValueLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:changedLabel];
         [changedValueLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:changedLabel withOffset:10];
+        */
         
 		[self.layer setMasksToBounds:YES];
 		
@@ -157,7 +157,7 @@
         
         swipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipe:)];
         swipeRecognizer.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;
-        [self addGestureRecognizer:swipeRecognizer];
+        //[self addGestureRecognizer:swipeRecognizer];
     }
     return self;
 }

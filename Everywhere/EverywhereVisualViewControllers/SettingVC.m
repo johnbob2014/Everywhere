@@ -239,35 +239,49 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     [extendedModeSection addItemsFromArray:@[extendedModeColorSchemePickerItem,minDistanceForRecordItem,minTimeIntervalForRecordItem,maxFootprintsCountForRecordItem]];
     
 #pragma mark - 足迹包管理
-    RETableViewSection *managementSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Footpinrt Repository Management", @"足迹包管理")];
-    [managementSection setHeaderHeight:20];
+    RETableViewSection *frManagementSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Footpinrts Repository Management", @"足迹包管理")];
+    [frManagementSection setHeaderHeight:20];
     
-    RETableViewItem *exportRepositoryItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📤 Export Repository",@"📤 导出足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+    RETableViewItem *exportRepositoryToMFRItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📤 Export Repository to MFR",@"📤 导出足迹包至MFR文件") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         
-        NSUInteger count = [EverywhereFootprintsRepositoryManager exportFootprintsRepositoryToABFRFilesAtPath:Path_Documents];
+        NSUInteger count = [EverywhereFootprintsRepositoryManager exportFootprintsRepositoryToMFRFilesAtPath:[Path_Documents stringByAppendingPathComponent:@"Exported MFR"]];
         
-        NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully export repository count", @"成功导出足迹包数量"),(unsigned long)count];
-        UIAlertController *alertController = [UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
+        NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully export repository to mfr files count", @"成功导出足迹包至MFR文件数量"),(unsigned long)count];
+        UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
                                                                                            message:alertMessage];
         [weakSelf presentViewController:alertController animated:YES completion:nil];
     }];
+    exportRepositoryToMFRItem.enabled = [EverywhereSettingManager defaultManager].hasPurchasedShare;
+    
+    RETableViewItem *exportRepositoryToGPXItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📤 Export Repository to GPX",@"📤 导出足迹包至GPX文件") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        
+        NSUInteger count = [EverywhereFootprintsRepositoryManager exportFootprintsRepositoryToMFRFilesAtPath:[Path_Documents stringByAppendingPathComponent:@"Exported GPX"]];
+        
+        NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully export repository to gpx files count", @"成功导出足迹包至GPX文件数量"),(unsigned long)count];
+        UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
+                                                                                           message:alertMessage];
+        [weakSelf presentViewController:alertController animated:YES completion:nil];
+    }];
+    exportRepositoryToGPXItem.enabled = [EverywhereSettingManager defaultManager].hasPurchasedShare;
     
     RETableViewItem *importRepositoryItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📥 Import Repository",@"📥 导入足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         
-        NSArray <EverywhereFootprintsRepository *> *importedArray = [EverywhereFootprintsRepositoryManager importFootprintsRepositoryFromABFRFilesAtPath:Path_Documents];
+        NSArray <EverywhereFootprintsRepository *> *importedArray = [EverywhereFootprintsRepositoryManager importFootprintsRepositoryFromFilesAtPath:Path_Documents];
         NSArray <EverywhereFootprintsRepository *> *newArray = [[EverywhereFootprintsRepositoryManager footprintsRepositoryArray] arrayByAddingObjectsFromArray:importedArray];
         [EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:newArray];
         
         NSUInteger count = importedArray.count;
         NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully import repository count", @"成功导入足迹包数量"),(unsigned long)count];
-        UIAlertController *alertController = [UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
+        UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
                                                                                            message:alertMessage];
         [weakSelf presentViewController:alertController animated:YES completion:nil];
     }];
+    importRepositoryItem.enabled = [EverywhereSettingManager defaultManager].hasPurchasedShare;
 
-    RETableViewItem *clearCatchItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"❌ Clear All Footprints Repository",@"❌ 清空所有足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+    RETableViewItem *clearCatchItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"❌ Clear All Repository",@"❌ 清空所有足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         
         UIAlertActionHandler okActionHandler = ^(UIAlertAction *action) {
@@ -277,7 +291,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
             [EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:nil];
             
             NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Delete footprints repository count", @"删除足迹包数量"),(unsigned long)count];
-            UIAlertController *alertController = [UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
+            UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
                                                                                                message:alertMessage];
             [weakSelf presentViewController:alertController animated:YES completion:nil];
             
@@ -290,11 +304,23 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         
     }];
     
-    RETableViewItem *documentsItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"❌ Clear Documents Directory",@"❌ 清空文档目录") accessoryType:UITableViewCellAccessoryDisclosureIndicator  selectionHandler:^(RETableViewItem *item) {
+    [frManagementSection addItemsFromArray:@[exportRepositoryToMFRItem,exportRepositoryToGPXItem,importRepositoryItem,clearCatchItem]];
+
+#pragma mark - 文件管理
+    RETableViewSection *fileManagementSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"File Management", @"文件管理")];
+    [fileManagementSection setHeaderHeight:20];
+    RETableViewItem *documentsItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"🗂 File Browser",@"🗂 文件浏览器") accessoryType:UITableViewCellAccessoryDisclosureIndicator  selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         
         GCFileBrowser *fileBrowser = [GCFileBrowser new];
         fileBrowser.edgesForExtendedLayout = UIRectEdgeNone;
+        
+        fileBrowser.enableActionMenu = NO;
+        
+        if ([EverywhereSettingManager defaultManager].hasPurchasedShare){
+            
+            fileBrowser.enableDocumentInteractionController = YES;
+        }
         
         [self.navigationController pushViewController:fileBrowser animated:YES];
         /*
@@ -302,7 +328,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
             NSUInteger count = [EverywhereFootprintsRepositoryManager clearFootprintsRepositoryFilesAtPath:Path_Documents];
             
             NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Delete footprints repository files count", @"删除足迹包文件数量"),(unsigned long)count];
-            UIAlertController *alertController = [UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
+            UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
                                                                                                message:alertMessage];
             [weakSelf presentViewController:alertController animated:YES completion:nil];
             
@@ -317,7 +343,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     }];
     
     
-    [managementSection addItemsFromArray:@[exportRepositoryItem,importRepositoryItem,clearCatchItem,documentsItem]];
+    [fileManagementSection addItemsFromArray:@[documentsItem]];
 
     
 #pragma mark 购买
@@ -325,24 +351,26 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     RETableViewSection *purchaseSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Purchase and Restore", @"购买与恢复")];
     [purchaseSection setHeaderHeight:20];
     
-    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🎑 Purchase ShareFunctionAndBrowserMode",@"🎑 购买 分享功能和浏览模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🎑 Purchase FileShare & BrowserMode",@"🎑 购买 文件分享 & 浏览模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
-        [weakSelf showPurchaseVC:0 transactionType:TransactionTypePurchase];
+        [weakSelf showPurchaseVC:TransactionTypePurchase productIndexArray:@[@(0)]];
     }]];
     
-    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🎑 Restore ShareFunctionAndBrowserMode",@"🎑 恢复 分享功能和浏览模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+    /*
+    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🎑 Restore FileShare & BrowserMode",@"🎑 恢复 文件分享 & 浏览模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         [weakSelf showPurchaseVC:0 transactionType:TransactionTypeRestore];
     }]];
+    */
     
-    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🚘 Purchase RecordFuntionAndRecordMode",@"🚘 购买 足迹记录和记录模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🚘 Purchase FootprintsRecord & RecordMode",@"🚘 购买 足迹记录 & 记录模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
-        [weakSelf showPurchaseVC:1 transactionType:TransactionTypePurchase];
+        [weakSelf showPurchaseVC:TransactionTypePurchase productIndexArray:@[@(1)]];
     }]];
     
-    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🚘 Restore RecordFuntionAndRecordMode",@"🚘 恢复 足迹记录和记录模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"⛲️ Restore Purchases",@"⛲️ 恢复已购") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
-        [weakSelf showPurchaseVC:1 transactionType:TransactionTypeRestore];
+        [weakSelf showPurchaseVC:TransactionTypeRestore productIndexArray:nil];
     }]];
 
     /*
@@ -389,7 +417,8 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         [self.navigationController pushViewController:aboutVC animated:YES];
     }]];
     
-    [self.reTVManager addSectionsFromArray:@[globleSection,baseModeSection,extendedModeSection,managementSection,purchaseSection,aboutSection]];
+    // 添加sections
+    [self.reTVManager addSectionsFromArray:@[globleSection,baseModeSection,extendedModeSection,frManagementSection,fileManagementSection,purchaseSection,aboutSection]];
 }
 
 #pragma mark - RE Block
@@ -441,25 +470,24 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 
 #pragma mark - Simple Purchase
 
-- (void)showPurchaseVC:(NSInteger)productIndex transactionType:(enum TransactionType)transactionType{
+- (void)showPurchaseVC:(enum TransactionType)transactionType productIndexArray:(NSArray <NSNumber *> *)productIndexArray{
     InAppPurchaseVC *inAppPurchaseVC = [InAppPurchaseVC new];
     inAppPurchaseVC.edgesForExtendedLayout = UIRectEdgeNone;
     
     inAppPurchaseVC.productIDs = ProductIDs;
-    inAppPurchaseVC.productIndex = productIndex;
     inAppPurchaseVC.transactionType = transactionType;
+    inAppPurchaseVC.productIndexArray = productIndexArray;
     
     WEAKSELF(weakSelf);
-    inAppPurchaseVC.inAppPurchaseCompletionHandler = ^(BOOL succeeded,NSInteger productIndex,enum TransactionType transactionType){
+    inAppPurchaseVC.inAppPurchaseCompletionHandler = ^(enum TransactionType transactionType,NSInteger productIndex,BOOL succeeded){
         if (succeeded) {
             if (productIndex == 0) weakSelf.settingManager.hasPurchasedShare = YES;
             if (productIndex == 1) weakSelf.settingManager.hasPurchasedRecord = YES;
         }
         NSLog(@"%@",succeeded? @"用户购买成功！" : @"用户购买失败！");
     };
+    
     [self.navigationController pushViewController:inAppPurchaseVC animated:YES];
-    //UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:inAppPurchaseVC];
-    //[self presentViewController:nav animated:YES completion:nil];
 }
 
 @end

@@ -92,6 +92,7 @@
 		4B1B4BE21D387A4200CCD842 /* InAppPurchaseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1B4BE01D387A4200CCD842 /* InAppPurchaseVC.m */; };
 		4B1B4BE41D387C6800CCD842 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B1B4BE31D387C6800CCD842 /* libc++.tbd */; };
 		4B1D5E7F1D3645A70011552F /* SettingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1D5E7E1D3645A70011552F /* SettingVC.m */; };
+		4B1EA2EA1D5DBD0200087A78 /* UIColor+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1EA2E91D5DBD0200087A78 /* UIColor+Assistant.m */; };
 		4B27FDC31D2CA12000067683 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4B27FDBE1D2CA12000067683 /* FontAwesome.ttf */; };
 		4B27FDC41D2CA12000067683 /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B27FDC01D2CA12000067683 /* NSString+FontAwesome.m */; };
 		4B27FDC51D2CA12000067683 /* UIButton+Bootstrap.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B27FDC21D2CA12000067683 /* UIButton+Bootstrap.m */; };
@@ -259,6 +260,8 @@
 		4B1B4BE31D387C6800CCD842 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		4B1D5E7D1D3645A70011552F /* SettingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingVC.h; path = EverywhereVisualViewControllers/SettingVC.h; sourceTree = "<group>"; };
 		4B1D5E7E1D3645A70011552F /* SettingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingVC.m; path = EverywhereVisualViewControllers/SettingVC.m; sourceTree = "<group>"; };
+		4B1EA2E81D5DBD0200087A78 /* UIColor+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+Assistant.h"; path = "UIColor+Assistant/UIColor+Assistant.h"; sourceTree = "<group>"; };
+		4B1EA2E91D5DBD0200087A78 /* UIColor+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+Assistant.m"; path = "UIColor+Assistant/UIColor+Assistant.m"; sourceTree = "<group>"; };
 		4B27FDBE1D2CA12000067683 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
 		4B27FDBF1D2CA12000067683 /* NSString+FontAwesome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+FontAwesome.h"; sourceTree = "<group>"; };
 		4B27FDC01D2CA12000067683 /* NSString+FontAwesome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+FontAwesome.m"; sourceTree = "<group>"; };
@@ -663,6 +666,15 @@
 			path = XMLDictionary;
 			sourceTree = "<group>";
 		};
+		4B1EA2E71D5DBCB600087A78 /* UIColor+Assistant */ = {
+			isa = PBXGroup;
+			children = (
+				4B1EA2E81D5DBD0200087A78 /* UIColor+Assistant.h */,
+				4B1EA2E91D5DBD0200087A78 /* UIColor+Assistant.m */,
+			);
+			name = "UIColor+Assistant";
+			sourceTree = "<group>";
+		};
 		4B27FDBD1D2CA12000067683 /* UIButton+Bootstrap */ = {
 			isa = PBXGroup;
 			children = (
@@ -718,6 +730,7 @@
 		4B3AF9CE1D2F3EBA009BD545 /* GeneralCategory */ = {
 			isa = PBXGroup;
 			children = (
+				4B1EA2E71D5DBCB600087A78 /* UIColor+Assistant */,
 				4BFA06421D4B564B00AE8000 /* UIImage+Assistant */,
 				1E8723A91D435FF900652757 /* UIAlertController+Assistant */,
 				4B27FDBD1D2CA12000067683 /* UIButton+Bootstrap */,
@@ -1018,6 +1031,7 @@
 				4B27FDC41D2CA12000067683 /* NSString+FontAwesome.m in Sources */,
 				4B15B5D61D3F79CF0096EE89 /* FootprintsRepositoryEditerVC.m in Sources */,
 				4B1B4BE21D387A4200CCD842 /* InAppPurchaseVC.m in Sources */,
+				4B1EA2EA1D5DBD0200087A78 /* UIColor+Assistant.m in Sources */,
 				1E41FD211D2AB66100E1A5B9 /* LocationInfoBar.m in Sources */,
 				1EF62A541D3B8FD50084AF66 /* CoordinateInfo.m in Sources */,
 				4B12E6FD1D5AC8400035D16D /* XMLDictionary.m in Sources */,

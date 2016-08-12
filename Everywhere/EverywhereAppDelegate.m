@@ -142,8 +142,8 @@
     EverywhereFootprintsRepository *footprintsRepository = nil;
     NSString *pathExtension = [[filePath pathExtension] lowercaseString];
     
-    if ([pathExtension isEqualToString:@"abfr"]){
-        footprintsRepository = [EverywhereFootprintsRepository importFromABFRFile:filePath];
+    if ([pathExtension isEqualToString:@"mfr"]){
+        footprintsRepository = [EverywhereFootprintsRepository importFromMFRFile:filePath];
     }else if ([pathExtension isEqualToString:@"gpx"]){
         footprintsRepository = [EverywhereFootprintsRepository importFromGPXFile:filePath];
     }else{
@@ -156,7 +156,7 @@
     
     /*
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        NSArray <EverywhereFootprintsRepository *> *importedArray = [EverywhereFootprintsRepositoryManager importFootprintsRepositoryFromABFRFilesAtPath:Path_Inbox];
+        NSArray <EverywhereFootprintsRepository *> *importedArray = [EverywhereFootprintsRepositoryManager importFootprintsRepositoryFromMFRFilesAtPath:Path_Inbox];
         
         if (importedArray && importedArray.count > 0){
             NSLog(@"收到足迹包文件数 : %lu",(unsigned long)importedArray.count);
@@ -325,9 +325,12 @@
     }
     
     // Create the coordinator and store
-    
+    // URLByAppendingPathComponent:@"AlbumMapsCoreData"]
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Everywhere.sqlite"];
+    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"AlbumMapsCoreData.sqlite"];
+    //NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"AlbumMapsCoreData"];
+    //storeURL = [storeURL URLByAppendingPathComponent:@"AlbumMapsCoreData.sqlite"];
+    NSLog(@"storeURL : %@",storeURL.absoluteString);
     NSError *error = nil;
     NSString *failureReason = @"There was an error creating or loading the application's saved data.";
     if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {

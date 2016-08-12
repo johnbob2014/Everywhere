@@ -16,15 +16,19 @@ enum TransactionType {
     TransactionTypeRestore = 1,        /**< 恢复      */
 };
 
-typedef void(^InAppPurchaseCompletionHandler)(BOOL success,NSInteger productIndex,enum TransactionType transactionType);
+typedef void(^InAppPurchaseCompletionHandler)(enum TransactionType transactionType,NSInteger productIndex,BOOL succeeded);
 
 @interface InAppPurchaseVC : UIViewController
 
-@property (strong,nonatomic) NSArray <NSString *> *productIDs;
-@property (assign,nonatomic) NSInteger productIndex;
-@property (assign,nonatomic) NSInteger productCount;
-
 @property (assign,nonatomic) enum TransactionType transactionType;
+
+@property (strong,nonatomic) NSArray <NSString *> *productIDs;
+@property (strong,nonatomic) NSArray <NSNumber *> *productIndexArray;
+
+//@property (assign,nonatomic) NSInteger productIndex;
+//@property (assign,nonatomic) NSInteger productCount;
+
+
 
 @property (copy,nonatomic) InAppPurchaseCompletionHandler inAppPurchaseCompletionHandler;
 

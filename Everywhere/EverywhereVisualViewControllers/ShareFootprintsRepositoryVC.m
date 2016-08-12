@@ -77,7 +77,7 @@
     [infoButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
 
     sencondBtn = [UIButton newAutoLayoutView];
-    [sencondBtn setTitle:NSLocalizedString(@"ABRF File Share", @"ABRF 文件分享") forState:UIControlStateNormal];
+    [sencondBtn setTitle:NSLocalizedString(@"MFR File Share", @"MFR 文件分享") forState:UIControlStateNormal];
     [sencondBtn primaryStyle];
     sencondBtn.tag = 0;
     [sencondBtn addTarget:self action:@selector(fileShare:) forControlEvents:UIControlEventTouchDown];
@@ -119,9 +119,9 @@
     
     switch (sender.tag) {
         case 0:
-            filePath = [filePath stringByAppendingString:@".abfr"];
-            exportSucceeded = [self.footprintsRepository exportToABFRFile:filePath];
-            documentInteractionController.UTI = ABFRUTI;
+            filePath = [filePath stringByAppendingString:@".mfr"];
+            exportSucceeded = [self.footprintsRepository exportToMFRFile:filePath];
+            documentInteractionController.UTI = MFRUTI;
             break;
         case 1:
             filePath = [filePath stringByAppendingString:@".gpx"];
@@ -200,8 +200,8 @@
 }
 
 - (void)showInfoAboutWXShareAlertController{
-    UIAlertController *infomationAlertController = [UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Because of the limitation of WeChat content , make sure your footprints count within 30 , otherwise share may fail.File Share support multiple share styles and has no footprints count limitation.", @"由于微信分享内容限制为10K，所以请将分享的足迹点数量控制在30个以内，否则可能会分享失败。文件分享可选择多种方式分享，且没有足迹点数量限制。")];
-    [self presentViewController:infomationAlertController animated:YES completion:nil];
+    UIAlertController *informationAlertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Because of the limitation of WeChat content , make sure your footprints count within 30 , otherwise share may fail.File Share support multiple share styles and has no footprints count limitation.", @"由于微信分享内容限制为10K，所以请将分享的足迹点数量控制在30个以内，否则可能会分享失败。文件分享可选择多种方式分享，且没有足迹点数量限制。")];
+    [self presentViewController:informationAlertController animated:YES completion:nil];
 }
 
 #pragma mark - UIDocumentInteractionControllerDelegate

@@ -19,7 +19,7 @@
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>com.ZhangBaoGuo.AlbumMaps.abfr</string>
+				<string>com.ZhangBaoGuo.AlbumMaps.mfr</string>
 			</array>
 		</dict>
 		<dict>
@@ -132,7 +132,7 @@
 			<dict>
 				<key>public.filename-extension</key>
 				<array>
-					<string>abfr</string>
+					<string>mfr</string>
 				</array>
 			</dict>
 			<key>UTTypeConformsTo</key>
@@ -142,7 +142,7 @@
 			<key>UTTypeDescription</key>
 			<string>AlbumMaps Footprints Repository File</string>
 			<key>UTTypeIdentifier</key>
-			<string>com.ZhangBaoGuo.AlbumMaps.abfr</string>
+			<string>com.ZhangBaoGuo.AlbumMaps.mfr</string>
 			<key>UTTypeSize320IconFile</key>
 			<string>地球_320_320</string>
 			<key>UTTypeSize64IconFile</key>

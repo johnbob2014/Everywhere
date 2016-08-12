@@ -39,6 +39,7 @@
     // Do any additional setup after loading the view.
     
     switch (self.showFootprintsRepositoryType) {
+        /*
         case FootprintsRepositoryTypeSent|FootprintsRepositoryTypeReceived|FootprintsRepositoryTypeRecorded|FootprintsRepositoryTypeEdited|FootprintsRepositoryTypeImported:
             groupNameArray = @[NSLocalizedString(@"Sent", @"发送的"),
                                NSLocalizedString(@"Received", @"接收的"),
@@ -46,7 +47,7 @@
                                NSLocalizedString(@"Edited", @"编辑的"),
                                NSLocalizedString(@"Imported", @"导入的")];
             break;
-        
+        */
         case FootprintsRepositoryTypeSent|FootprintsRepositoryTypeReceived|FootprintsRepositoryTypeRecorded|FootprintsRepositoryTypeEdited:
             groupNameArray = @[NSLocalizedString(@"Sent", @"发送的"),
                                NSLocalizedString(@"Received", @"接收的"),
@@ -221,7 +222,7 @@
                                                            shareFRVC.thumbImage = [UIImage imageNamed:@"地球_300_300"];
                                                            
                                                            shareFRVC.userDidSelectedPurchaseShareFunctionHandler = ^(){
-                                                               UIAlertController *alertController = [UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note",@"提示") message:NSLocalizedString(@"You haven't puchased ShareFunctionAndBrowserMode.",@"您尚未购买分享功能和浏览模式！")];
+                                                               UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note",@"提示") message:NSLocalizedString(@"You haven't puchased FileShare & BrowserMode.",@"您尚未购买文件分享 & 浏览模式！")];
                                                                [self presentViewController:alertController animated:YES completion:nil];
                                                            };
                                                            
@@ -278,7 +279,7 @@
         footprintsRepositoryEditerVC.landscapeContentSizeInPopup = self.landscapeContentSizeInPopup;
         [self.popupController pushViewController:footprintsRepositoryEditerVC animated:YES];
     }else{
-        [self presentViewController:[UIAlertController infomationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"You haven't got RecordFucntionAndRecordMode so you can not edit it.", @"您没有购买足迹记录和记录模式，无法编辑。")]
+        [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"You haven't got RecordFucntionAndRecordMode so you can not edit it.", @"您没有购买足迹记录 & 记录模式，无法编辑。")]
                            animated:YES
                          completion:nil];
     }

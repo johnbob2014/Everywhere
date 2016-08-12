@@ -66,13 +66,17 @@
     return copyFootprintsRepository;
 }
 
-- (BOOL)exportToABFRFile:(NSString *)filePath{
+#pragma mark - Export To and Import From MFR File
+
+- (BOOL)exportToMFRFile:(NSString *)filePath{
     return [NSKeyedArchiver archiveRootObject:self toFile:filePath];
 }
 
-+ (EverywhereFootprintsRepository *)importFromABFRFile:(NSString *)filePath{
++ (EverywhereFootprintsRepository *)importFromMFRFile:(NSString *)filePath{
     return (EverywhereFootprintsRepository *)[NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
 }
+
+#pragma mark - Export To and Import From GPX File
 
 - (BOOL)exportToGPXFile:(NSString *)filePath{
     NSMutableString *gpx_String = [NSMutableString new];
@@ -115,6 +119,10 @@
     
     [gpx_String appendFormat:@"    <bounds minlat=\"%.9f\" minlon=\"%.9f\" maxlat=\"%.9f\" maxlon=\"%.9f\"/>",minlat,minlon,maxlat,maxlon];
     
+    // AlbumMaps特有属性 足迹包类型
+    [gpx_String appendFormat:@"    <footprintsRepositoryType>%lu</footprintsRepositoryType>",(unsigned long)self.footprintsRepositoryType];
+    
+    // AlbumMaps特有属性 足迹包半径
     [gpx_String appendFormat:@"    <radius>%.2f</radius>",self.radius];
     
     // 添加wpt
@@ -164,6 +172,12 @@
             if ([gpxFileDic.allKeys containsObject:@"time"]){
                 NSString *timeString = gpxFileDic[@"time"];
                 footprintsRepository.creationDate = [NSDate dateFromGPXTimeString:timeString];
+            }
+            
+            if ([gpxFileDic.allKeys containsObject:@"footprintsRepositoryType"]){
+                footprintsRepository.footprintsRepositoryType = [gpxFileDic[@"footprintsRepositoryType"] unsignedIntegerValue];
+            }else{
+                footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeReceived;
             }
             
             if ([gpxFileDic.allKeys containsObject:@"radius"]){
