@@ -32,7 +32,7 @@
             
             instance = nil;
         }else if (authorizationStatus == PHAuthorizationStatusDenied || authorizationStatus == PHAuthorizationStatusRestricted){
-            NSLog(@"无法访问相册");
+            if(DEBUGMODE) NSLog(@"无法访问相册");
             instance = nil;
         }
     });
@@ -90,7 +90,7 @@
         NSString *key = assetCollection.localIdentifier;
         if (key) [mDic setValue:assetIDArray forKey:key];
     }
-    //NSLog(@"%@",mDic);
+    //if(DEBUGMODE) NSLog(@"%@",mDic);
     return mDic;
 }
 
@@ -119,7 +119,7 @@
         NSString *key = assetCollection.localIdentifier;
         if (key) [mDic setValue:(NSArray *)assetArray forKey:key];
     }
-    //NSLog(@"%@",mDic);
+    //if(DEBUGMODE) NSLog(@"%@",mDic);
     return mDic;
 }
 

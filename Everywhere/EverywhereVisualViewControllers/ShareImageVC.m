@@ -5,18 +5,23 @@
 //  Created by BobZhang on 16/7/14.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
-#define DEBUGMODE 1
 
 #import "ShareImageVC.h"
 #import "WXApi.h"
+
+
+#define ButtonSize CGSizeMake(50, 50)
+#define ButtonEdgeLength 50
+#define ButtonOffset 15
 
 @interface ShareImageVC ()
 
 @end
 
 @implementation ShareImageVC{
-UIImageView *imageView;
-    UIButton *sessionBtn,*timelineBtn;
+    UIDocumentInteractionController *documentInteractionController;
+    UIImageView *imageView;
+    UIButton *fileBtn,*sessionBtn,*timelineBtn;
 }
 
 - (void)viewDidLoad {
@@ -26,29 +31,45 @@ UIImageView *imageView;
     self.view.backgroundColor = VCBackgroundColor;
     self.title = NSLocalizedString(@"Share Snap Shots", @"分享截图");
     
+    UIView *buttonContainer = [UIView newAutoLayoutView];
+    buttonContainer.backgroundColor = DEBUGMODE ? [[UIColor cyanColor] colorWithAlphaComponent:0.6] : [UIColor clearColor];
+    [self.view addSubview:buttonContainer];
+    [buttonContainer autoSetDimensionsToSize:CGSizeMake(ButtonEdgeLength * 3 + ButtonOffset * 2, ButtonEdgeLength)];
+    [buttonContainer autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+    [buttonContainer autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    
+    fileBtn = [UIButton newAutoLayoutView];
+    fileBtn.alpha = 0.8;
+    [fileBtn setImage:[UIImage imageNamed:@"IcoMoon_Share_WBG"] forState:UIControlStateNormal];
+    [fileBtn addTarget:self action:@selector(fileShare) forControlEvents:UIControlEventTouchDown];
+    [buttonContainer addSubview:fileBtn];
+    [fileBtn autoSetDimensionsToSize:ButtonSize];
+    [fileBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+    [fileBtn autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    
     sessionBtn = [UIButton newAutoLayoutView];
     [sessionBtn setImage:[UIImage imageNamed:@"Share_WXSession"] forState:UIControlStateNormal];
     sessionBtn.tag = WXSceneSession;
     [sessionBtn addTarget:self action:@selector(wxShare:) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:sessionBtn];
-    [sessionBtn autoSetDimensionsToSize:CGSizeMake(60, 60)];
-    [sessionBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
-    [sessionBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+    [buttonContainer addSubview:sessionBtn];
+    [sessionBtn autoSetDimensionsToSize:ButtonSize];
+    [sessionBtn autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:fileBtn withOffset:ButtonOffset];
+    [sessionBtn autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
     
     timelineBtn = [UIButton newAutoLayoutView];
     [timelineBtn setImage:[UIImage imageNamed:@"Share_WXTimeline"] forState:UIControlStateNormal];
     timelineBtn.tag = WXSceneTimeline;
     [timelineBtn addTarget:self action:@selector(wxShare:) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:timelineBtn];
-    [timelineBtn autoSetDimensionsToSize:CGSizeMake(60, 60)];
-    [timelineBtn autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:sessionBtn withOffset:10];
-    [timelineBtn autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+    [buttonContainer addSubview:timelineBtn];
+    [timelineBtn autoSetDimensionsToSize:ButtonSize];
+    [timelineBtn autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:sessionBtn withOffset:ButtonOffset];
+    [timelineBtn autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
 
     imageView = [UIImageView newAutoLayoutView];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     [self.view addSubview:imageView];
     [imageView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
-    [imageView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:sessionBtn withOffset:-10];
+    [imageView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:buttonContainer withOffset: - ButtonOffset / 3];
     
 }
 
@@ -60,6 +81,17 @@ UIImageView *imageView;
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)fileShare{
+    NSString *filePath = [Path_Caches stringByAppendingPathComponent:@"shareImage.png"];
+    NSData *imageData = UIImagePNGRepresentation(self.shareImage);
+    [imageData writeToFile:filePath atomically:YES];
+    
+    documentInteractionController = [UIDocumentInteractionController new];
+    //documentInteractionController.delegate = self;
+    documentInteractionController.URL = [NSURL fileURLWithPath:filePath];
+    [documentInteractionController presentOptionsMenuFromRect:self.view.frame inView:self.view animated:YES];
 }
 
 - (void)wxShare:(UIButton *)sender{
@@ -97,7 +129,7 @@ UIImageView *imageView;
     req.message=mediaMessage;
     req.bText=NO;
     req.scene= (int)sender.tag;
-    //NSLog(@"%@",req);
+    //if(DEBUGMODE) NSLog(@"%@",req);
     BOOL succeeded=[WXApi sendReq:req];
     if(DEBUGMODE) NSLog(@"SendMessageToWXReq : %@",succeeded? @"Succeeded" : @"Failed");
     

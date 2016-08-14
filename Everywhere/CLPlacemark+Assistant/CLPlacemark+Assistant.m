@@ -15,7 +15,7 @@
 }
 
 - (NSString *)localizedPlaceStringInReverseOrder:(BOOL)reverseOrder withInlandWaterAndOcean:(BOOL)inlandWaterAndOcean{
-    //NSLog(@"%@",[self class]);
+    //if(DEBUGMODE) NSLog(@"%@",[self class]);
     
     // subLocality及其之前的地址信息，以逗号分隔
     NSMutableString *detailLocationStringTillSubLocality = [NSMutableString new];
@@ -25,48 +25,48 @@
     NSString *trimmedNameString = self.name;
     
     if (self.country){
-        //NSLog(@"country : %@",self.country);
+        //if(DEBUGMODE) NSLog(@"country : %@",self.country);
         [detailLocationStringTillSubLocality appendFormat:@"%@",self.country];
         //detailLocationStringTillSubLocality = [self.country stringByAppendingFormat:@",%@",detailLocationStringTillSubLocality];
         trimmedNameString = [trimmedNameString stringByReplacingOccurrencesOfString:self.country withString:@""];
     }
     if (self.administrativeArea){
-        //NSLog(@"administrativeArea : %@",self.administrativeArea);
+        //if(DEBUGMODE) NSLog(@"administrativeArea : %@",self.administrativeArea);
         [detailLocationStringTillSubLocality appendFormat:@",%@",self.administrativeArea];
         //detailLocationStringTillSubLocality = [self.administrativeArea stringByAppendingFormat:@",%@",detailLocationStringTillSubLocality];
         trimmedNameString = [trimmedNameString stringByReplacingOccurrencesOfString:self.administrativeArea withString:@""];
     }
     if (self.subAdministrativeArea){
-        //NSLog(@"subAdministrativeArea : %@",self.subAdministrativeArea);
+        //if(DEBUGMODE) NSLog(@"subAdministrativeArea : %@",self.subAdministrativeArea);
         [detailLocationStringTillSubLocality appendFormat:@",%@",self.subAdministrativeArea];
         //detailLocationStringTillSubLocality = [self.subAdministrativeArea stringByAppendingFormat:@",%@",detailLocationStringTillSubLocality];
         trimmedNameString = [trimmedNameString stringByReplacingOccurrencesOfString:self.subAdministrativeArea withString:@""];
     }
     if (self.locality){
-        //NSLog(@"locality : %@",self.locality);
+        //if(DEBUGMODE) NSLog(@"locality : %@",self.locality);
         [detailLocationStringTillSubLocality appendFormat:@",%@",self.locality];
         //detailLocationStringTillSubLocality = [self.locality stringByAppendingFormat:@",%@",detailLocationStringTillSubLocality];
         trimmedNameString = [trimmedNameString stringByReplacingOccurrencesOfString:self.locality withString:@""];
     }
     if (self.subLocality){
-        //NSLog(@"subLocality : %@",self.subLocality);
+        //if(DEBUGMODE) NSLog(@"subLocality : %@",self.subLocality);
         [detailLocationStringTillSubLocality appendFormat:@",%@",self.subLocality];
         //detailLocationStringTillSubLocality = self.subLocality;
         trimmedNameString = [trimmedNameString stringByReplacingOccurrencesOfString:self.subLocality withString:@""];
     }
     if (self.thoroughfare){
-        //NSLog(@"thoroughfare : %@",self.thoroughfare);
+        //if(DEBUGMODE) NSLog(@"thoroughfare : %@",self.thoroughfare);
         //[detailLocationStringTillSubLocality appendFormat:@"%@,",self.thoroughfare];
         trimmedNameString = [trimmedNameString stringByReplacingOccurrencesOfString:self.thoroughfare withString:@""];
     }
     if (self.subThoroughfare){
-        //NSLog(@"subThoroughfare : %@",self.subThoroughfare);
+        //if(DEBUGMODE) NSLog(@"subThoroughfare : %@",self.subThoroughfare);
         //[detailLocationStringTillSubLocality appendFormat:@"%@,",self.subThoroughfare];
         trimmedNameString = [trimmedNameString stringByReplacingOccurrencesOfString:self.subThoroughfare withString:@""];
     }
     
-    //NSLog(@"name : %@",self.name);
-    //NSLog(@"trimmedNameString : %@",trimmedNameString);
+    //if(DEBUGMODE) NSLog(@"name : %@",self.name);
+    //if(DEBUGMODE) NSLog(@"trimmedNameString : %@",trimmedNameString);
     
     // 全部地址信息，以逗号分隔
     NSString *combinedDetailLocationString = nil;
@@ -95,7 +95,7 @@
         combinedDetailLocationString = [combinedDetailLocationString stringByAppendingFormat:@",%@",self.name];
     }
     
-    //NSLog(@"combinedDetailLocationString : %@",combinedDetailLocationString);
+    //if(DEBUGMODE) NSLog(@"combinedDetailLocationString : %@",combinedDetailLocationString);
     
     NSString *resultString = combinedDetailLocationString;
     

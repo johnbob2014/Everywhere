@@ -169,7 +169,7 @@
 }
 
 - (void)okButtonTouchDown:(UIButton *)sender{
-    // NSLog(@"%@",NSStringFromSelector(_cmd));
+    // if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     if (self.dateRangeChangedHandler) self.dateRangeChangedHandler(startDate,endDate);
     [self dismissViewControllerAnimated:YES completion:nil];
 }

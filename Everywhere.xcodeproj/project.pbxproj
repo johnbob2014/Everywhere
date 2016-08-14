@@ -23,6 +23,7 @@
 		1ECE892D1D4ACF55004B5875 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1ECE892F1D4ACF55004B5875 /* Localizable.strings */; };
 		1ED1EE451D47A6D80068F0C6 /* LocationInfoWithCoordinateInfoBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ED1EE441D47A6D80068F0C6 /* LocationInfoWithCoordinateInfoBar.m */; };
 		1EEA79511D2791A0002B6291 /* EverywhereAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEA79501D2791A0002B6291 /* EverywhereAnnotation.m */; };
+		1EEE907D1D5F846E00B87064 /* AlbumMapsAppQRCodeImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEE907C1D5F846D00B87064 /* AlbumMapsAppQRCodeImage.png */; };
 		1EF62A531D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A501D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m */; };
 		1EF62A541D3B8FD50084AF66 /* CoordinateInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A521D3B8FD50084AF66 /* CoordinateInfo.m */; };
 		1EF62A571D3B902A0084AF66 /* CoordinateInfo+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A561D3B902A0084AF66 /* CoordinateInfo+Assistant.m */; };
@@ -162,6 +163,8 @@
 		1ED1EE441D47A6D80068F0C6 /* LocationInfoWithCoordinateInfoBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationInfoWithCoordinateInfoBar.m; path = EverywhereVisualViewControllers/LocationInfoWithCoordinateInfoBar.m; sourceTree = "<group>"; };
 		1EEA794F1D2791A0002B6291 /* EverywhereAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereAnnotation.h; path = EverywhereModels/EverywhereAnnotation.h; sourceTree = "<group>"; };
 		1EEA79501D2791A0002B6291 /* EverywhereAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereAnnotation.m; path = EverywhereModels/EverywhereAnnotation.m; sourceTree = "<group>"; };
+		1EEE907B1D5F381500B87064 /* GCFileBrowserConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCFileBrowserConfiguration.h; path = GCFileBrowser/GCFileBrowserConfiguration.h; sourceTree = "<group>"; };
+		1EEE907C1D5F846D00B87064 /* AlbumMapsAppQRCodeImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AlbumMapsAppQRCodeImage.png; sourceTree = "<group>"; };
 		1EF62A4F1D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CoordinateInfo+CoreDataProperties.h"; path = "EverywhereCoreData/CoordinateInfo+CoreDataProperties.h"; sourceTree = "<group>"; };
 		1EF62A501D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CoordinateInfo+CoreDataProperties.m"; path = "EverywhereCoreData/CoordinateInfo+CoreDataProperties.m"; sourceTree = "<group>"; };
 		1EF62A511D3B8FD50084AF66 /* CoordinateInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoordinateInfo.h; path = EverywhereCoreData/CoordinateInfo.h; sourceTree = "<group>"; };
@@ -572,6 +575,7 @@
 				4B032FAE1D5C5DD800E83585 /* GCFileBrowser.m */,
 				4B0330071D5C783800E83585 /* GCFileTableViewCell.h */,
 				4B0330081D5C783800E83585 /* GCFileTableViewCell.m */,
+				1EEE907B1D5F381500B87064 /* GCFileBrowserConfiguration.h */,
 			);
 			name = GCFileBrowser;
 			sourceTree = "<group>";
@@ -630,6 +634,7 @@
 		4B03B4BD1D59E784007FA6C6 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				1EEE907C1D5F846D00B87064 /* AlbumMapsAppQRCodeImage.png */,
 				4B03B4BE1D59E784007FA6C6 /* 地球_320_320.png */,
 				4B03B4BF1D59E784007FA6C6 /* 地球_64_64.png */,
 			);
@@ -916,6 +921,7 @@
 				4B032FE31D5C626500E83585 /* icon-copy2@2x.png in Resources */,
 				4B032FF21D5C626500E83585 /* icon-rename2.png in Resources */,
 				4B032FDC1D5C626500E83585 /* file-cell-short.png in Resources */,
+				1EEE907D1D5F846E00B87064 /* AlbumMapsAppQRCodeImage.png in Resources */,
 				4B032FF71D5C626500E83585 /* icon-trash2@2x.png in Resources */,
 				4B032FE11D5C626500E83585 /* icon-copy1@2x.png in Resources */,
 				4B0330041D5C626500E83585 /* item-icon-folder.png in Resources */,

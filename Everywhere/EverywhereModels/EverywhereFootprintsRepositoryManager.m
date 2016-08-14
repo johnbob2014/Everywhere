@@ -50,7 +50,7 @@
         [[NSUserDefaults standardUserDefaults] setValue:tempMA forKey:@"footprintsRepositoryDataArray"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }else{
-        NSLog(@"addFootprintsRepository error : duplicate footprintsRepository");
+        if(DEBUGMODE) NSLog(@"addFootprintsRepository error : duplicate footprintsRepository");
     }
 }
 
@@ -100,7 +100,7 @@
             if ([EverywhereFootprintsRepositoryManager footprintsRepositoryExists:footprintsRepositoryFromExistsFile]) continue;
             
             // 如果不存在，更改一个名称来存储
-            NSString *newName = [NSString stringWithFormat:@"%@(%@%.0f)",footprintsRepository.title,NSLocalizedString(@"Exported", @"导出"),[[NSDate date] timeIntervalSinceReferenceDate]*10000];
+            NSString *newName = [NSString stringWithFormat:@"%@-%.0f",footprintsRepository.title,[[NSDate date] timeIntervalSinceReferenceDate]*1000];
             filePath = [directoryPath stringByAppendingPathComponent:newName];
             filePath = [filePath stringByAppendingString:@".mfr"];
         }
@@ -133,7 +133,7 @@
             if ([EverywhereFootprintsRepositoryManager footprintsRepositoryExists:footprintsRepositoryFromExistsFile]) continue;
             
             // 如果不存在，更改一个名称来存储
-            NSString *newName = [NSString stringWithFormat:@"%@(%@%.0f)",footprintsRepository.title,NSLocalizedString(@"Exported", @"导出"),[[NSDate date] timeIntervalSinceReferenceDate]*10000];
+            NSString *newName = [NSString stringWithFormat:@"%@-%.0f",footprintsRepository.title,[[NSDate date] timeIntervalSinceReferenceDate]*1000];
             filePath = [directoryPath stringByAppendingPathComponent:newName];
             filePath = [filePath stringByAppendingString:@".gpx"];
         }
@@ -147,13 +147,18 @@
     return  count;
 }
 
-+ (NSArray <EverywhereFootprintsRepository *> *)importFootprintsRepositoryFromFilesAtPath:(NSString *)directoryPath{
++ (NSArray <EverywhereFootprintsRepository *> *)importFootprintsRepositoryFromFilesAtPath:(NSString *)directoryPath moveAddedFilesToPath:(NSString *)moveDirectoryPath{
     NSError *error;
     NSArray *fileNameArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directoryPath error:&error];
     
     if (!fileNameArray){
-        NSLog(@"Error reading contents at path : %@\n%@",directoryPath,error.localizedFailureReason);
+        if(DEBUGMODE) NSLog(@"Error reading contents at path : %@\n%@",directoryPath,error.localizedFailureReason);
         return nil;
+    }
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:moveDirectoryPath]){
+        if (![[NSFileManager defaultManager] createDirectoryAtPath:moveDirectoryPath withIntermediateDirectories:NO attributes:nil error:NULL])
+            moveDirectoryPath = nil;
     }
     
     NSMutableArray <EverywhereFootprintsRepository *> *tempMA = [NSMutableArray new];
@@ -172,16 +177,35 @@
         else if ([pathExtension isEqualToString:@"gpx"])
             footprintsRepository = [EverywhereFootprintsRepository importFromGPXFile:filePath];
         
-        if (footprintsRepository && ![EverywhereFootprintsRepositoryManager footprintsRepositoryExists:footprintsRepository]){
+        if (footprintsRepository){
             count++;
             [tempMA insertObject:footprintsRepository atIndex:0];
             
-            // 删除已经导入的文件
-            NSError *removeError;
-            [[NSFileManager defaultManager] removeItemAtPath:filePath error:&removeError];
+            if (moveDirectoryPath){
+                // 移动已经导入的文件到指定文件夹
+                NSString *moveFilePath = [moveDirectoryPath stringByAppendingPathComponent:fileName];
+                NSError *moveError;
+                [[NSFileManager defaultManager] moveItemAtPath:filePath toPath:moveFilePath error:&moveError];
+            }else{
+                // 删除已经导入的文件
+                NSError *removeError;
+                [[NSFileManager defaultManager] removeItemAtPath:filePath error:&removeError];
+
+            }
         }
     }
-   
+    
+    // 添加到存储中
+    NSArray <EverywhereFootprintsRepository *> *newArray = [[EverywhereFootprintsRepositoryManager footprintsRepositoryArray] arrayByAddingObjectsFromArray:tempMA];
+    [EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:newArray];
+    
+    /*
+    for (EverywhereFootprintsRepository *existsFR in [EverywhereFootprintsRepositoryManager footprintsRepositoryArray]) {
+        for (EverywhereFootprintsRepository *tempFR in tempMA) {
+     
+        }
+    }
+   */
     return tempMA;
 }
 
@@ -195,12 +219,14 @@
     return NO;
 }
 
+
+/*
 + (NSUInteger)clearFootprintsRepositoryFilesAtPath:(NSString *)directoryPath{
     NSError *error;
     NSArray *fileNameArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directoryPath error:&error];
     
     if (!fileNameArray){
-        NSLog(@"Error reading contents at path : %@\n%@",directoryPath,error.localizedFailureReason);
+        if(DEBUGMODE) NSLog(@"Error reading contents at path : %@\n%@",directoryPath,error.localizedFailureReason);
         return 0;
     }
     
@@ -212,10 +238,11 @@
         if ([[filePath pathExtension] isEqualToString:@"mfr"]){
             NSError *removeError;
             if ([[NSFileManager defaultManager] removeItemAtPath:filePath error:&removeError]) count++;
-            else NSLog(@"remove %@ error : %@",[filePath lastPathComponent],removeError.localizedDescription);
+            else if(DEBUGMODE) NSLog(@"remove %@ error : %@",[filePath lastPathComponent],removeError.localizedDescription);
         }
     }
     
     return count;
 }
+*/
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "GCFileBrowser.h"
+#import "GCFileBrowserConfiguration.h"
 #import "GCFileTableViewCell.h"
 
 @interface GCFileBrowser ()  <UITableViewDelegate,UITableViewDataSource,GCFileTableViewCellDelegate>
@@ -29,12 +30,6 @@
 
 #pragma mark - Getter & Setter
 
-#define kContentName @"kContentName"
-#define kContentPath @"kContentPath"
-#define kContentIsDirectory @"kContentIsDirectory"
-#define kContentSubitemCount @"kContentSubitemCount"
-#define kContentAttributesFromFileManager @"kContentAttributesFromFileManager"
-#define kContentIsSelected @"kContentIsSelected"
 
 - (void)setDirectoryPath:(NSString *)newDirectoryPath{
     _directoryPath = newDirectoryPath;
@@ -109,7 +104,7 @@
 
 - (instancetype)initWithDirectoryPath:(NSString *)directoryPath{
     self = [super init];
-    NSLog(@"%@",NSStringFromSelector(_cmd));
+    if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     if (self) {
         self.directoryPath = directoryPath;
     }
@@ -120,7 +115,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    NSLog(@"%@",NSStringFromSelector(_cmd));
+    if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     self.view.backgroundColor = VCBackgroundColor;
     
     if (!self.directoryPath) self.directoryPath = Path_Documents;
@@ -144,16 +139,24 @@
     [topView autoSetDimension:ALDimensionHeight toSize:30];
     
     pathLabelInTopView = [UILabel newAutoLayoutView];
+    [pathLabelInTopView setFont:GCFONT_FILES_COUNTER];
+    [pathLabelInTopView setTextColor:GCCOLOR_FILES_COUNTER];
+    [pathLabelInTopView setShadowColor:GCCOLOR_FILES_COUNTER_SHADOW];
+    [pathLabelInTopView setShadowOffset:CGSizeMake(0, 1)];
     pathLabelInTopView.text = [[self.directoryPath stringByReplacingOccurrencesOfString:NSHomeDirectory() withString:@""] substringFromIndex:1];
     [topView addSubview:pathLabelInTopView];
-    [pathLabelInTopView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
-    [pathLabelInTopView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+    [pathLabelInTopView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
+    [pathLabelInTopView autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
     
     infoLabelInTopView = [UILabel newAutoLayoutView];
+    [infoLabelInTopView setFont:GCFONT_FILES_COUNTER];
+    [infoLabelInTopView setTextColor:GCCOLOR_FILES_COUNTER];
+    [infoLabelInTopView setShadowColor:GCCOLOR_FILES_COUNTER_SHADOW];
+    [infoLabelInTopView setShadowOffset:CGSizeMake(0, 1)];
     infoLabelInTopView.text = [NSString stringWithFormat:@"%lu",(unsigned long)contentAttributeMutableDictionaryArray.count];
     [topView addSubview:infoLabelInTopView];
-    [infoLabelInTopView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
-    [infoLabelInTopView autoAlignAxis:ALAxisHorizontal toSameAxisOfView:pathLabelInTopView];
+    [infoLabelInTopView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
+    [infoLabelInTopView autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
 }
 
 - (void)initSegmentedControl{
@@ -184,7 +187,7 @@
 
 - (void)segmentedControlValueChanged:(UISegmentedControl *)sender {
     NSInteger index = sender.selectedSegmentIndex;
-    NSLog(@"selectedSegmentIndex : %ld",(long)index);
+    if(DEBUGMODE) NSLog(@"selectedSegmentIndex : %ld",(long)index);
     [segmentedControl setImage:self.highlightedImageArray[index] forSegmentAtIndex:index];
     [self performSelector:@selector(deselectSegmentControlAtIndex:) withObject:[NSNumber numberWithInteger:index] afterDelay:0.30f];
 }
@@ -199,7 +202,7 @@
     [contentTableView registerClass:[GCFileTableViewCell class] forCellReuseIdentifier:@"GCFileTableViewCell"];
     //[contentTableView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
     [contentTableView setBackgroundColor:[UIColor clearColor]];
-    [contentTableView setSeparatorStyle:UITableViewCellSeparatorStyleSingleLineEtched];
+    //[contentTableView setSeparatorStyle:UITableViewCellSeparatorStyleSingleLineEtched];
     contentTableView.delegate = self;
     contentTableView.dataSource = self;
     //[contentTableView setShowsHorizontalScrollIndicator:YES];
@@ -230,43 +233,28 @@
     
     NSDictionary *contentAttributes = contentAttributeMutableDictionaryArray[indexPath.row];
     
-    [cell.iconButton setSelected:[contentAttributes[kContentIsSelected] boolValue]];
+    cell.isSelected = [contentAttributes[kContentIsSelected] boolValue];
     
     if ([contentAttributes[kContentIsDirectory] boolValue]) {
-        [cell setIsFile:NO];
-        
-        [cell.countLabel setHidden:NO];
-        
-        [cell.changedLabel setHidden:YES];
-        [cell.changedValueLabel setHidden:YES];
-        [cell.sizeLabel setHidden:YES];
-        [cell.sizeValueLabel setHidden:YES];
+        cell.isDirectory = YES;
         
         NSUInteger subitemCount = [contentAttributes[kContentSubitemCount] unsignedIntegerValue];
         
         if (subitemCount > 0)
-            [cell.countLabel setText:[NSString stringWithFormat:@"%lu",(unsigned long)subitemCount]];
+            [cell.countLabel setText:[NSString stringWithFormat:@"%lu %@",(unsigned long)subitemCount,NSLocalizedString(@"Subitem", @"个子项")]];
         else
-            [cell.countLabel setText:@"-"];
+            [cell.countLabel setText:NSLocalizedString(@"Empty", @"目录为空")];
         
     } else {
-        [cell setIsFile:YES];
-        
-        [cell.countLabel setHidden:YES];
-        
-        [cell.changedLabel setHidden:NO];
-        [cell.changedValueLabel setHidden:NO];
-        [cell.sizeLabel setHidden:NO];
-        [cell.sizeValueLabel setHidden:NO];
+        cell.isDirectory = NO;
     }
     
-    [cell.titleTextField setText:contentAttributes[kContentName]];
-    [cell.titleTextField sizeToFit];
+    cell.title = contentAttributes[kContentName];
     
     NSDictionary *attributes = contentAttributes[kContentAttributesFromFileManager];
     
     [cell.createdValueLabel setText:[[attributes fileCreationDate] stringWithDefaultFormat]];
-    [cell.sizeValueLabel setText:[NSString stringWithFormat:@"%.0llu",[attributes fileSize]]];
+    [cell.sizeValueLabel setText:[GCFileBrowser fileSizeString:[attributes fileSize]]];
     [cell.changedValueLabel setText:[[attributes fileModificationDate] stringWithDefaultFormat]];
     
     cell.delegate = self;
@@ -277,10 +265,25 @@
     return cell;
 }
 
++ (NSString *)fileSizeString:(unsigned long long)fileSize{
+    NSString *fileSizeString;
+    float floatSize;
+    if (fileSize > 1024.0f * 1024.0f){
+        floatSize = (double)fileSize / (1024.0f * 1024.0f);
+        fileSizeString = [NSString stringWithFormat:@"%.2f M",floatSize];
+    }else if (fileSize >= 1024.0f){
+        floatSize = (double)fileSize / 1024.0f;
+        fileSizeString = [NSString stringWithFormat:@"%.1f K",floatSize];
+    }else{
+        fileSizeString = [NSString stringWithFormat:@"%.0llu B",fileSize];
+    }
+    return fileSizeString;
+}
+
 #pragma mark - UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 60;
+    return (ScreenHeight > 568 ? 65 : 55);
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -318,10 +321,10 @@
     NSDictionary *contentAttributes = contentAttributeMutableDictionaryArray[indexPath.row];
     
     if ([contentAttributes[kContentIsSelected] boolValue]) {
-        [cell.iconButton setSelected:NO];
+        cell.isSelected = NO;
         [contentAttributes setValue:[NSNumber numberWithBool:NO] forKey:kContentIsSelected];
     } else {
-        [cell.iconButton setSelected:YES];
+        cell.isSelected = YES;
         [contentAttributes setValue:[NSNumber numberWithBool:YES] forKey:kContentIsSelected];
     }
     
@@ -333,4 +336,7 @@
     infoLabelInTopView.text = [NSString stringWithFormat:@"%lu/%lu",(unsigned long)selectedContentCount,(unsigned long)contentAttributeMutableDictionaryArray.count];
 }
 
+- (void)fileTableViewCell:(GCFileTableViewCell *)cell didTapActionAtIndexPath:(NSIndexPath *)indexPath{
+    
+}
 @end

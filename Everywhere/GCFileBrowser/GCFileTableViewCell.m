@@ -1,30 +1,19 @@
 
 #import "GCFileTableViewCell.h"
+#import "GCFileBrowserConfiguration.h"
 
-#define GCCOLOR_FILES_TITLE [UIColor colorWithRed:0.4 green:0.357 blue:0.325 alpha:1] /*#665b53*/
-#define GCCOLOR_FILES_TITLE_SHADOW [UIColor colorWithRed:1 green:1 blue:1 alpha:1] /*#ffffff*/
-#define GCCOLOR_FILES_COUNTER [UIColor colorWithRed:0.608 green:0.376 blue:0.251 alpha:1] /*#9b6040*/
-#define GCCOLOR_FILES_COUNTER_SHADOW [UIColor colorWithRed:1 green:1 blue:1 alpha:0.35] /*#ffffff*/
-#define GCCOLOR_FILES_SUBTITLE [UIColor colorWithRed:0.694 green:0.639 blue:0.6 alpha:1] /*#b1a399*/
-#define GCCOLOR_FILES_SUBTITLE_SHADOW [UIColor colorWithRed:1 green:1 blue:1 alpha:1] /*#ffffff*/
-#define GCCOLOR_FILES_SUBTITLE_VALUE [UIColor colorWithRed:0.694 green:0.639 blue:0.6 alpha:1] /*#b1a399*/
-#define GCCOLOR_FILES_SUBTITLE_VALUE_SHADOW [UIColor colorWithRed:1 green:1 blue:1 alpha:1] /*#ffffff*/
-
-#define GCFONT_FILES_TITLE [UIFont fontWithName:@"HelveticaNeue" size:(ScreenWidth > 375 ? 22.0f : 16.0f)]
-#define GCFONT_FILES_COUNTER [UIFont fontWithName:@"HelveticaNeue-Bold" size:(ScreenWidth > 375 ? 14.0f : 10.0f)]
-#define GCFONT_FILES_SUBTITLE [UIFont fontWithName:@"HelveticaNeue-Bold" size:(ScreenWidth > 375 ? 14.0f : 10.0f)]
-#define GCFONT_FILES_SUBTITLE_VALUE [UIFont fontWithName:@"HelveticaNeue" size:(ScreenWidth > 375 ? 14.0f : 10.0f)]
-
-@implementation GCFileTableViewCell
-
-@synthesize backgroundImageView, swipeRecognizer;
-@synthesize iconButton;
-@synthesize isFile;
-@synthesize titleTextField;
-@synthesize createdLabel, createdValueLabel, sizeLabel, sizeValueLabel, changedLabel, changedValueLabel, countLabel;
-@synthesize delegate;
-@synthesize indexPath;
-//@synthesize fileObject;
+@implementation GCFileTableViewCell{
+    UIImageView *backgroundImageView;
+    UIButton *iconButton;
+    UILabel *detailDisclosureLabel;//,*transparentActionButton,*fileActionButton;
+    
+    UIScrollView *scrollViewForTitle;
+    
+    UITextField *titleTextField;
+    //UILabel *createdLabel,*sizeLabel, *changedLabel;
+    
+}
+@synthesize createdValueLabel,sizeValueLabel,changedValueLabel,countLabel;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -32,20 +21,30 @@
         // Initialization code
 		backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"file-cell-short"]];
 		[backgroundImageView setContentMode:UIViewContentModeTopRight];
-        [self setBackgroundView:backgroundImageView];
+        //[self setBackgroundView:backgroundImageView];
         
 		[self setSelectionStyle:UITableViewCellSelectionStyleNone];
 		[self.contentView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
 		
 		iconButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		[iconButton setAdjustsImageWhenHighlighted:NO];
-		[iconButton addTarget:self action:@selector(iconButtonAction:forEvent:) forControlEvents:UIControlEventTouchDown];
+        [iconButton addTarget:self action:@selector(iconButtonTD) forControlEvents:UIControlEventTouchDown];
         
         iconButton.translatesAutoresizingMaskIntoConstraints = NO;
         [self.contentView addSubview:iconButton];
-        [iconButton autoSetDimensionsToSize:CGSizeMake(60, 60)];
+        [iconButton autoSetDimensionsToSize:CGSizeMake(40, 40)];
         [iconButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
         [iconButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+        
+        scrollViewForTitle = [UIScrollView newAutoLayoutView];
+        scrollViewForTitle.showsHorizontalScrollIndicator = YES;
+        scrollViewForTitle.backgroundColor = DEBUGMODE ? [[UIColor cyanColor] colorWithAlphaComponent:0.6] : [UIColor clearColor];
+        [self.contentView addSubview:scrollViewForTitle];
+        [scrollViewForTitle autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
+        [scrollViewForTitle autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:30];
+        [scrollViewForTitle autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:iconButton withOffset:5];
+        [scrollViewForTitle autoSetDimension:ALDimensionHeight toSize:30];
+        //[scrollViewForTitle sizeToFit];
         
         titleTextField = [UITextField newAutoLayoutView];
 		[titleTextField setFont:GCFONT_FILES_TITLE];
@@ -57,11 +56,12 @@
         [titleTextField setUserInteractionEnabled:NO];
 		[titleTextField setBackgroundColor:[UIColor clearColor]];
         
-        [self.contentView addSubview:titleTextField];
+        [scrollViewForTitle addSubview:titleTextField];
         [titleTextField sizeToFit];
-        [titleTextField autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
-        [titleTextField autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:iconButton withOffset:10];
-		
+        [titleTextField autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+        [titleTextField autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+        
+        /*
         createdLabel = [UILabel newAutoLayoutView];
 		[createdLabel setText:@"Created:"];
 		[createdLabel setFont:GCFONT_FILES_SUBTITLE];
@@ -71,20 +71,23 @@
 		[createdLabel setBackgroundColor:[UIColor clearColor]];
         [self.contentView addSubview:createdLabel];
         [createdLabel sizeToFit];
-        [createdLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:titleTextField withOffset:5];
-        [createdLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:iconButton withOffset:10];
-		
+        [createdLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:scrollViewForTitle withOffset:5];
+        [createdLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:iconButton withOffset:5];
+		*/
+        
 		createdValueLabel = [UILabel newAutoLayoutView];
-		[createdValueLabel setFont:GCFONT_FILES_SUBTITLE_VALUE];
-		[createdValueLabel setTextColor:GCCOLOR_FILES_SUBTITLE_VALUE];
-		[createdValueLabel setShadowColor:GCCOLOR_FILES_SUBTITLE_VALUE_SHADOW];
+		[createdValueLabel setFont:GCFONT_FILES_COUNTER];
+		[createdValueLabel setTextColor:GCCOLOR_FILES_COUNTER];
+		[createdValueLabel setShadowColor:GCCOLOR_FILES_COUNTER_SHADOW];
 		[createdValueLabel setShadowOffset:CGSizeMake(0, 1)];
 		[createdValueLabel setBackgroundColor:[UIColor clearColor]];
 		[self.contentView addSubview:createdValueLabel];
         [createdValueLabel sizeToFit];
-        [createdValueLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:createdLabel];
-        [createdValueLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:createdLabel withOffset:10];
-		
+        //[createdValueLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:createdLabel];
+        //[createdValueLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:createdLabel withOffset:10];
+        [createdValueLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:scrollViewForTitle withOffset:5];
+        [createdValueLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:iconButton withOffset:5];
+        /*
 		sizeLabel = [UILabel newAutoLayoutView];
 		[sizeLabel setText:@"Size:"];
 		[sizeLabel setFont:GCFONT_FILES_SUBTITLE];
@@ -95,19 +98,20 @@
         
 		[self.contentView addSubview:sizeLabel];
         [sizeLabel sizeToFit];
-        [sizeLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:titleTextField withOffset:5];
+        [sizeLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:scrollViewForTitle withOffset:5];
         [sizeLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:createdValueLabel withOffset:10];
-		
+		*/
+        
 		sizeValueLabel = [UILabel newAutoLayoutView];
-		[sizeValueLabel setFont:GCFONT_FILES_SUBTITLE_VALUE];
-		[sizeValueLabel setTextColor:GCCOLOR_FILES_SUBTITLE_VALUE];
-		[sizeValueLabel setShadowColor:GCCOLOR_FILES_SUBTITLE_VALUE_SHADOW];
+		[sizeValueLabel setFont:GCFONT_FILES_COUNTER];
+		[sizeValueLabel setTextColor:GCCOLOR_FILES_COUNTER];
+		[sizeValueLabel setShadowColor:GCCOLOR_FILES_COUNTER_SHADOW];
 		[sizeValueLabel setShadowOffset:CGSizeMake(0, 1)];
 		[sizeValueLabel setBackgroundColor:[UIColor clearColor]];
         [sizeValueLabel setTextAlignment:NSTextAlignmentRight];
 		[self.contentView addSubview:sizeValueLabel];
-        [sizeValueLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:sizeLabel];
-        [sizeValueLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:sizeLabel withOffset:10];
+        [sizeValueLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:createdValueLabel];
+        [sizeValueLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:createdValueLabel withOffset:10];
 		
         /*
 		changedLabel = [UILabel newAutoLayoutView];
@@ -138,7 +142,7 @@
 		
 		countLabel = [UILabel newAutoLayoutView];
         //[countLabel setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin];
-		[countLabel setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"item-counter"]]];
+		//[countLabel setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"item-counter"]]];
 		[countLabel setTextAlignment:NSTextAlignmentCenter];
 		[countLabel setLineBreakMode:NSLineBreakByTruncatingMiddle];
 		[countLabel setFont:GCFONT_FILES_COUNTER];
@@ -148,39 +152,94 @@
 
 		[countLabel setHidden:YES];
         [self.contentView addSubview:countLabel];
+        [countLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:createdValueLabel];
+        [countLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:createdValueLabel withOffset:10];
+        
+        
+        detailDisclosureLabel = [UILabel newAutoLayoutView];
+        //detailDisclosureLabel.userInteractionEnabled = NO;
+        detailDisclosureLabel.font = GCFONT_FILES_COUNTER;
+        detailDisclosureLabel.textColor = GCCOLOR_FILES_COUNTER;
+        detailDisclosureLabel.shadowColor = GCCOLOR_FILES_COUNTER;
+        detailDisclosureLabel.shadowOffset = CGSizeMake(0, 1);
+        detailDisclosureLabel.text = @"➤";
+        [self.contentView addSubview:detailDisclosureLabel];
+        [detailDisclosureLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+        [detailDisclosureLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
+        //[detailDisclosureLabel autoSetDimensionsToSize:CGSizeMake(50, 20)];
+        
         //[countLabel sizeToFit];
-        [countLabel autoSetDimensionsToSize:CGSizeMake(47, 28)];
-        [countLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
-        [countLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-
+        //[countLabel autoSetDimensionsToSize:CGSizeMake(47, 28)];
+        //[countLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
+        //[countLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+        
+        /*
+        fileActionButton = [UIButton buttonWithType:UIButtonTypeInfoLight];
+        //fileActionButton.backgroundColor = [UIColor clearColor];
+        //[fileActionButton addTarget:self action:@selector(actionButtonTD) forControlEvents:UIControlEventTouchDown];
+        [self.contentView addSubview:fileActionButton];
+        [fileActionButton autoAlignAxis:ALAxisHorizontal toSameAxisOfView:countLabel];
+        [fileActionButton autoAlignAxis:ALAxisVertical toSameAxisOfView:countLabel];
+        [fileActionButton autoSetDimensionsToSize:CGSizeMake(47 , 47)];
+        
+        transparentActionButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        transparentActionButton.backgroundColor = [UIColor clearColor];
+        [transparentActionButton addTarget:self action:@selector(actionButtonTD) forControlEvents:UIControlEventTouchDown];
+        [self.contentView addSubview:transparentActionButton];
+        [transparentActionButton autoAlignAxis:ALAxisHorizontal toSameAxisOfView:countLabel];
+        [transparentActionButton autoAlignAxis:ALAxisVertical toSameAxisOfView:countLabel];
+        [transparentActionButton autoSetDimensionsToSize:CGSizeMake(47 , 47)];
+         */
 //		[self setAccessoryView:countLabel];
         
-        swipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipe:)];
-        swipeRecognizer.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;
+        //swipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipe:)];
+        //swipeRecognizer.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;
         //[self addGestureRecognizer:swipeRecognizer];
     }
     return self;
 }
 
-- (void)swipe:(id)sender
-{
-    [self iconButtonTap];
+- (void)setTitle:(NSString *)title{
+    _title = title;
+    titleTextField.text = title;
+    [titleTextField sizeToFit];
+    scrollViewForTitle.contentSize = titleTextField.frame.size;
 }
 
-- (void)setIsFile:(BOOL)is {
-	if (is) {
-		[iconButton setImage:[UIImage imageNamed:@"item-icon-file"] forState:UIControlStateNormal];
-		[iconButton setImage:[UIImage imageNamed:@"item-icon-file-selected"] forState:UIControlStateSelected];
-		[iconButton setImage:[UIImage imageNamed:@"item-icon-file-selected"] forState:UIControlStateHighlighted];
-		//			[iconButton setFrame:CGRectMake(50, 28, 28, 33)];
-		
-		
-	} else {
-		[iconButton setImage:[UIImage imageNamed:@"item-icon-folder"] forState:UIControlStateNormal];
-		[iconButton setImage:[UIImage imageNamed:@"item-icon-folder-selected"] forState:UIControlStateSelected];
-		[iconButton setImage:[UIImage imageNamed:@"item-icon-folder-selected"] forState:UIControlStateHighlighted];
-		//			[iconButton setFrame:CGRectMake(50, 28, 32, 26)];
-		
+- (void)setIsSelected:(BOOL)isSelected{
+    iconButton.selected = isSelected;
+}
+
+- (void)setIsDirectory:(BOOL)isDirectory{
+	if (isDirectory) {
+        [iconButton setImage:[UIImage imageNamed:@"item-icon-folder"] forState:UIControlStateNormal];
+        [iconButton setImage:[UIImage imageNamed:@"item-icon-folder-selected"] forState:UIControlStateSelected];
+        [iconButton setImage:[UIImage imageNamed:@"item-icon-folder-selected"] forState:UIControlStateHighlighted];
+        //			[iconButton setFrame:CGRectMake(50, 28, 32, 26)];
+        
+        [detailDisclosureLabel setHidden:NO];
+        [countLabel setHidden:NO];
+        //[transparentactionButton setHidden:YES];
+        
+        //[changedLabel setHidden:YES];
+        [changedValueLabel setHidden:YES];
+        //[sizeLabel setHidden:YES];
+        [sizeValueLabel setHidden:YES];
+				
+	}else {
+        [iconButton setImage:[UIImage imageNamed:@"item-icon-file"] forState:UIControlStateNormal];
+        [iconButton setImage:[UIImage imageNamed:@"item-icon-file-selected"] forState:UIControlStateSelected];
+        [iconButton setImage:[UIImage imageNamed:@"item-icon-file-selected"] forState:UIControlStateHighlighted];
+        //			[iconButton setFrame:CGRectMake(50, 28, 28, 33)];
+        
+        [detailDisclosureLabel setHidden:YES];
+        [countLabel setHidden:YES];
+        //[transparentactionButton setHidden:NO];
+        
+        //[changedLabel setHidden:NO];
+        [changedValueLabel setHidden:NO];
+        //[sizeLabel setHidden:NO];
+        [sizeValueLabel setHidden:NO];
 	}
 }
 
@@ -191,21 +250,15 @@
     // Configure the view for the selected state
 }
 
-- (void)iconButtonAction:(id)sender forEvent:(UIEvent *)event {
-	if (delegate && [delegate respondsToSelector:@selector(fileTableViewCell:didTapIconAtIndexPath:)]) {
-		[delegate fileTableViewCell:(GCFileTableViewCell *)self didTapIconAtIndexPath:(NSIndexPath *)indexPath];	
+- (void)iconButtonTD{
+	if ([self.delegate respondsToSelector:@selector(fileTableViewCell:didTapIconAtIndexPath:)]) {
+		[self.delegate fileTableViewCell:(GCFileTableViewCell *)self didTapIconAtIndexPath:(NSIndexPath *)self.indexPath];
 	}
 }
 
-- (void)iconButtonTap {
-	if (delegate && [delegate respondsToSelector:@selector(fileTableViewCell:didTapIconAtIndexPath:)]) {
-		[delegate fileTableViewCell:(GCFileTableViewCell *)self didTapIconAtIndexPath:(NSIndexPath *)indexPath];	
-	}
+- (void)actionButtonTD{
+    if ([self.delegate respondsToSelector:@selector(fileTableViewCell:didTapActionAtIndexPath:)]) {
+        [self.delegate fileTableViewCell:(GCFileTableViewCell *)self didTapActionAtIndexPath:(NSIndexPath *)self.indexPath];
+    }
 }
-
-- (void)setFrame:(CGRect)frame
-{
-    [super setFrame:frame];
-}
-
 @end

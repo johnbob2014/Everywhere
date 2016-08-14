@@ -21,7 +21,7 @@
 + (NSUInteger)exportFootprintsRepositoryToMFRFilesAtPath:(NSString *)directoryPath;
 + (NSUInteger)exportFootprintsRepositoryToGPXFilesAtPath:(NSString *)directoryPath;
 
-+ (NSArray <EverywhereFootprintsRepository *> *)importFootprintsRepositoryFromFilesAtPath:(NSString *)directoryPath;
++ (NSArray <EverywhereFootprintsRepository *> *)importFootprintsRepositoryFromFilesAtPath:(NSString *)directoryPath moveAddedFilesToPath:(NSString *)moveDirectoryPath;
 
 //+ (NSUInteger)clearFootprintsRepositoryFilesAtPath:(NSString *)directoryPath;
 

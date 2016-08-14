@@ -55,6 +55,7 @@
         }
         
         if (currentIndex > 0) noteLabel.text = [NSString stringWithFormat:@"%ld/%lu",currentIndex + 1,(unsigned long)assetArray.count];
+        else noteLabel.text = NSLocalizedString(@"Swipe up to quite", @"上滑退出");
     }
 }
 

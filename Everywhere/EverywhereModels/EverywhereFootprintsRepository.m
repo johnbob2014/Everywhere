@@ -73,7 +73,17 @@
 }
 
 + (EverywhereFootprintsRepository *)importFromMFRFile:(NSString *)filePath{
-    return (EverywhereFootprintsRepository *)[NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
+    EverywhereFootprintsRepository *footprintsRepository = nil;
+    @try {
+        footprintsRepository = (EverywhereFootprintsRepository *)[NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
+    }
+    @catch (NSException *exception) {
+        if(DEBUGMODE) NSLog(@"从MFR文件生成足迹包出错！");
+        return nil;
+    }
+    @finally {
+        return footprintsRepository;
+    }
 }
 
 #pragma mark - Export To and Import From GPX File
@@ -157,88 +167,120 @@
 }
 
 + (EverywhereFootprintsRepository *)importFromGPXFile:(NSString *)filePath{
-    EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
     
-    if ([[filePath pathExtension] isEqualToString:@"gpx"]){
-        NSDictionary *gpxFileDic = [NSDictionary dictionaryWithXMLFile:filePath];
-        //NSLog(@"gpxFileDic :\n%@",gpxFileDic);
-        
-        
-        if (gpxFileDic){
-            
-            if ([gpxFileDic.allKeys containsObject:@"name"])
-                footprintsRepository.title = gpxFileDic[@"name"];
-            
-            if ([gpxFileDic.allKeys containsObject:@"time"]){
-                NSString *timeString = gpxFileDic[@"time"];
-                footprintsRepository.creationDate = [NSDate dateFromGPXTimeString:timeString];
-            }
-            
-            if ([gpxFileDic.allKeys containsObject:@"footprintsRepositoryType"]){
-                footprintsRepository.footprintsRepositoryType = [gpxFileDic[@"footprintsRepositoryType"] unsignedIntegerValue];
-            }else{
-                footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeReceived;
-            }
-            
-            if ([gpxFileDic.allKeys containsObject:@"radius"]){
-                footprintsRepository.radius = [gpxFileDic[@"radius"] floatValue];
-            }
-            
-            // 添加wpt
-            NSMutableArray <EverywhereFootprintAnnotation *> *userManuallyAddedFootprintArray = [NSMutableArray new];
-            if ([gpxFileDic.allKeys containsObject:@"wpt"]){
-                NSArray *wptDicArray = gpxFileDic[@"wpt"];
-                for (NSDictionary *wptDic in wptDicArray) {
-                    EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation footprintAnnotationFromGPXPointDictionary:wptDic isUserManuallyAdded:YES];
-                   if(footprintAnnotation) [userManuallyAddedFootprintArray addObject:footprintAnnotation];
-                }
-            }
-            
-            // 添加trkpt
-            NSMutableArray <EverywhereFootprintAnnotation *> *footprintArray = [NSMutableArray new];
-            if ([gpxFileDic.allKeys containsObject:@"trk"]){
-                //trkDic
-                NSDictionary *trkDic = gpxFileDic[@"trk"];
-                
-                if([trkDic.allKeys containsObject:@"name"]){
-                    // trk name
-                    NSLog(@"trk name : %@",trkDic[@"name"]);
-                }
-                
-                if([trkDic.allKeys containsObject:@"trkseg"]){
-                    // trksegDic
-                    NSDictionary *trksegDic = trkDic[@"trkseg"];
-                    
-                    if ([trksegDic.allKeys containsObject:@"trkpt"]){
-                        // trkptArray
-                        NSArray *trkptArray = trksegDic[@"trkpt"];
-                        
-                        for (NSDictionary *trkptDic in trkptArray) {
-                            EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation footprintAnnotationFromGPXPointDictionary:trkptDic isUserManuallyAdded:NO];
-                            if(footprintAnnotation) [footprintArray addObject:footprintAnnotation];
-                        }
-
-                    }
-                }
-            }
-            
-            if (userManuallyAddedFootprintArray.count > 0){
-                [footprintArray addObjectsFromArray:userManuallyAddedFootprintArray];
-            }
-            
-            footprintsRepository.footprintAnnotations = footprintArray;
-            
-        }else{
-            return nil;
+    if (![[filePath pathExtension] isEqualToString:@"gpx"]) return nil;
+    
+    // 使用XMLDictionary解析gpx文件
+    NSDictionary *gpxFileDic = [NSDictionary dictionaryWithXMLFile:filePath];
+    // 如果格式不对
+    if (!gpxFileDic || ![gpxFileDic isKindOfClass:[NSDictionary class]]) return nil;
+    
+    EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
+    id valueObject;
+    
+    if ([gpxFileDic.allKeys containsObject:@"name"])
+        valueObject = gpxFileDic[@"name"];
+        if ([valueObject isKindOfClass:[NSString class]]) footprintsRepository.title = (NSString *)valueObject;
+    
+    if ([gpxFileDic.allKeys containsObject:@"time"]){
+        valueObject = gpxFileDic[@"time"];
+        if ([valueObject isKindOfClass:[NSString class]]) {
+            footprintsRepository.creationDate = [NSDate dateFromGPXTimeString:(NSString *)valueObject];
         }
-        
-        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:gpxFileDic options:NSJSONWritingPrettyPrinted error:NULL];
-        [jsonData writeToFile:[Path_Documents stringByAppendingPathComponent:@"b.json"] atomically:YES];
-        //[gpxFileDic writeToFile:[Path_Documents stringByAppendingPathComponent:@"a.json"] atomically:YES];
-    }else{
-        return nil;
     }
     
+    if ([gpxFileDic.allKeys containsObject:@"footprintsRepositoryType"]){
+        valueObject = gpxFileDic[@"footprintsRepositoryType"];
+        if ([valueObject isKindOfClass:[NSString class]]) footprintsRepository.footprintsRepositoryType = [(NSString *)valueObject integerValue];
+    }else{
+        footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeReceived;
+    }
+    
+    if ([gpxFileDic.allKeys containsObject:@"radius"]){
+        valueObject = gpxFileDic[@"radius"];
+        if ([valueObject isKindOfClass:[NSString class]]) footprintsRepository.radius = [(NSString *)valueObject floatValue];
+    }
+    
+    // 添加wpt
+    NSMutableArray <EverywhereFootprintAnnotation *> *userManuallyAddedFootprintArray = [NSMutableArray new];
+    if ([gpxFileDic.allKeys containsObject:@"wpt"]){
+        id wptObject = gpxFileDic[@"wpt"];
+        
+        if (wptObject){
+            NSArray *wptDicArray;
+            // 如果只有一个点，wptDicArray会被XMLDictionary解析成字典，这时候，需要将wptDicArray转化为数组
+            if ([wptObject isKindOfClass:[NSArray class]]){
+                wptDicArray = wptObject;
+            }else if ([wptDicArray isKindOfClass:[NSDictionary class]]) {
+                wptDicArray = @[wptObject];
+            }
+            
+            for (NSDictionary *wptDic in wptDicArray) {
+                EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation footprintAnnotationFromGPXPointDictionary:wptDic isUserManuallyAdded:YES];
+                if(footprintAnnotation) [userManuallyAddedFootprintArray addObject:footprintAnnotation];
+            }
+        }
+        
+    }
+    
+    // 添加trkpt
+    NSMutableArray <EverywhereFootprintAnnotation *> *footprintArray = [NSMutableArray new];
+    if ([gpxFileDic.allKeys containsObject:@"trk"]){
+        //trkDic
+        NSDictionary *trkDic = gpxFileDic[@"trk"];
+        
+        if([trkDic.allKeys containsObject:@"name"]){
+            // trk name
+            // if(DEBUGMODE) NSLog(@"trk name : %@",trkDic[@"name"]);
+        }
+        
+        if([trkDic.allKeys containsObject:@"trkseg"]){
+            // trksegDic
+            NSDictionary *trksegDic = trkDic[@"trkseg"];
+            
+            if ([trksegDic.allKeys containsObject:@"trkpt"]){
+                // trkptDicArray
+                
+                id trkptObject = trksegDic[@"trkpt"];
+                
+                if (trkptObject) {
+                    NSArray *trkptDicArray;
+                    // 如果只有一个点，trkptDicArray会被XMLDictionary解析成字典，这时候，需要将trkptDicArray转化为数组
+                    if ([trkptObject isKindOfClass:[NSArray class]]){
+                        trkptDicArray = trkptObject;
+                    }else if ([trkptDicArray isKindOfClass:[NSDictionary class]]) {
+                        trkptDicArray = @[trkptObject];
+                    }
+                    
+                    for (NSDictionary *trkptDic in trkptDicArray) {
+                        EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation footprintAnnotationFromGPXPointDictionary:trkptDic isUserManuallyAdded:NO];
+                        if(footprintAnnotation) [footprintArray addObject:footprintAnnotation];
+                    }
+
+                }
+            }
+        }
+    }
+    
+    if (userManuallyAddedFootprintArray.count > 0){
+        [footprintArray addObjectsFromArray:userManuallyAddedFootprintArray];
+    }
+    
+    // 按时间排序
+    [footprintArray sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        NSComparisonResult comparisonResult;
+        
+        NSTimeInterval ti = [((EverywhereFootprintAnnotation *)obj1).startDate timeIntervalSinceDate:((EverywhereFootprintAnnotation *)obj2).startDate];
+        
+        if (ti < 0) comparisonResult = NSOrderedAscending;
+        else if (ti == 0) comparisonResult = NSOrderedSame;
+        else comparisonResult = NSOrderedDescending;
+        
+        return comparisonResult;
+    }];
+    
+    footprintsRepository.footprintAnnotations = footprintArray;
+
     return footprintsRepository;
 }
 

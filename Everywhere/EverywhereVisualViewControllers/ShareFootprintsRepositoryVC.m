@@ -5,14 +5,14 @@
 //  Created by BobZhang on 16/7/18.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
-#define DEBUGMODE 1
 
 #import "WXApi.h"
 #import "ShareFootprintsRepositoryVC.h"
 #import "EverywhereFootprintsRepositoryManager.h"
 #import "EverywhereSettingManager.h"
 
-#define ButtonHeight 30
+#define ShareButtonHeight 44
+#define LabelHeight 20
 
 @interface ShareFootprintsRepositoryVC () <UIDocumentInteractionControllerDelegate>
 
@@ -20,8 +20,9 @@
 
 @implementation ShareFootprintsRepositoryVC{
     UIDocumentInteractionController *documentInteractionController;
-    UILabel *titleLabel;
+    UILabel *titleLabel,*statisticsInfoLabel;
     UITextField *titleTF;
+    UITextView *statisticsInfoTV;
     UIButton *firstBtn,*sencondBtn,*thirdBtn;
 }
 
@@ -29,34 +30,68 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.9, 240);
-    self.landscapeContentSizeInPopup = CGSizeMake(240, ScreenWidth * 0.9);
+    self.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.9, 300);
+    self.landscapeContentSizeInPopup = CGSizeMake(300, ScreenWidth * 0.9);
     
     self.view.backgroundColor = VCBackgroundColor;
     self.title = NSLocalizedString(@"Share footprints", @"分享足迹");
     
     titleLabel = [UILabel newAutoLayoutView];
-    titleLabel.text = NSLocalizedString(@"Set title for your footprints", @"为足迹添加标题");
+    titleLabel.text = NSLocalizedString(@"Set title", @"设置标题");
     titleLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:titleLabel];
-    [titleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
-    [titleLabel autoSetDimension:ALDimensionHeight toSize:ButtonHeight];
+    [titleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(10, 0, 0, 0) excludingEdge:ALEdgeBottom];
+    [titleLabel autoSetDimension:ALDimensionHeight toSize:LabelHeight];
     
     titleTF = [UITextField newAutoLayoutView];
     titleTF.clearButtonMode = UITextFieldViewModeAlways;
     titleTF.textAlignment = NSTextAlignmentCenter;
     titleTF.font = [UIFont fontWithName:@"FontAwesome" size:titleTF.font.pointSize * 1.2];
     titleTF.layer.borderWidth = 1;
-    titleTF.layer.borderColor = [[EverywhereSettingManager defaultManager].baseTintColor CGColor];
-    //titleTF.layer.cornerRadius = 4.0;
+    //titleTF.layer.borderColor =
+    titleTF.layer.cornerRadius = 3.0;
     titleTF.layer.masksToBounds = YES;
     titleTF.text = self.footprintsRepository.title;
     [self.view addSubview:titleTF];
     [titleTF autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:titleLabel withOffset:5];
     [titleTF autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
     [titleTF autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
-    [titleTF autoSetDimension:ALDimensionHeight toSize:ButtonHeight * 1.5];
-    //[titleTF autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:sessionBtn withOffset:-5];
+    [titleTF autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight * 0.8];
+    
+    statisticsInfoLabel = [UILabel newAutoLayoutView];
+    statisticsInfoLabel.text = NSLocalizedString(@"Set statistics info", @"设置统计信息");
+    statisticsInfoLabel.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:statisticsInfoLabel];
+    [statisticsInfoLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:titleTF withOffset:10];
+    [statisticsInfoLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+    [statisticsInfoLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+    [statisticsInfoLabel autoSetDimension:ALDimensionHeight toSize:LabelHeight];
+    
+    statisticsInfoTV = [UITextView newAutoLayoutView];
+    statisticsInfoTV.backgroundColor = [UIColor clearColor];
+    //statisticsInfoTV.textAlignment = NSTextAlignmentLeft;
+    statisticsInfoTV.font = [UIFont fontWithName:@"FontAwesome" size:statisticsInfoLabel.font.pointSize];
+    statisticsInfoTV.layer.borderWidth = 1;
+    //statisticsInfoTV.layer.borderColor =
+    statisticsInfoTV.layer.cornerRadius = 3.0;
+    //statisticsInfoTV.layer.masksToBounds = YES;
+    statisticsInfoTV.text = self.footprintsRepository.placemarkInfo;
+    //if (DEBUGMODE) NSLog(@"%@",statisticsInfoTV.text);
+    [self.view addSubview:statisticsInfoTV];
+    [statisticsInfoTV autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:statisticsInfoLabel withOffset:5];
+    [statisticsInfoTV autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
+    [statisticsInfoTV autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
+    [statisticsInfoTV autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight * 1.5];
+    
+    UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeInfoLight];
+    infoButton.backgroundColor = DEBUGMODE ? [[UIColor cyanColor] colorWithAlphaComponent:0.6] : [UIColor clearColor];
+    infoButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [infoButton addTarget:self action:@selector(showInfoAboutWXShareAlertController) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:infoButton];
+    [infoButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:statisticsInfoTV withOffset:15];
+    [infoButton autoSetDimensionsToSize:CGSizeMake(ShareButtonHeight,ShareButtonHeight)];
+    [infoButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
+
 
     firstBtn = [UIButton newAutoLayoutView];
     [firstBtn setTitle:NSLocalizedString(@"Try WeChat Share", @"体验微信分享") forState:UIControlStateNormal];
@@ -64,17 +99,11 @@
     firstBtn.tag = WXSceneSession;
     [firstBtn addTarget:self action:@selector(wxShare:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:firstBtn];
-    [firstBtn autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:titleTF withOffset:10];
+    [firstBtn autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:statisticsInfoTV withOffset:15];
     [firstBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
-    [firstBtn autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:40];
-    [firstBtn autoSetDimension:ALDimensionHeight toSize:ButtonHeight];
+    [firstBtn autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:infoButton withOffset:-10];
+    [firstBtn autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight];
     
-    UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeInfoLight];
-    infoButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [infoButton addTarget:self action:@selector(showInfoAboutWXShareAlertController) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:infoButton];
-    [infoButton autoAlignAxis:ALAxisHorizontal toSameAxisOfView:firstBtn];
-    [infoButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
 
     sencondBtn = [UIButton newAutoLayoutView];
     [sencondBtn setTitle:NSLocalizedString(@"MFR File Share", @"MFR 文件分享") forState:UIControlStateNormal];
@@ -84,8 +113,9 @@
     [self.view addSubview:sencondBtn];
     [sencondBtn autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:firstBtn withOffset:10];
     [sencondBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
-    [sencondBtn autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
-    [sencondBtn autoSetDimension:ALDimensionHeight toSize:ButtonHeight];
+    //[sencondBtn autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
+    [sencondBtn autoSetDimension:ALDimensionWidth toSize:(self.view.frame.size.width - 30 - 40)/2.0];
+    [sencondBtn autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight];
     
     thirdBtn = [UIButton newAutoLayoutView];
     [thirdBtn setTitle:NSLocalizedString(@"GPX File Share", @"GPX 文件分享") forState:UIControlStateNormal];
@@ -93,10 +123,11 @@
     thirdBtn.tag = 1;
     [thirdBtn addTarget:self action:@selector(fileShare:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:thirdBtn];
-    [thirdBtn autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:sencondBtn withOffset:10];
-    [thirdBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
+    [thirdBtn autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:firstBtn withOffset:10];
+    //[thirdBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
+    [thirdBtn autoSetDimension:ALDimensionWidth toSize:(self.view.frame.size.width - 30 - 40)/2.0];
     [thirdBtn autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
-    [thirdBtn autoSetDimension:ALDimensionHeight toSize:ButtonHeight];
+    [thirdBtn autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight];
     
 }
 
@@ -104,12 +135,13 @@
 
 - (void)fileShare:(UIButton *)sender{
     
-    if (![EverywhereSettingManager defaultManager].hasPurchasedShare && self.userDidSelectedPurchaseShareFunctionHandler){
+    if (![EverywhereSettingManager defaultManager].hasPurchasedShareAndBrowse && self.userDidSelectedPurchaseShareFunctionHandler){
         self.userDidSelectedPurchaseShareFunctionHandler();
         return;
     }
     
     self.footprintsRepository.title = titleTF.text;
+    self.footprintsRepository.placemarkInfo = statisticsInfoTV.text;
     
     NSString *filePath = [Path_Caches stringByAppendingPathComponent:self.footprintsRepository.title];
     
@@ -167,14 +199,14 @@
     req.message=mediaMessage;
     req.bText=NO;
     req.scene= (int)sender.tag;
-    //NSLog(@"%@",req);
+    //if(DEBUGMODE) NSLog(@"%@",req);
     BOOL succeeded=[WXApi sendReq:req];
     if(DEBUGMODE) NSLog(@"SendMessageToWXReq : %@",succeeded? @"Succeeded" : @"Failed");
     
     if (succeeded){
         // 如果发送成功，保存到我的分享
         [EverywhereFootprintsRepositoryManager addFootprintsRepository:self.footprintsRepository];
-        NSLog(@"%@",self.footprintsRepository);
+        //if(DEBUGMODE) NSLog(@"%@",self.footprintsRepository);
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -189,10 +221,10 @@
     NSString *footprintsRepositoryString = [footprintsRepositoryData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
     
     if (footprintsRepositoryString.length > 10*1024*8) {
-        NSLog(@"footprintsOrPositionURL is too Long!");
+        if(DEBUGMODE) NSLog(@"footprintsOrPositionURL is too Long!");
         return nil;
     }
-    NSString *headerString = [NSString stringWithFormat:@"%@://AlbumMaps/",WXAppID];
+    NSString *headerString = [NSString stringWithFormat:@"%@://AlbumMaps/",[EverywhereSettingManager defaultManager].wxAppID];
     
     footprintsRepositoryString = [headerString stringByAppendingString:footprintsRepositoryString];
     return footprintsRepositoryString;
@@ -200,7 +232,7 @@
 }
 
 - (void)showInfoAboutWXShareAlertController{
-    UIAlertController *informationAlertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Because of the limitation of WeChat content , make sure your footprints count within 30 , otherwise share may fail.File Share support multiple share styles and has no footprints count limitation.", @"由于微信分享内容限制为10K，所以请将分享的足迹点数量控制在30个以内，否则可能会分享失败。文件分享可选择多种方式分享，且没有足迹点数量限制。")];
+    UIAlertController *informationAlertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Because of the restriction of WeChat content , make sure your footprints count within 30 , otherwise share may fail.\nShareAndBrowse function support multiple share styles and has no footprints count restriction.", @"由于微信分享内容限制为10K，所以请将分享的足迹点数量控制在30个以内，否则可能会分享失败。\n分享和浏览功能可选择多种方式分享，且没有足迹点数量限制。")];
     [self presentViewController:informationAlertController animated:YES completion:nil];
 }
 

@@ -90,11 +90,11 @@
                 
                 PHAssetInfo *info = [PHAssetInfo newAssetInfoWithPHAsset:obj inManagedObjectContext:self.appDelegateMOC];
                 addedPHAssetInfoCount++;
-                NSLog(@"%@",info.localIdentifier);
+                if(DEBUGMODE) NSLog(@"%@",info.localIdentifier);
             }
         }
     }];
-    NSLog(@"从照片库更新照片数据 :\nAdd PHAssetInfo Count : %ld\n耗时 : %.3fs",(long)addedPHAssetInfoCount,[[NSDate date] timeIntervalSinceDate:timeTest]);
+    if(DEBUGMODE) NSLog(@"从照片库更新照片数据 :\nAdd PHAssetInfo Count : %ld\n耗时 : %.3fs",(long)addedPHAssetInfoCount,[[NSDate date] timeIntervalSinceDate:timeTest]);
     return addedPHAssetInfoCount;
 }
 
@@ -121,7 +121,7 @@
                 if (![obj.reverseGeocodeSucceed boolValue]) {
                     reverseGeocodeFailedCountBeforeUpdate++;
                     [PHAssetInfo updatePlacemarkForAssetInfo:obj];
-                    //NSLog(@"%@",NSStringFromCGPoint(CGPointMake([obj.latitude_Coordinate_Location doubleValue], [obj.longitude_Coordinate_Location doubleValue])));
+                    //if(DEBUGMODE) NSLog(@"%@",NSStringFromCGPoint(CGPointMake([obj.latitude_Coordinate_Location doubleValue], [obj.longitude_Coordinate_Location doubleValue])));
                     [NSThread sleepForTimeInterval:1.0];
                 }
             }];
@@ -132,7 +132,7 @@
                 if (![obj.reverseGeocodeSucceed boolValue]) {
                     reverseGeocodeFailedCountAfterUpdate++;
                     [PHAssetInfo updatePlacemarkForAssetInfo:obj];
-                    //NSLog(@"%@",NSStringFromCGPoint(CGPointMake([obj.latitude_Coordinate_Location doubleValue], [obj.longitude_Coordinate_Location doubleValue])));
+                    //if(DEBUGMODE) NSLog(@"%@",NSStringFromCGPoint(CGPointMake([obj.latitude_Coordinate_Location doubleValue], [obj.longitude_Coordinate_Location doubleValue])));
                     [NSThread sleepForTimeInterval:1.0];
                 }
             }];
@@ -141,7 +141,7 @@
             NSInteger reverseGeocodeSucceedCountForThisTime = reverseGeocodeFailedCountBeforeUpdate - reverseGeocodeFailedCountAfterUpdate;
             NSInteger reverseGeocodeSucceedCountForTotal = totalPHAssetInfoCount - reverseGeocodeFailedCountAfterUpdate;
             
-            NSLog(@"解析照片信息 :\n本次解析成功 : %lu\n总成功数 : %lu\n总照片数 : %lu",(long)reverseGeocodeSucceedCountForThisTime,(long)reverseGeocodeSucceedCountForTotal,(long)totalPHAssetInfoCount);
+            if(DEBUGMODE) NSLog(@"解析照片信息 :\n本次解析成功 : %lu\n总成功数 : %lu\n总照片数 : %lu",(long)reverseGeocodeSucceedCountForThisTime,(long)reverseGeocodeSucceedCountForTotal,(long)totalPHAssetInfoCount);
             
             if(completionBlock) completionBlock(reverseGeocodeSucceedCountForThisTime,reverseGeocodeSucceedCountForTotal,totalPHAssetInfoCount);
         });

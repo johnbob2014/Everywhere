@@ -5,7 +5,6 @@
 //  Created by BobZhang on 16/7/13.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
-#define DEBUGMODE 1
 
 #import "SettingVC.h"
 #import "UIView+AutoLayout.h"
@@ -145,7 +144,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     
     NSArray *baseColorSchemeArray = @[NSLocalizedString(@"Classic Gray",@"经典灰"),NSLocalizedString(@"Fresh Purple",@"清新紫"),NSLocalizedString(@"Deep Brown",@"深沉棕")];
     NSString *currentCS = baseColorSchemeArray[self.settingManager.baseColorScheme < baseColorSchemeArray.count ? self.settingManager.baseColorScheme : baseColorSchemeArray.count - 1];
-    REPickerItem *baseColorSchemePickerItem = [REPickerItem itemWithTitle:NSLocalizedString(@"⛰ BaseColorScheme",@"⛰ 颜色方案")
+    REPickerItem *baseColorSchemePickerItem = [REPickerItem itemWithTitle:NSLocalizedString(@"🌈 ColorScheme",@"🌈 颜色方案")
                                                                 value:@[currentCS]
                                                           placeholder:nil
                                                               options:@[baseColorSchemeArray]];
@@ -165,7 +164,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     //[optionSection setHeaderHeight:30];
     
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.mergeDistanceForMoment];
-    RETextItem *mergeDistanceForMomentItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Merge Distance For Moment",@"📏 时刻模式合并距离") value:tempString placeholder:@""];
+    RETextItem *mergeDistanceForMomentItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Moment Merge Distance",@"📏 时刻模式合并距离") value:tempString placeholder:@""];
     mergeDistanceForMomentItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     mergeDistanceForMomentItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
@@ -178,7 +177,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     //[optionSection setHeaderHeight:30];
     
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.mergeDistanceForLocation];
-    RETextItem *mergeDistanceForLocationItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Merge Distance For Location",@"📏 地点模式合并距离") value:tempString placeholder:@""];
+    RETextItem *mergeDistanceForLocationItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Location Merge Distance",@"📏 地点模式合并距离") value:tempString placeholder:@""];
     mergeDistanceForLocationItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     mergeDistanceForLocationItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
@@ -195,7 +194,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     
     NSArray *extendedModeColorSchemeArray = @[NSLocalizedString(@"Bright Red",@"鲜艳红"),NSLocalizedString(@"Grass Green",@"青草绿")];
     NSString *extendedModeCurrentCS = extendedModeColorSchemeArray[self.settingManager.extendedColorScheme < extendedModeColorSchemeArray.count ? self.settingManager.extendedColorScheme : extendedModeColorSchemeArray.count - 1];
-    REPickerItem *extendedModeColorSchemePickerItem = [REPickerItem itemWithTitle:NSLocalizedString(@"🏔 ExtendedColorScheme",@"🏔 颜色方案")
+    REPickerItem *extendedModeColorSchemePickerItem = [REPickerItem itemWithTitle:NSLocalizedString(@"🌈 ColorScheme",@"🌈 颜色方案")
                                                                 value:@[extendedModeCurrentCS]
                                                           placeholder:nil
                                                               options:@[extendedModeColorSchemeArray]];
@@ -211,7 +210,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     
 #pragma mark 最短距离
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.minDistanceForRecord];
-    RETextItem *minDistanceForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Min Distance",@"📏 最短距离") value:tempString placeholder:@""];
+    RETextItem *minDistanceForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Min Record Distance",@"📏 最短记录距离") value:tempString placeholder:@""];
     minDistanceForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     minDistanceForRecordItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
@@ -220,7 +219,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 
 #pragma mark 最短时间间隔
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.minTimeIntervalForRecord];
-    RETextItem *minTimeIntervalForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"⏱ Min TimeInterval",@"⏱ 最短时间间隔") value:tempString placeholder:@""];
+    RETextItem *minTimeIntervalForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"⏱ Min Record TimeInterval",@"⏱ 最短记录间隔") value:tempString placeholder:@""];
     minTimeIntervalForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     minTimeIntervalForRecordItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
@@ -229,7 +228,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     
 #pragma mark 最大足迹点数
     tempString = [NSString stringWithFormat:@"%lu",(long)self.settingManager.maxFootprintsCountForRecord];
-    RETextItem *maxFootprintsCountForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"🎚 Max Footprints Count",@"🎚 最大足迹点数") value:tempString placeholder:@""];
+    RETextItem *maxFootprintsCountForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"🎚 Max Footprints Count",@"🎚 单条记录最大足迹点数") value:tempString placeholder:@""];
     maxFootprintsCountForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:Number];
     maxFootprintsCountForRecordItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
@@ -242,9 +241,45 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     RETableViewSection *frManagementSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Footpinrts Repository Management", @"足迹包管理")];
     [frManagementSection setHeaderHeight:20];
     
-    RETableViewItem *exportRepositoryToMFRItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📤 Export Repository to MFR",@"📤 导出足迹包至MFR文件") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+    //RETableViewSection *fileManagementSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"File Management", @"文件管理")];
+    //[fileManagementSection setHeaderHeight:20];
+    RETableViewItem *documentsItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"🗂 File Browser",@"🗂 文件浏览器") accessoryType:UITableViewCellAccessoryDisclosureIndicator  selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         
+        [self checkhasPurchasedImportAndExport];
+        
+        GCFileBrowser *fileBrowser = [GCFileBrowser new];
+        fileBrowser.edgesForExtendedLayout = UIRectEdgeNone;
+        
+        fileBrowser.enableActionMenu = NO;
+        fileBrowser.enableDocumentInteractionController = [EverywhereSettingManager defaultManager].hasPurchasedShareAndBrowse;
+        
+        [self.navigationController pushViewController:fileBrowser animated:YES];
+        /*
+         UIAlertActionHandler okActionHandler = ^(UIAlertAction *action) {
+         NSUInteger count = [EverywhereFootprintsRepositoryManager clearFootprintsRepositoryFilesAtPath:Path_Documents];
+         
+         NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Delete footprints repository files count", @"删除足迹包文件数量"),(unsigned long)count];
+         UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
+         message:alertMessage];
+         [weakSelf presentViewController:alertController animated:YES completion:nil];
+         
+         };
+         
+         UIAlertController *alertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Attention", @"警告")
+         message:NSLocalizedString(@"All your footprints repository files in Documents directory will be deleted and can not be restored! Are you sure?", @"您用户文档中的所有足迹包文件都将被删除，此操作无法恢复，请务必谨慎。确认删除？")
+         okActionHandler:okActionHandler];
+         [weakSelf presentViewController:alertController animated:YES completion:nil];
+         */
+        
+    }];
+    //documentsItem.enabled = self.settingManager.hasPurchasedImportAndExport;
+    
+    //[fileManagementSection addItemsFromArray:@[documentsItem]];
+
+    RETableViewItem *exportRepositoryToMFRItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📤 Export to MFR Files",@"📤 导出足迹包至MFR文件") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        [self checkhasPurchasedImportAndExport];
         NSUInteger count = [EverywhereFootprintsRepositoryManager exportFootprintsRepositoryToMFRFilesAtPath:[Path_Documents stringByAppendingPathComponent:@"Exported MFR"]];
         
         NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully export repository to mfr files count", @"成功导出足迹包至MFR文件数量"),(unsigned long)count];
@@ -252,26 +287,29 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
                                                                                            message:alertMessage];
         [weakSelf presentViewController:alertController animated:YES completion:nil];
     }];
-    exportRepositoryToMFRItem.enabled = [EverywhereSettingManager defaultManager].hasPurchasedShare;
+    //exportRepositoryToMFRItem.enabled = [EverywhereSettingManager defaultManager].hasPurchasedImportAndExport;
     
-    RETableViewItem *exportRepositoryToGPXItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📤 Export Repository to GPX",@"📤 导出足迹包至GPX文件") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+    RETableViewItem *exportRepositoryToGPXItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📤 Export to GPX Files",@"📤 导出足迹包至GPX文件") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
-        
-        NSUInteger count = [EverywhereFootprintsRepositoryManager exportFootprintsRepositoryToMFRFilesAtPath:[Path_Documents stringByAppendingPathComponent:@"Exported GPX"]];
+        [self checkhasPurchasedImportAndExport];
+        NSUInteger count = [EverywhereFootprintsRepositoryManager exportFootprintsRepositoryToGPXFilesAtPath:[Path_Documents stringByAppendingPathComponent:@"Exported GPX"]];
         
         NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully export repository to gpx files count", @"成功导出足迹包至GPX文件数量"),(unsigned long)count];
         UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
                                                                                            message:alertMessage];
         [weakSelf presentViewController:alertController animated:YES completion:nil];
     }];
-    exportRepositoryToGPXItem.enabled = [EverywhereSettingManager defaultManager].hasPurchasedShare;
+    //exportRepositoryToGPXItem.enabled = [EverywhereSettingManager defaultManager].hasPurchasedImportAndExport;
     
-    RETableViewItem *importRepositoryItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📥 Import Repository",@"📥 导入足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+    RETableViewItem *importRepositoryItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📥 Import From Documents Directory",@"📥 从Documents目录导入足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
-        
-        NSArray <EverywhereFootprintsRepository *> *importedArray = [EverywhereFootprintsRepositoryManager importFootprintsRepositoryFromFilesAtPath:Path_Documents];
+        [self checkhasPurchasedImportAndExport];
+        NSString *moveDirectoryPath = [Path_Documents stringByAppendingPathComponent:@"Imported Files"];
+        NSArray <EverywhereFootprintsRepository *> *importedArray = [EverywhereFootprintsRepositoryManager importFootprintsRepositoryFromFilesAtPath:Path_Documents moveAddedFilesToPath:moveDirectoryPath];
+        /*
         NSArray <EverywhereFootprintsRepository *> *newArray = [[EverywhereFootprintsRepositoryManager footprintsRepositoryArray] arrayByAddingObjectsFromArray:importedArray];
         [EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:newArray];
+        */
         
         NSUInteger count = importedArray.count;
         NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully import repository count", @"成功导入足迹包数量"),(unsigned long)count];
@@ -279,9 +317,9 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
                                                                                            message:alertMessage];
         [weakSelf presentViewController:alertController animated:YES completion:nil];
     }];
-    importRepositoryItem.enabled = [EverywhereSettingManager defaultManager].hasPurchasedShare;
+    //importRepositoryItem.enabled = [EverywhereSettingManager defaultManager].hasPurchasedImportAndExport;
 
-    RETableViewItem *clearCatchItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"❌ Clear All Repository",@"❌ 清空所有足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+    RETableViewItem *clearCatchItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"❌ Clear All Footprints Repositories",@"❌ 清空所有足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         
         UIAlertActionHandler okActionHandler = ^(UIAlertAction *action) {
@@ -304,68 +342,32 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         
     }];
     
-    [frManagementSection addItemsFromArray:@[exportRepositoryToMFRItem,exportRepositoryToGPXItem,importRepositoryItem,clearCatchItem]];
-
-#pragma mark - 文件管理
-    RETableViewSection *fileManagementSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"File Management", @"文件管理")];
-    [fileManagementSection setHeaderHeight:20];
-    RETableViewItem *documentsItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"🗂 File Browser",@"🗂 文件浏览器") accessoryType:UITableViewCellAccessoryDisclosureIndicator  selectionHandler:^(RETableViewItem *item) {
-        [item deselectRowAnimated:YES];
-        
-        GCFileBrowser *fileBrowser = [GCFileBrowser new];
-        fileBrowser.edgesForExtendedLayout = UIRectEdgeNone;
-        
-        fileBrowser.enableActionMenu = NO;
-        
-        if ([EverywhereSettingManager defaultManager].hasPurchasedShare){
-            
-            fileBrowser.enableDocumentInteractionController = YES;
-        }
-        
-        [self.navigationController pushViewController:fileBrowser animated:YES];
-        /*
-        UIAlertActionHandler okActionHandler = ^(UIAlertAction *action) {
-            NSUInteger count = [EverywhereFootprintsRepositoryManager clearFootprintsRepositoryFilesAtPath:Path_Documents];
-            
-            NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Delete footprints repository files count", @"删除足迹包文件数量"),(unsigned long)count];
-            UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
-                                                                                               message:alertMessage];
-            [weakSelf presentViewController:alertController animated:YES completion:nil];
-            
-        };
-        
-        UIAlertController *alertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Attention", @"警告")
-                                                                                         message:NSLocalizedString(@"All your footprints repository files in Documents directory will be deleted and can not be restored! Are you sure?", @"您用户文档中的所有足迹包文件都将被删除，此操作无法恢复，请务必谨慎。确认删除？")
-                                                                                       okActionHandler:okActionHandler];
-        [weakSelf presentViewController:alertController animated:YES completion:nil];
-         */
-        
-    }];
-    
-    
-    [fileManagementSection addItemsFromArray:@[documentsItem]];
 
     
+    [frManagementSection addItemsFromArray:@[documentsItem,exportRepositoryToMFRItem,exportRepositoryToGPXItem,importRepositoryItem,clearCatchItem]];
 #pragma mark 购买
     
     RETableViewSection *purchaseSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Purchase and Restore", @"购买与恢复")];
     [purchaseSection setHeaderHeight:20];
     
-    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🎑 Purchase FileShare & BrowserMode",@"🎑 购买 文件分享 & 浏览模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🎑 Purchase ShareAndBrowse Function",@"🎑 购买 分享和浏览 功能") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         [weakSelf showPurchaseVC:TransactionTypePurchase productIndexArray:@[@(0)]];
     }]];
-    
-    /*
-    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🎑 Restore FileShare & BrowserMode",@"🎑 恢复 文件分享 & 浏览模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
-        [item deselectRowAnimated:YES];
-        [weakSelf showPurchaseVC:0 transactionType:TransactionTypeRestore];
-    }]];
-    */
-    
-    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🚘 Purchase FootprintsRecord & RecordMode",@"🚘 购买 足迹记录 & 记录模式") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+       
+    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🎥 Purchase RecordAndEdit Function",@"🎥 购买 记录和编辑 功能") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         [weakSelf showPurchaseVC:TransactionTypePurchase productIndexArray:@[@(1)]];
+    }]];
+    
+    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"🔂 Purchase ImportAndExport Function",@"🔂 购买 导入和导出 功能") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        [weakSelf showPurchaseVC:TransactionTypePurchase productIndexArray:@[@(2)]];
+    }]];
+    
+    [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"📦 Purchase All Functions Suit (30% Discount)",@"📦 购买 全部功能套装 (7折优惠)") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        [weakSelf showPurchaseVC:TransactionTypePurchase productIndexArray:@[@(3)]];
     }]];
     
     [purchaseSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"⛲️ Restore Purchases",@"⛲️ 恢复已购") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
@@ -380,7 +382,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     }]];
      */
 
-   /*
+   
 #pragma mark 分享
     RETableViewSection *shareSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Share《AlbumMaps》 to friends", @"分享《相册地图》给朋友")];
     [shareSection setHeaderHeight:20];
@@ -394,7 +396,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         
         [self wxShare:WXSceneSession];
     }]];
-    
+    /*
      [shareSection addItem:[RETableViewItem itemWithTitle:NSLocalizedString(@"✉️ 短信",@"") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
      [item deselectRowAnimated:YES];
      
@@ -418,7 +420,15 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     }]];
     
     // 添加sections
-    [self.reTVManager addSectionsFromArray:@[globleSection,baseModeSection,extendedModeSection,frManagementSection,fileManagementSection,purchaseSection,aboutSection]];
+    [self.reTVManager addSectionsFromArray:@[globleSection,baseModeSection,extendedModeSection,frManagementSection,purchaseSection,shareSection,aboutSection]];
+}
+
+- (BOOL)checkhasPurchasedImportAndExport{
+    if (self.settingManager.hasPurchasedImportAndExport) return YES;
+    else{
+        [self showPurchaseImportAndExportAlertController];
+        return NO;
+    }
 }
 
 #pragma mark - RE Block
@@ -431,7 +441,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         NSString *filteredString=[filteredArray componentsJoinedByString:@""];
         
         if (![replacementString isEqualToString:filteredString]) {
-            NSLog(@"The character 【%@】 is not allowed!",replacementString);
+            if(DEBUGMODE) NSLog(@"The character 【%@】 is not allowed!",replacementString);
         }
         
         return [replacementString isEqualToString:filteredString];
@@ -453,8 +463,8 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     
     WXMediaMessage *mediaMessage=[WXMediaMessage alloc];
     // WXWebpageObject : 会话显示title、description、thumbData（图标较小)，朋友圈显示title、thumbData（图标较小),两者都发送webpageUrl
-    // WXImageObject   : 会话只显示thumbData（图标较大)，朋友圈显示分享的图片,两者都发送imageData
-    mediaMessage.title = NSLocalizedString(@"AlbumMaps——Album and Footprints Management Expert", @"相册地图——您的相册和足迹管理专家");
+    // WXImageObject   : 会话显示分享的图片，并以thumbData作为缩略图，朋友圈只显示分享的图片,两者都发送imageData
+    mediaMessage.title = NSLocalizedString(@"AlbumMaps : Album and Footprints Management Expert", @"相册地图——您的相册和足迹管理专家");
     mediaMessage.description = NSLocalizedString(@"Record your life by albums.Measure the world by footprints.",@"用相册记录人生，用足迹丈量世界");
     mediaMessage.mediaObject = webpageObject;
     mediaMessage.thumbData = UIImageJPEGRepresentation([UIImage imageNamed:@"地球_300_300"], 0.5);
@@ -470,21 +480,54 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 
 #pragma mark - Simple Purchase
 
+- (void)showPurchaseImportAndExportAlertController{
+    NSString *alertTitle = NSLocalizedString(@"ImportAndExport",@"导入和导出");
+    NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@\n%@\n%@",NSLocalizedString(@"You can get utilities below:", @"您将获得如下功能："),NSLocalizedString(@"1.Import and export your footprints repository to MFR or GPX files , which can be used in portable GPS", @"1.将足迹包导出为MFR或GPX文件，可在手持GPS上使用"),NSLocalizedString(@"2.Unlock File Browser to manage your footprints repository files on iPhone or iPad", @"2.解锁文件浏览器，在iPhone或iPad上管理足迹包文件"),NSLocalizedString(@"Cost $1.99,continue?", @"价格 ￥12元，是否购买？")];
+    [self showPurchaseAlertControllerWithTitle:alertTitle message:alertMessage productIndex:2];
+}
+
+- (void)showPurchaseAlertControllerWithTitle:(NSString *)title message:(NSString *)message productIndex:(NSInteger)productIndex{
+    WEAKSELF(weakSelf);
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *purchaseAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Purchase",@"购买")
+                                                             style:UIAlertActionStyleDefault
+                                                           handler:^(UIAlertAction * action) {
+                                                               [weakSelf showPurchaseVC:TransactionTypePurchase productIndexArray:@[@(productIndex)]];
+                                                           }];
+    /*
+     UIAlertAction *restoreAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Restore",@"恢复")
+     style:UIAlertActionStyleDefault
+     handler:^(UIAlertAction * action) {
+     [weakSelf showPurchaseVC:productIndex transactionType:TransactionTypeRestore];
+     }];
+     */
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
+    [alertController addAction:purchaseAction];
+    //[alertController addAction:restoreAction];
+    [alertController addAction:cancelAction];
+    
+    if (iOS9) alertController.preferredAction = purchaseAction;
+    
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
 - (void)showPurchaseVC:(enum TransactionType)transactionType productIndexArray:(NSArray <NSNumber *> *)productIndexArray{
     InAppPurchaseVC *inAppPurchaseVC = [InAppPurchaseVC new];
     inAppPurchaseVC.edgesForExtendedLayout = UIRectEdgeNone;
     
-    inAppPurchaseVC.productIDs = ProductIDs;
+    inAppPurchaseVC.productIDArray = self.settingManager.appProductIDArray;
     inAppPurchaseVC.transactionType = transactionType;
     inAppPurchaseVC.productIndexArray = productIndexArray;
     
     WEAKSELF(weakSelf);
     inAppPurchaseVC.inAppPurchaseCompletionHandler = ^(enum TransactionType transactionType,NSInteger productIndex,BOOL succeeded){
         if (succeeded) {
-            if (productIndex == 0) weakSelf.settingManager.hasPurchasedShare = YES;
-            if (productIndex == 1) weakSelf.settingManager.hasPurchasedRecord = YES;
+            if (productIndex == 0) weakSelf.settingManager.hasPurchasedShareAndBrowse = YES;
+            if (productIndex == 1) weakSelf.settingManager.hasPurchasedRecordAndEdit = YES;
+            if (productIndex == 2) weakSelf.settingManager.hasPurchasedImportAndExport = YES;
         }
-        NSLog(@"%@",succeeded? @"用户购买成功！" : @"用户购买失败！");
+        if(DEBUGMODE) NSLog(@"%@",succeeded? @"用户购买成功！" : @"用户购买失败！");
     };
     
     [self.navigationController pushViewController:inAppPurchaseVC animated:YES];

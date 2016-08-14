@@ -19,7 +19,7 @@
     NSString *requestString = [NSString stringWithFormat:@"baidumap://map/direction?origin=%.10f,%.10f&destination=%.10f,%.10f&mode=%@&src=%@|%@",origin.latitude,origin.longitude,destination.latitude,destination.longitude,directionMode,companyName,appName];
     requestString = [requestString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
-    NSLog(@"%@",requestString);
+    if(DEBUGMODE) NSLog(@"%@",requestString);
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:requestString]];
 }
 

@@ -74,7 +74,7 @@
     }
     
     NSData *hmacData=[[NSData alloc]initWithBytes:buffer length:bufferSize];
-    //NSLog(@"Data:%@,Data Length:%lu",hmacData,(unsigned long)hmacData.length);
+    //if(DEBUGMODE) NSLog(@"Data:%@,Data Length:%lu",hmacData,(unsigned long)hmacData.length);
     return hmacData;
 }
 
@@ -152,14 +152,14 @@
     }
     
     NSData *hmacData=[[NSData alloc]initWithBytes:buffer length:bufferSize];
-    //NSLog(@"Data:%@,Data Length:%lu",hmacData,(unsigned long)hmacData.length);
+    //if(DEBUGMODE) NSLog(@"Data:%@,Data Length:%lu",hmacData,(unsigned long)hmacData.length);
     return hmacData;
 }
 
 +(NSString *)hexStringForNSData:(NSData *)data{
     NSString *hexString=[[data description] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
     hexString=[hexString stringByReplacingOccurrencesOfString:@" " withString:@""];
-    //NSLog(@"%@",hexString);
+    //if(DEBUGMODE) NSLog(@"%@",hexString);
     return hexString;
 }
 

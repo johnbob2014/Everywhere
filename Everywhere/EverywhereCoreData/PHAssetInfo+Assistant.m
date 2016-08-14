@@ -70,9 +70,9 @@
     if(matches.count == 1){
         info = matches.firstObject;
     }else if (!matches || fetchError || [matches count]>1) {
-        if(!matches) NSLog(@"Fetch PHAssetInfo Result : Not Found.");
-        if(fetchError) NSLog(@"Fetch PHAssetInfo Result : %@",fetchError.localizedDescription);
-        if(matches.count > 1) NSLog(@"Fetch PHAssetInfo Result : More than 1 result.");
+        if(!matches) if(DEBUGMODE) NSLog(@"Fetch PHAssetInfo Result : Not Found.");
+        if(fetchError) if(DEBUGMODE) NSLog(@"Fetch PHAssetInfo Result : %@",fetchError.localizedDescription);
+        if(matches.count > 1) if(DEBUGMODE) NSLog(@"Fetch PHAssetInfo Result : More than 1 result.");
     }
     
     return info;
@@ -96,7 +96,7 @@
     //fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
     NSError *fetchError;
     NSArray <PHAssetInfo *> *matches = [context executeFetchRequest:fetchRequest error:&fetchError];
-    if (fetchError) NSLog(@"Fetch PHAssetInfos By Date Error : %@",fetchError.localizedDescription);
+    if (fetchError) if(DEBUGMODE) NSLog(@"Fetch PHAssetInfos By Date Error : %@",fetchError.localizedDescription);
 
     return matches;
 }
@@ -106,7 +106,7 @@
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"localizedPlaceString_Placemark CONTAINS %@",subPlacemark];
     NSError *fetchError;
     NSArray <PHAssetInfo *> *matches = [context executeFetchRequest:fetchRequest error:&fetchError];
-    if (fetchError) NSLog(@"Fetch PHAssetInfos Contains Placemark Error : %@",fetchError.localizedDescription);
+    if (fetchError) if(DEBUGMODE) NSLog(@"Fetch PHAssetInfos Contains Placemark Error : %@",fetchError.localizedDescription);
     return matches;
 }
 
@@ -116,7 +116,7 @@
     //fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
     NSError *fetchError;
     NSArray <PHAssetInfo *> *matches = [context executeFetchRequest:fetchRequest error:&fetchError];
-    if (fetchError) NSLog(@"Fetch All PHAssetInfos Error : %@",fetchError.localizedDescription);
+    if (fetchError) if(DEBUGMODE) NSLog(@"Fetch All PHAssetInfos Error : %@",fetchError.localizedDescription);
     return matches;
 }
 
@@ -127,8 +127,12 @@
     }];
     
     BOOL success = [context save:NULL];
-    if (success) NSLog(@"Delete All PHAssetInfos Succeed.");
-    else NSLog(@"Delete All PHAssetInfos Failed!");
+    if (success){
+        if(DEBUGMODE) NSLog(@"Delete All PHAssetInfos Succeed.");
+    }
+    else{
+        if(DEBUGMODE) NSLog(@"Delete All PHAssetInfos Failed!");
+    }
     
     return success;
 }
@@ -175,7 +179,7 @@
                                                 assetInfo.reverseGeocodeSucceed = @(NO);
                                             }
                                             
-                                            NSLog(@"PHAssetInfo : %@",assetInfo.localizedPlaceString_Placemark);
+                                            if(DEBUGMODE) NSLog(@"PHAssetInfo : %@",assetInfo.localizedPlaceString_Placemark);
                                             
                                             // 保存修改后的信息
                                             [assetInfo.managedObjectContext save:NULL];

@@ -14,7 +14,7 @@
 
 //- (void)setLocaton:(CLLocation *)locaton{
 //    if (locaton) coordinate = self.locaton.coordinate;
-//    NSLog(@"EverywhereAnnotation : coordinate updated!");
+//    if(DEBUGMODE) NSLog(@"EverywhereAnnotation : coordinate updated!");
 //}
 
 - (CLLocationCoordinate2D)coordinate{

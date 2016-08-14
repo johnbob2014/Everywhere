@@ -85,7 +85,7 @@
 }
 
 - (void)mapBaseModeValueChanged:(UISegmentedControl *)sender{
-    //NSLog(@"%@",NSStringFromSelector(_cmd));
+    //if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     if (self.mapBaseModeChangedHandler) self.mapBaseModeChangedHandler(sender);
     
     if (sender.selectedSegmentIndex == 0) {

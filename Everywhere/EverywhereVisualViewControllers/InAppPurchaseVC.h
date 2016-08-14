@@ -22,7 +22,7 @@ typedef void(^InAppPurchaseCompletionHandler)(enum TransactionType transactionTy
 
 @property (assign,nonatomic) enum TransactionType transactionType;
 
-@property (strong,nonatomic) NSArray <NSString *> *productIDs;
+@property (strong,nonatomic) NSArray <NSString *> *productIDArray;
 @property (strong,nonatomic) NSArray <NSNumber *> *productIndexArray;
 
 //@property (assign,nonatomic) NSInteger productIndex;

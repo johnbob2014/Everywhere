@@ -16,7 +16,9 @@
 
 @implementation InAppPurchaseVC{
     UITextView *textView;
-    UIBarButtonItem *leftBarButtonItem,*rightBarButtonItem;
+    UIBarButtonItem *leftBarButtonItem,*rightBarButtonItem;//
+    
+    NSMutableArray <SKPayment*> *addedPaymentMA;
     //NSString *productTitle,*productDescription,*productPrice;
 }
 
@@ -44,7 +46,7 @@
     
     leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(leftButtonPressed:)];
     rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonPressed:)];
-    self.navigationItem.leftBarButtonItem = leftBarButtonItem;
+    //self.navigationItem.leftBarButtonItem = leftBarButtonItem;
     self.navigationItem.rightBarButtonItem = rightBarButtonItem;
     
     [self initPurchaseUI];
@@ -53,7 +55,8 @@
 }
 
 -(void)leftButtonPressed:(id)sender{
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if (self.navigationController) [self.navigationController popViewControllerAnimated:YES];
+    else [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)rightButtonPressed:(id)sender{
@@ -63,6 +66,7 @@
 
 -(void)initPurchaseUI{
     textView=[[UITextView alloc]initForAutoLayout];
+    textView.font = [UIFont bodyFontWithSizeMultiplier:1.0];
     [textView.layer setBorderColor:[UIColor grayColor].CGColor];
     textView.editable=NO;
     textView.selectable=NO;
@@ -95,11 +99,11 @@
         
         NSMutableSet *productSet = [NSMutableSet new];
         for (NSNumber *indexNumber in self.productIndexArray) {
-            [productSet addObject:self.productIDs[indexNumber.integerValue]];
+            [productSet addObject:self.productIDArray[indexNumber.integerValue]];
         }
         
-        //NSSet *productSet=[NSSet setWithObject:self.productIDs[self.productIndex]];
-        //NSLog(@"查询产品ID : %@",self.productIDs[self.productIndex]);
+        //NSSet *productSet=[NSSet setWithObject:self.productIDArray[self.productIndex]];
+        //if(DEBUGMODE) NSLog(@"查询产品ID : %@",self.productIDArray[self.productIndex]);
         SKProductsRequest *productRequest=[[SKProductsRequest alloc]initWithProductIdentifiers:productSet];
         productRequest.delegate=self;
         [productRequest start];
@@ -115,17 +119,17 @@
 
 //代理方法：收到查询的产品信息
 -(void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response{
-    //NSLog(@"未识别的产品信息:%@",response.invalidProductIdentifiers);
+    //if(DEBUGMODE) NSLog(@"未识别的产品信息:%@",response.invalidProductIdentifiers);
     
     self.infoString=NSLocalizedString(@"-----Receive feedback from iTunes Store-----\n",@"-----收到iTunes Store的反馈信息-----\n");
     
     NSArray <SKProduct *> *products = response.products;
     
-    NSLog(@"请求查询的产品个数: %lu\n",(unsigned long)[products count]);
+    if(DEBUGMODE) NSLog(@"请求查询的产品个数: %lu\n",(unsigned long)[products count]);
                  
     if ([products count]>0) {
         //SKProduct *product = products.firstObject;
-        
+        addedPaymentMA = [NSMutableArray new];
         for (SKProduct *product in products) {
             SKPayment *payment = [SKPayment paymentWithProduct:product];
             
@@ -138,6 +142,8 @@
             //发起购买请求
             [[SKPaymentQueue defaultQueue] addPayment:payment];
             self.infoString=NSLocalizedString(@"-----Sned payment to iTunes Store-----\n",@"-----向iTunes Store发送交易请求-----\n");
+            
+            [addedPaymentMA addObject:payment];
         }
         
     }
@@ -178,26 +184,31 @@
     self.infoString=NSLocalizedString(@"-----Receive payment result from iTunes Store-----\n",@"-----收到iTunes Store反馈的交易结果-----\n");
     
     for (SKPaymentTransaction *transaction in transactions) {
+        
+        if(DEBUGMODE) NSLog(@"transaction.payment.productIdentifier :\n%@",transaction.payment.productIdentifier);
+        
+        if (![addedPaymentMA containsObject:transaction.payment]) return;
+        
         switch (transaction.transactionState) {
             case SKPaymentTransactionStatePurchased:
                 //交易完成,调用自定义方法，提供相应内容、记录交易记录等
-                NSLog(@"SKPaymentTransactionStatePurchased");
+                if(DEBUGMODE) NSLog(@"SKPaymentTransactionStatePurchased");
                 [self completeTransaction:transaction succeeded:YES transactionType:TransactionTypePurchase];
                 break;
             case SKPaymentTransactionStateRestored:
-                NSLog(@"SKPaymentTransactionStateRestored");
+                if(DEBUGMODE) NSLog(@"SKPaymentTransactionStateRestored");
                 [self completeTransaction:transaction succeeded:YES transactionType:TransactionTypeRestore];
                 break;
             case SKPaymentTransactionStateFailed:
                 [self completeTransaction:transaction succeeded:NO transactionType:self.transactionType];
-                NSLog(@"SKPaymentTransactionStateFailed");
+                if(DEBUGMODE) NSLog(@"SKPaymentTransactionStateFailed");
                 break;
             case SKPaymentTransactionStateDeferred:
-                NSLog(@"SKPaymentTransactionStateDeferred");
+                if(DEBUGMODE) NSLog(@"SKPaymentTransactionStateDeferred");
                 continue;
                 break;
             case SKPaymentTransactionStatePurchasing:
-                NSLog(@"SKPaymentTransactionStatePurchasing");
+                if(DEBUGMODE) NSLog(@"SKPaymentTransactionStatePurchasing");
                 continue;
                 break;
             default:
@@ -206,21 +217,25 @@
         
         [NSThread sleepForTimeInterval:1.0];
     }
+    
+    leftBarButtonItem.enabled = YES;
+    rightBarButtonItem.enabled = YES;
 }
 
 
 -(void)completeTransaction:(SKPaymentTransaction *)transaction succeeded:(BOOL)succeeded transactionType:(enum TransactionType)transactionType{
     
     NSString *productIdentifier = transaction.payment.productIdentifier;
-    NSInteger productIndex = [self.productIDs indexOfObject:productIdentifier];
+    NSInteger productIndex = [self.productIDArray indexOfObject:productIdentifier];
     
     NSString *typeString = transactionType == TransactionTypePurchase ? NSLocalizedString(@"Purchase", @"购买") : NSLocalizedString(@"Restore", @"恢复");
     NSString *resultString = succeeded ? NSLocalizedString(@"Succeeded", @"成功") : NSLocalizedString(@"Failed", @"失败");
     [rightBarButtonItem setTitle:resultString];
     
-    NSString *alertMessage = [NSString stringWithFormat:@"%@ %@ %@",typeString,productIdentifier,resultString];
-    
-    if (productIdentifier) [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:alertMessage]
+    //NSString *alertMessage = [NSString stringWithFormat:@"%@ %@ %@",typeString,productIdentifier,resultString];
+    NSString *alertMessage = [NSString stringWithFormat:@"%@%@",typeString,resultString];
+    //if (productIdentifier)
+        [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:alertMessage]
                        animated:YES completion:nil];
     
     if (succeeded) {
@@ -270,15 +285,15 @@
 }
 
 -(void)paymentQueue:(SKPaymentQueue *)queue updatedDownloads:(NSArray *)downloads{
-    //NSLog(@"paymentQueue:(SKPaymentQueue *)queue updatedDownloads:(NSArray *)downloads");
+    //if(DEBUGMODE) NSLog(@"paymentQueue:(SKPaymentQueue *)queue updatedDownloads:(NSArray *)downloads");
 }
 
 -(void)paymentQueue:(SKPaymentQueue *)queue removedTransactions:(NSArray *)transactions{
-    //NSLog(@"paymentQueue:(SKPaymentQueue *)queue removedTransactions:(NSArray *)transactions");
+    //if(DEBUGMODE) NSLog(@"paymentQueue:(SKPaymentQueue *)queue removedTransactions:(NSArray *)transactions");
 }
 
 -(void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue{
-    //NSLog(@"paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue");
+    //if(DEBUGMODE) NSLog(@"paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue");
     //self.infoString=NSLocalizedString(@"-----iTunes Store恢复结束-----",@"-----iTunes Store恢复结束-----");
 }
 

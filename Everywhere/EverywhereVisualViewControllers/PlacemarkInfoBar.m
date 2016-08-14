@@ -106,7 +106,7 @@
 */
 
 - (instancetype)init{
-    //NSLog(@"PlacemarkInfoBar : %@",NSStringFromSelector(_cmd));
+    //if(DEBUGMODE) NSLog(@"PlacemarkInfoBar : %@",NSStringFromSelector(_cmd));
     self = [super init];
     if (self) {
 

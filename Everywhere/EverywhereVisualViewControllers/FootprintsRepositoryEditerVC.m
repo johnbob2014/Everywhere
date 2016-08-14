@@ -162,6 +162,7 @@
         NSTimeInterval ti = [((EverywhereFootprintAnnotation *)obj1).startDate timeIntervalSinceDate:((EverywhereFootprintAnnotation *)obj2).startDate];
         
         if (ti < 0) comparisonResult = NSOrderedAscending;
+        else if (ti == 0) comparisonResult = NSOrderedSame;
         else comparisonResult = NSOrderedDescending;
         
         return comparisonResult;
@@ -230,7 +231,7 @@
                                                                          title:NSLocalizedString(@"Rename", @"重命名")
                                                                        handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
                                                                            UIAlertController *alertController = [self createRenameAlertControllerWithHandler:^(UIAlertAction *action) {
-                                                                               NSLog(@"%@",alertController.textFields.firstObject.text);
+                                                                               if(DEBUGMODE) NSLog(@"%@",alertController.textFields.firstObject.text);
                                                                                footprintAnnotation.customTitle = alertController.textFields.firstObject.text;
                                                                            }];
                                                                            [self presentViewController:alertController animated:YES completion:nil];
@@ -269,7 +270,7 @@
     NSString *filteredString=[filteredArray componentsJoinedByString:@""];
     
     if (![string isEqualToString:filteredString]) {
-        NSLog(@"The character 【%@】 is not allowed!",string);
+        if(DEBUGMODE) NSLog(@"The character 【%@】 is not allowed!",string);
     }
     
     return [string isEqualToString:filteredString];

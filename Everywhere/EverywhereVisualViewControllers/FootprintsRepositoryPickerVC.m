@@ -193,7 +193,7 @@
             break;
     }
     
-    cell.textLabel.text = [NSString stringWithFormat:@"%ld %@ %@",indexPath.row + 1,headerString,footprintsRepository.title];
+    cell.textLabel.text = [NSString stringWithFormat:@"%d %@ %@",indexPath.row + 1,headerString,footprintsRepository.title];
     
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ : %lu , %@ : %@",NSLocalizedString(@"Footprints Count", @"足迹点数"),(unsigned long)footprintsRepository.footprintAnnotations.count,NSLocalizedString(@"Modification Date", @"修改时间"),[footprintsRepository.modificatonDate stringWithDefaultFormat]];
     return cell;
@@ -222,7 +222,7 @@
                                                            shareFRVC.thumbImage = [UIImage imageNamed:@"地球_300_300"];
                                                            
                                                            shareFRVC.userDidSelectedPurchaseShareFunctionHandler = ^(){
-                                                               UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note",@"提示") message:NSLocalizedString(@"You haven't puchased FileShare & BrowserMode.",@"您尚未购买文件分享 & 浏览模式！")];
+                                                               UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note",@"提示") message:NSLocalizedString(@"You haven't puchased ShareAndBrowse.",@"您尚未购买分享和浏览！")];
                                                                [self presentViewController:alertController animated:YES completion:nil];
                                                            };
                                                            
@@ -243,7 +243,7 @@
                                                                 
                                                                 EverywhereFootprintsRepository *copyFootprintsRepository = [footprintsRepository copy];
                                                                 copyFootprintsRepository.title = tf.text;
-                                                                NSLog(@"EverywhereFootprintsRepository new name : %@",copyFootprintsRepository.title);
+                                                                if(DEBUGMODE) NSLog(@"EverywhereFootprintsRepository new name : %@",copyFootprintsRepository.title);
                                                                 [footprintsRepositoryMA removeObject:footprintsRepository];
                                                                 [footprintsRepositoryMA addObject:copyFootprintsRepository];
                                                                 [EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:footprintsRepositoryMA];
@@ -272,7 +272,7 @@
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
     EverywhereFootprintsRepository *footprintsRepository = currentGroupArray[indexPath.row];
     
-    if ([EverywhereSettingManager defaultManager].hasPurchasedRecord) {
+    if ([EverywhereSettingManager defaultManager].hasPurchasedRecordAndEdit) {
         FootprintsRepositoryEditerVC *footprintsRepositoryEditerVC = [FootprintsRepositoryEditerVC new];
         footprintsRepositoryEditerVC.footprintsRepository = [footprintsRepository copy];
         footprintsRepositoryEditerVC.contentSizeInPopup = self.contentSizeInPopup;

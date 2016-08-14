@@ -93,11 +93,21 @@
     [gpx_trk_trkseg_trkpt_String appendFormat:@"\n            "];
     [gpx_trk_trkseg_trkpt_String appendFormat:@"<time>%@T%@Z</time>",[self.startDate stringWithFormat:@"yyyy-MM-dd"],[self.startDate stringWithFormat:@"hh:mm:ss"]];
     [gpx_trk_trkseg_trkpt_String appendFormat:@"\n            "];
+    [gpx_trk_trkseg_trkpt_String appendFormat:@"<endtime>%@T%@Z</endtime>",[self.endDate stringWithFormat:@"yyyy-MM-dd"],[self.endDate stringWithFormat:@"hh:mm:ss"]];
+    [gpx_trk_trkseg_trkpt_String appendFormat:@"\n            "];
     [gpx_trk_trkseg_trkpt_String appendFormat:@"</trkpt>"];
     return gpx_trk_trkseg_trkpt_String;
 }
 
 + (EverywhereFootprintAnnotation *)footprintAnnotationFromGPXPointDictionary:(NSDictionary *)pointDictionary isUserManuallyAdded:(BOOL)isUserManuallyAdded{
+    
+    // 如果不是字典，返回空值
+    if (!pointDictionary || ![pointDictionary isKindOfClass:[NSDictionary class]]) return nil;
+    
+    // point字典中的所有值都应该是字符串，如果不是，返回空值
+    for (id valueObject in pointDictionary.allValues) {
+        if (![valueObject isKindOfClass:[NSString class]]) return nil;
+    }
     
     EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation new];
     

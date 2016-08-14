@@ -6,8 +6,6 @@
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#define DEBUGMODE 1
-
 #import "EverywhereAppDelegate.h"
 
 #import "EverywhereCoreDataManager.h"
@@ -24,10 +22,7 @@
 
 @implementation EverywhereAppDelegate{
     AssetsMapProVC *assetsMapProVC;
-//    
-//    GCPhotoManager *photoManager;
-//    EverywhereCoreDataManager *cdManager;
-//    EverywhereSettingManager *settingManager;
+    EverywhereSettingManager *settingManager;
 }
 
 
@@ -35,30 +30,36 @@
     // Override point for customization after application launch.
     if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     
-#warning Fix Before Submit
-    [EverywhereSettingManager defaultManager].hasPurchasedRecord = YES;//NO;//
-    [EverywhereSettingManager defaultManager].hasPurchasedShare = YES;//NO;//
+    settingManager = [EverywhereSettingManager defaultManager];
     
+#warning Fix Before Submit
+//    settingManager.hasPurchasedRecordAndEdit = NO;
+//    settingManager.hasPurchasedShareAndBrowse = NO;
+//    settingManager.hasPurchasedImportAndExport = NO;
+    
+    settingManager.hasPurchasedRecordAndEdit = YES;
+    settingManager.hasPurchasedShareAndBrowse = YES;
+    settingManager.hasPurchasedImportAndExport = YES;
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     assetsMapProVC = [AssetsMapProVC new];
     self.window.rootViewController = assetsMapProVC;
-    self.window.tintColor = [EverywhereSettingManager defaultManager].baseTintColor;
+    self.window.tintColor = settingManager.baseTintColor;
     [self.window makeKeyAndVisible];
     
     // 需要访问网络，在后台进行
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         //向微信注册id
-        BOOL wx=[WXApi registerApp:@"wxa1b9c5632d24039a"];
+        BOOL wx=[WXApi registerApp:settingManager.wxAppID];
         if(DEBUGMODE) NSLog(@"WeChat Rigister：%@",wx? @"Succeeded" : @"Failed");
         
         //从网络更新应用数据
-        [EverywhereSettingManager updateAppInfoAndAppQRCodeImageData];
+        //[EverywhereSettingManager updateAppInfoAndAppQRCodeImageData];
     });
     
     //[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
     
-    if ([EverywhereSettingManager defaultManager].praiseCount != 0) {
+    if (settingManager.praiseCount != 0) {
         if ([UIApplication instancesRespondToSelector:@selector(registerUserNotificationSettings:)])
         {
             [application registerUserNotificationSettings:
@@ -73,8 +74,8 @@
 // iOS9
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options{
     if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
-    //NSLog(@"%@",url);
-    NSLog(@"options : %@",options);
+    //if(DEBUGMODE) NSLog(@"%@",url);
+    if(DEBUGMODE) NSLog(@"options : %@",options);
     [self didReceiveFootprintsRepositoryString:url.absoluteString];
     return YES;
 }
@@ -82,7 +83,7 @@
 // iOS8
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
     if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
-    NSLog(@"openURL : %@",url);
+    if(DEBUGMODE) NSLog(@"openURL : %@",url);
     
     [self didReceiveFootprintsRepositoryString:url.absoluteString];
     return YES;
@@ -117,64 +118,7 @@
     if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
-    if (![[NSFileManager defaultManager] fileExistsAtPath:Path_Inbox]) return;
-    
-    NSError *readContentsError;
-    NSArray <NSString *> *fileNameArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:Path_Inbox error:&readContentsError];
-    
-    if (!fileNameArray){
-        NSLog(@"readContentsError : %@",readContentsError.localizedDescription);
-        return;
-    }
-    
-    if (fileNameArray.count == 0){
-        NSLog(@"No file in Inbox!");
-        return;
-    }else if (fileNameArray.count == 1){
-        
-    }else if (fileNameArray.count > 1){
-        NSLog(@"Inbox file count > 1!");
-    }
-    
-    NSString *filePath = [Path_Inbox stringByAppendingPathComponent:fileNameArray.firstObject];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) return;
-    
-    EverywhereFootprintsRepository *footprintsRepository = nil;
-    NSString *pathExtension = [[filePath pathExtension] lowercaseString];
-    
-    if ([pathExtension isEqualToString:@"mfr"]){
-        footprintsRepository = [EverywhereFootprintsRepository importFromMFRFile:filePath];
-    }else if ([pathExtension isEqualToString:@"gpx"]){
-        footprintsRepository = [EverywhereFootprintsRepository importFromGPXFile:filePath];
-    }else{
-        
-    }
-    
-    [assetsMapProVC didReceiveFootprintsRepository:footprintsRepository];
-    
-    [[NSFileManager defaultManager] removeItemAtPath:filePath error:NULL];
-    
-    /*
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        NSArray <EverywhereFootprintsRepository *> *importedArray = [EverywhereFootprintsRepositoryManager importFootprintsRepositoryFromMFRFilesAtPath:Path_Inbox];
-        
-        if (importedArray && importedArray.count > 0){
-            NSLog(@"收到足迹包文件数 : %lu",(unsigned long)importedArray.count);
-            dispatch_async(dispatch_get_main_queue(),^{
-                [assetsMapProVC didReceiveFootprintsRepository:importedArray.firstObject];
-            });
-        }
-        
-        
-    });
-    
-    NSError *removeError;
-    BOOL success = [[NSFileManager defaultManager] removeItemAtPath:Path_Inbox error:&removeError];
-    if (!success){
-        NSLog(@"Error removing inbox: %@", removeError.localizedFailureReason);
-    }
-     */
-    
+    [self checkInbox];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -188,14 +132,86 @@
     [self saveContext];
 }
 
+- (void)checkInbox{
+    if (![[NSFileManager defaultManager] fileExistsAtPath:Path_Inbox]) return;
+    
+    NSError *readContentsError;
+    NSArray <NSString *> *fileNameArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:Path_Inbox error:&readContentsError];
+    
+    if (!fileNameArray){
+        if(DEBUGMODE) NSLog(@"readContentsError : %@",readContentsError.localizedDescription);
+        return;
+    }
+    
+    if (fileNameArray.count == 0){
+        return;
+    }else if (fileNameArray.count == 1){
+        if(DEBUGMODE) NSLog(@"接收到1个文件");
+    }else if (fileNameArray.count > 1){
+        if(DEBUGMODE) NSLog(@"接收到多个文件，本次只处理1个！");
+    }
+    
+    NSString *fileName = fileNameArray.firstObject;
+    NSString *filePath = [Path_Inbox stringByAppendingPathComponent:fileName];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) return;
+    
+    NSString *receivedDirectoryPath = [Path_Documents stringByAppendingPathComponent:@"Received Files"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:receivedDirectoryPath isDirectory:NULL]){
+        if (![[NSFileManager defaultManager] createDirectoryAtPath:receivedDirectoryPath withIntermediateDirectories:NO attributes:nil error:NULL]){
+            if(DEBUGMODE) NSLog(@"创建接收文件夹失败！");
+            return;
+        }
+    }
+    
+    NSString *newFilePath = [receivedDirectoryPath stringByAppendingPathComponent:fileName];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:newFilePath isDirectory:NULL]){
+        if(DEBUGMODE) NSLog(@"接收文件夹中有同名文件，自动重新命名！");
+        NSString *fileBase = [fileName stringByReplacingOccurrencesOfString:[@"." stringByAppendingString:[fileName pathExtension]] withString:@""];
+        NSString *newFileName = [NSString stringWithFormat:@"%@-%.0f.%@",fileBase,[[NSDate date] timeIntervalSinceReferenceDate]*1000,[fileName pathExtension]];
+        newFilePath = [receivedDirectoryPath stringByAppendingPathComponent:newFileName];
+    }
+    
+    NSError *moveError;
+    if (![[NSFileManager defaultManager] moveItemAtPath:filePath toPath:newFilePath error:&moveError]){
+        if(DEBUGMODE) NSLog(@"移动接收的文件到接收文件夹失败！");
+        return;
+    }
+    
+    EverywhereFootprintsRepository *footprintsRepository = nil;
+    NSString *pathExtension = [[newFilePath pathExtension] lowercaseString];
+    
+    if ([pathExtension isEqualToString:@"mfr"]){
+        footprintsRepository = [EverywhereFootprintsRepository importFromMFRFile:newFilePath];
+    }else if ([pathExtension isEqualToString:@"gpx"]){
+        footprintsRepository = [EverywhereFootprintsRepository importFromGPXFile:newFilePath];
+    }else{
+        [assetsMapProVC dismissViewControllerAnimated:YES completion:nil];
+        [assetsMapProVC presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Unsupported file types.\nPlease import MFR or GPX files.", @"文件格式不支持。\n请导入MFR或GPX文件。")]
+                                     animated:YES
+                                   completion:nil];
+        return;
+    }
+    
+    if (!footprintsRepository){
+        [assetsMapProVC dismissViewControllerAnimated:YES completion:nil];
+        [assetsMapProVC presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Parse file failed!", @"解析文件失败！")]
+                                     animated:YES
+                                   completion:nil];
+        return;
+    }
+    
+    [assetsMapProVC didReceiveFootprintsRepository:footprintsRepository];
+}
+
 - (void)didReceiveFootprintsRepositoryString:(NSString *)receivedString{
     NSString *footprintsRepositoryString = nil;
     //CLLocationDistance sharedRadius = 0;
     
-    NSString *headerString = [NSString stringWithFormat:@"%@://AlbumMaps/",WXAppID];
+    NSString *headerString = [NSString stringWithFormat:@"%@://AlbumMaps/",settingManager.wxAppID];
     
     if (![receivedString containsString:headerString]){
-        //NSLog(@"接收到的字符串无法解析！");
+        //if(DEBUGMODE) NSLog(@"接收到的字符串无法解析！");
         return;
     }
     
@@ -205,97 +221,30 @@
     // For iOS8
     footprintsRepositoryString = [footprintsRepositoryString stringByReplacingOccurrencesOfString:@"%20" withString:@"\n"];
     
-    //if (DEBUGMODE) NSLog(@"\n%@",footprintsRepositoryString);
-    
-    NSData *footprintsRepositoryData = [[NSData alloc] initWithBase64EncodedString:footprintsRepositoryString options:NSDataBase64DecodingIgnoreUnknownCharacters];
+    //if (DEBUGMODE) if(DEBUGMODE) NSLog(@"\n%@",footprintsRepositoryString);
     
     // 获取接收到的分享对象
     EverywhereFootprintsRepository *footprintsRepository = nil;
     
+    //footprintsRepository = [NSKeyedUnarchiver unarchiveObjectWithData:footprintsRepositoryData];
+    
+    //#warning why?
+    
     // 解析数据可能出错
     @try {
+        NSData *footprintsRepositoryData = [[NSData alloc] initWithBase64EncodedString:footprintsRepositoryString
+                                                                               options:NSDataBase64DecodingIgnoreUnknownCharacters];
         footprintsRepository = [NSKeyedUnarchiver unarchiveObjectWithData:footprintsRepositoryData];
     } @catch (NSException *exception) {
-        
+        if(DEBUGMODE) NSLog(@"解析微信分享数据出错!");
+        if(DEBUGMODE) NSLog(@"exception :\n%@",exception);
+        return;
     } @finally {
-        
+        if (footprintsRepository) [assetsMapProVC didReceiveFootprintsRepository:footprintsRepository];
     }
     
-    [assetsMapProVC didReceiveFootprintsRepository:footprintsRepository];
+}
 
-}
-/*
-+ (void)checkAndProcessInbox{
-    NSError *error;
-    BOOL success;
-    BOOL isDir;
-    NSFileManager *defaultFM = [NSFileManager defaultManager];
-    
-    // Does the inbox folder exist? If not, we're done here.
-    if (![defaultFM fileExistsAtPath:Path_Inbox isDirectory:&isDir]) return;
-    
-    // It exists. Is it a dir?
-    if (!isDir){
-        // 如果 Inbox 不是文件夹而是一个文件，那么删除这个文件
-        if (![defaultFM removeItemAtPath:Path_Inbox error:&error]){
-            // 如果删除失败，返回
-            NSLog(@"Error deleting Inbox file (not directory): %@", error.localizedFailureReason);
-            return;
-        }
-    }
-    
-    NSArray *fileNameArray = [defaultFM contentsOfDirectoryAtPath:Path_Inbox error:&error];
-    if (!fileNameArray) {
-        NSLog(@"Error reading contents of Inbox: %@", error.localizedFailureReason);
-        return;
-    }
-    
-    NSUInteger initialCount = fileNameArray.count;
-    
-    for (NSString *fileName in fileNameArray) {
-        NSString *sourcePath = [Path_Inbox stringByAppendingPathComponent:fileName];
-        NSString *destPath = [Path_Documents stringByAppendingPathComponent:fileName];
-        
-        if ([defaultFM fileExistsAtPath:destPath]) {
-            destPath = nil;
-        }
-        
-        if (!destPath) {
-            NSLog(@"Error. File name conflict could not be resolved for %@. Bailing", fileName);
-            continue;
-        }
-        
-        if (![defaultFM moveItemAtPath:sourcePath toPath:destPath error:&error]) {
-            NSLog(@"Error moving file %@ to Documents from Inbox: %@", fileName, error.localizedFailureReason);
-            continue;
-        }
-    }
-    
-    // Inbox should now be empty
-    fileNameArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:Path_Inbox error:&error];
-    if (!fileNameArray)
-    {
-        NSLog(@"Error reading contents of Inbox: %@", error.localizedFailureReason);
-        return;
-    }
-    
-    if (fileNameArray.count)
-    {
-        NSLog(@"Error clearing out inbox. %lu items still remain", (unsigned long)fileNameArray.count);
-        return;
-    }
-    
-    // Remove the inbox
-    success = [[NSFileManager defaultManager] removeItemAtPath:Path_Inbox error:&error];
-    if (!success)
-    {
-        NSLog(@"Error removing inbox: %@", error.localizedFailureReason);
-        return;
-    }
-    
-    NSLog(@"Moved %lu items from the Inbox to the Documents folder", (unsigned long)initialCount);
-}
-*/
 
 #pragma mark - Core Data stack
 
@@ -327,10 +276,10 @@
     // Create the coordinator and store
     // URLByAppendingPathComponent:@"AlbumMapsCoreData"]
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"AlbumMapsCoreData.sqlite"];
+    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Everywhere.sqlite"];
     //NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"AlbumMapsCoreData"];
     //storeURL = [storeURL URLByAppendingPathComponent:@"AlbumMapsCoreData.sqlite"];
-    NSLog(@"storeURL : %@",storeURL.absoluteString);
+    if(DEBUGMODE) NSLog(@"storeURL : %@",storeURL.absoluteString);
     NSError *error = nil;
     NSString *failureReason = @"There was an error creating or loading the application's saved data.";
     if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
@@ -342,7 +291,7 @@
         error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:9999 userInfo:dict];
         // Replace this with code to handle the error appropriately.
         // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        if(DEBUGMODE) NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }
     
@@ -374,7 +323,7 @@
         if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
             // Replace this implementation with code to handle the error appropriately.
             // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            if(DEBUGMODE) NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
     }

@@ -14,10 +14,9 @@
 
 #endif /* PrefixHeader_pch */
 
-#define WXAppID @"wxa1b9c5632d24039a"
-#define AppID @"1136142337"
-//#define AppDownloadURLString @"https://itunes.apple.com/app/1136142337"
-#define ProductIDs @[@"com.ZhangBaoGuo.AlbumMaps.ShareFunctionAndBrowserMode",@"com.ZhangBaoGuo.AlbumMaps.RecordFuntionAndRecordMode"]
+//#warning Fix Before Submit
+#define DEBUGMODE 0
+
 #define MFRUTI @"com.ZhangBaoGuo.AlbumMaps.mfr"
 
 #define VCBackgroundColor [UIColor groupTableViewBackgroundColor]

@@ -30,7 +30,7 @@
         self.QNBucketName=@"qn-cs";
         self.QNAccessKey=@"WbvYdBB5owXf_HKeqwiUNteurtxX3W04FLl8S9s-";
         self.QNSecretKey=@"UYm4UfNZm5l7hRiIVvy4mxNx76Ho8mhJ1oso3pb6";
-        //NSLog(@"尚未配置七牛属性！");
+        //if(DEBUGMODE) NSLog(@"尚未配置七牛属性！");
     }
     return self;
 }
@@ -73,7 +73,7 @@
     
     NSString *realDownloadUrl=[downloadUrl stringByAppendingFormat:@"&token=%@",token];
     
-    //NSLog(@"realDownloadUrl:%@",realDownloadUrl);
+    //if(DEBUGMODE) NSLog(@"realDownloadUrl:%@",realDownloadUrl);
     
     return [NSURL URLWithString:realDownloadUrl];
     
@@ -142,7 +142,7 @@
     
     NSData *data=[NSJSONSerialization dataWithJSONObject:dic options:NSJSONWritingPrettyPrinted error:NULL];
     NSString *putPolicy=[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
-    //NSLog(@"putPolicy=%@",putPolicy);
+    //if(DEBUGMODE) NSLog(@"putPolicy=%@",putPolicy);
     return putPolicy;
 }
 
@@ -175,7 +175,7 @@
 //    NSData *entryData=[NSData dataWithBytes:[entry UTF8String] length:[entry lengthOfBytesUsingEncoding:NSUTF8StringEncoding]];
 //    NSString *encodedEntryURI=[GTM_Base64 stringByWebSafeEncodingData:entryData padded:YES];
 //    NSString *requestURI=[@"/delete/" stringByAppendingString:encodedEntryURI];
-//    //NSLog(@"%@",requestURI);
+//    //if(DEBUGMODE) NSLog(@"%@",requestURI);
 //
 //    //2.生成AccessToken
 //    NSString *accessToken=[self accessToken:requestURI accessKey:accessKey secretKey:secretKey];
@@ -189,18 +189,18 @@
 //    [req setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
 //    NSString *authorization=[@"QBox " stringByAppendingString:accessToken];
 //    [req setValue:authorization forHTTPHeaderField:@"Authorization"];
-//    //NSLog(@"%@",req);
+//    //if(DEBUGMODE) NSLog(@"%@",req);
 //
 //    //4.同步删除
 //    NSHTTPURLResponse *response;
 //    NSError *error;
 //    NSData *data=[NSURLConnection sendSynchronousRequest:req returningResponse:&response error:&error];
 //    if (!error && response.statusCode==200) {
-//        NSLog(@"DeleteQNFile Succeed:%@",name);
+//        if(DEBUGMODE) NSLog(@"DeleteQNFile Succeed:%@",name);
 //        return YES;
 //    }else{
-//        //NSLog(@"%@",response);
-//        NSLog(@"DeleteQNFile Error:%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+//        //if(DEBUGMODE) NSLog(@"%@",response);
+//        if(DEBUGMODE) NSLog(@"DeleteQNFile Error:%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
 //        return NO;
 //    }
 //}
@@ -213,11 +213,11 @@
     NSURLRequest *req=[Qiniu deleteURLRequestForFile:fileName bucketName:bucketName accessKey:accessKey secretKey:secretKey];
     NSString *info;
     BOOL succeeded=[Qiniu syncURLRequest:req httpStatusString:&info];
-    NSLog(@"%@",info);
+    if(DEBUGMODE) NSLog(@"%@",info);
     if (succeeded) {
-        NSLog(@"Delete Succeed:%@",fileName);
+        if(DEBUGMODE) NSLog(@"Delete Succeed:%@",fileName);
     }else{
-        NSLog(@"Delete Error!");
+        if(DEBUGMODE) NSLog(@"Delete Error!");
     }
     return succeeded;
 }
@@ -228,7 +228,7 @@
     NSData *entryData=[NSData dataWithBytes:[entry UTF8String] length:[entry lengthOfBytesUsingEncoding:NSUTF8StringEncoding]];
     NSString *encodedEntryURI=[GTM_Base64 stringByWebSafeEncodingData:entryData padded:YES];
     NSString *requestURI=[@"/delete/" stringByAppendingString:encodedEntryURI];
-    //NSLog(@"%@",requestURI);
+    //if(DEBUGMODE) NSLog(@"%@",requestURI);
     
     //2.生成AccessToken
     NSString *accessToken=[self accessToken:requestURI accessKey:accessKey secretKey:secretKey];
@@ -242,7 +242,7 @@
     [req setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     NSString *authorization=[@"QBox " stringByAppendingString:accessToken];
     [req setValue:authorization forHTTPHeaderField:@"Authorization"];
-    //NSLog(@"%@",req);
+    //if(DEBUGMODE) NSLog(@"%@",req);
     
     return req;
 }
@@ -255,11 +255,11 @@
     NSURLRequest *req=[Qiniu moveURLRequestFromFile:srcFileName toFile:destFileName bucketName:bucketName accessKey:accessKey secretKey:secretKey];
     NSString *info;
     BOOL succeeded=[Qiniu syncURLRequest:req httpStatusString:&info];
-    NSLog(@"%@",info);
+    if(DEBUGMODE) NSLog(@"%@",info);
     if (succeeded) {
-        NSLog(@"Move Succeed.");
+        if(DEBUGMODE) NSLog(@"Move Succeed.");
     }else{
-        NSLog(@"Move Error!");
+        if(DEBUGMODE) NSLog(@"Move Error!");
     }
     return succeeded;
 }
@@ -275,7 +275,7 @@
     NSString *encodedEntryURIDest=[GTM_Base64 stringByWebSafeEncodingData:entryDataDest padded:YES];
     
     NSString *requestURI=[NSString stringWithFormat:@"/move/%@/%@",encodedEntryURISrc,encodedEntryURIDest];
-    //NSLog(@"%@",requestURI);
+    //if(DEBUGMODE) NSLog(@"%@",requestURI);
     
     //2.生成AccessToken
     NSString *accessToken=[self accessToken:requestURI accessKey:accessKey secretKey:secretKey];
@@ -289,7 +289,7 @@
     [req setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     NSString *authorization=[@"QBox " stringByAppendingString:accessToken];
     [req setValue:authorization forHTTPHeaderField:@"Authorization"];
-    //NSLog(@"%@",req);
+    //if(DEBUGMODE) NSLog(@"%@",req);
     
     return req;
 }
@@ -298,7 +298,7 @@
     NSHTTPURLResponse *response;
     NSError *error;
     NSData *data=[NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-    NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    if(DEBUGMODE) NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
     
     BOOL succeeded=NO;
     NSString *httpDetail;

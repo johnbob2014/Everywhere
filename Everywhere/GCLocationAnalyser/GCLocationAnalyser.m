@@ -27,11 +27,11 @@
     [idArray enumerateObjectsUsingBlock:^(id<GCLocationAnalyserProtocol>  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (idx > 0) {
             CLLocationDistance currentDistance = fabs(MKMetersBetweenMapPoints(MKMapPointForCoordinate(lastId.location.coordinate), MKMapPointForCoordinate(obj.location.coordinate)));
-            //NSLog(@"%.2f",currentDistance);
+            //if(DEBUGMODE) NSLog(@"%.2f",currentDistance);
             if (currentDistance < mergeDistance) {
                 [tempArray addObject:obj];
             }else{
-                //NSLog(@"%@",tempArray);
+                //if(DEBUGMODE) NSLog(@"%@",tempArray);
                 [returnMD setObject:tempArray forKey:keyLocation];
                 
                 // 开始下一轮计算
@@ -43,13 +43,13 @@
             lastId = obj;
             
             if (idx == idArray.count - 1) {
-                //NSLog(@"%@",tempArray);
+                //if(DEBUGMODE) NSLog(@"%@",tempArray);
                 [returnMD setObject:tempArray forKey:keyLocation];
             }
         }
     }];
     
-    //NSLog(@"%@",returnMD);
+    //if(DEBUGMODE) NSLog(@"%@",returnMD);
     /* 这样就会返回错误，不知何故！！！！！！
     return [NSDictionary dictionaryWithDictionary:returnMD];
     */
@@ -76,11 +76,11 @@
             //CLLocationDistance currentDistance = fabs(MKMetersBetweenMapPoints(MKMapPointForCoordinate(lastId.location.coordinate), MKMapPointForCoordinate(obj.location.coordinate)));
             CLLocationDistance distanceToPrevious = fabs([lastId.location distanceFromLocation:obj.location]);
             CLLocationDistance distanceToFirst = fabs([currentGroupFirstId.location distanceFromLocation:obj.location]);
-            //NSLog(@"%.2f",currentDistance);
+            //if(DEBUGMODE) NSLog(@"%.2f",currentDistance);
             if (distanceToPrevious < mergeDistance && distanceToFirst < mergeDistance) {
                 [tempArray addObject:obj];
             }else{
-                //NSLog(@"%@",tempArray);
+                //if(DEBUGMODE) NSLog(@"%@",tempArray);
                 [returnMD addObject:tempArray];
                 
                 // 开始下一轮计算
@@ -93,7 +93,7 @@
             lastId = obj;
             
             if (idx == idArray.count - 1) {
-                //NSLog(@"%@",tempArray);
+                //if(DEBUGMODE) NSLog(@"%@",tempArray);
                 [returnMD addObject:tempArray];
             }
         }
@@ -129,7 +129,7 @@
     
     NSArray <NSArray *> *next = [GCLocationAnalyser divideLocationsOutOfOrderToArray:idArrayRest mergeDistance:mergeDistance];
     if (next.count > 0) [returnMD addObjectsFromArray:next];
-    //NSLog(@"%3ld,%@",(long)next.count,NSStringFromSelector(_cmd));
+    //if(DEBUGMODE) NSLog(@"%3ld,%@",(long)next.count,NSStringFromSelector(_cmd));
     return returnMD;
 }
 

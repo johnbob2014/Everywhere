@@ -12,10 +12,14 @@
 
 + (instancetype)defaultManager;
 
-+ (void)updateAppInfoAndAppQRCodeImageData;
-
+//+ (void)updateAppInfoAndAppQRCodeImage;
+@property (strong,nonatomic) NSDate *appInfoLastUpdateDate;
+@property (strong,nonatomic) NSDictionary *appInfoDictionary;
 @property (strong,nonatomic) NSString *appURLString;
 @property (strong,nonatomic) UIImage *appQRCodeImage;
+@property (strong,nonatomic) NSArray <NSString *> *appProductIDArray;
+@property (strong,nonatomic) NSString *wxAppID;
+
 
 @property (assign,nonatomic) MapBaseMode mapBaseMode;
 @property (assign,nonatomic) MapExtendedMode mapExtendedMode;
@@ -38,8 +42,11 @@
 @property (assign,nonatomic) ExtendedColorScheme extendedColorScheme;
 @property (strong,nonatomic,readonly) UIColor *extendedTintColor;
 
-@property (assign,nonatomic) BOOL hasPurchasedShare;
-@property (assign,nonatomic) BOOL hasPurchasedRecord;
+//@property (strong,nonatomic,readonly) UIColor *currentTintColor;
+
+@property (assign,nonatomic) BOOL hasPurchasedShareAndBrowse;
+@property (assign,nonatomic) BOOL hasPurchasedRecordAndEdit;
+@property (assign,nonatomic) BOOL hasPurchasedImportAndExport;
 
 @property (assign,nonatomic) CLLocationDistance minDistanceForRecord;
 @property (assign,nonatomic) NSTimeInterval minTimeIntervalForRecord;

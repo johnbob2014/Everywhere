@@ -6,6 +6,13 @@
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
+#define AppID @"1136142337"
+
+#define WXAppID @"wxa1b9c5632d24039a"
+#define AppURLString @"https://itunes.apple.com/app/id1136142337"
+#define AppProductIDArray @[@"com.ZhangBaoGuo.AlbumMaps.ShareAndBrowse",@"com.ZhangBaoGuo.AlbumMaps.RecordAndEdit",@"com.ZhangBaoGuo.AlbumMaps.ImportAndExport",@"com.ZhangBaoGuo.AlbumMaps.AllFunctionsSuit"]
+#define AppQRCodeImage @"AlbumMapsAppQRCodeImage.png"
+
 #import "EverywhereSettingManager.h"
 
 @implementation EverywhereSettingManager
@@ -19,60 +26,141 @@
     return instance;
 }
 
-+ (void)updateAppInfoAndAppQRCodeImageData{
+- (instancetype)init{
+    self = [super init];
+    if (self) {
+        if (!self.appInfoLastUpdateDate || [[NSDate date] timeIntervalSinceDate:self.appInfoLastUpdateDate] > 60 * 60){
+            [self updateAppInfoAndAppQRCodeImage];
+        }
+    }
+    return self;
+}
+
+#pragma mark - App Info
+- (void)updateAppInfoAndAppQRCodeImage{
+    if(DEBUGMODE) NSLog(@"正在更新AppInfo...\n");
     // 更新下载链接
     NSString *appInfoURLString = @"http://www.7xpt9o.com1.z0.glb.clouddn.com/AppInfo.json";
     
     NSError *readDataError;
     NSData *appInfoData = [NSData dataWithContentsOfURL:[NSURL URLWithString:appInfoURLString] options:NSDataReadingMapped error:&readDataError];
     if (!appInfoData){
-        NSLog(@"从网络获取AppInfo数据出错 : %@",readDataError.localizedDescription);
+        if(DEBUGMODE) NSLog(@"从网络获取AppInfo数据出错 : %@",readDataError.localizedDescription);
         return;
     }
     
     NSError *parseJSONError;
     NSArray *appInfoDictionaryArray = [NSJSONSerialization JSONObjectWithData:appInfoData options:NSJSONReadingMutableContainers error:&parseJSONError];
     if (!appInfoDictionaryArray){
-        NSLog(@"解析AppInfo数据出错 : %@",parseJSONError.localizedDescription);
+        if(DEBUGMODE) NSLog(@"解析AppInfo数据出错 : %@",parseJSONError.localizedDescription);
         return;
     }
     
     NSDictionary *appInfoDictionary = nil;
     
     for (NSDictionary *dic in appInfoDictionaryArray) {
-        if ([dic[@"AppID"] isEqualToString:AppID]) {
-            appInfoDictionary = dic;
-            break;
+        
+        if ([dic.allKeys containsObject:@"AppID"]){
+            if ([dic[@"AppID"] isEqualToString:AppID]) {
+                appInfoDictionary = dic;
+                break;
+            }
         }
     }
     
-    NSLog(@"\n%@",appInfoDictionary);
-    
-    [[NSUserDefaults standardUserDefaults] setValue:appInfoDictionary[@"AppURLString"] forKey:@"AppURLString"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    
-    // 更新二维码图片
-    NSString *appQRCodeImageURLString = @"http://www.7xpt9o.com1.z0.glb.clouddn.com/AlbumMapsQRCodeImage.png";
-    NSError *readImageDataError;
-    NSData *appQRCodeImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:appQRCodeImageURLString] options:NSDataReadingMapped error:&readImageDataError];
-    if (!appQRCodeImageData){
-        NSLog(@"从网络获取appQRCodeImage数据出错 : %@",readImageDataError.localizedDescription);
+    if (!appInfoDictionary){
+        if(DEBUGMODE) NSLog(@"更新AppInfo失败！");
         return;
     }
     
-    [[NSUserDefaults standardUserDefaults] setValue:appQRCodeImageData forKey:@"appQRCodeImageData"];
+    if(DEBUGMODE) NSLog(@"\n%@",appInfoDictionary);
+    if(DEBUGMODE) NSLog(@"更新AppInfo成功");
+    
+    // 更新信息数组
+    [[NSUserDefaults standardUserDefaults] setValue:appInfoDictionary forKey:@"appInfoDictionary"];
+    
+    // 更新最后更新时间
+    [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"appInfoLastUpdateDate"];
+    
+    // 更新下载链接
+    if ([appInfoDictionary.allKeys containsObject:@"AppURLString"]){
+        NSString *appURLString = appInfoDictionary[@"AppURLString"];
+        if(DEBUGMODE) NSLog(@"\nappURLString : %@",appURLString);
+        [[NSUserDefaults standardUserDefaults] setValue:appURLString forKey:@"appURLString"];
+    }
+    
+    // 更新二维码图片
+    if ([appInfoDictionary.allKeys containsObject:@"AppQRCodeImageURLString"]){
+        NSString *appQRCodeImageURLString = appInfoDictionary[@"AppQRCodeImageURLString"];
+        
+        NSError *readImageDataError;
+        NSData *appQRCodeImageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:appQRCodeImageURLString] options:NSDataReadingMapped error:&readImageDataError];
+        
+        if (appQRCodeImageData){
+            [[NSUserDefaults standardUserDefaults] setValue:appQRCodeImageData forKey:@"appQRCodeImageData"];
+            if(DEBUGMODE) NSLog(@"更新AppQRCodeImage成功");
+            
+        }else{
+            if(DEBUGMODE) NSLog(@"从网络获取AppQRCodeImage数据出错 : %@",readImageDataError.localizedDescription);
+            if(DEBUGMODE) NSLog(@"更新AppQRCodeImage失败！");
+        }
+    }else{
+        if(DEBUGMODE) NSLog(@"未找到AppQRCodeImage！");
+    }
+    
+    // 更新内购项目数组
+    if ([appInfoDictionary.allKeys containsObject:@"AppProductIDArray"]){
+        NSArray <NSString *> *appProductIDArray = appInfoDictionary[@"AppProductIDArray"];
+        if(DEBUGMODE) NSLog(@"\nappProductIDArray :\n%@",appProductIDArray);
+        [[NSUserDefaults standardUserDefaults] setValue:appProductIDArray forKey:@"appProductIDArray"];
+    }
+    
+    // 更新微信ID
+    if ([appInfoDictionary.allKeys containsObject:@"WXAppID"]){
+        NSString *wxAppID = appInfoDictionary[@"WXAppID"];
+        if(DEBUGMODE) NSLog(@"wxAppID : %@",wxAppID);
+        [[NSUserDefaults standardUserDefaults] setValue:wxAppID forKey:@"wxAppID"];
+    }
+
+    // 保存数据！！！
+    [[NSUserDefaults standardUserDefaults] synchronize];
     
 }
 
+// 以下4个属性只有获取方法，更新在上面方法中完成
+- (NSDate *)appInfoLastUpdateDate{
+    return [[NSUserDefaults standardUserDefaults] valueForKey:@"appInfoLastUpdateDate"];
+}
+
+- (NSDictionary *)appInfoDictionary{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:@"appInfoDictionary"];
+}
+
 - (NSString *)appURLString{
-    return [[NSUserDefaults standardUserDefaults] objectForKey:@"AppURLString"];
+    NSString *appURLString = [[NSUserDefaults standardUserDefaults] objectForKey:@"appURLString"];
+    if (appURLString) return appURLString;
+    else return AppURLString;
 }
 
 - (UIImage *)appQRCodeImage{
     NSData *appQRCodeImageData = [[NSUserDefaults standardUserDefaults] valueForKey:@"appQRCodeImageData"];
-    return [UIImage imageWithData:appQRCodeImageData];
-    return nil;
+    if (appQRCodeImageData) return [UIImage imageWithData:appQRCodeImageData];
+    else return [UIImage imageNamed:AppQRCodeImage];
 }
+
+- (NSArray<NSString *> *)appProductIDArray{
+    NSArray<NSString *> *appProductIDArray = [[NSUserDefaults standardUserDefaults] objectForKey:@"appProductIDArray"];
+    if (appProductIDArray) return appProductIDArray;
+    else return AppProductIDArray;
+}
+
+- (NSString *)wxAppID{
+    NSString *wxAppID = [[NSUserDefaults standardUserDefaults] objectForKey:@"wxAppID"];
+    if (wxAppID) return wxAppID;
+    else return WXAppID;
+}
+
+#pragma mark - Items
 
 - (MapBaseMode)mapBaseMode{
     MapBaseMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"mapBaseMode"];
@@ -222,26 +310,34 @@
     return resultColor;
 }
 
-- (BOOL)hasPurchasedShare{
-    BOOL hasPurchasedShare = [[NSUserDefaults standardUserDefaults] boolForKey:@"hasPurchasedShare"];
-    return hasPurchasedShare;
+- (BOOL)hasPurchasedShareAndBrowse{
+    BOOL hasPurchasedShareAndBrowse = [[NSUserDefaults standardUserDefaults] boolForKey:@"hasPurchasedShareAndBrowse"];
+    return hasPurchasedShareAndBrowse;
 }
 
-- (void)setHasPurchasedShare:(BOOL)hasPurchasedShare{
-    [[NSUserDefaults standardUserDefaults] setBool:hasPurchasedShare forKey:@"hasPurchasedShare"];
+- (void)setHasPurchasedShareAndBrowse:(BOOL)hasPurchasedShareAndBrowse{
+    [[NSUserDefaults standardUserDefaults] setBool:hasPurchasedShareAndBrowse forKey:@"hasPurchasedShareAndBrowse"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (BOOL)hasPurchasedRecord{
-    BOOL hasPurchasedRecord = [[NSUserDefaults standardUserDefaults] boolForKey:@"hasPurchasedRecord"];
-    return hasPurchasedRecord;
+- (BOOL)hasPurchasedRecordAndEdit{
+    BOOL hasPurchasedRecordAndEdit = [[NSUserDefaults standardUserDefaults] boolForKey:@"hasPurchasedRecordAndEdit"];
+    return hasPurchasedRecordAndEdit;
 }
 
-- (void)setHasPurchasedRecord:(BOOL)hasPurchasedRecord{
-    [[NSUserDefaults standardUserDefaults] setBool:hasPurchasedRecord forKey:@"hasPurchasedRecord"];
+- (void)setHasPurchasedRecordAndEdit:(BOOL)hasPurchasedRecordAndEdit{
+    [[NSUserDefaults standardUserDefaults] setBool:hasPurchasedRecordAndEdit forKey:@"hasPurchasedRecordAndEdit"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (BOOL)hasPurchasedImportAndExport{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"hasPurchasedImportAndExport"];
+}
+
+- (void)setHasPurchasedImportAndExport:(BOOL)hasPurchasedImportAndExport{
+    [[NSUserDefaults standardUserDefaults] setBool:hasPurchasedImportAndExport forKey:@"hasPurchasedImportAndExport"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
 
 - (CLLocationDistance)minDistanceForRecord{
     CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"minDistanceForRecord"];
@@ -290,7 +386,7 @@
 }
 
 - (void)setDefaultTransport:(DefaultTransport)defaultTransport{
-    //NSLog(@"%ld",(long)defaultTransport);
+    //if(DEBUGMODE) NSLog(@"%ld",(long)defaultTransport);
     [[NSUserDefaults standardUserDefaults] setInteger:defaultTransport forKey:@"defaultTransport"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
