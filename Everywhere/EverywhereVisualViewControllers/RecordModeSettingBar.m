@@ -28,11 +28,15 @@
     
     UISlider *velocitySlider;
     float lastVelocityBeforeSegValueChaned;
+    
+    EverywhereSettingManager *settingManager;
 }
 
 - (instancetype)init{
     self = [super init];
     if (self) {
+        settingManager = [EverywhereSettingManager defaultManager];
+        
         sDLabelTitle = NSLocalizedString(@"MinDistance",@"最短距离");
         sTILabelTitle = NSLocalizedString(@"MinTimeInterval",@"最小间隔");
         velocityLabelTitle = NSLocalizedString(@"Velocity",@"速度");
@@ -46,7 +50,7 @@
         
         groupSeg = [[UISegmentedControl alloc] initWithItems:groupNameArray];
         groupSeg.tintColor = [UIColor whiteColor];
-        groupSeg.selectedSegmentIndex = [EverywhereSettingManager defaultManager].defaultTransport;
+        groupSeg.selectedSegmentIndex = settingManager.defaultTransport;
         [groupSeg addTarget:self action:@selector(segValueChanged:) forControlEvents:UIControlEventValueChanged];
         [self addSubview:groupSeg];
         groupSeg.translatesAutoresizingMaskIntoConstraints = NO;
@@ -105,6 +109,9 @@
         [velocitySlider autoSetDimension:ALDimensionWidth toSize:velocitySliderWidth];
         [velocitySlider autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
         
+        self.customMinDistance = settingManager.minDistanceForRecord;
+        self.customMinTimeInterval = settingManager.minTimeIntervalForRecord;
+        
         [self updateData:groupSeg.selectedSegmentIndex];
 
     }
@@ -122,7 +129,7 @@
 }
 
 - (void)updateData:(NSInteger)index{
-    [EverywhereSettingManager defaultManager].defaultTransport = index;
+    settingManager.defaultTransport = index;
     
     switch (index) {
         case 0:
@@ -132,19 +139,19 @@
             self.minTimeInterval = self.customMinTimeInterval;
             break;
         case 1:
-            self.minDistance = 30.0;
+            self.minDistance = settingManager.minDistanceWalkForRecord;
             self.velocitykmPerhour = 5.0;
             break;
         case 2:
-            self.minDistance = 50.0;
+            self.minDistance = settingManager.minDistanceRideForRecord;
             self.velocitykmPerhour = 15.0;
             break;
         case 3:
-            self.minDistance = 150.0;
+            self.minDistance = settingManager.minDistanceDriveForRecord;
             self.velocitykmPerhour = 70.0;
             break;
         case 4:
-            self.minDistance = 1000.0;
+            self.minDistance = settingManager.minDistanceHighSpeedForRecord;
             self.velocitykmPerhour = 200.0;
             break;
         default:

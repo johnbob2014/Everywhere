@@ -2,6 +2,10 @@
 #import "GCFileTableViewCell.h"
 #import "GCFileBrowserConfiguration.h"
 
+@interface GCFileTableViewCell () <UIScrollViewDelegate>
+
+@end
+
 @implementation GCFileTableViewCell{
     UIImageView *backgroundImageView;
     UIButton *iconButton;
@@ -37,6 +41,8 @@
         [iconButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
         
         scrollViewForTitle = [UIScrollView newAutoLayoutView];
+        scrollViewForTitle.delegate = self;
+        scrollViewForTitle.userInteractionEnabled = NO;
         scrollViewForTitle.showsHorizontalScrollIndicator = YES;
         scrollViewForTitle.backgroundColor = DEBUGMODE ? [[UIColor cyanColor] colorWithAlphaComponent:0.6] : [UIColor clearColor];
         [self.contentView addSubview:scrollViewForTitle];
@@ -76,10 +82,14 @@
 		*/
         
 		createdValueLabel = [UILabel newAutoLayoutView];
+        [createdValueLabel setStyle:UILabelStyleBrownBold];
+        /*
 		[createdValueLabel setFont:GCFONT_FILES_COUNTER];
 		[createdValueLabel setTextColor:GCCOLOR_FILES_COUNTER];
 		[createdValueLabel setShadowColor:GCCOLOR_FILES_COUNTER_SHADOW];
 		[createdValueLabel setShadowOffset:CGSizeMake(0, 1)];
+        */
+        
 		[createdValueLabel setBackgroundColor:[UIColor clearColor]];
 		[self.contentView addSubview:createdValueLabel];
         [createdValueLabel sizeToFit];
@@ -103,10 +113,13 @@
 		*/
         
 		sizeValueLabel = [UILabel newAutoLayoutView];
+        [sizeValueLabel setStyle:UILabelStyleBrownBold];
+        /*
 		[sizeValueLabel setFont:GCFONT_FILES_COUNTER];
 		[sizeValueLabel setTextColor:GCCOLOR_FILES_COUNTER];
 		[sizeValueLabel setShadowColor:GCCOLOR_FILES_COUNTER_SHADOW];
 		[sizeValueLabel setShadowOffset:CGSizeMake(0, 1)];
+        */
 		[sizeValueLabel setBackgroundColor:[UIColor clearColor]];
         [sizeValueLabel setTextAlignment:NSTextAlignmentRight];
 		[self.contentView addSubview:sizeValueLabel];
@@ -162,7 +175,6 @@
         detailDisclosureLabel.textColor = GCCOLOR_FILES_COUNTER;
         detailDisclosureLabel.shadowColor = GCCOLOR_FILES_COUNTER;
         detailDisclosureLabel.shadowOffset = CGSizeMake(0, 1);
-        detailDisclosureLabel.text = @"➤";
         [self.contentView addSubview:detailDisclosureLabel];
         [detailDisclosureLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
         [detailDisclosureLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
@@ -199,11 +211,71 @@
     return self;
 }
 
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView{
+    
+}
+
+#pragma mark - Getter & Setter
+
+- (void)layoutSubviews{
+    [super layoutSubviews];
+    
+    CGFloat contentWidth = scrollViewForTitle.contentSize.width;
+    CGFloat frameWidth = scrollViewForTitle.frame.size.width;
+    
+    if (frameWidth == 0) frameWidth = self.frame.size.width - 85;
+    
+    //NSLog(@"%@",NSStringFromCGSize(scrollViewForTitle.contentSize));
+    //NSLog(@"%@",NSStringFromCGSize(scrollViewForTitle.frame.size));
+    
+    if (contentWidth > frameWidth){
+        CGFloat maxOffset = contentWidth - frameWidth;
+        
+        NSTimeInterval durationTI = 1.0f;
+        if (frameWidth != 0)
+            durationTI = contentWidth / frameWidth;
+        
+        [UIView animateWithDuration:durationTI
+                              delay:1.0
+                            options:UIViewAnimationOptionCurveLinear
+                         animations:^{
+                             scrollViewForTitle.contentOffset = CGPointMake(maxOffset,0);
+                         }
+                         completion:^(BOOL finished) {
+                             
+                             [UIView animateWithDuration:durationTI
+                                                   delay:1.0
+                                                 options:UIViewAnimationOptionCurveLinear
+                                              animations:^{
+                                                  scrollViewForTitle.contentOffset = CGPointZero;
+                                                  //scrollViewForTitle.contentOffset = CGPointMake(maxOffset,0);
+                                              }
+                                              completion:^(BOOL finished) {
+                                                  
+                                              }];
+                             
+                         }];
+    }
+}
+
+
+
 - (void)setTitle:(NSString *)title{
     _title = title;
     titleTextField.text = title;
     [titleTextField sizeToFit];
+    
     scrollViewForTitle.contentSize = titleTextField.frame.size;
+    scrollViewForTitle.contentOffset = CGPointZero;
+    /*
+    CGFloat maxOffset;
+    if (scrollViewForTitle.frame.size.width == 0){
+        maxOffset = 0;
+    }else{
+        maxOffset = scrollViewForTitle.contentSize.width - scrollViewForTitle.frame.size.width;
+    }
+    */
+    
 }
 
 - (void)setIsSelected:(BOOL)isSelected{
@@ -217,7 +289,7 @@
         [iconButton setImage:[UIImage imageNamed:@"item-icon-folder-selected"] forState:UIControlStateHighlighted];
         //			[iconButton setFrame:CGRectMake(50, 28, 32, 26)];
         
-        [detailDisclosureLabel setHidden:NO];
+        detailDisclosureLabel.text = @"➤";
         [countLabel setHidden:NO];
         //[transparentactionButton setHidden:YES];
         
@@ -232,7 +304,7 @@
         [iconButton setImage:[UIImage imageNamed:@"item-icon-file-selected"] forState:UIControlStateHighlighted];
         //			[iconButton setFrame:CGRectMake(50, 28, 28, 33)];
         
-        [detailDisclosureLabel setHidden:YES];
+        detailDisclosureLabel.text = @"✦";
         [countLabel setHidden:YES];
         //[transparentactionButton setHidden:NO];
         

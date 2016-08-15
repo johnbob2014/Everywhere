@@ -102,12 +102,12 @@
     [reserveManuallyAddedFootprintSwitch autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
     
     mergeButton = [UIButton newAutoLayoutView];
-    [mergeButton primaryStyle];
+    [mergeButton setStyle:UIButtonStylePrimary];
     [mergeButton addTarget:self action:@selector(startMerge) forControlEvents:UIControlEventTouchDown];
     [mergeButton setTitle:NSLocalizedString(@"Start Merge", @"开始合并") forState:UIControlStateNormal];
     [containerView addSubview:mergeButton];
     [mergeButton autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(10, 10, 5, 10) excludingEdge:ALEdgeTop];
-    [mergeButton autoSetDimension:ALDimensionHeight toSize:35];
+    [mergeButton autoSetDimension:ALDimensionHeight toSize:44];
     
 }
 
@@ -206,7 +206,7 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
     //cell.accessoryType = UITableViewCellAccessoryDetailButton;
     EverywhereFootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
-    NSString *headerString = footprintAnnotation.isUserManuallyAdded ? @"🚩 " : @"🏳 ";
+    NSString *headerString = footprintAnnotation.isUserManuallyAdded ? @"📍 " : @"🔸 ";
     cell.textLabel.text = [headerString stringByAppendingString:footprintAnnotation.customTitle];
     cell.detailTextLabel.text = footprintAnnotation.title;
     return cell;

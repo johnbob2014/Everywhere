@@ -15,6 +15,7 @@
 #endif /* PrefixHeader_pch */
 
 //#warning Fix Before Submit
+//#define DEBUGMODE 1
 #define DEBUGMODE 0
 
 #define MFRUTI @"com.ZhangBaoGuo.AlbumMaps.mfr"
@@ -39,10 +40,12 @@
 #define LetterAndNumberAndDecimal @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.\n"
 
 #import "UIView+AutoLayout.h"
-#import "UIButton+Bootstrap.h"
+#import "Chameleon.h"
+#import "UIButton+Assistant.h"
 #import "UIAlertController+Assistant.h"
 #import "UIImage+Assistant.h"
-#import "UIColor+Assistant.h"
+#import "UILabel+Assistant.h"
+#import "UIButton+Assistant/NSString+FontAwesome.h"
 
 #import "XMLDictionary.h"
 
@@ -97,14 +100,17 @@ typedef NS_ENUM(NSInteger, LocationMode) {
 };
 
 typedef NS_ENUM(NSInteger,BaseColorScheme){
-    BaseColorSchemeClassicGray = 0,
-    BaseColorSchemeFreshBlue,
+    BaseColorSchemeSkyBlue = 0,
+    BaseColorSchemeCutePink,
+    BaseColorSchemeClassicGray,
+    BaseColorSchemeFreshPlum,
     BaseColorSchemeDeepBrown
 };
 
 typedef NS_ENUM(NSInteger,ExtendedColorScheme){
-    ExtendedColorSchemeBrightRed = 0,
-    ExtendedColorSchemeGrassGreen
+    ExtendedColorSchemeForestGreen = 0,
+    ExtendedColorSchemeBrightOrange,
+    ExtendedColorSchemeWatermelon
 };
 
 enum {

@@ -16,7 +16,7 @@
 
 @implementation InAppPurchaseVC{
     UITextView *textView;
-    UIBarButtonItem *leftBarButtonItem,*rightBarButtonItem;//
+    UIBarButtonItem *secondRightBarButtonItem,*rightBarButtonItem;//
     
     NSMutableArray <SKPayment*> *addedPaymentMA;
     //NSString *productTitle,*productDescription,*productPrice;
@@ -44,10 +44,10 @@
     NSString *title = self.transactionType == TransactionTypePurchase ? NSLocalizedString(@"Purchase",@"购买") : NSLocalizedString(@"Restore",@"恢复");
     self.title = title;
     
-    leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(leftButtonPressed:)];
+    secondRightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(leftButtonPressed:)];
     rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonPressed:)];
-    //self.navigationItem.leftBarButtonItem = leftBarButtonItem;
-    self.navigationItem.rightBarButtonItem = rightBarButtonItem;
+    //self.navigationItem.secondRightBarButtonItem = secondRightBarButtonItem;
+    self.navigationItem.rightBarButtonItems = @[rightBarButtonItem,secondRightBarButtonItem];
     
     [self initPurchaseUI];
     
@@ -55,8 +55,11 @@
 }
 
 -(void)leftButtonPressed:(id)sender{
+    [self dismissViewControllerAnimated:YES completion:nil];
+    /*
     if (self.navigationController) [self.navigationController popViewControllerAnimated:YES];
     else [self dismissViewControllerAnimated:YES completion:nil];
+    */
 }
 
 -(void)rightButtonPressed:(id)sender{
@@ -76,7 +79,7 @@
 }
 
 - (void)startPurchaseOrRestore{
-    leftBarButtonItem.enabled = NO;
+    secondRightBarButtonItem.enabled = NO;
     rightBarButtonItem.enabled = NO;
     
     //购买还是恢复
@@ -175,7 +178,7 @@
     
     /*
     if (!productTitle) {
-        //leftBarButtonItem.enabled = YES;
+        //secondRightBarButtonItem.enabled = YES;
         //rightBarButtonItem.enabled = YES;
         return;
     }
@@ -218,7 +221,7 @@
         [NSThread sleepForTimeInterval:1.0];
     }
     
-    leftBarButtonItem.enabled = YES;
+    secondRightBarButtonItem.enabled = YES;
     rightBarButtonItem.enabled = YES;
 }
 
@@ -248,7 +251,7 @@
         rightBarButtonItem.enabled = YES;
     }
     
-    leftBarButtonItem.enabled = YES;
+    secondRightBarButtonItem.enabled = YES;
     
     //关闭交易
     //[[SKPaymentQueue defaultQueue]finishTransaction:transaction];
@@ -302,7 +305,7 @@
     NSString *lst2=NSLocalizedString(@"Error",@"错误信息");
     self.infoString=[[NSString alloc]initWithFormat:@"%@\n-----%@ ：%@-----\n",lst1,lst2,error.localizedDescription];
     
-    leftBarButtonItem.enabled = YES;
+    secondRightBarButtonItem.enabled = YES;
     rightBarButtonItem.enabled = YES;
     
     [rightBarButtonItem setTitle:NSLocalizedString(@"Try Again",@"重试")];

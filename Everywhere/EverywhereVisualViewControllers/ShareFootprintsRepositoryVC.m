@@ -95,7 +95,7 @@
 
     firstBtn = [UIButton newAutoLayoutView];
     [firstBtn setTitle:NSLocalizedString(@"Try WeChat Share", @"体验微信分享") forState:UIControlStateNormal];
-    [firstBtn primaryStyle];
+    [firstBtn setStyle:UIButtonStylePrimary];
     firstBtn.tag = WXSceneSession;
     [firstBtn addTarget:self action:@selector(wxShare:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:firstBtn];
@@ -107,7 +107,7 @@
 
     sencondBtn = [UIButton newAutoLayoutView];
     [sencondBtn setTitle:NSLocalizedString(@"MFR File Share", @"MFR 文件分享") forState:UIControlStateNormal];
-    [sencondBtn primaryStyle];
+    [sencondBtn setStyle:UIButtonStylePrimary];
     sencondBtn.tag = 0;
     [sencondBtn addTarget:self action:@selector(fileShare:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:sencondBtn];
@@ -119,7 +119,7 @@
     
     thirdBtn = [UIButton newAutoLayoutView];
     [thirdBtn setTitle:NSLocalizedString(@"GPX File Share", @"GPX 文件分享") forState:UIControlStateNormal];
-    [thirdBtn primaryStyle];
+    [thirdBtn setStyle:UIButtonStylePrimary];
     thirdBtn.tag = 1;
     [thirdBtn addTarget:self action:@selector(fileShare:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:thirdBtn];

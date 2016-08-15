@@ -159,7 +159,7 @@
 
 - (void)initOKButton{
     okButton = [UIButton newAutoLayoutView];
-    [okButton primaryStyle];
+    [okButton setStyle:UIButtonStylePrimary];
     [okButton setTitle:NSLocalizedString(@"OK", @"确定") forState:UIControlStateNormal];
     [okButton addTarget:self action:@selector(okButtonTouchDown:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:okButton];

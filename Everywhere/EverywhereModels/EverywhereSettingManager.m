@@ -184,7 +184,7 @@
 
 - (CLLocationDistance)mergeDistanceForMoment{
     CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"mergeDistanceForMoment"];
-    if (!distance || distance == 0) distance = 200;
+    if (!distance || distance == 0) distance = 100;
     return distance;
 }
 
@@ -195,7 +195,7 @@
 
 - (CLLocationDistance)mergeDistanceForLocation{
     CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"mergeDistanceForLocation"];
-    if (!distance || distance == 0) distance = 1000;
+    if (!distance || distance == 0) distance = 200;
     return distance;
 }
 
@@ -270,14 +270,20 @@
 -(UIColor *)baseTintColor{
     UIColor *resultColor = nil;
     switch (self.baseColorScheme) {
-        case BaseColorSchemeClassicGray:
-            resultColor = [[UIColor grayColor] colorWithAlphaComponent:0.6];
+        case BaseColorSchemeSkyBlue:
+            resultColor = [[UIColor flatSkyBlueColor] colorWithAlphaComponent:0.6];
             break;
-        case BaseColorSchemeFreshBlue:
-            resultColor = [[UIColor blueColor] colorWithAlphaComponent:0.6];
+        case BaseColorSchemeCutePink:
+            resultColor = [[UIColor flatPinkColor] colorWithAlphaComponent:0.6];
+            break;
+        case BaseColorSchemeClassicGray:
+            resultColor = [[UIColor flatGrayColor] colorWithAlphaComponent:0.6];
+            break;
+        case BaseColorSchemeFreshPlum:
+            resultColor = [[UIColor flatPlumColor] colorWithAlphaComponent:0.6];
             break;
         case BaseColorSchemeDeepBrown:
-            resultColor = [[UIColor brownColor] colorWithAlphaComponent:0.6];
+            resultColor = [[UIColor flatBrownColor] colorWithAlphaComponent:0.6];
             break;
         default:
             break;
@@ -298,11 +304,14 @@
 - (UIColor *)extendedTintColor{
     UIColor *resultColor = nil;
     switch (self.extendedColorScheme) {
-        case ExtendedColorSchemeBrightRed:
-            resultColor = [[UIColor redColor] colorWithAlphaComponent:0.6];
+        case ExtendedColorSchemeForestGreen:
+            resultColor = [[UIColor flatForestGreenColor] colorWithAlphaComponent:0.6];
             break;
-        case ExtendedColorSchemeGrassGreen:
-            resultColor = [[UIColor greenColor] colorWithAlphaComponent:0.6];
+        case ExtendedColorSchemeBrightOrange:
+            resultColor = [[UIColor flatOrangeColor] colorWithAlphaComponent:0.6];
+            break;
+        case ExtendedColorSchemeWatermelon:
+            resultColor = [[UIColor flatWatermelonColor] colorWithAlphaComponent:0.6];
             break;
         default:
             break;
@@ -354,6 +363,50 @@
     NSTimeInterval minTI = [[NSUserDefaults standardUserDefaults] doubleForKey:@"minTimeIntervalForRecord"];
     if (!minTI || minTI == 0) minTI = 2;
     return minTI;
+}
+
+- (CLLocationDistance)minDistanceWalkForRecord{
+    CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"minDistanceWalkForRecord"];
+    if (!distance || distance == 0) distance = 20;
+    return distance;
+}
+
+- (void)setMinDistanceWalkForRecord:(CLLocationDistance)minDistanceWalkForRecord{
+    [[NSUserDefaults standardUserDefaults] setDouble:minDistanceWalkForRecord forKey:@"minDistanceWalkForRecord"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (CLLocationDistance)minDistanceRideForRecord{
+    CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"minDistanceRideForRecord"];
+    if (!distance || distance == 0) distance = 50;
+    return distance;
+}
+
+- (void)setMinDistanceRideForRecord:(CLLocationDistance)minDistanceRideForRecord{
+    [[NSUserDefaults standardUserDefaults] setDouble:minDistanceRideForRecord forKey:@"minDistanceRideForRecord"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (CLLocationDistance)minDistanceDriveForRecord{
+    CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"minDistanceDriveForRecord"];
+    if (!distance || distance == 0) distance = 150;
+    return distance;
+}
+
+- (void)setMinDistanceDriveForRecord:(CLLocationDistance)minDistanceDriveForRecord{
+    [[NSUserDefaults standardUserDefaults] setDouble:minDistanceDriveForRecord forKey:@"minDistanceDriveForRecord"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (CLLocationDistance)minDistanceHighSpeedForRecord{
+    CLLocationDistance distance = [[NSUserDefaults standardUserDefaults] doubleForKey:@"minDistanceHighSpeedForRecord"];
+    if (!distance || distance == 0) distance = 1000;
+    return distance;
+}
+
+- (void)setMinDistanceHighSpeedForRecord:(CLLocationDistance)minDistanceHighSpeedForRecord{
+    [[NSUserDefaults standardUserDefaults] setDouble:minDistanceHighSpeedForRecord forKey:@"minDistanceHighSpeedForRecord"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)setMinTimeIntervalForRecord:(NSTimeInterval)minTimeIntervalForRecord{

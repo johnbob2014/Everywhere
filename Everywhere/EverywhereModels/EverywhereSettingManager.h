@@ -48,8 +48,37 @@
 @property (assign,nonatomic) BOOL hasPurchasedRecordAndEdit;
 @property (assign,nonatomic) BOOL hasPurchasedImportAndExport;
 
+/**
+ *  自定义记录距离
+ */
 @property (assign,nonatomic) CLLocationDistance minDistanceForRecord;
+
+/**
+ *  自定义记录间隔
+ */
 @property (assign,nonatomic) NSTimeInterval minTimeIntervalForRecord;
+
+/**
+ *  步行记录距离
+ */
+@property (assign,nonatomic) CLLocationDistance minDistanceWalkForRecord;
+
+/**
+ *  骑行记录距离
+ */
+@property (assign,nonatomic) CLLocationDistance minDistanceRideForRecord;
+
+/**
+ *  驾车记录距离
+ */
+@property (assign,nonatomic) CLLocationDistance minDistanceDriveForRecord;
+
+/**
+ *  高速记录距离
+ */
+@property (assign,nonatomic) CLLocationDistance minDistanceHighSpeedForRecord;
+
+
 @property (assign,nonatomic) NSInteger maxFootprintsCountForRecord;
 
 @property (assign,nonatomic) NSInteger praiseCount;

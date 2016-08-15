@@ -45,7 +45,7 @@
 #import "CLPlacemark+Assistant.h"
 #import "DatePickerVC.h"
 #import "AssetDetailVC.h"
-#import "UIButton+Bootstrap.h"
+#import "UIButton+Assistant.h"
 #import "MapModeBar.h"
 #import "LocationPickerVC.h"
 #import "SettingVC.h"
@@ -99,7 +99,7 @@
 @property (assign,nonatomic) BOOL isInBaseMode;
 @property (assign,nonatomic) BOOL isInRecordMode;
 @property (assign,nonatomic) BOOL allowBrowserMode;
-//@property (assign,nonatomic) BOOL allowRecordMode;
+@property (strong,nonatomic) UIColor *currentTintColor;
 
 #pragma mark 用于Record模式的用户设置
 @property (assign,nonatomic) CLLocationDistance minDistanceForRecord;
@@ -253,6 +253,7 @@
     EverywhereAppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
     
     if (self.isInBaseMode) {
+        self.currentTintColor = self.settingManager.baseTintColor;
         [self updateBarColor:self.settingManager.baseTintColor];
         
         if (verticalBarIsAlphaZero) [self alphaShowHideVerticalBar];
@@ -265,6 +266,7 @@
         appDelegate.window.tintColor = self.settingManager.baseTintColor;
         
     }else{
+        self.currentTintColor = self.settingManager.extendedTintColor;
         appDelegate.window.tintColor = self.settingManager.extendedTintColor;
     }
     
@@ -286,13 +288,6 @@
     if ([self checkPHAuthorizationStatus]){
         // 更新照片数据
         [self showNotification:@([self.cdManager updatePHAssetInfoFromPhotoLibrary])];
-        
-        /*
-        NSNumber *addedPHAssetInfoCountNumber = @([self.cdManager updatePHAssetInfoFromPhotoLibrary]);
-        [self performSelector:@selector(showNotification:) withObject:addedPHAssetInfoCountNumber afterDelay:3.0];
-        //[self showNotification:addedPHAssetInfoCount];
-         */
-
     }
 }
 
@@ -560,7 +555,11 @@
     self.currentAnnotationIndex = 0;
 }
 
-
+- (void)setIsInBaseMode:(BOOL)isInBaseMode{
+    _isInBaseMode = isInBaseMode;
+    if (isInBaseMode) self.currentTintColor = self.settingManager.baseTintColor;
+    else self.currentTintColor = self.settingManager.extendedTintColor;
+}
 
 #pragma mark - Init Interface
 
@@ -574,31 +573,10 @@
     [self.view addSubview:self.myMapView];
     [self.myMapView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
     
-    //if(DEBUGMODE) NSLog(@"%@",self.myMapView.gestureRecognizers);
-    
-    /*
-    UILongPressGestureRecognizer *longPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(mapViewTapGR:)];
-    longPressGR.minimumPressDuration = 2.0;
-    [self.myMapView addGestureRecognizer:longPressGR];
-    */
-    
     UITapGestureRecognizer *mapViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mapViewTapGR:)];
     mapViewTapGR.delegate = self;
     mapViewTapGR.numberOfTouchesRequired = 1;
     [self.myMapView addGestureRecognizer:mapViewTapGR];
-    
-    /*
-    UITapGestureRecognizer *mapViewDoubleTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mapViewDoubleTapGR:)];
-    mapViewDoubleTapGR.delegate = self;
-    mapViewDoubleTapGR.numberOfTouchesRequired = 2;
-    [self.myMapView addGestureRecognizer:mapViewDoubleTapGR];
-    
-    UITapGestureRecognizer *mapViewThreeTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mapViewThreeTapGR:)];
-    mapViewThreeTapGR.delegate = self;
-    mapViewThreeTapGR.numberOfTouchesRequired = 3;
-    [self.myMapView addGestureRecognizer:mapViewThreeTapGR];
-*/
-    //if(DEBUGMODE) NSLog(@"%@",self.myMapView.gestureRecognizers);
 }
 
 - (void)mapViewTapGR:(id)sender{
@@ -628,18 +606,6 @@
     
     [self presentViewController:alertController animated:YES completion:nil];
 }
-
-- (void)mapViewThreeTapGR:(id)sender{
-    //self.settingManager.hasPurchasedRecordAndEdit = !self.settingManager.hasPurchasedRecordAndEdit;
-    //self.settingManager.hasPurchasedShareAndBrowse = !self.settingManager.hasPurchasedShareAndBrowse;
-}
-
-/*
-//UIGestureRecognizerDelegate
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
-    return NO;
-}
-*/
 
 #pragma mark ModeBar
 
@@ -863,20 +829,6 @@
     [popupController presentInViewController:self];
 }
 
-/*
-- (void)showFootprintAnnotationPicker{
-    //WEAKSELF(weakSelf);
-    
-    FootprintsRepositoryEditerVC *footprintsRepositoryEditerVC = [FootprintsRepositoryEditerVC new];
-    footprintsRepositoryEditerVC.footprintsRepository = nil;
-    
-    footprintsRepositoryEditerVC.contentSizeInPopup = CGSizeMake(300, 400);
-    footprintsRepositoryEditerVC.landscapeContentSizeInPopup = CGSizeMake(400, 320);
-    popupController = [[STPopupController alloc] initWithRootViewController:footprintsRepositoryEditerVC];
-    popupController.containerView.layer.cornerRadius = 4;
-    [popupController presentInViewController:self];
-}
-*/
 #pragma mark Navigation Bar
 
 - (void)initNaviBar{
@@ -1532,8 +1484,6 @@
 
 - (void)initRecordModeSettingBar{
     recordModeSettingBar = [RecordModeSettingBar new];
-    recordModeSettingBar.customMinDistance = self.settingManager.minDistanceForRecord;
-    recordModeSettingBar.customMinTimeInterval = self.settingManager.minTimeIntervalForRecord;
     recordModeSettingBar.backgroundColor = self.settingManager.extendedTintColor;
     [self.view addSubview:recordModeSettingBar];
     [recordModeSettingBar autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:recordModeBar withOffset:10];
@@ -1784,32 +1734,6 @@
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-
-
-/*
-
-- (void)showPurchaseVC:(NSInteger)productIndex transactionType:(enum TransactionType)transactionType{
-    InAppPurchaseVC *inAppPurchaseVC = [InAppPurchaseVC new];
-    inAppPurchaseVC.edgesForExtendedLayout = UIRectEdgeNone;
-    
-    inAppPurchaseVC.productIDArray = ProductIDArray;
-    inAppPurchaseVC.productIndex = productIndex;
-    inAppPurchaseVC.transactionType = transactionType;
-    
-    WEAKSELF(weakSelf);
-    inAppPurchaseVC.inAppPurchaseCompletionHandler = ^(BOOL succeeded,NSInteger productIndex,enum TransactionType transactionType){
-        if (succeeded) {
-            if (productIndex == 0) weakSelf.settingManager.hasPurchasedShareAndBrowse = YES;
-            if (productIndex == 1) weakSelf.settingManager.hasPurchasedRecordAndEdit = YES;
-        }
-        if(DEBUGMODE) NSLog(@"%@",succeeded? @"用户购买成功！" : @"用户购买失败！");
-    };
-    
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:inAppPurchaseVC];
-    [self presentViewController:nav animated:YES completion:nil];
-}
-*/
-
 #pragma mark - Extended Mode
 
 #pragma mark Share and Receive
@@ -1852,60 +1776,11 @@
         [weakSelf dismissViewControllerAnimated:YES completion:nil];
         [weakSelf showPurchaseShareFunctionAlertController];
     };
-    
-    /*
-    shareFRVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.9, 240);
-    shareFRVC.landscapeContentSizeInPopup = CGSizeMake(240, ScreenWidth * 0.9);
-    */
-    
+   
     popupController = [[STPopupController alloc] initWithRootViewController:shareFRVC];
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
 }
-
-/*
-- (void)didReceiveFootprintsRepositoryString:(NSString *)receivedString{
-    NSString *footprintsRepositoryString = nil;
-    //CLLocationDistance sharedRadius = 0;
-    
-    NSString *headerString = [NSString stringWithFormat:@"%@://AlbumMaps/",WXAppID];
-    
-    if (![receivedString containsString:headerString]){
-        if(DEBUGMODE) NSLog(@"接收到的字符串无法解析！");
-        return;
-    }
-    
-    footprintsRepositoryString = [receivedString stringByReplacingOccurrencesOfString:headerString withString:@""];
-    // For iOS9
-    footprintsRepositoryString = [footprintsRepositoryString stringByReplacingOccurrencesOfString:@"%0D%0A" withString:@"\n"];
-    // For iOS8
-    footprintsRepositoryString = [footprintsRepositoryString stringByReplacingOccurrencesOfString:@"%20" withString:@"\n"];
-    
-    //if (DEBUGMODE) if(DEBUGMODE) NSLog(@"\n%@",footprintsRepositoryString);
-    
-    NSData *footprintsRepositoryData = [[NSData alloc] initWithBase64EncodedString:footprintsRepositoryString options:NSDataBase64DecodingIgnoreUnknownCharacters];
-    
-    // 获取接收到的分享对象
-    EverywhereFootprintsRepository *footprintsRepository = nil;
-    
-    // 解析数据可能出错
-    @try {
-        footprintsRepository = [NSKeyedUnarchiver unarchiveObjectWithData:footprintsRepositoryData];
-    } @catch (NSException *exception) {
-        
-    } @finally {
-        
-    }
-    
-    //if (DEBUGMODE) if(DEBUGMODE) NSLog(@"received footprintAnnotation count : %lu",(unsigned long)receivedEWFootprintAnnotations.count);
-    
-    [self didReceiveFootprintsRepository:footprintsRepository];
-}
-
-- (void)didReceiveFootprintsRepositoryFile:(NSString *)filePath{
-    [self didReceiveFootprintsRepository:[EverywhereFootprintsRepository importFromFile:filePath]];
-}
-*/
 
 - (void)didReceiveFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository{
     if (!footprintsRepository) return;
@@ -1952,13 +1827,6 @@
 #pragma mark Enter And Quite Mode
 
 - (void)intelligentlyEnterExtendedMode{
-    /*
-    if (!self.settingManager.hasPurchasedShareAndBrowse) {
-        [self showPurchaseShareFunctionAlertController];
-    }else if (!self.settingManager.hasPurchasedRecordAndEdit){
-        [self showPurchaseRecordFunctionAlertController];
-    }
-    */
     
     [self enterExtendedMode];
     
@@ -2217,10 +2085,6 @@
     if ([NOW timeIntervalSinceDate:lastRecordDate] > 600){
         // 提醒通知
         UILocalNotification *noti = [UILocalNotification new];
-        /*
-        NSMutableString *messageMS = [NSMutableString new];
-        [messageMS appendFormat:@"%@\n%@\n%@ %lu",NSLocalizedString(@"Record has been sucessfully saved :", @"记录保存成功 :"),footprintsRepository.title,NSLocalizedString(@"Footprints Count: ", @"足迹点数量 : "),(long)recordedFootprintAnnotations.count];
-        */
         
         noti.alertBody = NSLocalizedString(@"It has past 10 minutes since last record time.Please pause recording to save energy.", @"已经超过10分钟没有新记录点，请及时暂停记录以节省电量。");
         noti.alertAction = NSLocalizedString(@"Action", @"操作");
@@ -2245,21 +2109,6 @@
     }
 }
 
-/*
-- (void)setAllowRecordMode:(BOOL)allowRecordMode{
-    _allowRecordMode = allowRecordMode;
-    if (allowRecordMode) {
-        if(DEBUGMODE) NSLog(@"允许RecordMode");
-        msExtenedModeBar.modeSegEnabled = YES;
-        msExtenedModeBar.rightButtonEnabled = YES;
-    }else{
-        if(DEBUGMODE) NSLog(@"禁止RecordMode");
-        msExtenedModeBar.modeSegEnabled = NO;
-        msExtenedModeBar.rightButtonEnabled = NO;
-    }
-}
-*/
-
 - (void)saveRecordedFootprintAnnotationsBtnTD{
     if (!self.settingManager.hasPurchasedRecordAndEdit){
         [self showPurchaseRecordFunctionAlertController];
@@ -2273,14 +2122,6 @@
     }
     
     [self intelligentlySaveRecordedFootprintAnnotationsAndClearCatche];
-    
-    /*
-    if (self.isRecording) {
-        [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Recording now.Please pause recording before save footprints.", @"正在记录足迹中，为确保数据完整性，请先选择暂停记录再保存。")]
-                           animated:YES completion:nil];
-        return;
-    }
-    */
     
     [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"The recorded footprints has been saved.", @"足迹保存成功。")]
                        animated:YES completion:nil];
@@ -2388,7 +2229,9 @@
     [self.myMapView addOverlays:savedPolylineForRecord];
 
     // 清空存储的足迹点
+    EverywhereFootprintAnnotation *lastfpAnnotation = recordedFootprintAnnotations.lastObject;
     recordedFootprintAnnotations = [NSMutableArray new];
+    [recordedFootprintAnnotations addObject:lastfpAnnotation];
     
     // 保存完成，继续记录
     self.isRecording = YES;
@@ -2478,13 +2321,6 @@
         __block CLLocationCoordinate2D lastCoordinate;
         [annotationArray enumerateObjectsUsingBlock:^(id<MKAnnotation> _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if (idx >= 1) {
-                /*
-                CLLocationCoordinate2D points[2];
-                points[0] = lastCoordinate;
-                points[1] = obj.coordinate;
-                MKPolyline *polyline = [MKPolyline polylineWithCoordinates:points count:2];
-                //polyline.title = [NSString stringWithFormat:@"MKPolyline : %lu",(unsigned long)idx];
-                */
                 
                 MKPolyline *polyline = [AssetsMapProVC createLineMKPolylineBetweenStartCoordinate:lastCoordinate endCoordinate:obj.coordinate];
                 [polylinesToAdd addObject:polyline];
@@ -2493,27 +2329,6 @@
                 if (maxDistance < subDistance) maxDistance = subDistance;
                 totalDistance += subDistance;
                 [distanceArray addObject:[NSNumber numberWithDouble:subDistance]];
-                
-                /*
-                MKMapPoint start_MP = MKMapPointForCoordinate(lastCoordinate);
-                MKMapPoint end_MP = MKMapPointForCoordinate(obj.coordinate);
-                
-                MKMapPoint x_MP,y_MP,z_MP;
-                CLLocationDistance arrowLength = subDistance;
-                
-                double z_radian = atan2(end_MP.x - start_MP.x, end_MP.y - start_MP.y);
-                z_MP.x = end_MP.x - arrowLength * 0.75 * sin(z_radian);
-                z_MP.y = end_MP.y - arrowLength * 0.75 * cos(z_radian);
-                
-                double arrowRadian = 90.0 / 360.0 * M_2_PI;
-                x_MP.x = end_MP.x - arrowLength * sin(z_radian - arrowRadian);
-                x_MP.y = end_MP.y - arrowLength * cos(z_radian - arrowRadian);
-                y_MP.x = end_MP.x - arrowLength * sin(z_radian + arrowRadian);
-                y_MP.y = end_MP.y - arrowLength * cos(z_radian + arrowRadian);
-                
-                MKMapPoint mapPoint[4] = {z_MP,x_MP,end_MP,y_MP};
-                MKPolygon *polygon = [MKPolygon polygonWithPoints:mapPoint count:4];
-                 */
                 
                 MKPolygon *polygon = [AssetsMapProVC createArrowMKPolygonBetweenStartCoordinate:lastCoordinate endCoordinate:obj.coordinate];
                 [polygonsToAdd addObject:polygon];
@@ -2721,7 +2536,7 @@
         
         pinAV.animatesDrop = NO;
         
-        pinAV.pinColor = MKPinAnnotationColorGreen;
+        pinAV.pinTintColor = self.currentTintColor;//[UIColor greenColor];
         
         pinAV.canShowCallout = YES;
         
@@ -2764,7 +2579,8 @@
         
         pinAV.animatesDrop = NO;
         
-        pinAV.pinColor = footprintAnnotation.isUserManuallyAdded ? MKPinAnnotationColorRed : MKPinAnnotationColorPurple;
+        pinAV.pinTintColor = footprintAnnotation.isUserManuallyAdded ? [UIColor redColor] : self.currentTintColor;
+        //pinAV.pinColor = footprintAnnotation.isUserManuallyAdded ? MKPinAnnotationColorRed : MKPinAnnotationColorGreen;
         
         pinAV.canShowCallout = YES;
         
@@ -2788,27 +2604,11 @@
     EverywhereAnnotation *annotation = self.myMapView.selectedAnnotations.firstObject;
     showVC.assetLocalIdentifiers = annotation.assetLocalIdentifiers;
     
-    /*
-    showVC.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [self.navigationController presentViewController:showVC animated:YES completion:nil];
-     */
-    
-    /*
-    showVC.contentSizeInPopup = CGSizeMake(ScreenWidth,ScreenHeight - 40);
-    showVC.landscapeContentSizeInPopup = CGSizeMake(ScreenHeight,ScreenWidth);
-    popupController = [[STPopupController alloc] initWithRootViewController:showVC];
-    popupController.style = STPopupStyleFormSheet;
-    popupController.transitionStyle = STPopupTransitionStyleFade;
-    popupController.containerView.layer.cornerRadius = 4;
-    [popupController presentInViewController:self];
-     */
-    
     [self presentViewController:showVC animated:YES completion:nil];
 }
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
     if ([view isKindOfClass:[MKPinAnnotationView class]]) {
-        //if(DEBUGMODE) NSLog(@"calloutAccessoryControlTapped:");
         if ([view.annotation isKindOfClass:[EverywhereAnnotation class]]) {
             EverywhereAnnotation *anno = (EverywhereAnnotation *)view.annotation;
             
@@ -2818,7 +2618,7 @@
             [self updateLocationInfoWithCoordinateInfoBarWithPHAssetInfo:assetInfo];
         }else if ([view.annotation isKindOfClass:[EverywhereFootprintAnnotation class]]){
             EverywhereFootprintAnnotation *footprintAnnotation = (EverywhereFootprintAnnotation *)view.annotation;
-            //[self updateLocationInfoWithCoordinateInfoBarWithGCJCoordinate:footprintAnnotation.coordinate];
+
             [self updateLocationInfoWithCoordinateInfoBarWithWSG84Coordinate:footprintAnnotation.coordinateWGS84];
         }
         
@@ -2858,29 +2658,30 @@
         if ([polyline.title isEqualToString:MKPolylineTitleSavedForRecored]) {
             // 记录的且已经保存的路线
             polylineRenderer.lineWidth = 2;
-            polylineRenderer.strokeColor = [UIColor randomColor];
+            polylineRenderer.strokeColor = [UIColor randomFlatColor];
         }else if ([polyline.title isEqualToString:MKPolylineTitleSearched]) {
             // 查找的路线
             polylineRenderer.lineWidth = 2;
-            polylineRenderer.strokeColor = [[UIColor magentaColor] colorWithAlphaComponent:0.6];
+            polylineRenderer.strokeColor = self.currentTintColor;//[UIColor brownColor];
         }else{
-            // 箭头路线
-            polylineRenderer.lineWidth = 1;
-            polylineRenderer.strokeColor = [[UIColor brownColor] colorWithAlphaComponent:0.6];
+            // 直线带箭头路线
+            polylineRenderer.lineWidth = 2;
+            polylineRenderer.strokeColor = self.currentTintColor;//[UIColor brownColor];
         }
 
         return polylineRenderer;
     }else if([overlay isKindOfClass:[MKPolygon class]]){
+        // 箭头
         MKPolygonRenderer *polygonRenderer = [[MKPolygonRenderer alloc] initWithPolygon:overlay];
         polygonRenderer.lineWidth = 1;
-        polygonRenderer.strokeColor = [[UIColor brownColor] colorWithAlphaComponent:0.6];
-        //polygonRenderer.fillColor = [[UIColor cyanColor] colorWithAlphaComponent:0.4];
+        polygonRenderer.strokeColor = self.currentTintColor;//[[UIColor brownColor] colorWithAlphaComponent:0.6];
         return polygonRenderer;
     }else if ([overlay isKindOfClass:[MKCircle class]]){
+        // 范围圆圈
         MKCircleRenderer *circleRenderer = [[MKCircleRenderer alloc] initWithCircle:overlay];
         circleRenderer.lineWidth = 1;
-        circleRenderer.fillColor = [[UIColor cyanColor] colorWithAlphaComponent:0.4];
-        circleRenderer.strokeColor = [[UIColor cyanColor] colorWithAlphaComponent:0.6];
+        circleRenderer.fillColor = self.currentTintColor;//[[UIColor flatBlueColor] colorWithAlphaComponent:0.4];
+        circleRenderer.strokeColor = self.currentTintColor;//[[UIColor flatBlueColor] colorWithAlphaComponent:0.6];
         return circleRenderer;
     }
     else{

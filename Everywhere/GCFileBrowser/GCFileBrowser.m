@@ -12,8 +12,21 @@
 
 @interface GCFileBrowser ()  <UITableViewDelegate,UITableViewDataSource,GCFileTableViewCellDelegate>
 
-//@property (strong,nonatomic) UISegmentedControl *segmentedControl;
-//@property (strong,nonatomic) NSArray <NSString *> *contentNameArray;
+/**
+ 底部操作菜单 操作项 名称数组（普通状态）
+ */
+@property (strong,nonatomic) NSArray <NSString *> *actionNameArray;
+
+/**
+ 底部操作菜单 操作项 图片数组（普通状态）
+ */
+@property (strong,nonatomic) NSArray <UIImage *> *normalImageArray;
+
+/**
+ 底部操作菜单 操作项 图片数组（高亮状态）
+ */
+@property (strong,nonatomic) NSArray <UIImage *> *highlightedImageArray;
+
 
 @end
 
@@ -78,10 +91,13 @@
     return tempMA;
 }
 
+#define AllActionNormalImageArray @[@"icon-play1",@"icon-view1",@"icon-copy1",@"icon-move1",@"icon-rename1",@"icon-trash1",@"icon-export1"]
+#define AllActionHighlightedImageArray @[@"icon-play2",@"icon-view2",@"icon-copy2",@"icon-move2",@"icon-rename2",@"icon-trash2",@"icon-export2"]
+
 - (NSArray<UIImage *> *)normalImageArray{
     if (!_normalImageArray){
         NSMutableArray <UIImage *> *imageArray = [NSMutableArray array];
-        for (NSString *imageName in @[@"icon-play1",@"icon-view1",@"icon-copy1",@"icon-move1",@"icon-rename1",@"icon-trash1",@"icon-export1"]) {
+        for (NSString *imageName in @[@"icon-copy1",@"icon-move1",@"icon-rename1",@"icon-trash1",@"icon-export1"]) {
             [imageArray addObject:[UIImage imageNamed:imageName]];
         }
         _normalImageArray = imageArray;
@@ -92,13 +108,14 @@
 - (NSArray<UIImage *> *)highlightedImageArray{
     if (!_highlightedImageArray){
         NSMutableArray <UIImage *> *imageArray = [NSMutableArray array];
-        for (NSString *imageName in @[@"icon-play2",@"icon-view2",@"icon-copy2",@"icon-move2",@"icon-rename2",@"icon-trash2",@"icon-export2"]) {
+        for (NSString *imageName in @[@"icon-copy2",@"icon-move2",@"icon-rename2",@"icon-trash2",@"icon-export2"]) {
             [imageArray addObject:[UIImage imageNamed:imageName]];
         }
         _highlightedImageArray = imageArray;
     }
     return _highlightedImageArray;
 }
+
 
 #pragma mark - Life Cycle
 
@@ -114,6 +131,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    //self.actionNameArray = @[NSLocalizedString(@"Copy",@"复制"),NSLocalizedString(@"Cut",@"剪切"),NSLocalizedString(@"Paste",@"粘贴")];
     
     if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     self.view.backgroundColor = VCBackgroundColor;
@@ -153,15 +171,16 @@
     [infoLabelInTopView setTextColor:GCCOLOR_FILES_COUNTER];
     [infoLabelInTopView setShadowColor:GCCOLOR_FILES_COUNTER_SHADOW];
     [infoLabelInTopView setShadowOffset:CGSizeMake(0, 1)];
-    infoLabelInTopView.text = [NSString stringWithFormat:@"%lu",(unsigned long)contentAttributeMutableDictionaryArray.count];
+    infoLabelInTopView.text = [NSString stringWithFormat:@"0/%lu",(unsigned long)contentAttributeMutableDictionaryArray.count];
     [topView addSubview:infoLabelInTopView];
     [infoLabelInTopView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
     [infoLabelInTopView autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
 }
 
 - (void)initSegmentedControl{
+    
     segmentedControl = [[UISegmentedControl alloc] initWithItems:self.normalImageArray];
-    segmentedControl.tintColor = [UIColor blueColor];
+    segmentedControl.tintColor = GCCOLOR_FILES_COUNTER;
     
     [segmentedControl addTarget:self action:@selector(segmentedControlValueChanged:) forControlEvents:UIControlEventValueChanged];
     
@@ -181,15 +200,17 @@
     
     segmentedControl.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:segmentedControl];
-    [segmentedControl autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(10, 10, 10, 10) excludingEdge:ALEdgeTop];
-    [segmentedControl autoSetDimension:ALDimensionHeight toSize:40];
+    [segmentedControl autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(10, 10, 5, 10) excludingEdge:ALEdgeTop];
+    [segmentedControl autoSetDimension:ALDimensionHeight toSize:44];
 }
 
 - (void)segmentedControlValueChanged:(UISegmentedControl *)sender {
     NSInteger index = sender.selectedSegmentIndex;
     if(DEBUGMODE) NSLog(@"selectedSegmentIndex : %ld",(long)index);
+    
+    if (self.actionNameArray) return;
     [segmentedControl setImage:self.highlightedImageArray[index] forSegmentAtIndex:index];
-    [self performSelector:@selector(deselectSegmentControlAtIndex:) withObject:[NSNumber numberWithInteger:index] afterDelay:0.30f];
+    [self performSelector:@selector(deselectSegmentControlAtIndex:) withObject:[NSNumber numberWithInteger:index] afterDelay:0.5f];
 }
 
 - (void)deselectSegmentControlAtIndex:(NSNumber *)deselectIndex{
@@ -213,7 +234,7 @@
     [contentTableView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:topView withOffset:0];
     
     if (self.enableActionMenu && [self.view.subviews containsObject:segmentedControl])
-        [contentTableView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:segmentedControl withOffset:0];
+        [contentTableView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:segmentedControl withOffset:5];
     else
         [contentTableView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
     
@@ -287,6 +308,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+//    GCFileTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+//    cell.title = cell.title;
+    
     NSDictionary *contentAttributes = contentAttributeMutableDictionaryArray[indexPath.row];
     if ([contentAttributes[kContentIsDirectory] boolValue]){
         GCFileBrowser *fileBrowser = [GCFileBrowser new];

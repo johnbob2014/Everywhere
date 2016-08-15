@@ -10,6 +10,9 @@
 
 @interface GCFileBrowser : UIViewController
 
+/**
+ *  <#Description#>
+ */
 @property (strong,nonatomic) NSString *directoryPath;
 
 /**
@@ -22,14 +25,5 @@
  */
 @property (assign,nonatomic) BOOL enableActionMenu;
 
-/**
- 底部操作菜单 操作项 图片数组（普通状态）
- */
-@property (strong,nonatomic) NSArray <UIImage *> *normalImageArray;
-
-/**
- 底部操作菜单 操作项 图片数组（高亮状态）
- */
-@property (strong,nonatomic) NSArray <UIImage *> *highlightedImageArray;
 
 @end
