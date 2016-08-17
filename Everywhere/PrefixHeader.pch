@@ -14,8 +14,7 @@
 
 #endif /* PrefixHeader_pch */
 
-//#warning Fix Before Submit
-//#define DEBUGMODE 1
+#warning Fix Before Submit
 #define DEBUGMODE 0
 
 #define MFRUTI @"com.ZhangBaoGuo.AlbumMaps.mfr"
@@ -45,6 +44,7 @@
 #import "UIAlertController+Assistant.h"
 #import "UIImage+Assistant.h"
 #import "UILabel+Assistant.h"
+#import "UITextField+Assistant.h"
 #import "UIButton+Assistant/NSString+FontAwesome.h"
 
 #import "XMLDictionary.h"
@@ -101,7 +101,7 @@ typedef NS_ENUM(NSInteger, LocationMode) {
 
 typedef NS_ENUM(NSInteger,BaseColorScheme){
     BaseColorSchemeSkyBlue = 0,
-    BaseColorSchemeCutePink,
+    BaseColorSchemeSakuraPink,
     BaseColorSchemeClassicGray,
     BaseColorSchemeFreshPlum,
     BaseColorSchemeDeepBrown

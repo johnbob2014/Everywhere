@@ -39,7 +39,7 @@
     footprintAnnotation.customTitle = [aDecoder decodeObjectForKey:@"customTitle"];
     footprintAnnotation.isUserManuallyAdded = [aDecoder decodeBoolForKey:@"isUserManuallyAdded"];
     footprintAnnotation.altitude = [aDecoder decodeDoubleForKey:@"altitude"];
-    
+    footprintAnnotation.speed = [aDecoder decodeDoubleForKey:@"speed"];
     return footprintAnnotation;
 }
 
@@ -63,6 +63,10 @@
     
     if (self.altitude != 0){
         [aCoder encodeDouble:self.altitude forKey:@"altitude"];
+    }
+    
+    if (self.speed != 0){
+        [aCoder encodeDouble:self.speed forKey:@"speed"];
     }
 }
 

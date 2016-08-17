@@ -14,37 +14,42 @@
 @interface EverywhereFootprintAnnotation : NSObject <MKAnnotation,NSCoding,GCLocationAnalyserProtocol>
 
 /**
- 必需，coordinateWGS84 - EverywhereFootprintAnnotation
+ *  必需，coordinateWGS84
  */
 @property (assign,nonatomic) CLLocationCoordinate2D coordinateWGS84;
 
 /**
- 必需，开始时间 - EverywhereFootprintAnnotation
+ *  必需，开始时间
  */
 @property (strong,nonatomic) NSDate *startDate;
 
 /**
- 结束时间 - EverywhereFootprintAnnotation
+ *  结束时间
  */
 @property (strong,nonatomic) NSDate *endDate;
 
 /**
- 高度 - EverywhereFootprintAnnotation
+ *  高度
  */
 @property (assign,nonatomic) CLLocationDistance altitude;
 
 /**
- 自定义标题，如果为空，则返回title - EverywhereFootprintAnnotation
+ *  速度
+ */
+@property (assign,nonatomic) CLLocationSpeed speed;
+
+/**
+ *  自定义标题，如果为空，则返回title
  */
 @property (strong,nonatomic) NSString *customTitle;
 
 /**
- 标记该FootprintAnnotation是否为用户手动添加，主要用于记录和编辑 - EverywhereFootprintAnnotation
+ *  标记该FootprintAnnotation是否为用户手动添加，主要用于记录和编辑
  */
 @property (assign,nonatomic) BOOL isUserManuallyAdded;
 
 /**
- 只读，仅用于GCLocationAnalyser进行分组 - EverywhereFootprintAnnotation
+ *  只读，仅用于GCLocationAnalyser进行分组
  */
 @property (strong,nonatomic,readonly) CLLocation *location;
 

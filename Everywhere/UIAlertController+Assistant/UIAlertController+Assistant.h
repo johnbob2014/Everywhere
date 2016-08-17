@@ -13,6 +13,7 @@ typedef void (^UIAlertActionHandler)(UIAlertAction *action);
 @interface UIAlertController (Assistant)
 + (UIAlertController *)informationAlertControllerWithTitle:(NSString *)title message:(NSString *)message;
 + (UIAlertController *)okCancelAlertControllerWithTitle:(NSString *)title message:(NSString *)message okActionHandler:(void (^)(UIAlertAction *action))okActionHandler;
++ (UIAlertController *)okCancelAlertControllerWithTitle:(NSString *)title message:(NSString *)message okActionHandler:(void (^)(UIAlertAction *action))okActionHandler cancelActionHandler:(void (^)(UIAlertAction *action))cancelActionHandler;
 + (UIAlertController *)renameAlertControllerWithActionHandler:(void (^)(UIAlertAction *action))handler
                                 textFieldConfigurationHandler:(void (^)(UITextField *textField))configurationHandler;
 @end

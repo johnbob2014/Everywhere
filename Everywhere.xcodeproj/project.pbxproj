@@ -78,6 +78,7 @@
 		4B0330091D5C783800E83585 /* GCFileTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0330081D5C783800E83585 /* GCFileTableViewCell.m */; };
 		4B03B4C01D59E784007FA6C6 /* 地球_320_320.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B03B4BE1D59E784007FA6C6 /* 地球_320_320.png */; };
 		4B03B4C11D59E784007FA6C6 /* 地球_64_64.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B03B4BF1D59E784007FA6C6 /* 地球_64_64.png */; };
+		4B058D8F1D62F23D00DBEE04 /* DatePickerProVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B058D8E1D62F23D00DBEE04 /* DatePickerProVC.m */; };
 		4B079BA01D61B07800BC4115 /* Chameleon_.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B079B871D61B07800BC4115 /* Chameleon_.m */; };
 		4B079BA11D61B07800BC4115 /* ChameleonConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B079B891D61B07800BC4115 /* ChameleonConstants.m */; };
 		4B079BA21D61B07800BC4115 /* NSArray+Chameleon.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B079B8D1D61B07800BC4115 /* NSArray+Chameleon.m */; };
@@ -128,6 +129,7 @@
 		4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */; };
 		4BE88A9F1D332B38009501CE /* EverywhereSettingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE88A9E1D332B38009501CE /* EverywhereSettingManager.m */; };
 		4BE88AA21D333A46009501CE /* MapModeBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE88AA11D333A46009501CE /* MapModeBar.m */; };
+		4BF277151D63F3DE009626B5 /* UITextField+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF277141D63F3DE009626B5 /* UITextField+Assistant.m */; };
 		4BF8DC151D37882E00BC7B64 /* ShareBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF8DC141D37882E00BC7B64 /* ShareBar.m */; };
 		4BF9B7FE1D5C0B9A00927EC9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4BF9B8001D5C0B9A00927EC9 /* LaunchScreen.storyboard */; };
 		4BFA063D1D4B306900AE8000 /* NSString+Hashing.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BFA063A1D4B306900AE8000 /* NSString+Hashing.m */; };
@@ -250,6 +252,8 @@
 		4B03B4B81D59E59C007FA6C6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4B03B4BE1D59E784007FA6C6 /* 地球_320_320.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "地球_320_320.png"; sourceTree = "<group>"; };
 		4B03B4BF1D59E784007FA6C6 /* 地球_64_64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "地球_64_64.png"; sourceTree = "<group>"; };
+		4B058D8D1D62F23D00DBEE04 /* DatePickerProVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DatePickerProVC.h; path = EverywhereVisualViewControllers/DatePickerProVC.h; sourceTree = "<group>"; };
+		4B058D8E1D62F23D00DBEE04 /* DatePickerProVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatePickerProVC.m; path = EverywhereVisualViewControllers/DatePickerProVC.m; sourceTree = "<group>"; };
 		4B0620771D2CE36C00545FCE /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		4B079B851D61B07800BC4115 /* Chameleon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Chameleon.h; sourceTree = "<group>"; };
 		4B079B861D61B07800BC4115 /* Chameleon_.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Chameleon_.h; sourceTree = "<group>"; };
@@ -346,6 +350,8 @@
 		4BE88A9E1D332B38009501CE /* EverywhereSettingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereSettingManager.m; path = EverywhereModels/EverywhereSettingManager.m; sourceTree = "<group>"; };
 		4BE88AA01D333A46009501CE /* MapModeBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapModeBar.h; path = EverywhereVisualViewControllers/MapModeBar.h; sourceTree = "<group>"; };
 		4BE88AA11D333A46009501CE /* MapModeBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapModeBar.m; path = EverywhereVisualViewControllers/MapModeBar.m; sourceTree = "<group>"; };
+		4BF277131D63F3DE009626B5 /* UITextField+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UITextField+Assistant.h"; path = "UITextField+Assistant/UITextField+Assistant.h"; sourceTree = "<group>"; };
+		4BF277141D63F3DE009626B5 /* UITextField+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UITextField+Assistant.m"; path = "UITextField+Assistant/UITextField+Assistant.m"; sourceTree = "<group>"; };
 		4BF8DC131D37882E00BC7B64 /* ShareBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShareBar.h; path = EverywhereVisualViewControllers/ShareBar.h; sourceTree = "<group>"; };
 		4BF8DC141D37882E00BC7B64 /* ShareBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ShareBar.m; path = EverywhereVisualViewControllers/ShareBar.m; sourceTree = "<group>"; };
 		4BF9B7FF1D5C0B9A00927EC9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -504,6 +510,8 @@
 			children = (
 				4BFA4EB41D33982A007DDA87 /* DatePickerVC.h */,
 				4BFA4EB51D33982A007DDA87 /* DatePickerVC.m */,
+				4B058D8D1D62F23D00DBEE04 /* DatePickerProVC.h */,
+				4B058D8E1D62F23D00DBEE04 /* DatePickerProVC.m */,
 				4BFA4EB11D33791A007DDA87 /* LocationPickerVC.h */,
 				4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */,
 				4B31B4361D3C5EE20072044F /* FootprintsRepositoryPickerVC.h */,
@@ -794,6 +802,7 @@
 		4B3AF9CE1D2F3EBA009BD545 /* GeneralCategory */ = {
 			isa = PBXGroup;
 			children = (
+				4BF277121D63F397009626B5 /* UITextField+Assistant */,
 				4B69F5031D6156A800575AC3 /* UIButton+Assistant */,
 				4B69F4FF1D614D5700575AC3 /* UILabel+Assistant */,
 				4BFA06421D4B564B00AE8000 /* UIImage+Assistant */,
@@ -874,6 +883,15 @@
 				4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */,
 			);
 			name = EverywhereCoreData;
+			sourceTree = "<group>";
+		};
+		4BF277121D63F397009626B5 /* UITextField+Assistant */ = {
+			isa = PBXGroup;
+			children = (
+				4BF277131D63F3DE009626B5 /* UITextField+Assistant.h */,
+				4BF277141D63F3DE009626B5 /* UITextField+Assistant.m */,
+			);
+			name = "UITextField+Assistant";
 			sourceTree = "<group>";
 		};
 		4BFA06381D4B306900AE8000 /* Qiniu */ = {
@@ -1139,6 +1157,7 @@
 				4BFA4EB61D33982A007DDA87 /* DatePickerVC.m in Sources */,
 				1E2848031D1ADDB900189A83 /* Everywhere.xcdatamodeld in Sources */,
 				4B079BA81D61B07800BC4115 /* UILabel+Chameleon.m in Sources */,
+				4BF277151D63F3DE009626B5 /* UITextField+Assistant.m in Sources */,
 				4B3AF9CC1D2F3E70009BD545 /* GCRoutePolyline.m in Sources */,
 				1E8723A41D42D82E00652757 /* RecordModeSettingBar.m in Sources */,
 				1EF62A5D1D3BD6DF0084AF66 /* EverywhereFootprintsRepositoryManager.m in Sources */,
@@ -1165,6 +1184,7 @@
 				4B079BA61D61B07800BC4115 /* UIColor+ChameleonPrivate.m in Sources */,
 				4B90DDFA1D38C5A200332945 /* EverywhereFootprintAnnotation.m in Sources */,
 				4BD51FCC1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m in Sources */,
+				4B058D8F1D62F23D00DBEE04 /* DatePickerProVC.m in Sources */,
 				1EEA79511D2791A0002B6291 /* EverywhereAnnotation.m in Sources */,
 				1E2847F71D1ADDB900189A83 /* main.m in Sources */,
 				4B3AF9CA1D2F3E70009BD545 /* GCPhotoManager.m in Sources */,

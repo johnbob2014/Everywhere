@@ -32,14 +32,14 @@
     
     settingManager = [EverywhereSettingManager defaultManager];
     
-//#warning Fix Before Submit
+#warning Fix Before Submit
 //    settingManager.hasPurchasedRecordAndEdit = NO;
 //    settingManager.hasPurchasedShareAndBrowse = NO;
 //    settingManager.hasPurchasedImportAndExport = NO;
 //    
-//    settingManager.hasPurchasedRecordAndEdit = YES;
-//    settingManager.hasPurchasedShareAndBrowse = YES;
-//    settingManager.hasPurchasedImportAndExport = YES;
+    settingManager.hasPurchasedRecordAndEdit = YES;
+    settingManager.hasPurchasedShareAndBrowse = YES;
+    settingManager.hasPurchasedImportAndExport = YES;
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     assetsMapProVC = [AssetsMapProVC new];

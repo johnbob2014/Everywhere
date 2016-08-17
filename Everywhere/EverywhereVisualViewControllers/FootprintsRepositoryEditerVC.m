@@ -46,7 +46,7 @@
     UIView *containerView = [UIView newAutoLayoutView];
     [self.view addSubview:containerView];
     [containerView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
-    [containerView autoSetDimension:ALDimensionHeight toSize:160];
+    [containerView autoSetDimension:ALDimensionHeight toSize:165];
 
     myTableView = [UITableView newAutoLayoutView];
     myTableView.delegate = self;
@@ -88,7 +88,7 @@
     [groupSeg autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
     
     UILabel *reserveManuallyAddedFootprintLabel = [UILabel newAutoLayoutView];
-    reserveManuallyAddedFootprintLabel.text = NSLocalizedString(@"Reserve Manually Added :", @"保留手动添加的 :");
+    reserveManuallyAddedFootprintLabel.text = NSLocalizedString(@"Reserve Manually Added :", @"保留手动添加足迹点 :");
     [containerView addSubview:reserveManuallyAddedFootprintLabel];
     [reserveManuallyAddedFootprintLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:groupSeg withOffset:10];
     [reserveManuallyAddedFootprintLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
@@ -107,7 +107,7 @@
     [mergeButton setTitle:NSLocalizedString(@"Start Merge", @"开始合并") forState:UIControlStateNormal];
     [containerView addSubview:mergeButton];
     [mergeButton autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(10, 10, 5, 10) excludingEdge:ALEdgeTop];
-    [mergeButton autoSetDimension:ALDimensionHeight toSize:44];
+    [mergeButton autoSetDimension:ALDimensionHeight toSize:40];
     
 }
 
@@ -206,16 +206,59 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
     //cell.accessoryType = UITableViewCellAccessoryDetailButton;
     EverywhereFootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
-    NSString *headerString = footprintAnnotation.isUserManuallyAdded ? @"📍 " : @"🔸 ";
-    cell.textLabel.text = [headerString stringByAppendingString:footprintAnnotation.customTitle];
-    cell.detailTextLabel.text = footprintAnnotation.title;
+    NSString *headerString = footprintAnnotation.isUserManuallyAdded ? @"📍" : @"🔸";
+    cell.textLabel.text = [NSString stringWithFormat:@"%lu %@ %@",(unsigned long)(indexPath.row + 1),headerString,footprintAnnotation.customTitle];
+    
+    NSMutableString *ms = [NSMutableString new];
+    [ms appendFormat:@"%.6f°,%.6f°",footprintAnnotation.coordinateWGS84.latitude,footprintAnnotation.coordinateWGS84.longitude];
+    if (footprintAnnotation.altitude != 0) [ms appendFormat:@"    %.2fm",footprintAnnotation.altitude];
+    if (footprintAnnotation.speed > 0) [ms appendFormat:@"    %.2fm/s",footprintAnnotation.speed];
+    cell.detailTextLabel.text = ms;
+    
     return cell;
 }
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    //if (self.footprintAnnotationDidChangeHandler) self.footprintAnnotationDidChangeHandler(currentGroupArray[indexPath.row]);
-    //[self dismissViewControllerAnimated:YES completion:nil];
+    EverywhereFootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
+    
+    NSString *alertTitle = NSLocalizedString(@"Items", @"选项");
+    NSString *alertMessage = NSLocalizedString(@"Select an action", @"请选择操作");
+    
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *renameAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Rename",@"重命名")
+                                                           style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * _Nonnull action) {
+                                                             __block UITextField *tf;
+                                                             UIAlertController *renameAC = [UIAlertController renameAlertControllerWithActionHandler:^(UIAlertAction *action) {
+                                                                 
+                                                                 footprintAnnotation.customTitle = tf.text;
+                                                                 [self updateData];
+                                                                 
+                                                             } textFieldConfigurationHandler:^(UITextField *textField) {
+                                                                 textField.text = footprintAnnotation.customTitle;
+                                                                 tf = textField;
+                                                             }];
+                                                             
+                                                             [self presentViewController:renameAC animated:YES completion:nil];
+                                                         }];
+    
+    UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Delete",@"删除")
+                                                           style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * _Nonnull action) {
+                                                             [self.footprintAnnotationMA removeObject:footprintAnnotation];
+                                                             [self updateData];
+                                                         }];
+    
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
+    [alertController addAction:renameAction];
+    [alertController addAction:deleteAction];
+    [alertController addAction:cancelAction];
+    if (iOS9) alertController.preferredAction = renameAction;
+    
+    [self presentViewController:alertController animated:YES completion:nil];
     
 }
 

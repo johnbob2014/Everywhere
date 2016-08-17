@@ -18,9 +18,13 @@
 }
 
 + (UIAlertController *)okCancelAlertControllerWithTitle:(NSString *)title message:(NSString *)message okActionHandler:(void (^)(UIAlertAction *action))okActionHandler{
+    return [UIAlertController okCancelAlertControllerWithTitle:title message:message okActionHandler:okActionHandler cancelActionHandler:nil];
+}
+
++ (UIAlertController *)okCancelAlertControllerWithTitle:(NSString *)title message:(NSString *)message okActionHandler:(void (^)(UIAlertAction *action))okActionHandler cancelActionHandler:(void (^)(UIAlertAction *action))cancelActionHandler{
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK",@"确定") style:UIAlertActionStyleDefault handler:okActionHandler];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:cancelActionHandler];
     [alertController addAction:okAction];
     [alertController addAction:cancelAction];
     
@@ -28,6 +32,7 @@
     
     return alertController;
 }
+
 
 + (UIAlertController *)renameAlertControllerWithActionHandler:(void (^)(UIAlertAction *action))handler
                                 textFieldConfigurationHandler:(void (^)(UITextField *textField))configurationHandler{

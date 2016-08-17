@@ -38,12 +38,12 @@
 }
 
 
-#define BTSetOrigin @"Set Origin"
-#define BTSetDest @"Set Dest."
-#define BTGetRoute @"Get Route"
-#define BTBaidu @"Baidu ☞"
-#define BTNaviToHere @"Navi To Here"
-#define BTRouteNavi @"Route Navi"
+#define BTSetOrigin NSLocalizedString(@"Set Origin",@"设置起点")
+#define BTSetDest NSLocalizedString(@"Set Dest.",@"设置终点")
+#define BTGetRoute NSLocalizedString(@"Get Route",@"获取路线")
+#define BTBaidu NSLocalizedString(@"BaiduMap ☞",@"百度地图 ☞")
+#define BTNaviToHere NSLocalizedString(@"Navi To Here",@"导航到这里")
+#define BTRouteNavi NSLocalizedString(@"Origin To Dest.",@"起点至终点")
 
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
@@ -143,7 +143,7 @@
         [self setupButtonsStyle];
 
         self.naviToHereButton = [self buttonWithTitle:BTNaviToHere];
-        [self buttonWithTitle:BTBaidu].enabled = NO;
+        //[self buttonWithTitle:BTBaidu].enabled = YES;
         [self buttonWithTitle:BTGetRoute].enabled = NO;
         [self buttonWithTitle:BTRouteNavi].enabled = NO;
         
@@ -214,7 +214,7 @@
 }
 
 - (void)baiduBtnTD{
-    //[baiduButton.titleLabel.text isEqualToString:@"☆"] ? [baiduButton setTitle:@"⭐️" forState:UIControlStateNormal] : [baiduButton setTitle:@"☆" forState:UIControlStateNormal];
+    [[self buttonWithTitle:BTBaidu] setTitle:NSLocalizedString(@"AMap ☞",@"高德地图 ☞") forState:UIControlStateNormal];
 }
 
 - (void)naviToHereBtnTD{
@@ -284,11 +284,11 @@
     NSMutableString *ma = [NSMutableString new];
     [ma appendString:[self.currentShowCoordinateInfo.latitude doubleValue] > 0 ? NSLocalizedString(@"N. ", @"北纬 "):NSLocalizedString(@"S. ", @"南纬 ")];
     [ma appendString:[LocationInfoWithCoordinateInfoBar dmsStringWithDegrees:[self.currentShowCoordinateInfo.latitude doubleValue]]];
-    [ma appendFormat:@" (%.4f°)",fabs([self.currentShowCoordinateInfo.latitude doubleValue])];
+    [ma appendFormat:@" (%.6f°)",fabs([self.currentShowCoordinateInfo.latitude doubleValue])];
     [ma appendFormat:@"\n"];
     [ma appendString:[self.currentShowCoordinateInfo.longitude doubleValue] > 0 ? NSLocalizedString(@"E. ", @"东经 "):NSLocalizedString(@"W. ", @"西经 ")];
     [ma appendString:[LocationInfoWithCoordinateInfoBar dmsStringWithDegrees:[self.currentShowCoordinateInfo.longitude doubleValue]]];
-    [ma appendFormat:@" (%.4f°)",fabs([self.currentShowCoordinateInfo.longitude doubleValue])];
+    [ma appendFormat:@" (%.6f°)",fabs([self.currentShowCoordinateInfo.longitude doubleValue])];
     self.coordinateLabel.text = ma;
 }
 

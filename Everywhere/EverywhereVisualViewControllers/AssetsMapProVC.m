@@ -43,7 +43,7 @@
 #import "LocationInfoWithCoordinateInfoBar.h"
 #import "PlacemarkInfoBar.h"
 #import "CLPlacemark+Assistant.h"
-#import "DatePickerVC.h"
+#import "DatePickerProVC.h"
 #import "AssetDetailVC.h"
 #import "UIButton+Assistant.h"
 #import "MapModeBar.h"
@@ -755,25 +755,22 @@
 
 
 - (void)showDatePicker{
-    DatePickerVC *datePickerVC = [DatePickerVC new];
+    DatePickerProVC *datePickerProVC = [DatePickerProVC new];
     
     WEAKSELF(weakSelf);
-    //__weak AssetsMapProVC *weakSelf = self;
     
-    datePickerVC.dateModeChangedHandler = ^(DateMode choosedDateMode){
+    datePickerProVC.dateModeChangedHandler = ^(DateMode choosedDateMode){
         weakSelf.settingManager.dateMode = choosedDateMode;
     };
     
-    datePickerVC.dateRangeChangedHandler = ^(NSDate *choosedStartDate,NSDate *choosedEndDate){
+    datePickerProVC.dateRangeChangedHandler = ^(NSDate *choosedStartDate,NSDate *choosedEndDate){
         //settingManager.mapBaseMode = MapBaseModeMoment;
         weakSelf.startDate = choosedStartDate;
         weakSelf.endDate = choosedEndDate;
         weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:weakSelf.startDate toEndDate:weakSelf.endDate inManagedObjectContext:weakSelf.cdManager.appDelegateMOC];
     };
     
-    datePickerVC.contentSizeInPopup = ContentSizeInPopup_Big;
-    datePickerVC.landscapeContentSizeInPopup = LandscapeContentSizeInPopup_Big;
-    popupController = [[STPopupController alloc] initWithRootViewController:datePickerVC];
+    popupController = [[STPopupController alloc] initWithRootViewController:datePickerProVC];
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];
 }
@@ -1468,7 +1465,7 @@
     
     if (self.userLocationWGS84) [self addRecordedFootprintAnnotationsWithLocation:self.userLocationWGS84 isUserManuallyAdded:YES];
     else{
-        [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Haven't got current location!", @"尚未定位，无法添加！")]
+        [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Is not recording or haven't got current location.", @"当前未开始记录或者未定位，无法手动添加足迹点。")]
                            animated:YES
                          completion:nil];
     }
@@ -1724,10 +1721,26 @@
     WEAKSELF(weakSelf);
     inAppPurchaseVC.inAppPurchaseCompletionHandler = ^(enum TransactionType transactionType,NSInteger productIndex,BOOL succeeded){
         if (succeeded) {
-            if (productIndex == 0) weakSelf.settingManager.hasPurchasedShareAndBrowse = YES;
-            if (productIndex == 1) weakSelf.settingManager.hasPurchasedRecordAndEdit = YES;
+            switch (productIndex) {
+                case 0:
+                    weakSelf.settingManager.hasPurchasedShareAndBrowse = YES;
+                    break;
+                case 1:
+                    weakSelf.settingManager.hasPurchasedRecordAndEdit = YES;
+                    break;
+                case 2:
+                    weakSelf.settingManager.hasPurchasedImportAndExport = YES;
+                    break;
+                case 3:
+                    weakSelf.settingManager.hasPurchasedShareAndBrowse = YES;
+                    weakSelf.settingManager.hasPurchasedRecordAndEdit = YES;
+                    weakSelf.settingManager.hasPurchasedImportAndExport = YES;
+                    break;
+                default:
+                    break;
+            }
         }
-        if(DEBUGMODE) NSLog(@"%@",succeeded? @"用户购买成功！" : @"用户购买失败！");
+        if(DEBUGMODE) NSLog(@"%@ %@",self.settingManager.appProductIDArray[productIndex],succeeded? @"成功！" : @"用失败！");
     };
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:inAppPurchaseVC];
@@ -2290,6 +2303,7 @@
         EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation new];
         footprintAnnotation.coordinateWGS84 = firstAsset.location.coordinate;
         footprintAnnotation.altitude = firstAsset.location.altitude;
+        footprintAnnotation.speed = firstAsset.location.speed;
         footprintAnnotation.startDate = firstAsset.creationDate;
         if (self.settingManager.mapBaseMode == MapBaseModeLocation) footprintAnnotation.endDate = lastAsset.creationDate;
         
@@ -2536,7 +2550,8 @@
         
         pinAV.animatesDrop = NO;
         
-        pinAV.pinTintColor = self.currentTintColor;//[UIColor greenColor];
+        if(iOS9) pinAV.pinTintColor = self.currentTintColor;//[UIColor greenColor];
+        else pinAV.pinColor = MKPinAnnotationColorGreen;
         
         pinAV.canShowCallout = YES;
         
@@ -2579,8 +2594,8 @@
         
         pinAV.animatesDrop = NO;
         
-        pinAV.pinTintColor = footprintAnnotation.isUserManuallyAdded ? [UIColor redColor] : self.currentTintColor;
-        //pinAV.pinColor = footprintAnnotation.isUserManuallyAdded ? MKPinAnnotationColorRed : MKPinAnnotationColorGreen;
+        if(iOS9) pinAV.pinTintColor = footprintAnnotation.isUserManuallyAdded ? [UIColor redColor] : self.currentTintColor;
+        else pinAV.pinColor = footprintAnnotation.isUserManuallyAdded ? MKPinAnnotationColorRed : MKPinAnnotationColorGreen;
         
         pinAV.canShowCallout = YES;
         
@@ -2673,7 +2688,7 @@
     }else if([overlay isKindOfClass:[MKPolygon class]]){
         // 箭头
         MKPolygonRenderer *polygonRenderer = [[MKPolygonRenderer alloc] initWithPolygon:overlay];
-        polygonRenderer.lineWidth = 1;
+        polygonRenderer.lineWidth = 2;
         polygonRenderer.strokeColor = self.currentTintColor;//[[UIColor brownColor] colorWithAlphaComponent:0.6];
         return polygonRenderer;
     }else if ([overlay isKindOfClass:[MKCircle class]]){
@@ -2681,7 +2696,7 @@
         MKCircleRenderer *circleRenderer = [[MKCircleRenderer alloc] initWithCircle:overlay];
         circleRenderer.lineWidth = 1;
         circleRenderer.fillColor = self.currentTintColor;//[[UIColor flatBlueColor] colorWithAlphaComponent:0.4];
-        circleRenderer.strokeColor = self.currentTintColor;//[[UIColor flatBlueColor] colorWithAlphaComponent:0.6];
+        circleRenderer.strokeColor = [self.currentTintColor colorWithAlphaComponent:0.6];//[[UIColor flatBlueColor] colorWithAlphaComponent:0.6];
         return circleRenderer;
     }
     else{
@@ -2791,8 +2806,9 @@
     EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation new];
     footprintAnnotation.coordinateWGS84 = newLocation.coordinate;
     footprintAnnotation.altitude = newLocation.altitude;
+    footprintAnnotation.speed = newLocation.speed;
     footprintAnnotation.startDate = NOW;
-    footprintAnnotation.customTitle = [NSString stringWithFormat:@"Footprint %lu",(unsigned long)(recordedFootprintAnnotations.count + 1)];
+    //footprintAnnotation.customTitle = [NSString stringWithFormat:@"Footprint %lu",(unsigned long)(recordedFootprintAnnotations.count + 1)];
     footprintAnnotation.isUserManuallyAdded = isUserManuallyAdded;
     [recordedFootprintAnnotations addObject:footprintAnnotation];
     [self.myMapView addAnnotation:footprintAnnotation];

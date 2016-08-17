@@ -235,6 +235,35 @@
                                                            
                                                        }];
     
+    UIAlertAction *exportAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Export",@"导出")
+                                                           style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * _Nonnull action) {
+                                                             if (![EverywhereSettingManager defaultManager].hasPurchasedImportAndExport){
+                                                                 UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note",@"提示") message:NSLocalizedString(@"You haven't puchased ImportAndExport.",@"您尚未购买导入和导出！")];
+                                                                 [self presentViewController:alertController animated:YES completion:nil];
+                                                             }else{
+                                                                 NSString *dirPath = [Path_Documents stringByAppendingPathComponent:@"Single Exported"];
+                                                                 if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath]){
+                                                                     [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:NO attributes:nil error:NULL];
+                                                                 }
+                                                                 
+                                                                 NSString *exportToGPXPath = [dirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.gpx",footprintsRepository.title]];
+                                                                 BOOL exportToGPX = [footprintsRepository exportToGPXFile:exportToGPXPath];
+                                                                 
+                                                                 NSString *exportToMFRPath = [dirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mfr",footprintsRepository.title]];
+                                                                 BOOL exportToMFR = [footprintsRepository exportToMFRFile:exportToMFRPath];
+                                                                 
+                                                                 NSMutableString *messageMS = [NSMutableString new];
+                                                                 [messageMS appendFormat:@"%@ %@",NSLocalizedString(@"Export To MFR", @"导出为MFR文件"),exportToMFR ? NSLocalizedString(@"Succeeded", @"成功") : NSLocalizedString(@"Failed", @"失败")];
+                                                                 [messageMS appendFormat:@"\n%@ %@",NSLocalizedString(@"Export To GPX", @"导出为GPX文件"),exportToGPX ? NSLocalizedString(@"Succeeded", @"成功") : NSLocalizedString(@"Failed", @"失败")];
+                                                                 
+                                                                 UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note",@"提示") message:messageMS];
+                                                                 [self presentViewController:alertController animated:YES completion:nil];
+                                                             }
+                                                             
+                                                         }];
+    
+    
     UIAlertAction *renameAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Rename",@"重命名")
                                                           style:UIAlertActionStyleDefault
                                                         handler:^(UIAlertAction * _Nonnull action) {
@@ -257,11 +286,21 @@
                                                             [self presentViewController:renameAC animated:YES completion:nil];
                                                         }];
 
+    UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Delete",@"删除")
+                                                           style:UIAlertActionStyleDefault
+                                                         handler:^(UIAlertAction * _Nonnull action) {
+                                                             [footprintsRepositoryMA removeObject:footprintsRepository];
+                                                             [EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:footprintsRepositoryMA];
+                                                             [self updateDataSource:groupSeg.selectedSegmentIndex];
+                                                         }];
+
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
     [alertController addAction:showAction];
     [alertController addAction:shareAction];
+    [alertController addAction:exportAction];
     [alertController addAction:renameAction];
+    [alertController addAction:deleteAction];
     [alertController addAction:cancelAction];
     if (iOS9) alertController.preferredAction = showAction;
     

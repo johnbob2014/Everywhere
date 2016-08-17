@@ -11,6 +11,8 @@
 
 #endif /* GCFileBrowserConfiguration_h */
 
+#pragma mark - ContentAttributeDictionary Key
+
 #define kContentName @"kContentName"
 #define kContentPath @"kContentPath"
 #define kContentIsDirectory @"kContentIsDirectory"
@@ -18,16 +20,23 @@
 #define kContentAttributesFromFileManager @"kContentAttributesFromFileManager"
 #define kContentIsSelected @"kContentIsSelected"
 
-#define GCCOLOR_FILES_TITLE [UIColor colorWithRed:0.4 green:0.357 blue:0.325 alpha:1] /*#665b53*/
-#define GCCOLOR_FILES_TITLE_SHADOW [UIColor colorWithRed:1 green:1 blue:1 alpha:1] /*#ffffff*/
-#define GCCOLOR_FILES_COUNTER [UIColor colorWithRed:0.608 green:0.376 blue:0.251 alpha:1] /*#9b6040*/
-#define GCCOLOR_FILES_COUNTER_SHADOW [UIColor colorWithRed:1 green:1 blue:1 alpha:0.35] /*#ffffff*/
-#define GCCOLOR_FILES_SUBTITLE [UIColor colorWithRed:0.694 green:0.639 blue:0.6 alpha:1] /*#b1a399*/
-#define GCCOLOR_FILES_SUBTITLE_SHADOW [UIColor colorWithRed:1 green:1 blue:1 alpha:1] /*#ffffff*/
-#define GCCOLOR_FILES_SUBTITLE_VALUE [UIColor colorWithRed:0.694 green:0.639 blue:0.6 alpha:1] /*#b1a399*/
-#define GCCOLOR_FILES_SUBTITLE_VALUE_SHADOW [UIColor colorWithRed:1 green:1 blue:1 alpha:1] /*#ffffff*/
+#define kWaitToCopyContentAttributeDictionaryMutableArray @"kWaitToCopyContentAttributeDictionaryMutableArray"
+#define kWaitToMoveContentAttributeDictionaryMutableArray @"kWaitToMoveContentAttributeDictionaryMutableArray"
 
-#define GCFONT_FILES_TITLE [UIFont fontWithName:@"HelveticaNeue" size:(ScreenWidth > 375 ? 20.0f : 16.0f)]
-#define GCFONT_FILES_COUNTER [UIFont fontWithName:@"HelveticaNeue-Bold" size:(ScreenWidth > 375 ? 14.0f : 10.0f)]
-#define GCFONT_FILES_SUBTITLE [UIFont fontWithName:@"HelveticaNeue-Bold" size:(ScreenWidth > 375 ? 14.0f : 10.0f)]
-#define GCFONT_FILES_SUBTITLE_VALUE [UIFont fontWithName:@"HelveticaNeue" size:(ScreenWidth > 375 ? 14.0f : 10.0f)]
+#define FileActionButtonSize CGSizeMake(44,44)
+#define FileActionButtonEdgeLength 44
+#define FileActionButtonOffset 16
+
+//#define GCCOLOR_FILES_TITLE [UIColor colorWithRed:0.4 green:0.357 blue:0.325 alpha:1] /*#665b53*/
+//#define GCCOLOR_FILES_TITLE_SHADOW [UIColor colorWithRed:1 green:1 blue:1 alpha:1] /*#ffffff*/
+//#define GCCOLOR_FILES_COUNTER [UIColor colorWithRed:0.608 green:0.376 blue:0.251 alpha:1] /*#9b6040*/
+//#define GCCOLOR_FILES_COUNTER_SHADOW [UIColor colorWithRed:1 green:1 blue:1 alpha:0.35] /*#ffffff*/
+//#define GCCOLOR_FILES_SUBTITLE [UIColor colorWithRed:0.694 green:0.639 blue:0.6 alpha:1] /*#b1a399*/
+//#define GCCOLOR_FILES_SUBTITLE_SHADOW [UIColor colorWithRed:1 green:1 blue:1 alpha:1] /*#ffffff*/
+//#define GCCOLOR_FILES_SUBTITLE_VALUE [UIColor colorWithRed:0.694 green:0.639 blue:0.6 alpha:1] /*#b1a399*/
+//#define GCCOLOR_FILES_SUBTITLE_VALUE_SHADOW [UIColor colorWithRed:1 green:1 blue:1 alpha:1] /*#ffffff*/
+//
+//#define GCFONT_FILES_TITLE [UIFont fontWithName:@"HelveticaNeue" size:(ScreenWidth > 375 ? 20.0f : 16.0f)]
+//#define GCFONT_FILES_COUNTER [UIFont fontWithName:@"HelveticaNeue-Bold" size:(ScreenWidth > 375 ? 14.0f : 10.0f)]
+//#define GCFONT_FILES_SUBTITLE [UIFont fontWithName:@"HelveticaNeue-Bold" size:(ScreenWidth > 375 ? 14.0f : 10.0f)]
+//#define GCFONT_FILES_SUBTITLE_VALUE [UIFont fontWithName:@"HelveticaNeue" size:(ScreenWidth > 375 ? 14.0f : 10.0f)]

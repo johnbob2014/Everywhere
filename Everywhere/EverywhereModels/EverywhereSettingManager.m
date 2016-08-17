@@ -226,7 +226,7 @@
 
 - (NSString *)lastPlacemark{
     NSString *placemark = [[NSUserDefaults standardUserDefaults] stringForKey:@"lastPlacemark"];
-    if (!placemark) placemark = @"中国";
+    if (!placemark) placemark = @",";
     return placemark;
 }
 
@@ -273,7 +273,7 @@
         case BaseColorSchemeSkyBlue:
             resultColor = [[UIColor flatSkyBlueColor] colorWithAlphaComponent:0.6];
             break;
-        case BaseColorSchemeCutePink:
+        case BaseColorSchemeSakuraPink:
             resultColor = [[UIColor flatPinkColor] colorWithAlphaComponent:0.6];
             break;
         case BaseColorSchemeClassicGray:

@@ -142,7 +142,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     RETableViewSection *baseModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"BaseMode", @"基础模式")];
     [baseModeSection setHeaderHeight:20];
     
-    NSArray *baseColorSchemeArray = @[NSLocalizedString(@"Sky Blue",@"天空蓝"),NSLocalizedString(@"Cute Pink",@"可爱粉"),NSLocalizedString(@"Classic Gray",@"经典灰"),NSLocalizedString(@"Fresh Plum",@"清新紫"),NSLocalizedString(@"Deep Brown",@"深沉棕")];
+    NSArray *baseColorSchemeArray = @[NSLocalizedString(@"Sky Blue",@"天空蓝"),NSLocalizedString(@"Sakura Pink",@"樱花粉"),NSLocalizedString(@"Classic Gray",@"经典灰"),NSLocalizedString(@"Fresh Plum",@"清新紫"),NSLocalizedString(@"Deep Brown",@"深沉棕")];
     NSString *currentCS = baseColorSchemeArray[self.settingManager.baseColorScheme < baseColorSchemeArray.count ? self.settingManager.baseColorScheme : baseColorSchemeArray.count - 1];
     REPickerItem *baseColorSchemePickerItem = [REPickerItem itemWithTitle:NSLocalizedString(@"🌈 ColorScheme",@"🌈 颜色方案")
                                                                 value:@[currentCS]
@@ -275,7 +275,8 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 #pragma mark - 足迹包管理
     RETableViewSection *frManagementSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Footpinrts Repository Management", @"足迹包管理")];
     [frManagementSection setHeaderHeight:20];
-    
+
+#pragma mark  文件管理
     //RETableViewSection *fileManagementSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"File Management", @"文件管理")];
     //[fileManagementSection setHeaderHeight:20];
     RETableViewItem *documentsItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"🗂 File Browser",@"🗂 文件浏览器") accessoryType:UITableViewCellAccessoryDisclosureIndicator  selectionHandler:^(RETableViewItem *item) {
@@ -286,7 +287,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         GCFileBrowser *fileBrowser = [GCFileBrowser new];
         fileBrowser.edgesForExtendedLayout = UIRectEdgeNone;
         
-        //fileBrowser.enableActionMenu = YES;
+        fileBrowser.enableActionMenu = [EverywhereSettingManager defaultManager].hasPurchasedImportAndExport;
         fileBrowser.enableDocumentInteractionController = [EverywhereSettingManager defaultManager].hasPurchasedShareAndBrowse;
         
         [self.navigationController pushViewController:fileBrowser animated:YES];
@@ -558,11 +559,26 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     WEAKSELF(weakSelf);
     inAppPurchaseVC.inAppPurchaseCompletionHandler = ^(enum TransactionType transactionType,NSInteger productIndex,BOOL succeeded){
         if (succeeded) {
-            if (productIndex == 0) weakSelf.settingManager.hasPurchasedShareAndBrowse = YES;
-            if (productIndex == 1) weakSelf.settingManager.hasPurchasedRecordAndEdit = YES;
-            if (productIndex == 2) weakSelf.settingManager.hasPurchasedImportAndExport = YES;
+            switch (productIndex) {
+                case 0:
+                    weakSelf.settingManager.hasPurchasedShareAndBrowse = YES;
+                    break;
+                case 1:
+                    weakSelf.settingManager.hasPurchasedRecordAndEdit = YES;
+                    break;
+                case 2:
+                    weakSelf.settingManager.hasPurchasedImportAndExport = YES;
+                    break;
+                case 3:
+                    weakSelf.settingManager.hasPurchasedShareAndBrowse = YES;
+                    weakSelf.settingManager.hasPurchasedRecordAndEdit = YES;
+                    weakSelf.settingManager.hasPurchasedImportAndExport = YES;
+                    break;
+                default:
+                    break;
+            }
         }
-        if(DEBUGMODE) NSLog(@"%@",succeeded? @"用户购买成功！" : @"用户购买失败！");
+        if(DEBUGMODE) NSLog(@"%@ %@",self.settingManager.appProductIDArray[productIndex],succeeded? @"成功！" : @"用失败！");
     };
     
     [self.navigationController pushViewController:inAppPurchaseVC animated:YES];
