@@ -15,7 +15,6 @@
 #define NaviBarButtonSize CGSizeMake(30, 30)
 #define NaviBarButtonOffset ScreenWidth > 375 ? 30 : 15
 
-//#define ButtonPlaceholderHeight (ScreenHeight > 568 ? 60 : 43)
 #define ButtionSize (ScreenHeight > 568 ? CGSizeMake(44, 44) : CGSizeMake(36, 36))
 #define ButtonEdgeLength (ScreenHeight > 568 ? 44 : 36)
 #define ButtonOffset (ScreenHeight > 568 ? 16 : 8)
@@ -55,7 +54,6 @@
 #import "InAppPurchaseVC.h"
 #import "FootprintsRepositoryPickerVC.h"
 #import "FootprintsRepositoryEditerVC.h"
-#import "WGS84TOGCJ02.h"
 #import "CLPlacemark+Assistant.h"
 #import "RecordModeSettingBar.h"
 
@@ -450,7 +448,7 @@
 // ⭕️实时更新locationInfoWithCoordinateInfoBar位置信息
 - (void)setUserLocationWGS84:(CLLocation *)userLocationWGS84{
     _userLocationWGS84 = userLocationWGS84;
-    locationInfoWithCoordinateInfoBar.userCoordinateWGS84 = userLocationWGS84.coordinate;
+    //locationInfoWithCoordinateInfoBar.userCoordinateWGS84 = userLocationWGS84.coordinate;
     CLLocationSpeed velocitymPerSecond = userLocationWGS84.speed;
     CLLocationSpeed velocitykmPerhour = velocitymPerSecond * 3600.0 / 1000.0;
     velocityLabel.text = [NSString stringWithFormat:@"%.2fkm/h %.2fm/s",velocitykmPerhour,velocitymPerSecond];
@@ -458,7 +456,7 @@
 
 - (void)setUserLocationGCJ02:(CLLocation *)userLocationGCJ02{
     _userLocationGCJ02 = userLocationGCJ02;
-    //locationInfoWithCoordinateInfoBar.userCoordinateWGS84 = userLocationGCJ02.coordinate;
+    locationInfoWithCoordinateInfoBar.userCoordinateGCJ02 = userLocationGCJ02.coordinate;
 }
 
 - (CLLocationDistance)minDistanceForRecord{
@@ -2677,7 +2675,7 @@
         }else if ([polyline.title isEqualToString:MKPolylineTitleSearched]) {
             // 查找的路线
             polylineRenderer.lineWidth = 2;
-            polylineRenderer.strokeColor = self.currentTintColor;//[UIColor brownColor];
+            polylineRenderer.strokeColor = [UIColor flatRedColor];//[UIColor brownColor];
         }else{
             // 直线带箭头路线
             polylineRenderer.lineWidth = 2;
@@ -2696,7 +2694,7 @@
         MKCircleRenderer *circleRenderer = [[MKCircleRenderer alloc] initWithCircle:overlay];
         circleRenderer.lineWidth = 1;
         circleRenderer.fillColor = self.currentTintColor;//[[UIColor flatBlueColor] colorWithAlphaComponent:0.4];
-        circleRenderer.strokeColor = [self.currentTintColor colorWithAlphaComponent:0.6];//[[UIColor flatBlueColor] colorWithAlphaComponent:0.6];
+        circleRenderer.strokeColor = [self.currentTintColor colorWithAlphaComponent:0.3];//[[UIColor flatBlueColor] colorWithAlphaComponent:0.6];
         return circleRenderer;
     }
     else{

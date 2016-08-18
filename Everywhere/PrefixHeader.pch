@@ -15,7 +15,7 @@
 #endif /* PrefixHeader_pch */
 
 #warning Fix Before Submit
-#define DEBUGMODE 0
+#define DEBUGMODE 1
 
 #define MFRUTI @"com.ZhangBaoGuo.AlbumMaps.mfr"
 
@@ -46,24 +46,21 @@
 #import "UILabel+Assistant.h"
 #import "UITextField+Assistant.h"
 #import "UIButton+Assistant/NSString+FontAwesome.h"
-
 #import "XMLDictionary.h"
+
+#import "GCCoordinateTransformer.h"
 
 #import <STPopup.h>
 
-#import "NSDate+Assistant.h"
 #import "PHAsset+Assistant.h"
+#import "NSDate+Assistant.h"
 #import "UIFont+Assistant.h"
-#import "CLPlacemark+Assistant.h"
-
 #import "GCLocationAnalyser.h"
 #import "GCPhotoManager.h"
 
-#import "EverywhereCoreDataManager.h"
 #import "PHAssetInfo.h"
-#import "LocationInfoBar.h"
+#import "CLPlacemark+Assistant.h"
 
-#import "BaiduMap.h"
 
 /**
  地图基础模式

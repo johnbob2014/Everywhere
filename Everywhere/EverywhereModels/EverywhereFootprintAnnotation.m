@@ -7,7 +7,6 @@
 //
 
 #import "EverywhereFootprintAnnotation.h"
-#import "WGS84TOGCJ02.h"
 
 @implementation EverywhereFootprintAnnotation
 
@@ -16,7 +15,7 @@
 }
 
 - (CLLocationCoordinate2D)coordinate{
-    return [WGS84TOGCJ02 transformFromWGSToGCJ:self.coordinateWGS84];
+    return [GCCoordinateTransformer transformToMarsFromEarth:self.coordinateWGS84];
 }
 
 - (NSString *)title{

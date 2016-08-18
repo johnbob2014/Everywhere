@@ -7,9 +7,7 @@
 //
 
 #import "LocationInfoWithCoordinateInfoBar.h"
-#import "UIView+AutoLayout.h"
-#import "WGS84TOGCJ02.h"
-
+#import "GCMaps.h"
 
 @interface LocationInfoWithCoordinateInfoBar ()
 @property (assign,nonatomic) CLLocationCoordinate2D currentShowCoordinateWGS84;
@@ -19,6 +17,9 @@
 @property (strong,nonatomic) UILabel *coordinateLabel;
 @property (strong,nonatomic) UILabel *altitudeLabel;
 @property (strong,nonatomic) UILabel *addressLabel;
+
+@property (assign,nonatomic) NSInteger userPreferredMap;
+
 @end
 
 @implementation LocationInfoWithCoordinateInfoBar{
@@ -33,18 +34,89 @@
     NSArray <UIButton *> *buttonArray;
 }
 
+#pragma mark - Getter & Setter
 - (CLLocationCoordinate2D)currentShowCoordinateWGS84{
     return CLLocationCoordinate2DMake([self.currentShowCoordinateInfo.latitude doubleValue], [self.currentShowCoordinateInfo.longitude doubleValue]);
 }
 
 
-#define BTSetOrigin NSLocalizedString(@"Set Origin",@"设置起点")
-#define BTSetDest NSLocalizedString(@"Set Dest.",@"设置终点")
-#define BTGetRoute NSLocalizedString(@"Get Route",@"获取路线")
-#define BTBaidu NSLocalizedString(@"BaiduMap ☞",@"百度地图 ☞")
-#define BTNaviToHere NSLocalizedString(@"Navi To Here",@"导航到这里")
-#define BTRouteNavi NSLocalizedString(@"Origin To Dest.",@"起点至终点")
+- (NSInteger)userPreferredMap{
+    return [[NSUserDefaults standardUserDefaults] integerForKey:@"userPreferredMap"];
+}
 
+- (void)setUserPreferredMap:(NSInteger)userPreferredMap{
+    if (userPreferredMap < 0 || userPreferredMap > 2) return;
+    
+    switch (userPreferredMap) {
+        case 0:
+            [bottomFirstButton setTitle:NSLocalizedString(@"iOS Maps ☞",@"iOS地图 ☞") forState:UIControlStateNormal];
+            break;
+        case 1:
+            [bottomFirstButton setTitle:NSLocalizedString(@"Baidu Map ☞",@"百度地图 ☞") forState:UIControlStateNormal];
+            break;
+        case 2:
+            [bottomFirstButton setTitle:NSLocalizedString(@"AutoNavi Map ☞",@"高德地图 ☞") forState:UIControlStateNormal];
+            break;
+            
+        default:
+            break;
+    }
+    
+    [[NSUserDefaults standardUserDefaults] setInteger:userPreferredMap forKey:@"userPreferredMap"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (NSString *)dmsStringWithDegrees:(CLLocationDegrees)degrees{
+    double degreeFloor = floor(degrees);
+    double minutes = (degrees - degreeFloor) * 60.0;
+    double minuteFloor = floor(minutes);
+    double seconds = (minutes - minuteFloor) * 60.0;
+    double secondFloor = floor(seconds);
+    NSString *dmsString = [NSString stringWithFormat:@"%.0f°%0.f'%.0f''",degreeFloor,minuteFloor,secondFloor];
+    return dmsString;
+}
+
+- (void)setCurrentShowCoordinateInfo:(CoordinateInfo *)currentShowCoordinateInfo{
+    _currentShowCoordinateInfo = currentShowCoordinateInfo;
+    [self updateCoordinateLabel];
+    [self updateAltitudeLabel];
+    [self updateAddressLabel];
+}
+
+-(void)updateCoordinateLabel{
+    NSMutableString *ma = [NSMutableString new];
+    [ma appendString:[self.currentShowCoordinateInfo.latitude doubleValue] > 0 ? NSLocalizedString(@"N. ", @"北纬 "):NSLocalizedString(@"S. ", @"南纬 ")];
+    [ma appendString:[LocationInfoWithCoordinateInfoBar dmsStringWithDegrees:[self.currentShowCoordinateInfo.latitude doubleValue]]];
+    [ma appendFormat:@" (%.6f°)",fabs([self.currentShowCoordinateInfo.latitude doubleValue])];
+    [ma appendFormat:@"\n"];
+    [ma appendString:[self.currentShowCoordinateInfo.longitude doubleValue] > 0 ? NSLocalizedString(@"E. ", @"东经 "):NSLocalizedString(@"W. ", @"西经 ")];
+    [ma appendString:[LocationInfoWithCoordinateInfoBar dmsStringWithDegrees:[self.currentShowCoordinateInfo.longitude doubleValue]]];
+    [ma appendFormat:@" (%.6f°)",fabs([self.currentShowCoordinateInfo.longitude doubleValue])];
+    self.coordinateLabel.text = ma;
+}
+
+- (void)updateAltitudeLabel{
+    NSMutableString *ma = [NSMutableString new];
+    
+    if ([self.currentShowCoordinateInfo.altitude doubleValue] != 0) {
+        [ma appendString:NSLocalizedString(@"Altitude", @"高度")];
+        [ma appendFormat:@"\n%.2f",[self.currentShowCoordinateInfo.altitude doubleValue]];
+    }
+    /*
+     if (self.currentShowCoordinateInfo.level != 0) {
+     [ma appendFormat:@"\n"];
+     [ma appendString:NSLocalizedString(@"Floor : ", @"")];
+     [ma appendFormat:@"%ld",(long)self.currentShowCoordinateInfo.level];
+     }
+     */
+    self.altitudeLabel.text = ma;
+}
+
+- (void)updateAddressLabel{
+    self.addressLabel.text = self.currentShowCoordinateInfo.localizedPlaceString_Placemark;
+}
+
+#pragma mark - Init
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
@@ -52,18 +124,18 @@
         float buttonHeight = 30;
         CGSize buttonSize = CGSizeMake(buttonWidth, buttonHeight);
         
-        // ⭕️终于摸索出一个好办法！！！
-        NSArray <NSString *> *titleArray = @[BTSetOrigin,
-                                             BTSetDest,
-                                             BTGetRoute,
-                                             BTBaidu,
-                                             BTNaviToHere,
-                                             BTRouteNavi];
+        // ⭕️这样写变换按钮位置的时候更快捷一点！缺点是如果按钮需要交互时，名称不直观。
+        NSArray <NSString *> *titleArray = @[NSLocalizedString(@"Set Origin",@"设置起点"),
+                                             NSLocalizedString(@"Set Dest.",@"设置终点"),
+                                             NSLocalizedString(@"Get Route",@"获取路线"),
+                                             NSLocalizedString(@"External Map ☞",@"外部地图 ☞"),
+                                             NSLocalizedString(@"Navi To Here",@"导航到这里"),
+                                             NSLocalizedString(@"Origin To Dest.",@"起点至终点")];
         SEL selectorArray[6] = {
             @selector(setOriginBtnTD),
             @selector(setDestinationBtnTD),
             @selector(getRouteBtnTD),
-            @selector(baiduBtnTD),
+            @selector(mapBtnTD),
             @selector(naviToHereBtnTD),
             @selector(routeNaviBtnTD)
         };
@@ -95,8 +167,6 @@
         
         bottomThirdButton = [UIButton newAutoLayoutView];
         bottomThirdButton.tag = 2;
-        //routeNaviButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
-        //[routeNaviButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Flag_WBG"] forState:UIControlStateNormal];
         [bottomThirdButton setTitle:titleArray[5] forState:UIControlStateNormal];
         [bottomThirdButton addTarget:self action:selectorArray[5] forControlEvents:UIControlEventTouchDown];
         [bottomBtnBar addSubview:bottomThirdButton];
@@ -142,11 +212,11 @@
         buttonArray = @[topFirstButton,topSecondButton,topThirdButton,bottomFirstButton,bottomSecodnButton,bottomThirdButton];
         [self setupButtonsStyle];
 
-        self.naviToHereButton = [self buttonWithTitle:BTNaviToHere];
-        //[self buttonWithTitle:BTBaidu].enabled = YES;
-        [self buttonWithTitle:BTGetRoute].enabled = NO;
-        [self buttonWithTitle:BTRouteNavi].enabled = NO;
+        self.naviToHereButton = bottomSecodnButton;
+        topThirdButton.enabled = NO;
+        bottomThirdButton.enabled = NO;
         
+#pragma mark 标签
         UILabel *coordlabel = [UILabel newAutoLayoutView];
         coordlabel.numberOfLines = 0;
         coordlabel.textAlignment = NSTextAlignmentLeft;
@@ -159,8 +229,6 @@
         altLabel.numberOfLines = 0;
         altLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:altLabel];
-        //[altLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coordinateLabel withOffset:5];
-        //[altLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
         [altLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
         [altLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
         [altLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:coordlabel];
@@ -173,31 +241,13 @@
         [addlabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coordinateLabel withOffset:5];
         [addlabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
         [addlabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
-        //[addlabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:bottomView withOffset:5];
         self.addressLabel = addlabel;
         
+        self.userPreferredMap = self.userPreferredMap;
     }
     return self;
 }
 
-- (UIButton *)buttonWithTitle:(NSString *)title{
-    return buttonArray[[self buttonIndexWithTitle:title]];
-}
-
-- (NSInteger)buttonIndexWithTitle:(NSString *)title{
-    NSInteger index = 0;
-    
-    for (UIButton *btn in buttonArray) {
-        
-        if ([btn.titleLabel.text isEqualToString:title]) {
-            return index;
-        }
-        
-        index ++;
-    }
-    
-    return 0;
-}
 
 - (void)setupButtonsStyle{
     [buttonArray enumerateObjectsUsingBlock:^(UIButton * _Nonnull button, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -213,31 +263,25 @@
     }];
 }
 
-- (void)baiduBtnTD{
-    [[self buttonWithTitle:BTBaidu] setTitle:NSLocalizedString(@"AMap ☞",@"高德地图 ☞") forState:UIControlStateNormal];
-}
-
-- (void)naviToHereBtnTD{
-    [BaiduMap baidumapDirectionFromOrigin:self.userCoordinateWGS84 toDestination:self.currentShowCoordinateWGS84 directionMode:BaiduMapDirectionModeDriving];
-}
+#pragma mark - 按钮动作
 
 - (void)setOriginBtnTD{
     self.originCoordinateWGS84 = self.currentShowCoordinateWGS84;
-    [self buttonWithTitle:BTSetOrigin].enabled = NO;
+    topFirstButton.enabled = NO;
 }
 
 - (void)setDestinationBtnTD{
     self.destinationCoordinateWGS84 = self.currentShowCoordinateWGS84;
-    [self buttonWithTitle:BTSetDest].enabled = NO;
-    [self buttonWithTitle:BTGetRoute].enabled = YES;
-    [self buttonWithTitle:BTRouteNavi].enabled = YES;
+    topSecondButton.enabled = NO;
+    topThirdButton.enabled = YES;
+    bottomThirdButton.enabled = YES;
 }
 
 - (void)getRouteBtnTD{
     bottomSecodnButton.enabled = NO;
     
-    MKMapItem *lastMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:[WGS84TOGCJ02 transformFromWGSToGCJ:self.originCoordinateWGS84] addressDictionary:nil]];
-    MKMapItem *currentMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:[WGS84TOGCJ02 transformFromWGSToGCJ:self.destinationCoordinateWGS84] addressDictionary:nil]];
+    MKMapItem *lastMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:[GCCoordinateTransformer transformToMarsFromEarth:self.originCoordinateWGS84] addressDictionary:nil]];
+    MKMapItem *currentMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:[GCCoordinateTransformer transformToMarsFromEarth:self.destinationCoordinateWGS84] addressDictionary:nil]];
     
     MKDirectionsRequest *directionsRequest = [MKDirectionsRequest new];
     [directionsRequest setSource:lastMapItem];
@@ -249,68 +293,47 @@
         
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self buttonWithTitle:BTSetOrigin].enabled = YES;
-            [self buttonWithTitle:BTSetDest].enabled = YES;
+            topFirstButton.enabled = YES;
+            topSecondButton.enabled = YES;
         });
         
-
+        
     }];
 }
 
-- (void)routeNaviBtnTD{
-    [BaiduMap baidumapDirectionFromOrigin:self.originCoordinateWGS84 toDestination:self.destinationCoordinateWGS84 directionMode:BaiduMapDirectionModeDriving];
-    [self buttonWithTitle:BTSetOrigin].enabled = YES;
-    [self buttonWithTitle:BTSetDest].enabled = YES;
+- (void)mapBtnTD{
+    NSInteger userPreferredMap = self.userPreferredMap;
+    userPreferredMap++;
+    if (userPreferredMap == 3) userPreferredMap = 0;
+    self.userPreferredMap = userPreferredMap;
 }
 
-+ (NSString *)dmsStringWithDegrees:(CLLocationDegrees)degrees{
-    double degreeFloor = floor(degrees);
-    double minutes = (degrees - degreeFloor) * 60.0;
-    double minuteFloor = floor(minutes);
-    double seconds = (minutes - minuteFloor) * 60.0;
-    double secondFloor = floor(seconds);
-    NSString *dmsString = [NSString stringWithFormat:@"%.0f°%0.f'%.0f''",degreeFloor,minuteFloor,secondFloor];
-    return dmsString;
-}
-
-- (void)setCurrentShowCoordinateInfo:(CoordinateInfo *)currentShowCoordinateInfo{
-    _currentShowCoordinateInfo = currentShowCoordinateInfo;
-    [self updateCoordinateLabel];
-    [self updateAltitudeLabel];
-    [self updateAddressLabel];
-}
-
--(void)updateCoordinateLabel{
-    NSMutableString *ma = [NSMutableString new];
-    [ma appendString:[self.currentShowCoordinateInfo.latitude doubleValue] > 0 ? NSLocalizedString(@"N. ", @"北纬 "):NSLocalizedString(@"S. ", @"南纬 ")];
-    [ma appendString:[LocationInfoWithCoordinateInfoBar dmsStringWithDegrees:[self.currentShowCoordinateInfo.latitude doubleValue]]];
-    [ma appendFormat:@" (%.6f°)",fabs([self.currentShowCoordinateInfo.latitude doubleValue])];
-    [ma appendFormat:@"\n"];
-    [ma appendString:[self.currentShowCoordinateInfo.longitude doubleValue] > 0 ? NSLocalizedString(@"E. ", @"东经 "):NSLocalizedString(@"W. ", @"西经 ")];
-    [ma appendString:[LocationInfoWithCoordinateInfoBar dmsStringWithDegrees:[self.currentShowCoordinateInfo.longitude doubleValue]]];
-    [ma appendFormat:@" (%.6f°)",fabs([self.currentShowCoordinateInfo.longitude doubleValue])];
-    self.coordinateLabel.text = ma;
-}
-
-- (void)updateAltitudeLabel{
-    NSMutableString *ma = [NSMutableString new];
+- (void)naviToHereBtnTD{
     
-    if ([self.currentShowCoordinateInfo.altitude doubleValue] != 0) {
-        [ma appendString:NSLocalizedString(@"Altitude", @"高度")];
-        [ma appendFormat:@"\n%.2f",[self.currentShowCoordinateInfo.altitude doubleValue]];
-    }
-    /*
-    if (self.currentShowCoordinateInfo.level != 0) {
-        [ma appendFormat:@"\n"];
-        [ma appendString:NSLocalizedString(@"Floor : ", @"")];
-        [ma appendFormat:@"%ld",(long)self.currentShowCoordinateInfo.level];
-    }
-    */
-    self.altitudeLabel.text = ma;
+    [self naviFromSourceGCJ02:self.userCoordinateGCJ02 toDestinationGCJ02:[GCCoordinateTransformer transformToMarsFromEarth:self.currentShowCoordinateWGS84]];
 }
 
-- (void)updateAddressLabel{
-    self.addressLabel.text = self.currentShowCoordinateInfo.localizedPlaceString_Placemark;
+- (void)routeNaviBtnTD{
+    
+    [self naviFromSourceGCJ02:[GCCoordinateTransformer transformToMarsFromEarth:self.originCoordinateWGS84] toDestinationGCJ02:[GCCoordinateTransformer transformToMarsFromEarth:self.destinationCoordinateWGS84]];
+    topFirstButton.enabled = YES;
+    topSecondButton.enabled = YES;
+}
+
+- (void)naviFromSourceGCJ02:(CLLocationCoordinate2D)sourceGCJ02 toDestinationGCJ02:(CLLocationCoordinate2D)destinationGCJ02{
+    switch (self.userPreferredMap) {
+        case 0:
+            [GCMaps mkmapFromSource:sourceGCJ02 toDestination:destinationGCJ02 directionsMode:MKLaunchOptionsDirectionsModeDriving];
+            break;
+        case 1:
+            [GCMaps baidumapDirectionFromOrigin:[GCCoordinateTransformer transformToBaiduFromMars:sourceGCJ02] toDestination:[GCCoordinateTransformer transformToBaiduFromMars:destinationGCJ02] directionsMode:BaiduMapDirectionsModeDriving];
+            break;
+        case 2:
+            [GCMaps iosamapPathFromSource:sourceGCJ02 toDestination:destinationGCJ02 tMode:0 mOption:0];
+            break;
+        default:
+            break;
+    }
 }
 
 @end

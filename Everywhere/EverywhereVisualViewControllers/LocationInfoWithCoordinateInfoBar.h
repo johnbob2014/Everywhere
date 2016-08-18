@@ -26,9 +26,10 @@ typedef void(^DidGetMKDirectionsResponseHandler)(MKDirectionsResponse *response)
  */
 @property (strong,nonatomic) CoordinateInfo *currentShowCoordinateInfo;
 
+
 /*
- 导航时需要，当前用户位置座标，WGS84格式
+ 导航时需要，当前用户位置座标，GCJ02格式
  */
-@property (assign,nonatomic) CLLocationCoordinate2D userCoordinateWGS84;
+@property (assign,nonatomic) CLLocationCoordinate2D userCoordinateGCJ02;
 
 @end

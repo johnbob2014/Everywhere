@@ -7,19 +7,11 @@
 //
 
 #import "EverywhereAnnotation.h"
-#import "WGS84TOGCJ02.h"
 
 @implementation EverywhereAnnotation
-//@synthesize coordinate;
-
-//- (void)setLocaton:(CLLocation *)locaton{
-//    if (locaton) coordinate = self.locaton.coordinate;
-//    if(DEBUGMODE) NSLog(@"EverywhereAnnotation : coordinate updated!");
-//}
 
 - (CLLocationCoordinate2D)coordinate{
-    CLLocationCoordinate2D originalCoordinate = self.location.coordinate;
-    return [WGS84TOGCJ02 transformFromWGSToGCJ:originalCoordinate];
+    return [GCCoordinateTransformer transformToMarsFromEarth:self.location.coordinate];
 }
 
 - (NSString *)title{
