@@ -153,18 +153,18 @@
 
 - (void)setIsDirectory:(BOOL)isDirectory{
 	if (isDirectory) {
-        [iconButton setImage:[UIImage imageNamed:@"item-icon-folder"] forState:UIControlStateNormal];
-        [iconButton setImage:[UIImage imageNamed:@"item-icon-folder-selected"] forState:UIControlStateSelected];
-        [iconButton setImage:[UIImage imageNamed:@"item-icon-folder-selected"] forState:UIControlStateHighlighted];
+        [iconButton setImage:[UIImage imageNamed:@"item-icon-folder@2x"] forState:UIControlStateNormal];
+        [iconButton setImage:[UIImage imageNamed:@"item-icon-folder-selected@2x"] forState:UIControlStateSelected];
+        [iconButton setImage:[UIImage imageNamed:@"item-icon-folder-selected@2x"] forState:UIControlStateHighlighted];
         detailDisclosureLabel.text = @"➤";
         [subitemCountLabel setHidden:NO];
         [changedLabel setHidden:YES];
         [sizeLabel setHidden:YES];
 				
 	}else {
-        [iconButton setImage:[UIImage imageNamed:@"item-icon-file"] forState:UIControlStateNormal];
-        [iconButton setImage:[UIImage imageNamed:@"item-icon-file-selected"] forState:UIControlStateSelected];
-        [iconButton setImage:[UIImage imageNamed:@"item-icon-file-selected"] forState:UIControlStateHighlighted];
+        [iconButton setImage:[UIImage imageNamed:@"item-icon-file@2x"] forState:UIControlStateNormal];
+        [iconButton setImage:[UIImage imageNamed:@"item-icon-file-selected@2x"] forState:UIControlStateSelected];
+        [iconButton setImage:[UIImage imageNamed:@"item-icon-file-selected@2x"] forState:UIControlStateHighlighted];
         detailDisclosureLabel.text = @"✦";
         [subitemCountLabel setHidden:YES];
         [changedLabel setHidden:NO];

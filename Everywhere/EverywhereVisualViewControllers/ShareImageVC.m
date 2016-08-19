@@ -28,7 +28,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.view.backgroundColor = VCBackgroundColor;
     self.title = NSLocalizedString(@"Share Snap Shots", @"分享截图");
     
     UIView *buttonContainer = [UIView newAutoLayoutView];

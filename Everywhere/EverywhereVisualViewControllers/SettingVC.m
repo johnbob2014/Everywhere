@@ -50,8 +50,6 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.view.backgroundColor = VCBackgroundColor;
-    
     self.settingManager = [EverywhereSettingManager defaultManager];
     
     self.title = NSLocalizedString(@"Settings",@"设置");
@@ -285,6 +283,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         [self checkhasPurchasedImportAndExport];
         
         GCFileBrowser *fileBrowser = [GCFileBrowser new];
+        
         fileBrowser.edgesForExtendedLayout = UIRectEdgeNone;
         
         fileBrowser.enableActionMenu = [EverywhereSettingManager defaultManager].hasPurchasedImportAndExport;

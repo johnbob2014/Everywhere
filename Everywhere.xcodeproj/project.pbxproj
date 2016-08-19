@@ -157,11 +157,6 @@
 		1E63B77B1D2E9D90003E355B /* PlacemarkInfoBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlacemarkInfoBar.m; path = EverywhereVisualViewControllers/PlacemarkInfoBar.m; sourceTree = "<group>"; };
 		1E65218B1D28BFB500F41860 /* UIFont+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIFont+Assistant.h"; path = "UIFont+Assistant/UIFont+Assistant.h"; sourceTree = "<group>"; };
 		1E65218C1D28BFB500F41860 /* UIFont+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIFont+Assistant.m"; path = "UIFont+Assistant/UIFont+Assistant.m"; sourceTree = "<group>"; };
-		1E74C3031D268377000A9790 /* floatTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = floatTableViewCell.h; sourceTree = "<group>"; };
-		1E74C3041D268377000A9790 /* floatTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = floatTableViewCell.m; sourceTree = "<group>"; };
-		1E74C3051D268377000A9790 /* floatTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = floatTableViewCell.xib; sourceTree = "<group>"; };
-		1E74C3061D268377000A9790 /* VCFloatingActionButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VCFloatingActionButton.h; sourceTree = "<group>"; };
-		1E74C3071D268377000A9790 /* VCFloatingActionButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VCFloatingActionButton.m; sourceTree = "<group>"; };
 		1E8189101D659A9300F57714 /* GCMaps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCMaps.h; path = GCMaps/GCMaps.h; sourceTree = "<group>"; };
 		1E8189111D659A9300F57714 /* GCMaps.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCMaps.m; path = GCMaps/GCMaps.m; sourceTree = "<group>"; };
 		1E8189181D65B1C300F57714 /* GCCoordinateTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCCoordinateTransformer.h; path = GCCoordinateTransformer/GCCoordinateTransformer.h; sourceTree = "<group>"; };
@@ -189,15 +184,6 @@
 		1EF62A591D3BB90F0084AF66 /* EverywhereFootprintsRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereFootprintsRepository.m; path = EverywhereModels/EverywhereFootprintsRepository.m; sourceTree = "<group>"; };
 		1EF62A5B1D3BD6DF0084AF66 /* EverywhereFootprintsRepositoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereFootprintsRepositoryManager.h; path = EverywhereModels/EverywhereFootprintsRepositoryManager.h; sourceTree = "<group>"; };
 		1EF62A5C1D3BD6DF0084AF66 /* EverywhereFootprintsRepositoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereFootprintsRepositoryManager.m; path = EverywhereModels/EverywhereFootprintsRepositoryManager.m; sourceTree = "<group>"; };
-		4B001CCB1D21002700DF7287 /* CTPImageBrowserConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTPImageBrowserConfig.h; sourceTree = "<group>"; };
-		4B001CCC1D21002700DF7287 /* CTPImageBrowserVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTPImageBrowserVC.h; sourceTree = "<group>"; };
-		4B001CCD1D21002700DF7287 /* CTPImageBrowserVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTPImageBrowserVC.m; sourceTree = "<group>"; };
-		4B001CCE1D21002700DF7287 /* CTPImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTPImageView.h; sourceTree = "<group>"; };
-		4B001CCF1D21002700DF7287 /* CTPImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTPImageView.m; sourceTree = "<group>"; };
-		4B001CD01D21002700DF7287 /* CTPMultiImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTPMultiImage.h; sourceTree = "<group>"; };
-		4B001CD11D21002700DF7287 /* CTPMultiImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTPMultiImage.m; sourceTree = "<group>"; };
-		4B001CD21D21002700DF7287 /* CTPWaitingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTPWaitingView.h; sourceTree = "<group>"; };
-		4B001CD31D21002700DF7287 /* CTPWaitingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTPWaitingView.m; sourceTree = "<group>"; };
 		4B001CDC1D2125FC00DF7287 /* CLPlacemark+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CLPlacemark+Assistant.h"; path = "CLPlacemark+Assistant/CLPlacemark+Assistant.h"; sourceTree = "<group>"; };
 		4B001CDD1D2125FC00DF7287 /* CLPlacemark+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CLPlacemark+Assistant.m"; path = "CLPlacemark+Assistant/CLPlacemark+Assistant.m"; sourceTree = "<group>"; };
 		4B032FAD1D5C5DD800E83585 /* GCFileBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCFileBrowser.h; path = GCFileBrowser/GCFileBrowser.h; sourceTree = "<group>"; };
@@ -326,6 +312,7 @@
 		4B3AF9C81D2F3E70009BD545 /* GCRoutePolylineManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCRoutePolylineManager.m; sourceTree = "<group>"; };
 		4B3C10061D1CDCA700C20C72 /* UIView+AutoLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AutoLayout.h"; sourceTree = "<group>"; };
 		4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AutoLayout.m"; sourceTree = "<group>"; };
+		4B5E6A7D1D66B1C9000D2F60 /* EverywhereCoreDataHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EverywhereCoreDataHeader.h; path = EverywhereCoreData/EverywhereCoreDataHeader.h; sourceTree = "<group>"; };
 		4B69F5001D614DA100575AC3 /* UILabel+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UILabel+Assistant.h"; path = "UILabel+Assistant/UILabel+Assistant.h"; sourceTree = "<group>"; };
 		4B69F5011D614DA100575AC3 /* UILabel+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UILabel+Assistant.m"; path = "UILabel+Assistant/UILabel+Assistant.m"; sourceTree = "<group>"; };
 		4B69F5041D6156A800575AC3 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
@@ -468,18 +455,6 @@
 			name = "UIFont+Assistant";
 			sourceTree = "<group>";
 		};
-		1E74C3021D268377000A9790 /* VCFloatingActionButton */ = {
-			isa = PBXGroup;
-			children = (
-				1E74C3031D268377000A9790 /* floatTableViewCell.h */,
-				1E74C3041D268377000A9790 /* floatTableViewCell.m */,
-				1E74C3051D268377000A9790 /* floatTableViewCell.xib */,
-				1E74C3061D268377000A9790 /* VCFloatingActionButton.h */,
-				1E74C3071D268377000A9790 /* VCFloatingActionButton.m */,
-			);
-			path = VCFloatingActionButton;
-			sourceTree = "<group>";
-		};
 		1E81890F1D659A6000F57714 /* GCMaps */ = {
 			isa = PBXGroup;
 			children = (
@@ -593,22 +568,6 @@
 				4BE88A9E1D332B38009501CE /* EverywhereSettingManager.m */,
 			);
 			name = EverywhereModels;
-			sourceTree = "<group>";
-		};
-		4B001CCA1D21002700DF7287 /* CTPImageBrowser */ = {
-			isa = PBXGroup;
-			children = (
-				4B001CCB1D21002700DF7287 /* CTPImageBrowserConfig.h */,
-				4B001CCC1D21002700DF7287 /* CTPImageBrowserVC.h */,
-				4B001CCD1D21002700DF7287 /* CTPImageBrowserVC.m */,
-				4B001CCE1D21002700DF7287 /* CTPImageView.h */,
-				4B001CCF1D21002700DF7287 /* CTPImageView.m */,
-				4B001CD01D21002700DF7287 /* CTPMultiImage.h */,
-				4B001CD11D21002700DF7287 /* CTPMultiImage.m */,
-				4B001CD21D21002700DF7287 /* CTPWaitingView.h */,
-				4B001CD31D21002700DF7287 /* CTPWaitingView.m */,
-			);
-			path = CTPImageBrowser;
 			sourceTree = "<group>";
 		};
 		4B001CD81D21252400DF7287 /* CLPlacemark+Assistant */ = {
@@ -824,8 +783,6 @@
 				4B032FAC1D5C5DBD00E83585 /* GCFileBrowser */,
 				4B12E6FA1D5AC8400035D16D /* XMLDictionary */,
 				4BFA06381D4B306900AE8000 /* Qiniu */,
-				1E74C3021D268377000A9790 /* VCFloatingActionButton */,
-				4B001CCA1D21002700DF7287 /* CTPImageBrowser */,
 				4B3AF9BC1D2F3E70009BD545 /* GCLocationAnalyser */,
 				4B3AF9BF1D2F3E70009BD545 /* GCPhotoManager */,
 				4B3AF9C21D2F3E70009BD545 /* GCPolyline */,
@@ -880,6 +837,7 @@
 				4BD51FCB1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m */,
 				4BD51FCD1D2B4B8400F18244 /* EverywhereCoreDataManager.h */,
 				4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */,
+				4B5E6A7D1D66B1C9000D2F60 /* EverywhereCoreDataHeader.h */,
 			);
 			name = EverywhereCoreData;
 			sourceTree = "<group>";

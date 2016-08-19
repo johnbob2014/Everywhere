@@ -15,11 +15,9 @@
 #endif /* PrefixHeader_pch */
 
 #warning Fix Before Submit
-#define DEBUGMODE 1
+#define DEBUGMODE 0
 
-#define MFRUTI @"com.ZhangBaoGuo.AlbumMaps.mfr"
-
-#define VCBackgroundColor [UIColor groupTableViewBackgroundColor]
+#define NOW [NSDate date]
 
 #define Path_Documents [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
 #define Path_Inbox [Path_Documents stringByAppendingPathComponent:@"Inbox"]
@@ -39,28 +37,25 @@
 #define LetterAndNumberAndDecimal @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.\n"
 
 #import "UIView+AutoLayout.h"
-#import "Chameleon.h"
+
+#import "NSDate+Assistant.h"
 #import "UIButton+Assistant.h"
 #import "UIAlertController+Assistant.h"
 #import "UIImage+Assistant.h"
 #import "UILabel+Assistant.h"
 #import "UITextField+Assistant.h"
-#import "UIButton+Assistant/NSString+FontAwesome.h"
+#import "UIFont+Assistant.h"
+
+#import "Chameleon.h"
 #import "XMLDictionary.h"
-
-#import "GCCoordinateTransformer.h"
-
 #import <STPopup.h>
 
 #import "PHAsset+Assistant.h"
-#import "NSDate+Assistant.h"
-#import "UIFont+Assistant.h"
+
 #import "GCLocationAnalyser.h"
 #import "GCPhotoManager.h"
-
-#import "PHAssetInfo.h"
+#import "GCCoordinateTransformer.h"
 #import "CLPlacemark+Assistant.h"
-
 
 /**
  地图基础模式
@@ -114,8 +109,7 @@ enum {
     FootprintsRepositoryTypeSent = (1UL << 0),
     FootprintsRepositoryTypeReceived = (1UL << 1),
     FootprintsRepositoryTypeRecorded = (1UL << 2),
-    FootprintsRepositoryTypeEdited = (1UL << 3),
-    //FootprintsRepositoryTypeImported = (1UL << 4)
+    FootprintsRepositoryTypeEdited = (1UL << 3)
 };
 typedef NSUInteger FootprintsRepositoryType;
 
@@ -127,21 +121,9 @@ typedef NS_ENUM(NSInteger,DefaultTransport){
     DefaultTransportHighSpeed
 };
 
-
 typedef NS_ENUM(NSInteger,ShowUserLocationMode){
     ShowUserLocationModeOn = 0,
     ShowUserLocationModeFollow,
     ShowUserLocationModeOff
 };
 
-#define NOW [NSDate date]
-
-#pragma mark - Placemark键
-
-#define kCountryArray @"kCountryArray"
-#define kAdministrativeAreaArray @"kAdministrativeAreaArray"
-#define kSubAdministrativeAreaArray @"kSubAdministrativeAreaArray"
-#define kLocalityArray @"kLocalityArray"
-#define kSubLocalityArray @"kSubLocalityArray"
-#define kThoroughfareArray @"kThoroughfareArray"
-#define kSubThoroughfareArray @"kSubThoroughfareArray"

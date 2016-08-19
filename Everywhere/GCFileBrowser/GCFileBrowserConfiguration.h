@@ -23,9 +23,13 @@
 #define kWaitToCopyContentAttributeDictionaryMutableArray @"kWaitToCopyContentAttributeDictionaryMutableArray"
 #define kWaitToMoveContentAttributeDictionaryMutableArray @"kWaitToMoveContentAttributeDictionaryMutableArray"
 
-#define FileActionButtonSize CGSizeMake(44,44)
-#define FileActionButtonEdgeLength 44
-#define FileActionButtonOffset 16
+
+#define FileActionButtonEdgeLength ([UIScreen mainScreen].bounds.size.width * 0.12)
+#define FileActionButtonSize CGSizeMake(FileActionButtonEdgeLength,FileActionButtonEdgeLength)
+#define FileActionButtonOffset (FileActionButtonEdgeLength * 0.35)
+
+#define TextViewHeight 100
+#define BottomConstraintConstant (TextViewHeight + 10)
 
 //#define GCCOLOR_FILES_TITLE [UIColor colorWithRed:0.4 green:0.357 blue:0.325 alpha:1] /*#665b53*/
 //#define GCCOLOR_FILES_TITLE_SHADOW [UIColor colorWithRed:1 green:1 blue:1 alpha:1] /*#ffffff*/

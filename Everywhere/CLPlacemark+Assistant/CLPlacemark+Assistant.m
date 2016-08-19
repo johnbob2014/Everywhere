@@ -10,10 +10,6 @@
 
 @implementation CLPlacemark (Assistant)
 
-- (NSString *)localizedPlaceString{
-    return [self localizedPlaceStringInReverseOrder:NO withInlandWaterAndOcean:NO];
-}
-
 - (NSString *)localizedPlaceStringInReverseOrder:(BOOL)reverseOrder withInlandWaterAndOcean:(BOOL)inlandWaterAndOcean{
     //if(DEBUGMODE) NSLog(@"%@",[self class]);
     

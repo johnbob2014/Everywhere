@@ -274,11 +274,8 @@
     }
     
     // Create the coordinator and store
-    // URLByAppendingPathComponent:@"AlbumMapsCoreData"]
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Everywhere.sqlite"];
-    //NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"AlbumMapsCoreData"];
-    //storeURL = [storeURL URLByAppendingPathComponent:@"AlbumMapsCoreData.sqlite"];
     if(DEBUGMODE) NSLog(@"storeURL : %@",storeURL.absoluteString);
     NSError *error = nil;
     NSString *failureReason = @"There was an error creating or loading the application's saved data.";

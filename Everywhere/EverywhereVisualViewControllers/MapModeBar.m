@@ -14,7 +14,6 @@
 @property (strong,nonatomic) UILabel *infoLabel;
 @property (strong,nonatomic) UIButton *leftButton;
 @property (strong,nonatomic) UIButton *rightButton;
-
 @end
 
 @implementation MapModeBar{
@@ -43,7 +42,7 @@
         self.modeSeg = [[UISegmentedControl alloc] initWithItems:segItems];
         self.modeSeg.tintColor = [UIColor whiteColor];
         self.modeSeg.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.modeSeg addTarget:self action:@selector(mapBaseModeValueChanged:) forControlEvents:UIControlEventValueChanged];
+        [self.modeSeg addTarget:self action:@selector(modeValueChanged:) forControlEvents:UIControlEventValueChanged];
         [middleView addSubview:self.modeSeg];
         self.modeSeg.selectedSegmentIndex = selectedSegIndex;
         
@@ -84,16 +83,17 @@
     return self;
 }
 
-- (void)mapBaseModeValueChanged:(UISegmentedControl *)sender{
-    //if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
-    if (self.mapBaseModeChangedHandler) self.mapBaseModeChangedHandler(sender);
+- (void)modeValueChanged:(UISegmentedControl *)sender{
+    
+    if (self.modeChangedHandler) self.modeChangedHandler(sender);
+    self.infoLabel.text = modeSegItems[sender.selectedSegmentIndex];
     
     if (sender.selectedSegmentIndex == 0) {
-        self.leftButton.enabled = YES;//self.leftButtonEnabled;
+        self.leftButton.enabled = YES;
         self.rightButton.enabled = NO;
     }else{
         self.leftButton.enabled = NO;
-        self.rightButton.enabled = YES;// self.rightButtonEnabled;
+        self.rightButton.enabled = YES;
     }
 }
 

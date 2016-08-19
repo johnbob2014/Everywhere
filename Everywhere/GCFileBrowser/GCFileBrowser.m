@@ -49,6 +49,7 @@
  */
 @property (assign,nonatomic) BOOL isWaitingToPaste;
 
+@property (assign,nonatomic) NSString *infoStringToAdd;
 @end
 
 @implementation GCFileBrowser{
@@ -58,8 +59,8 @@
     
     UIView *bottomView;
     UIView *buttonContainerView;
-    UIButton *copyButton,*cutButton,*pasteButton,*deleteButton,*renameButton;
-    UILabel *infoLabelInBottomView;
+    UIButton *copyButton,*cutButton,*pasteButton,*deleteButton,*renameButton,*showHideBottomInfoLabelButton;
+    UITextView *infoTextViewInBottomView;
     NSLayoutConstraint *bottomConstraintForBottomView;
     
     //UISegmentedControl *segmentedControl;
@@ -71,6 +72,10 @@
 
 #pragma mark - Getter & Setter
 
+- (void)setInfoStringToAdd:(NSString *)infoStringToAdd{
+    _infoStringToAdd = infoStringToAdd;
+    infoTextViewInBottomView.text = [infoStringToAdd stringByAppendingFormat:@"\n%@",infoTextViewInBottomView.text];
+}
 
 - (void)setDirectoryPath:(NSString *)newDirectoryPath{
     _directoryPath = newDirectoryPath;
@@ -98,9 +103,14 @@
     
     for (NSString *contentName in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directoryPath error:NULL]) {
         
+        // 如果为 Documents 目录，排除部分文件和文件夹
         if ([directoryPath isEqualToString:Path_Documents]){
+            // 排除 微信统计文件
             if ([contentName containsString:@"tencent_analysis_WXOMTAStore"]) continue;
+            // 排除 3个 CoreDate支持文件
             if ([[contentName pathExtension] containsString:@"sqlite"]) continue;
+            // 排除 Inbox 文件夹
+            if ([contentName isEqualToString:@"Inbox"]) continue;
         }
         
         NSMutableDictionary <NSString *,id> *contentAttributes = [NSMutableDictionary new];
@@ -186,22 +196,12 @@
 
 #pragma mark - Life Cycle
 
-- (instancetype)initWithDirectoryPath:(NSString *)directoryPath{
-    self = [super init];
-    if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
-    if (self) {
-        self.directoryPath = directoryPath;
-    }
-    return self;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     //self.actionNameArray = @[NSLocalizedString(@"Copy",@"复制"),NSLocalizedString(@"Cut",@"剪切"),NSLocalizedString(@"Paste",@"粘贴")];
     
-    if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
-    self.view.backgroundColor = VCBackgroundColor;
+    self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
     
     if (!self.directoryPath) self.directoryPath = Path_Documents;
     
@@ -217,13 +217,16 @@
     
     [self updateDataWithNewDirectoryPath:self.directoryPath];
     
-    if (infoLabelInBottomView){
+    if (infoTextViewInBottomView){
+        infoTextViewInBottomView.text = nil;
         if (self.waitToCopyCADMA.count == 0 && self.waitToMoveCADMA.count == 0){
             [self hideBottomInfoLabel];
         }else if (self.waitToCopyCADMA.count > 0){
-            infoLabelInBottomView.text = [NSString stringWithFormat:@"%lu %@",(unsigned long)self.selectedCADMA.count,NSLocalizedString(@"items has been copied.Select destination to paste.", @"项已复制，请选择目标位置进行粘贴。")];
+            bottomConstraintForBottomView.constant = 0;
+            self.infoStringToAdd = [NSString stringWithFormat:@"%lu %@",(unsigned long)self.waitToCopyCADMA.count,NSLocalizedString(@"items has been copied.Select destination to paste.", @"项已复制，请选择目标位置进行粘贴。")];
         }else if (self.waitToMoveCADMA.count > 0){
-            infoLabelInBottomView.text = [NSString stringWithFormat:@"%lu %@",(unsigned long)self.selectedCADMA.count,NSLocalizedString(@"items has been cut.Select destination to paste.", @"项已剪切，请选择目标位置进行粘贴。")];
+            bottomConstraintForBottomView.constant = 0;
+            self.infoStringToAdd = [NSString stringWithFormat:@"%lu %@",(unsigned long)self.waitToMoveCADMA.count,NSLocalizedString(@"items has been cut.Select destination to paste.", @"项已剪切，请选择目标位置进行粘贴。")];
         }
     }
     
@@ -234,7 +237,7 @@
 - (void)initTopView{
     topView = [UIView newAutoLayoutView];
 
-    topView.backgroundColor = VCBackgroundColor;
+    //topView.backgroundColor = VCBackgroundColor;
     [self.view addSubview:topView];
     [topView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
     [topView autoSetDimension:ALDimensionHeight toSize:30];
@@ -256,29 +259,23 @@
 
 - (void)initBottomView{
     bottomView = [UIView newAutoLayoutView];
-    bottomView.backgroundColor = DEBUGMODE ? RandomFlatColor : ClearColor;
+    bottomView.backgroundColor = ClearColor;//DEBUGMODE ? RandomFlatColor : ClearColor;
     [self.view addSubview:bottomView];
-    [bottomView autoSetDimension:ALDimensionHeight toSize:5 + FileActionButtonEdgeLength + 5 + 20 + 5];
+    [bottomView autoSetDimension:ALDimensionHeight toSize:5 + FileActionButtonEdgeLength + 5 + TextViewHeight + 5];
     [bottomView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
     [bottomView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
-    bottomConstraintForBottomView = [bottomView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:-30];
-    
-    infoLabelInBottomView = [UILabel newAutoLayoutView];
-    infoLabelInBottomView.textAlignment = NSTextAlignmentCenter;
-    [infoLabelInBottomView setStyle:UILabelStyleBrownBold];
-    [bottomView addSubview:infoLabelInBottomView];
-    [infoLabelInBottomView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 0, 5, 0) excludingEdge:ALEdgeTop];
+    bottomConstraintForBottomView = [bottomView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:- BottomConstraintConstant];
     
     buttonContainerView = [UIView newAutoLayoutView];
-    buttonContainerView.backgroundColor = DEBUGMODE ? RandomFlatColor : ClearColor;
+    buttonContainerView.backgroundColor = ClearColor;//DEBUGMODE ? RandomFlatColor : ClearColor;
     [bottomView addSubview:buttonContainerView];
-    [buttonContainerView autoSetDimensionsToSize:CGSizeMake(FileActionButtonEdgeLength * 5 + FileActionButtonOffset * 4, FileActionButtonEdgeLength)];
+    [buttonContainerView autoSetDimensionsToSize:CGSizeMake(FileActionButtonEdgeLength * 6 + FileActionButtonOffset * 5, FileActionButtonEdgeLength)];
     [buttonContainerView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
     [buttonContainerView autoAlignAxisToSuperviewAxis:ALAxisVertical];
     
     copyButton = [UIButton newAutoLayoutView];
-    [copyButton setImage:[UIImage imageNamed:@"icon-copy1"] forState:UIControlStateNormal];
-    [copyButton setImage:[UIImage imageNamed:@"icon-copy2"] forState:UIControlStateHighlighted];
+    [copyButton setImage:[UIImage imageNamed:@"icon-copy1@2x"] forState:UIControlStateNormal];
+    [copyButton setImage:[UIImage imageNamed:@"icon-copy2@2x"] forState:UIControlStateHighlighted];
     [copyButton addTarget:self action:@selector(copyButtonTD) forControlEvents:UIControlEventTouchDown];
     [buttonContainerView addSubview:copyButton];
     [copyButton autoSetDimensionsToSize:FileActionButtonSize];
@@ -286,8 +283,8 @@
     [copyButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
     
     cutButton = [UIButton newAutoLayoutView];
-    [cutButton setImage:[UIImage imageNamed:@"icon-move1"] forState:UIControlStateNormal];
-    [cutButton setImage:[UIImage imageNamed:@"icon-move2"] forState:UIControlStateHighlighted];
+    [cutButton setImage:[UIImage imageNamed:@"icon-move1@2x"] forState:UIControlStateNormal];
+    [cutButton setImage:[UIImage imageNamed:@"icon-move2@2x"] forState:UIControlStateHighlighted];
     [cutButton addTarget:self action:@selector(cutButtonTD) forControlEvents:UIControlEventTouchDown];
     [buttonContainerView addSubview:cutButton];
     [cutButton autoSetDimensionsToSize:FileActionButtonSize];
@@ -295,8 +292,8 @@
     [cutButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:copyButton withOffset:FileActionButtonOffset];
     
     pasteButton = [UIButton newAutoLayoutView];
-    [pasteButton setImage:[UIImage imageNamed:@"icon-play1"] forState:UIControlStateNormal];
-    [pasteButton setImage:[UIImage imageNamed:@"icon-play2"] forState:UIControlStateHighlighted];
+    [pasteButton setImage:[UIImage imageNamed:@"icon-play1@2x"] forState:UIControlStateNormal];
+    [pasteButton setImage:[UIImage imageNamed:@"icon-play2@2x"] forState:UIControlStateHighlighted];
     [pasteButton addTarget:self action:@selector(pasteButtonTD) forControlEvents:UIControlEventTouchDown];
     [buttonContainerView addSubview:pasteButton];
     [pasteButton autoSetDimensionsToSize:FileActionButtonSize];
@@ -304,8 +301,8 @@
     [pasteButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:cutButton withOffset:FileActionButtonOffset];
     
     deleteButton = [UIButton newAutoLayoutView];
-    [deleteButton setImage:[UIImage imageNamed:@"icon-trash1"] forState:UIControlStateNormal];
-    [deleteButton setImage:[UIImage imageNamed:@"icon-trash2"] forState:UIControlStateHighlighted];
+    [deleteButton setImage:[UIImage imageNamed:@"icon-trash1@2x"] forState:UIControlStateNormal];
+    [deleteButton setImage:[UIImage imageNamed:@"icon-trash2@2x"] forState:UIControlStateHighlighted];
     [deleteButton addTarget:self action:@selector(deleteButtonTD) forControlEvents:UIControlEventTouchDown];
     [buttonContainerView addSubview:deleteButton];
     [deleteButton autoSetDimensionsToSize:FileActionButtonSize];
@@ -313,45 +310,64 @@
     [deleteButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:pasteButton withOffset:FileActionButtonOffset];
     
     renameButton = [UIButton newAutoLayoutView];
-    [renameButton setImage:[UIImage imageNamed:@"icon-rename1"] forState:UIControlStateNormal];
-    [renameButton setImage:[UIImage imageNamed:@"icon-rename2"] forState:UIControlStateHighlighted];
+    [renameButton setImage:[UIImage imageNamed:@"icon-rename1@2x"] forState:UIControlStateNormal];
+    [renameButton setImage:[UIImage imageNamed:@"icon-rename2@2x"] forState:UIControlStateHighlighted];
     [renameButton addTarget:self action:@selector(renameButtonTD) forControlEvents:UIControlEventTouchDown];
     [buttonContainerView addSubview:renameButton];
     [renameButton autoSetDimensionsToSize:FileActionButtonSize];
     [renameButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
     [renameButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:deleteButton withOffset:FileActionButtonOffset];
     
-    if (ScreenWidth > 320) buttonContainerView.transform = CGAffineTransformMakeScale(1.3, 1.3);
+    showHideBottomInfoLabelButton = [UIButton newAutoLayoutView];
+    [showHideBottomInfoLabelButton setImage:[UIImage imageNamed:@"icon-view1@2x"] forState:UIControlStateNormal];
+    [showHideBottomInfoLabelButton setImage:[UIImage imageNamed:@"icon-view2@2x"] forState:UIControlStateHighlighted];
+    [showHideBottomInfoLabelButton addTarget:self action:@selector(showHideBottomInfoLabelButtonTD) forControlEvents:UIControlEventTouchDown];
+    [buttonContainerView addSubview:showHideBottomInfoLabelButton];
+    [showHideBottomInfoLabelButton autoSetDimensionsToSize:FileActionButtonSize];
+    [showHideBottomInfoLabelButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    [showHideBottomInfoLabelButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:renameButton withOffset:FileActionButtonOffset];
+    
+    //if (ScreenWidth > 320) buttonContainerView.transform = CGAffineTransformMakeScale(1.3, 1.3);
+    
+    infoTextViewInBottomView = [UITextView newAutoLayoutView];
+    infoTextViewInBottomView.editable = NO;
+    infoTextViewInBottomView.textAlignment = NSTextAlignmentLeft;
+    //[infoTextViewInBottomView setStyle:UILabelStyleBrownBold];
+    [bottomView addSubview:infoTextViewInBottomView];
+    [infoTextViewInBottomView autoSetDimension:ALDimensionHeight toSize:TextViewHeight];
+    [infoTextViewInBottomView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 5, 5, 5) excludingEdge:ALEdgeTop];
 }
 
 - (void)copyButtonTD{
+    infoTextViewInBottomView.text = nil;
     [self showBottomInfoLabel];
     if (self.selectedCADMA.count > 0){
         self.waitToCopyCADMA = (NSMutableArray<NSDictionary *> *)self.selectedCADMA;
         
-        infoLabelInBottomView.text = [NSString stringWithFormat:@"%lu %@",(unsigned long)self.selectedCADMA.count,NSLocalizedString(@"items has been copied.Select destination to paste.", @"项已复制，请选择目标位置进行粘贴。")];
+        self.infoStringToAdd = [NSString stringWithFormat:@"%lu %@",(unsigned long)self.selectedCADMA.count,NSLocalizedString(@"items has been copied.Select destination to paste.", @"项已复制，请选择目标位置进行粘贴。")];
         
     }else{
-        [self showNoteAndHideBottomInfoLabel:NSLocalizedString(@"Haven't choose an item yet.", @"尚未选择项目，请点击名称左侧图标进行选择。")];
+        self.infoStringToAdd = NSLocalizedString(@"Haven't choose an item yet.", @"尚未选择项目，请点击名称左侧图标进行选择。");
     }
 }
 
 - (void)cutButtonTD{
+    infoTextViewInBottomView.text = nil;
     [self showBottomInfoLabel];
     if (self.selectedCADMA.count > 0){
         
         self.waitToMoveCADMA = (NSMutableArray<NSDictionary *> *)self.selectedCADMA;
         
-        infoLabelInBottomView.text = [NSString stringWithFormat:@"%lu %@",(unsigned long)self.selectedCADMA.count,NSLocalizedString(@"items has been cut.Select destination to paste.", @"项已剪切，请选择目标位置进行粘贴。")];
+        self.infoStringToAdd = [NSString stringWithFormat:@"%lu %@",(unsigned long)self.selectedCADMA.count,NSLocalizedString(@"items has been cut.Select destination to paste.", @"项已剪切，请选择目标位置进行粘贴。")];
         
     }else{
-        [self showNoteAndHideBottomInfoLabel:NSLocalizedString(@"Haven't choose an item yet.", @"尚未选择项目，请点击名称左侧图标进行选择。")];
+        self.infoStringToAdd = NSLocalizedString(@"Haven't choose an item yet.", @"尚未选择项目，请点击名称左侧图标进行选择。");
     }
 }
 
 - (void)pasteButtonTD{
     if (self.waitToCopyCADMA.count == 0 && self.waitToMoveCADMA.count == 0){
-        [self showNoteAndHideBottomInfoLabel:NSLocalizedString(@"No item to copy.", @"没有要复制或移动的项目。")];
+        self.infoStringToAdd = NSLocalizedString(@"No item to copy or move.", @"没有要复制或移动的项目。");
         return;
     }else if (self.waitToCopyCADMA.count > 0){
         [self showBottomInfoLabel];
@@ -377,10 +393,10 @@
                 successString = [NSString stringWithFormat:@"%@ : %@",NSLocalizedString(@"Failed", @"失败"),error.localizedFailureReason];
             }
             
-            infoLabelInBottomView.text = [NSString stringWithFormat:@"%@ %u/%lu : %@",NSLocalizedString(@"Now copying", @"正在复制"),idx + 1,(unsigned long)self.waitToCopyCADMA.count,successString];
+            self.infoStringToAdd = [NSString stringWithFormat:@"%@ %u/%lu : %@",NSLocalizedString(@"Now copying", @"正在复制"),idx + 1,(unsigned long)self.waitToCopyCADMA.count,successString];
         }];
         
-        [self showNoteAndHideBottomInfoLabel:[NSString stringWithFormat:@"%@ %@ : %lu,%@ : %u",NSLocalizedString(@"Finish copying.", @"复制完成。"),NSLocalizedString(@"Succeeded", @"成功"),(unsigned long)successCount,NSLocalizedString(@"Failed", @"失败"),self.waitToCopyCADMA.count - successCount]];
+        self.infoStringToAdd = [NSString stringWithFormat:@"%@ %@ : %lu,%@ : %u",NSLocalizedString(@"Finish copying.", @"复制完成。"),NSLocalizedString(@"Succeeded", @"成功"),(unsigned long)successCount,NSLocalizedString(@"Failed", @"失败"),self.waitToCopyCADMA.count - successCount];
         
         self.waitToCopyCADMA = nil;
         [self updateDataWithNewDirectoryPath:self.directoryPath];
@@ -408,10 +424,10 @@
                 successString = [NSString stringWithFormat:@"%@ : %@",NSLocalizedString(@"Failed", @"失败"),error.localizedFailureReason];
             }
             
-            infoLabelInBottomView.text = [NSString stringWithFormat:@"%@ %u/%lu : %@",NSLocalizedString(@"Now moving", @"正在移动"),idx + 1,(unsigned long)self.waitToMoveCADMA.count,successString];
+            self.infoStringToAdd = [NSString stringWithFormat:@"%@ %u/%lu : %@",NSLocalizedString(@"Now moving", @"正在移动"),idx + 1,(unsigned long)self.waitToMoveCADMA.count,successString];
         }];
         
-        [self showNoteAndHideBottomInfoLabel:[NSString stringWithFormat:@"%@ %@ : %lu,%@ : %u",NSLocalizedString(@"Finish moving.", @"移动完成。"),NSLocalizedString(@"Succeeded", @"成功"),(unsigned long)successCount,NSLocalizedString(@"Failed", @"失败"),self.waitToMoveCADMA.count - successCount]];
+        self.infoStringToAdd = [NSString stringWithFormat:@"%@ %@ : %lu,%@ : %u",NSLocalizedString(@"Finish moving.", @"移动完成。"),NSLocalizedString(@"Succeeded", @"成功"),(unsigned long)successCount,NSLocalizedString(@"Failed", @"失败"),self.waitToMoveCADMA.count - successCount];
         
         self.waitToMoveCADMA = nil;
         [self updateDataWithNewDirectoryPath:self.directoryPath];
@@ -419,13 +435,12 @@
 }
 
 - (void)deleteButtonTD{
-    
-    infoLabelInBottomView.text = NSLocalizedString(@"Confirm delete", @"确认删除");
-    [self showBottomInfoLabel];
+    infoTextViewInBottomView.text = nil;
     
     if (self.selectedCADMA.count > 0){
         
         UIAlertActionHandler okActionHandler = ^(UIAlertAction *action) {
+            [self showBottomInfoLabel];
             __block NSUInteger successCount = 0;
             [self.selectedCADMA enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 NSString *contentPath = obj[kContentPath];
@@ -439,10 +454,10 @@
                     successString = [NSString stringWithFormat:@"%@ : %@",NSLocalizedString(@"Failed", @"失败"),error.localizedFailureReason];
                 }
                 
-                infoLabelInBottomView.text = [NSString stringWithFormat:@"%@ %u/%lu : %@",NSLocalizedString(@"Now deleting", @"正在删除"),idx + 1,(unsigned long)self.waitToMoveCADMA.count,successString];
+                self.infoStringToAdd = [NSString stringWithFormat:@"%@ %u/%lu : %@",NSLocalizedString(@"Now deleting", @"正在删除"),idx + 1,(unsigned long)self.waitToMoveCADMA.count,successString];
             }];
             
-            [self showNoteAndHideBottomInfoLabel:[NSString stringWithFormat:@"%@ %@ : %lu,%@ : %u",NSLocalizedString(@"Finish deleting.", @"删除完成。"),NSLocalizedString(@"Succeeded", @"成功"),(unsigned long)successCount,NSLocalizedString(@"Failed", @"失败"),self.selectedCADMA.count - successCount]];
+            self.infoStringToAdd = [NSString stringWithFormat:@"%@ %@ : %lu,%@ : %u",NSLocalizedString(@"Finish deleting.", @"删除完成。"),NSLocalizedString(@"Succeeded", @"成功"),(unsigned long)successCount,NSLocalizedString(@"Failed", @"失败"),self.selectedCADMA.count - successCount];
             
             self.selectedCADMA = nil;
 
@@ -451,7 +466,7 @@
         };
         
         UIAlertActionHandler cancelActionHandler = ^(UIAlertAction *action) {
-            [self showNoteAndHideBottomInfoLabel:NSLocalizedString(@"Cancel delete", @"取消删除")];
+            self.infoStringToAdd = NSLocalizedString(@"Cancel delete", @"取消删除");
         };
         
         UIAlertController *alertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Attention", @"警告")
@@ -461,12 +476,12 @@
         
         [self presentViewController:alertController animated:YES completion:nil];
     }else{
-        [self showNoteAndHideBottomInfoLabel:NSLocalizedString(@"No item to delete.", @"没有要删除的项目。")];
+        self.infoStringToAdd = NSLocalizedString(@"No item to delete.", @"没有要删除的项目。");
     }
 }
 
 - (void)renameButtonTD{
-    
+    infoTextViewInBottomView.text = nil;
     if (self.selectedCADMA.count == 1){
         __block UITextField *tf;
         __block NSMutableDictionary *selectedContentAttributeMutableDictionary = self.selectedCADMA.firstObject;
@@ -480,9 +495,9 @@
                 self.selectedCADMA = nil;
                 [contentTableView reloadData];
                 
-                [self showNoteAndHideBottomInfoLabel:NSLocalizedString(@"Rename succeeded", @"重命名成功")];
+                self.infoStringToAdd = NSLocalizedString(@"Rename succeeded", @"重命名成功");
             }else{
-                [self showNoteAndHideBottomInfoLabel:NSLocalizedString(@"Rename Failed", @"重命名失败")];
+                self.infoStringToAdd = NSLocalizedString(@"Rename Failed", @"重命名失败");
             }
         };
         
@@ -496,8 +511,15 @@
 
     }else{
         [self showBottomInfoLabel];
-        [self showNoteAndHideBottomInfoLabel:NSLocalizedString(@"Only support 1 item at once.", @"每次只能重命名1个项目。")];
+        self.infoStringToAdd = NSLocalizedString(@"Only support 1 item at once.", @"每次只能重命名1个项目。");
     }
+}
+
+- (void)showHideBottomInfoLabelButtonTD{
+    infoTextViewInBottomView.text = nil;
+    [UIView animateWithDuration:1.0 animations:^{
+        bottomConstraintForBottomView.constant = bottomConstraintForBottomView.constant == 0 ? BottomConstraintConstant : 0;
+    }];
 }
 
 - (void)showBottomInfoLabel{
@@ -508,16 +530,9 @@
 
 - (void)hideBottomInfoLabel{
     [UIView animateWithDuration:1.0 animations:^{
-        bottomConstraintForBottomView.constant = 30;
+        bottomConstraintForBottomView.constant = BottomConstraintConstant;
     }];
 }
-
-
-- (void)showNoteAndHideBottomInfoLabel:(NSString *)noteString{
-    infoLabelInBottomView.text = noteString;
-    [self performSelector:@selector(hideBottomInfoLabel) withObject:self afterDelay:3.0];
-}
-
 
 /*
 - (void)initSegmentedControl{

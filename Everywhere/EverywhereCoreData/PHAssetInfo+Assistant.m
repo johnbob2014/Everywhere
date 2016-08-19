@@ -9,6 +9,7 @@
 #import "PHAssetInfo+Assistant.h"
 #import "NSDate+Assistant.h"
 #import "CLPlacemark+Assistant.h"
+#import "EverywhereCoreDataHeader.h"
 
 @import CoreLocation;
 
@@ -169,7 +170,7 @@
                                                 assetInfo.inlandWater_Placemark = placemark.inlandWater;
                                                 assetInfo.ocean_Placemark = placemark.ocean;
                                                 
-                                                assetInfo.localizedPlaceString_Placemark = [placemark localizedPlaceString];
+                                                assetInfo.localizedPlaceString_Placemark = [placemark localizedPlaceStringInReverseOrder:NO withInlandWaterAndOcean:NO];
                                                 
                                                 assetInfo.reverseGeocodeSucceed = @(YES);
                                                 

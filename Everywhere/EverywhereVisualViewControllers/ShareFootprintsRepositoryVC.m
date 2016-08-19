@@ -33,7 +33,7 @@
     self.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.9, 300);
     self.landscapeContentSizeInPopup = CGSizeMake(300, ScreenWidth * 0.9);
     
-    self.view.backgroundColor = VCBackgroundColor;
+    self.view.backgroundColor = [EverywhereSettingManager defaultManager].backgroundColor;
     self.title = NSLocalizedString(@"Share footprints", @"分享足迹");
     
     titleLabel = [UILabel newAutoLayoutView];

@@ -24,6 +24,7 @@
 @import MapKit;
 
 #import "EverywhereAppDelegate.h"
+#import "EverywhereCoreDataHeader.h"
 
 #import "EverywhereAnnotation.h"
 #import "EverywhereSettingManager.h"
@@ -96,7 +97,7 @@
 #pragma mark 用于模式转换
 @property (assign,nonatomic) BOOL isInBaseMode;
 @property (assign,nonatomic) BOOL isInRecordMode;
-@property (assign,nonatomic) BOOL allowBrowserMode;
+//@property (assign,nonatomic) BOOL allowBrowserMode;
 @property (strong,nonatomic) UIColor *currentTintColor;
 
 #pragma mark 用于Record模式的用户设置
@@ -252,7 +253,8 @@
     
     if (self.isInBaseMode) {
         self.currentTintColor = self.settingManager.baseTintColor;
-        [self updateBarColor:self.settingManager.baseTintColor];
+        
+        [self updateBarColor:self.currentTintColor];
         
         if (verticalBarIsAlphaZero) [self alphaShowHideVerticalBar];
         
@@ -279,6 +281,7 @@
     msBaseModeBar.contentViewBackgroundColor = newColor;
     msExtenedModeBar.contentViewBackgroundColor = self.settingManager.extendedTintColor;
 }
+
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
@@ -610,7 +613,8 @@
 - (void)initMapModeBar{
     WEAKSELF(weakSelf);
     
-    msBaseModeBar = [[MapModeBar alloc]initWithModeSegItems:[NSLocalizedString(@"MomentMode LocationMode",@"时刻模式 地点模式") componentsSeparatedByString:@" "]
+    NSArray *baseItems = [NSLocalizedString(@"Moment Mode,Location Mode",@"时刻模式,地点模式") componentsSeparatedByString:@","];
+    msBaseModeBar = [[MapModeBar alloc]initWithModeSegItems:baseItems
                                                 selectedSegIndex:self.settingManager.mapBaseMode
                                                  leftButtonImage:[UIImage imageNamed:@"IcoMoon_Calendar"]
                                                 rightButtonImage:[UIImage imageNamed:@"IcoMoon_Dribble3"]];
@@ -620,7 +624,7 @@
     [msBaseModeBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 5, 0, 5) excludingEdge:ALEdgeBottom];
     [msBaseModeBar autoSetDimension:ALDimensionHeight toSize:60];
     
-    msBaseModeBar.mapBaseModeChangedHandler = ^(UISegmentedControl *sender){
+    msBaseModeBar.modeChangedHandler = ^(UISegmentedControl *sender){
         // 记录当前地图模式
         weakSelf.settingManager.mapBaseMode = sender.selectedSegmentIndex;
         [weakSelf changeToBaseMode:sender.selectedSegmentIndex];
@@ -634,7 +638,8 @@
         [weakSelf showLocationPicker];
     };
     
-    msExtenedModeBar = [[MapModeBar alloc]initWithModeSegItems:[NSLocalizedString(@"BrowserMode RecordMode",@"浏览模式 记录模式") componentsSeparatedByString:@" "]
+    NSArray *extenedItems = [NSLocalizedString(@"Browser Mode,Record Mode",@"浏览模式,记录模式") componentsSeparatedByString:@","];
+    msExtenedModeBar = [[MapModeBar alloc]initWithModeSegItems:extenedItems
                                                     selectedSegIndex:self.settingManager.mapExtendedMode
                                                      leftButtonImage:[UIImage imageNamed:@"IcoMoon_DrawerFull"]
                                                     rightButtonImage:[UIImage imageNamed:@"IcoMoon_DrawerEmpty"]];
@@ -644,10 +649,13 @@
     [msExtenedModeBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 5, 0, 5) excludingEdge:ALEdgeBottom];
     [msExtenedModeBar autoSetDimension:ALDimensionHeight toSize:60];
     
-    msExtenedModeBar.mapBaseModeChangedHandler = ^(UISegmentedControl *sender){
+    msExtenedModeBar.modeChangedHandler = ^(UISegmentedControl *sender){
         weakSelf.settingManager.mapExtendedMode = sender.selectedSegmentIndex;
+        // msExtenedModeBar.info = extenedItems[sender.selectedSegmentIndex];
+        
         // 扩展模式切换
         if (sender.selectedSegmentIndex == MapExtendedModeBrowser) {
+            
             [weakSelf enterBrowserMode];
         }else{
             [weakSelf enterRecordMode];
@@ -1287,8 +1295,10 @@
     leftVerticalBar.alpha = leftVerticalBar.alpha == 1 ?  0 : 1;
     rightVerticalBar.alpha = rightVerticalBar.alpha == 1 ? 0 : 1;
     
-    rightSwipeVerticalBar.alpha = rightSwipeVerticalBar.alpha == 1 ? 0 : 1;
-    userLocationButton.hidden = userLocationButton.hidden ? NO : YES;
+    if (recordModeSettingBar.alpha != 1){
+        rightSwipeVerticalBar.alpha = rightSwipeVerticalBar.alpha == 1 ? 0 : 1;
+        userLocationButton.hidden = userLocationButton.hidden ? NO : YES;
+    }
     
     verticalBarIsAlphaZero = verticalBarIsAlphaZero ? NO : YES;
 }
@@ -1378,7 +1388,8 @@
     recordModeBar.backgroundColor = [UIColor clearColor];//[UIColor cyanColor]; //
     [self.view addSubview:recordModeBar];
     [recordModeBar autoSetDimensionsToSize:CGSizeMake(ButtonEdgeLength * 5 + ButtonOffset * 4, ButtonEdgeLength + 30)];
-    [recordModeBar autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:msExtenedModeBar withOffset:10];
+    //[recordModeBar autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:msExtenedModeBar withOffset:10];
+    [recordModeBar autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:10];
     [recordModeBar autoAlignAxisToSuperviewAxis:ALAxisVertical];
     recordModeBar.hidden = YES;
     
@@ -1388,64 +1399,65 @@
     [recordModeBarButtonContainer autoSetDimensionsToSize:CGSizeMake(ButtonEdgeLength * 5 + ButtonOffset * 4, ButtonEdgeLength)];
     [recordModeBarButtonContainer autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeBottom];
     
+    UIButton *firstButtonInRMB = [UIButton newAutoLayoutView];
+    firstButtonInRMB.alpha = 0.6;
+    [firstButtonInRMB setBackgroundImage:[UIImage imageNamed:@"Paused"] forState:UIControlStateNormal];
+    firstButtonInRMB.translatesAutoresizingMaskIntoConstraints = NO;
+    [firstButtonInRMB addTarget:self action:@selector(startPauseRecord) forControlEvents:UIControlEventTouchDown];
+    [recordModeBarButtonContainer addSubview:firstButtonInRMB];
+    [firstButtonInRMB autoSetDimensionsToSize:ButtionSize];
+    [firstButtonInRMB autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    [firstButtonInRMB autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:ButtonOffset / 2.0];
+    
+    UIButton *secondButtonInRMB = [UIButton newAutoLayoutView];
+    secondButtonInRMB.alpha = 0.6;
+    [secondButtonInRMB setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Download_WBG"] forState:UIControlStateNormal];
+    secondButtonInRMB.translatesAutoresizingMaskIntoConstraints = NO;
+    [secondButtonInRMB addTarget:self action:@selector(saveRecordedFootprintAnnotationsBtnTD) forControlEvents:UIControlEventTouchDown];
+    [recordModeBarButtonContainer addSubview:secondButtonInRMB];
+    [secondButtonInRMB autoSetDimensionsToSize:ButtionSize];
+    [secondButtonInRMB autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    [secondButtonInRMB autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:firstButtonInRMB withOffset:ButtonOffset];
+    
+    UIButton *thirdButtonInRMB = [UIButton newAutoLayoutView];
+    thirdButtonInRMB.alpha = 0.6;
+    [thirdButtonInRMB setBackgroundImage:[UIImage imageNamed:@"cross"] forState:UIControlStateNormal];
+    thirdButtonInRMB.translatesAutoresizingMaskIntoConstraints = NO;
+    [thirdButtonInRMB addTarget:self action:@selector(showQuiteRecordModeAlertController) forControlEvents:UIControlEventTouchDown];
+    [recordModeBarButtonContainer addSubview:thirdButtonInRMB];
+    [thirdButtonInRMB autoSetDimensionsToSize:ButtionSize];
+    [thirdButtonInRMB autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    [thirdButtonInRMB autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:secondButtonInRMB withOffset:ButtonOffset];
+    
+    UIButton *fourthButtonInRMB = [UIButton newAutoLayoutView];
+    fourthButtonInRMB.alpha = 0.6;
+    [fourthButtonInRMB setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Setting_WBG"] forState:UIControlStateNormal];
+    fourthButtonInRMB.translatesAutoresizingMaskIntoConstraints = NO;
+    [fourthButtonInRMB addTarget:self action:@selector(alphaShowHideRecordModeSettingBar) forControlEvents:UIControlEventTouchDown];
+    [recordModeBarButtonContainer addSubview:fourthButtonInRMB];
+    [fourthButtonInRMB autoSetDimensionsToSize:ButtionSize];
+    [fourthButtonInRMB autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    [fourthButtonInRMB autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:thirdButtonInRMB withOffset:ButtonOffset];
+    
+    UIButton *fifthButtonInRMB = [UIButton newAutoLayoutView];
+    fifthButtonInRMB.alpha = 0.6;
+    [fifthButtonInRMB setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Plus_WBG"] forState:UIControlStateNormal];
+    fifthButtonInRMB.translatesAutoresizingMaskIntoConstraints = NO;
+    [fifthButtonInRMB addTarget:self action:@selector(manullyAddFootprint) forControlEvents:UIControlEventTouchDown];
+    [recordModeBarButtonContainer addSubview:fifthButtonInRMB];
+    [fifthButtonInRMB autoSetDimensionsToSize:ButtionSize];
+    [fifthButtonInRMB autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    [fifthButtonInRMB autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:fourthButtonInRMB withOffset:ButtonOffset];
+    
     // 需要外部引用，用于改变图片
-    startPauseRecordButton = [UIButton newAutoLayoutView];
-    startPauseRecordButton.alpha = 0.6;
-    [startPauseRecordButton setBackgroundImage:[UIImage imageNamed:@"Paused"] forState:UIControlStateNormal];
-    startPauseRecordButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [startPauseRecordButton addTarget:self action:@selector(startPauseRecord) forControlEvents:UIControlEventTouchDown];
-    [recordModeBarButtonContainer addSubview:startPauseRecordButton];
-    [startPauseRecordButton autoSetDimensionsToSize:ButtionSize];
-    [startPauseRecordButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-    [startPauseRecordButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:ButtonOffset / 2.0];
-    
-    UIButton *manullyAddFootprintButton = [UIButton newAutoLayoutView];
-    manullyAddFootprintButton.alpha = 0.6;
-    [manullyAddFootprintButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Plus_WBG"] forState:UIControlStateNormal];
-    manullyAddFootprintButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [manullyAddFootprintButton addTarget:self action:@selector(manullyAddFootprint) forControlEvents:UIControlEventTouchDown];
-    [recordModeBarButtonContainer addSubview:manullyAddFootprintButton];
-    [manullyAddFootprintButton autoSetDimensionsToSize:ButtionSize];
-    [manullyAddFootprintButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-    [manullyAddFootprintButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:startPauseRecordButton withOffset:ButtonOffset];
-    
-    UIButton *showHideRecordModeSettingBarButton = [UIButton newAutoLayoutView];
-    showHideRecordModeSettingBarButton.alpha = 0.6;
-    [showHideRecordModeSettingBarButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Setting_WBG"] forState:UIControlStateNormal];
-    showHideRecordModeSettingBarButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [showHideRecordModeSettingBarButton addTarget:self action:@selector(alphaShowHideRecordModeSettingBar) forControlEvents:UIControlEventTouchDown];
-    [recordModeBarButtonContainer addSubview:showHideRecordModeSettingBarButton];
-    [showHideRecordModeSettingBarButton autoSetDimensionsToSize:ButtionSize];
-    [showHideRecordModeSettingBarButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-    [showHideRecordModeSettingBarButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:manullyAddFootprintButton withOffset:ButtonOffset];
-    
-    UIButton *saveCurrentRecordingFootprintsButton = [UIButton newAutoLayoutView];
-    saveCurrentRecordingFootprintsButton.alpha = 0.6;
-    [saveCurrentRecordingFootprintsButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Download_WBG"] forState:UIControlStateNormal];
-    saveCurrentRecordingFootprintsButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [saveCurrentRecordingFootprintsButton addTarget:self action:@selector(saveRecordedFootprintAnnotationsBtnTD) forControlEvents:UIControlEventTouchDown];
-    [recordModeBarButtonContainer addSubview:saveCurrentRecordingFootprintsButton];
-    [saveCurrentRecordingFootprintsButton autoSetDimensionsToSize:ButtionSize];
-    [saveCurrentRecordingFootprintsButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-    [saveCurrentRecordingFootprintsButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:showHideRecordModeSettingBarButton withOffset:ButtonOffset];
-    
-    UIButton *quiteRecordModeButton = [UIButton newAutoLayoutView];
-    quiteRecordModeButton.alpha = 0.6;
-    [quiteRecordModeButton setBackgroundImage:[UIImage imageNamed:@"cross"] forState:UIControlStateNormal];
-    quiteRecordModeButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [quiteRecordModeButton addTarget:self action:@selector(showQuiteRecordModeAlertController) forControlEvents:UIControlEventTouchDown];
-    [recordModeBarButtonContainer addSubview:quiteRecordModeButton];
-    [quiteRecordModeButton autoSetDimensionsToSize:ButtionSize];
-    [quiteRecordModeButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-    [quiteRecordModeButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:saveCurrentRecordingFootprintsButton withOffset:ButtonOffset];
-    
+    startPauseRecordButton = firstButtonInRMB;
     
     velocityLabel = [UILabel newAutoLayoutView];
     velocityLabel.layer.backgroundColor = self.settingManager.extendedTintColor.CGColor;
     velocityLabel.layer.borderColor = self.settingManager.extendedTintColor.CGColor;
     velocityLabel.layer.borderWidth = 1;
     velocityLabel.layer.cornerRadius = 0.4;
-    velocityLabel.text = NSLocalizedString(@"Current Velocity", @"当前速度");
+    velocityLabel.text = NSLocalizedString(@"Paused", @"已暂停");
     velocityLabel.textAlignment = NSTextAlignmentCenter;
     velocityLabel.textColor = [UIColor whiteColor];
     velocityLabel.font = [UIFont bodyFontWithSizeMultiplier:1.2];
@@ -1472,6 +1484,11 @@
 - (void)alphaShowHideRecordModeSettingBar{
     [UIView animateWithDuration:0.3 animations:^{
         recordModeSettingBar.alpha = recordModeSettingBar.alpha ==1 ? 0 : 1;
+        
+        if (recordModeSettingBar.alpha == 1){
+            rightSwipeVerticalBar.alpha =  0 ;
+            userLocationButton.hidden =  YES;
+        }
     }];
 }
 
@@ -1481,7 +1498,8 @@
     recordModeSettingBar = [RecordModeSettingBar new];
     recordModeSettingBar.backgroundColor = self.settingManager.extendedTintColor;
     [self.view addSubview:recordModeSettingBar];
-    [recordModeSettingBar autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:recordModeBar withOffset:10];
+    //[recordModeSettingBar autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:recordModeBar withOffset:10];
+    [recordModeSettingBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:recordModeBar withOffset:-10];
     [recordModeSettingBar autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
     [recordModeSettingBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
     [recordModeSettingBar autoSetDimension:ALDimensionHeight toSize:100];
@@ -1600,6 +1618,7 @@
 
 - (void)showSettingVC{
     SettingVC *settingVC = [SettingVC new];
+    settingVC.view.backgroundColor = self.settingManager.backgroundColor;
     settingVC.edgesForExtendedLayout = UIRectEdgeNone;
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:settingVC];
     nav.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
@@ -1656,6 +1675,7 @@
     NSData *thumbImageData = UIImageJPEGRepresentation(thumbImage, 0.5);
     
     ShareImageVC *ssVC = [ShareImageVC new];
+    ssVC.view.backgroundColor = self.settingManager.backgroundColor;
     ssVC.shareImage = contentImage;
     ssVC.shareThumbData = thumbImageData;
     ssVC.contentSizeInPopup = ContentSizeInPopup_Big;
@@ -2072,8 +2092,7 @@
         
         [self.locationManagerForRecording startUpdatingLocation];
         
-        msExtenedModeBar.info = NSLocalizedString(@"Recording", @"记录中");
-        self.allowBrowserMode = NO;
+        msExtenedModeBar.alpha = 0;
         
         [startPauseRecordButton setBackgroundImage:[UIImage imageNamed:@"Recording"] forState:UIControlStateNormal];
         
@@ -2083,7 +2102,9 @@
         [timerForRecord invalidate];
         timerForRecord = nil;
         
-        msExtenedModeBar.info = NSLocalizedString(@"Paused", @"已暂停");
+        velocityLabel.text = NSLocalizedString(@"Paused", @"已暂停");
+        msExtenedModeBar.alpha = 1;
+        
         if(DEBUGMODE) NSLog(@"暂停记录");
         [self.locationManagerForRecording stopUpdatingLocation];
         
@@ -2107,6 +2128,7 @@
     }
 }
 
+/*
 - (void)setAllowBrowserMode:(BOOL)allowBrowserMode{
     _allowBrowserMode = allowBrowserMode;
     if (allowBrowserMode) {
@@ -2119,6 +2141,7 @@
         msExtenedModeBar.leftButtonEnabled = NO;
     }
 }
+*/
 
 - (void)saveRecordedFootprintAnnotationsBtnTD{
     if (!self.settingManager.hasPurchasedRecordAndEdit){
@@ -2142,7 +2165,6 @@
 - (void)showQuiteRecordModeAlertController{
     
     if (!recordedFootprintAnnotations || recordedFootprintAnnotations.count == 0){
-        self.allowBrowserMode = YES;
         [self quiteRecordMode];
         [self quiteExtendedMode];
         return;
@@ -2156,7 +2178,6 @@
                                                          style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * action) {
                                                              [self intelligentlySaveRecordedFootprintAnnotationsAndClearCatche];
-                                                             self.allowBrowserMode = YES;
                                                              [self quiteRecordMode];
                                                              [self quiteExtendedMode];
                                                          }];

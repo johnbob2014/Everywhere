@@ -13,6 +13,8 @@
 #define AppProductIDArray @[@"com.ZhangBaoGuo.AlbumMaps.ShareAndBrowse",@"com.ZhangBaoGuo.AlbumMaps.RecordAndEdit",@"com.ZhangBaoGuo.AlbumMaps.ImportAndExport",@"com.ZhangBaoGuo.AlbumMaps.AllFunctionsSuit"]
 #define AppQRCodeImage @"AlbumMapsAppQRCodeImage.png"
 
+
+
 #import "EverywhereSettingManager.h"
 
 @implementation EverywhereSettingManager
@@ -161,6 +163,10 @@
 }
 
 #pragma mark - Items
+
+- (UIColor *)backgroundColor{
+    return [UIColor groupTableViewBackgroundColor];
+}
 
 - (MapBaseMode)mapBaseMode{
     MapBaseMode mode = [[NSUserDefaults standardUserDefaults] integerForKey:@"mapBaseMode"];

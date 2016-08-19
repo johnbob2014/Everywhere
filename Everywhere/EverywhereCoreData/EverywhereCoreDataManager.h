@@ -23,17 +23,17 @@ typedef void(^UpdatePlacemarkForPHAssetInfoCompletionBlock)(NSInteger reverseGeo
 + (instancetype)defaultManager;
 
 /**
- 从照片库智能更新PHAssetInfo数据，返回本次更新的数据；如果照片库无法访问，直接返回0 - EverywhereCoreDataManager
+ * 从照片库智能更新PHAssetInfo数据，返回本次更新的数据；如果照片库无法访问，直接返回0 - EverywhereCoreDataManager
  */
 - (NSInteger)updatePHAssetInfoFromPhotoLibrary;
 
 /**
- 异步更新PHAssetInfo的Placemark信息，提供更新完成Block - EverywhereCoreDataManager
+ * 异步更新PHAssetInfo的Placemark信息，提供更新完成Block - EverywhereCoreDataManager
  */
 - (void)asyncUpdatePlacemarkForPHAssetInfoWithCompletionBlock:(UpdatePlacemarkForPHAssetInfoCompletionBlock)completionBlock;
 
 /**
- 地址信息
+ * 为 PlacemarkDictionary 生成 地址统计信息 字符串
  */
 + (NSString *)placemarkInfoStringForPlacemarkDictionary:(NSDictionary <NSString *,NSArray<NSString *> *> *)placemarkDictionary;
 

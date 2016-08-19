@@ -7,6 +7,7 @@
 //
 
 #import "CoordinateInfo.h"
+#import "PHAssetInfo.h"
 
 #define EntityName_CoordinateInfo @"CoordinateInfo"
 

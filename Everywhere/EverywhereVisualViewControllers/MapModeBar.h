@@ -23,7 +23,7 @@ typedef void(^ButtonTouchDownHandler)(UIButton *sender);
 
 - (instancetype)initWithModeSegItems:(NSArray *)segItems selectedSegIndex:(NSInteger)selectedSegIndex leftButtonImage:(UIImage *)leftImage rightButtonImage:(UIImage *)rightImage;
 
-@property (copy,nonatomic) SegmentedControlValueChangedHandler mapBaseModeChangedHandler;
+@property (copy,nonatomic) SegmentedControlValueChangedHandler modeChangedHandler;
 @property (copy,nonatomic) ButtonTouchDownHandler leftButtonTouchDownHandler;
 @property (copy,nonatomic) ButtonTouchDownHandler rightButtonTouchDownHandler;
 

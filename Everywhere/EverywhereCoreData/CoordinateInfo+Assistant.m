@@ -7,6 +7,8 @@
 //
 
 #import "CoordinateInfo+Assistant.h"
+#import "EverywhereCoreDataHeader.h"
+#import "CLPlacemark+Assistant.h"
 
 @implementation CoordinateInfo (Assistant)
 
@@ -123,7 +125,7 @@
                                                 coordinateInfo.inlandWater_Placemark = placemark.inlandWater;
                                                 coordinateInfo.ocean_Placemark = placemark.ocean;
                                                 
-                                                coordinateInfo.localizedPlaceString_Placemark = [placemark localizedPlaceString];
+                                                coordinateInfo.localizedPlaceString_Placemark = [placemark localizedPlaceStringInReverseOrder:NO withInlandWaterAndOcean:NO];
                                                 
                                                 coordinateInfo.reverseGeocodeSucceed = @(YES);
                                                 

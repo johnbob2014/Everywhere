@@ -6,6 +6,8 @@
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
+#define MFRUTI @"com.ZhangBaoGuo.AlbumMaps.mfr"
+
 #import <Foundation/Foundation.h>
 
 @interface EverywhereSettingManager : NSObject
@@ -42,7 +44,7 @@
 @property (assign,nonatomic) ExtendedColorScheme extendedColorScheme;
 @property (strong,nonatomic,readonly) UIColor *extendedTintColor;
 
-//@property (strong,nonatomic,readonly) UIColor *currentTintColor;
+@property (strong,nonatomic,readonly) UIColor *backgroundColor;
 
 @property (assign,nonatomic) BOOL hasPurchasedShareAndBrowse;
 @property (assign,nonatomic) BOOL hasPurchasedRecordAndEdit;

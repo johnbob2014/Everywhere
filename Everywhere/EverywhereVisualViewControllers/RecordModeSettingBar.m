@@ -37,8 +37,8 @@
     if (self) {
         settingManager = [EverywhereSettingManager defaultManager];
         
-        sDLabelTitle = NSLocalizedString(@"MinDistance",@"最短距离");
-        sTILabelTitle = NSLocalizedString(@"MinTimeInterval",@"最小间隔");
+        sDLabelTitle = NSLocalizedString(@"Record Distance",@"记录距离");
+        sTILabelTitle = NSLocalizedString(@"Record TimeInterval",@"记录间隔");
         velocityLabelTitle = NSLocalizedString(@"Velocity",@"速度");
         
         // Do any additional setup after loading the view.

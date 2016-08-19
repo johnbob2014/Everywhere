@@ -7,7 +7,10 @@
 //
 
 #import "EverywhereCoreDataManager.h"
+#import "EverywhereCoreDataHeader.h"
 #import "EverywhereAppDelegate.h"
+
+#import "PHAssetInfo.h"
 
 #import "GCPhotoManager.h"
 

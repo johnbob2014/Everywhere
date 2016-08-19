@@ -7,6 +7,7 @@
 //
 
 #import "LocationPickerVC.h"
+#import "EverywhereCoreDataHeader.h"
 
 @interface LocationPickerVC ()<UITableViewDelegate,UITableViewDataSource>
 
