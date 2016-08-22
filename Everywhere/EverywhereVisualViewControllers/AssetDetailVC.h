@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EverywhereAnnotation.h"
 
 @interface AssetDetailVC : UIViewController
+//@property (strong,nonatomic) EverywhereAnnotation *ewAnnotation;
 @property (strong,nonatomic) NSArray <NSString *> *assetLocalIdentifiers;
 @end

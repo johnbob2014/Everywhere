@@ -99,6 +99,11 @@
 		4B0866311D3738B3000300AD /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B0866301D3738B3000300AD /* libsqlite3.0.tbd */; };
 		4B0866331D373987000300AD /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B0866321D373987000300AD /* CoreTelephony.framework */; };
 		4B0866351D373993000300AD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B0866341D373993000300AD /* Security.framework */; };
+		4B0BFDE91D6B069100F8CAA5 /* SVIndefiniteAnimatedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0BFDE01D6B069100F8CAA5 /* SVIndefiniteAnimatedView.m */; };
+		4B0BFDEA1D6B069100F8CAA5 /* SVProgressAnimatedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0BFDE21D6B069100F8CAA5 /* SVProgressAnimatedView.m */; };
+		4B0BFDEB1D6B069100F8CAA5 /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4B0BFDE41D6B069100F8CAA5 /* SVProgressHUD.bundle */; };
+		4B0BFDEC1D6B069100F8CAA5 /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0BFDE61D6B069100F8CAA5 /* SVProgressHUD.m */; };
+		4B0BFDED1D6B069100F8CAA5 /* SVRadialGradientLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0BFDE81D6B069100F8CAA5 /* SVRadialGradientLayer.m */; };
 		4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */; };
 		4B12E6FD1D5AC8400035D16D /* XMLDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B12E6FC1D5AC8400035D16D /* XMLDictionary.m */; };
 		4B15B5D31D3F5E5E0096EE89 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B15B5D21D3F5E5E0096EE89 /* Assets.xcassets */; };
@@ -117,6 +122,7 @@
 		4B3AF9CC1D2F3E70009BD545 /* GCRoutePolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3AF9C61D2F3E70009BD545 /* GCRoutePolyline.m */; };
 		4B3AF9CD1D2F3E70009BD545 /* GCRoutePolylineManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3AF9C81D2F3E70009BD545 /* GCRoutePolylineManager.m */; };
 		4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */; };
+		4B448E1D1D6A9F6E0009ED09 /* ImageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B448E1C1D6A9F6E0009ED09 /* ImageVC.m */; };
 		4B69F5021D614DA100575AC3 /* UILabel+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B69F5011D614DA100575AC3 /* UILabel+Assistant.m */; };
 		4B69F5091D6156A800575AC3 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4B69F5041D6156A800575AC3 /* FontAwesome.ttf */; };
 		4B69F50A1D6156A800575AC3 /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B69F5061D6156A800575AC3 /* NSString+FontAwesome.m */; };
@@ -279,6 +285,17 @@
 		4B0866301D3738B3000300AD /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 		4B0866321D373987000300AD /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		4B0866341D373993000300AD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		4B0BFDDD1D6AE51800F8CAA5 /* Everywhere Version300.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Everywhere Version300.xcdatamodel"; sourceTree = "<group>"; };
+		4B0BFDDF1D6B069100F8CAA5 /* SVIndefiniteAnimatedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVIndefiniteAnimatedView.h; sourceTree = "<group>"; };
+		4B0BFDE01D6B069100F8CAA5 /* SVIndefiniteAnimatedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVIndefiniteAnimatedView.m; sourceTree = "<group>"; };
+		4B0BFDE11D6B069100F8CAA5 /* SVProgressAnimatedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressAnimatedView.h; sourceTree = "<group>"; };
+		4B0BFDE21D6B069100F8CAA5 /* SVProgressAnimatedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressAnimatedView.m; sourceTree = "<group>"; };
+		4B0BFDE31D6B069100F8CAA5 /* SVProgressHUD-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SVProgressHUD-Prefix.pch"; sourceTree = "<group>"; };
+		4B0BFDE41D6B069100F8CAA5 /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
+		4B0BFDE51D6B069100F8CAA5 /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
+		4B0BFDE61D6B069100F8CAA5 /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
+		4B0BFDE71D6B069100F8CAA5 /* SVRadialGradientLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVRadialGradientLayer.h; sourceTree = "<group>"; };
+		4B0BFDE81D6B069100F8CAA5 /* SVRadialGradientLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVRadialGradientLayer.m; sourceTree = "<group>"; };
 		4B0D09261D23C94D0047D7E0 /* PHAsset+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PHAsset+Assistant.h"; path = "PHAsset+Assistant/PHAsset+Assistant.h"; sourceTree = "<group>"; };
 		4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PHAsset+Assistant.m"; path = "PHAsset+Assistant/PHAsset+Assistant.m"; sourceTree = "<group>"; };
 		4B12E6FB1D5AC8400035D16D /* XMLDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLDictionary.h; sourceTree = "<group>"; };
@@ -312,6 +329,8 @@
 		4B3AF9C81D2F3E70009BD545 /* GCRoutePolylineManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCRoutePolylineManager.m; sourceTree = "<group>"; };
 		4B3C10061D1CDCA700C20C72 /* UIView+AutoLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AutoLayout.h"; sourceTree = "<group>"; };
 		4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AutoLayout.m"; sourceTree = "<group>"; };
+		4B448E1B1D6A9F6E0009ED09 /* ImageVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImageVC.h; path = EverywhereVisualViewControllers/ImageVC.h; sourceTree = "<group>"; };
+		4B448E1C1D6A9F6E0009ED09 /* ImageVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImageVC.m; path = EverywhereVisualViewControllers/ImageVC.m; sourceTree = "<group>"; };
 		4B5E6A7D1D66B1C9000D2F60 /* EverywhereCoreDataHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EverywhereCoreDataHeader.h; path = EverywhereCoreData/EverywhereCoreDataHeader.h; sourceTree = "<group>"; };
 		4B69F5001D614DA100575AC3 /* UILabel+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UILabel+Assistant.h"; path = "UILabel+Assistant/UILabel+Assistant.h"; sourceTree = "<group>"; };
 		4B69F5011D614DA100575AC3 /* UILabel+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UILabel+Assistant.m"; path = "UILabel+Assistant/UILabel+Assistant.m"; sourceTree = "<group>"; };
@@ -523,6 +542,8 @@
 				1E5A54171D28FE0F0056CF46 /* AssetsMapProVC.m */,
 				4B27FDC61D2CAB5500067683 /* AssetDetailVC.h */,
 				4B27FDC71D2CAB5500067683 /* AssetDetailVC.m */,
+				4B448E1B1D6A9F6E0009ED09 /* ImageVC.h */,
+				4B448E1C1D6A9F6E0009ED09 /* ImageVC.m */,
 				4B1D5E7D1D3645A70011552F /* SettingVC.h */,
 				4B1D5E7E1D3645A70011552F /* SettingVC.m */,
 				4B1B4BDD1D387A4200CCD842 /* AboutVC.h */,
@@ -699,6 +720,23 @@
 			path = WeChatSDK1.7.2;
 			sourceTree = "<group>";
 		};
+		4B0BFDDE1D6B069100F8CAA5 /* SVProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				4B0BFDDF1D6B069100F8CAA5 /* SVIndefiniteAnimatedView.h */,
+				4B0BFDE01D6B069100F8CAA5 /* SVIndefiniteAnimatedView.m */,
+				4B0BFDE11D6B069100F8CAA5 /* SVProgressAnimatedView.h */,
+				4B0BFDE21D6B069100F8CAA5 /* SVProgressAnimatedView.m */,
+				4B0BFDE31D6B069100F8CAA5 /* SVProgressHUD-Prefix.pch */,
+				4B0BFDE41D6B069100F8CAA5 /* SVProgressHUD.bundle */,
+				4B0BFDE51D6B069100F8CAA5 /* SVProgressHUD.h */,
+				4B0BFDE61D6B069100F8CAA5 /* SVProgressHUD.m */,
+				4B0BFDE71D6B069100F8CAA5 /* SVRadialGradientLayer.h */,
+				4B0BFDE81D6B069100F8CAA5 /* SVRadialGradientLayer.m */,
+			);
+			path = SVProgressHUD;
+			sourceTree = "<group>";
+		};
 		4B0D09251D23C90B0047D7E0 /* PHAsset+Assistant */ = {
 			isa = PBXGroup;
 			children = (
@@ -777,6 +815,7 @@
 		4B3AF9CF1D2F3ECE009BD545 /* GeneralClass */ = {
 			isa = PBXGroup;
 			children = (
+				4B0BFDDE1D6B069100F8CAA5 /* SVProgressHUD */,
 				1E8189171D65B18200F57714 /* GCCoordinateTransformer */,
 				1E81890F1D659A6000F57714 /* GCMaps */,
 				4B079B841D61B07800BC4115 /* Chameleon */,
@@ -1011,6 +1050,7 @@
 				4B032FF81D5C626500E83585 /* icon-view1.png in Resources */,
 				4B032FE01D5C626500E83585 /* icon-copy1.png in Resources */,
 				4B032FEF1D5C626500E83585 /* icon-play2@2x.png in Resources */,
+				4B0BFDEB1D6B069100F8CAA5 /* SVProgressHUD.bundle in Resources */,
 				4B032FE51D5C626500E83585 /* icon-export1@2x.png in Resources */,
 				4B032FFB1D5C626500E83585 /* icon-view2@2x.png in Resources */,
 				4B032FEE1D5C626500E83585 /* icon-play2.png in Resources */,
@@ -1092,6 +1132,7 @@
 				4B69F50A1D6156A800575AC3 /* NSString+FontAwesome.m in Sources */,
 				4B079BA31D61B07800BC4115 /* UIAppearance+Swift.m in Sources */,
 				1EF62A5A1D3BB90F0084AF66 /* EverywhereFootprintsRepository.m in Sources */,
+				4B0BFDED1D6B069100F8CAA5 /* SVRadialGradientLayer.m in Sources */,
 				4BFA4EB31D33791A007DDA87 /* LocationPickerVC.m in Sources */,
 				4BD51FC91D2B47B900F18244 /* PHAssetInfo.m in Sources */,
 				4B032FAF1D5C5DD800E83585 /* GCFileBrowser.m in Sources */,
@@ -1101,9 +1142,11 @@
 				4B3AF9CB1D2F3E70009BD545 /* GCPolyline.m in Sources */,
 				4BFA063D1D4B306900AE8000 /* NSString+Hashing.m in Sources */,
 				1E2848031D1ADDB900189A83 /* Everywhere.xcdatamodeld in Sources */,
+				4B0BFDEC1D6B069100F8CAA5 /* SVProgressHUD.m in Sources */,
 				4B079BA81D61B07800BC4115 /* UILabel+Chameleon.m in Sources */,
 				4BF277151D63F3DE009626B5 /* UITextField+Assistant.m in Sources */,
 				4B3AF9CC1D2F3E70009BD545 /* GCRoutePolyline.m in Sources */,
+				4B0BFDEA1D6B069100F8CAA5 /* SVProgressAnimatedView.m in Sources */,
 				1E8723A41D42D82E00652757 /* RecordModeSettingBar.m in Sources */,
 				1EF62A5D1D3BD6DF0084AF66 /* EverywhereFootprintsRepositoryManager.m in Sources */,
 				4BFC352C1D3C851200F111EE /* ShareFootprintsRepositoryVC.m in Sources */,
@@ -1114,6 +1157,7 @@
 				4BFA06411D4B30CD00AE8000 /* GTM_Base64.m in Sources */,
 				4BFA063E1D4B306900AE8000 /* Qiniu.m in Sources */,
 				4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */,
+				4B0BFDE91D6B069100F8CAA5 /* SVIndefiniteAnimatedView.m in Sources */,
 				4B079BA01D61B07800BC4115 /* Chameleon_.m in Sources */,
 				1E2847FA1D1ADDB900189A83 /* EverywhereAppDelegate.m in Sources */,
 				1E5A54181D28FE0F0056CF46 /* AssetsMapProVC.m in Sources */,
@@ -1121,6 +1165,7 @@
 				4B1D5E7F1D3645A70011552F /* SettingVC.m in Sources */,
 				4B08662B1D373658000300AD /* ShareImageVC.m in Sources */,
 				4B1B4BE11D387A4200CCD842 /* AboutVC.m in Sources */,
+				4B448E1D1D6A9F6E0009ED09 /* ImageVC.m in Sources */,
 				1EF62A531D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m in Sources */,
 				4B079BAA1D61B07800BC4115 /* UIView+ChameleonPrivate.m in Sources */,
 				4BF8DC151D37882E00BC7B64 /* ShareBar.m in Sources */,
@@ -1330,6 +1375,7 @@
 		1E2848011D1ADDB900189A83 /* Everywhere.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				4B0BFDDD1D6AE51800F8CAA5 /* Everywhere Version300.xcdatamodel */,
 				1E2848021D1ADDB900189A83 /* Everywhere.xcdatamodel */,
 			);
 			currentVersion = 1E2848021D1ADDB900189A83 /* Everywhere.xcdatamodel */;

@@ -53,6 +53,11 @@
  */
 @property (strong,nonatomic,readonly) CLLocation *location;
 
+/**
+ *  缩略图
+ */
+@property (strong,nonatomic) UIImage *thumbnail;
+
 - (NSString *)gpx_wpt_String;
 
 - (NSString *)gpx_trk_trkseg_trkpt_String;

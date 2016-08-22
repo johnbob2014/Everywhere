@@ -49,6 +49,7 @@
 #import "Chameleon.h"
 #import "XMLDictionary.h"
 #import <STPopup.h>
+#import "SVProgressHUD.h"
 
 #import "PHAsset+Assistant.h"
 

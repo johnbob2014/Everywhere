@@ -232,7 +232,7 @@
 }
 
 - (void)showInfoAboutWXShareAlertController{
-    UIAlertController *informationAlertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Because of the restriction of WeChat content , make sure your footprints count within 30 , otherwise share may fail.\nShareAndBrowse function support multiple share styles and has no footprints count restriction.", @"由于微信分享内容限制为10K，所以请将分享的足迹点数量控制在30个以内，否则可能会分享失败。\n分享和浏览功能可选择多种方式分享，且没有足迹点数量限制。")];
+    UIAlertController *informationAlertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Because of the restriction of WeChat content , make sure your footprints count within 30 , otherwise share may fail.\nShareAndBrowse function support multiple share styles and has no footprints count restriction. MFR File support thumbnail. GPX File can be used on portable GPS.", @"由于微信分享内容限制为10K，所以请将分享的足迹点数量控制在30个以内，否则可能会分享失败。\n分享和浏览功能可选择多种方式进行分享，且没有足迹点数量限制;其中，MFR文件支持选择缩略图，更清晰直观；GPX文件则可以在手持GPS上使用。")];
     [self presentViewController:informationAlertController animated:YES completion:nil];
 }
 

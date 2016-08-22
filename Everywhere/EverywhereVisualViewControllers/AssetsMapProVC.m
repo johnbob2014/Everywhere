@@ -32,9 +32,8 @@
 #import "EverywhereFootprintsRepository.h"
 #import "EverywhereFootprintsRepositoryManager.h"
 
-#import "NSDate+Assistant.h"
-#import "UIView+AutoLayout.h"
-#import "PHAsset+Assistant.h"
+#import "ImageVC.h"
+
 #import "UIFont+Assistant.h"
 #import "GCLocationAnalyser.h"
 #import <STPopup.h>
@@ -1785,6 +1784,10 @@
         [ms appendFormat:@"%@,",placemarkInfoString];
     [ms appendString:NSLocalizedString(@"Total ", @"总")];
     [ms appendFormat:@"%@ %@",placemarkInfoBar.totalTitle,placemarkInfoBar.totalString];
+    
+    [SVProgressHUD show];
+    [self updateThumbnailForAddedEWFootprintAnnotations];
+    [SVProgressHUD dismiss];
 
     // 生成分享对象
     EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
@@ -2310,34 +2313,59 @@
             anno.annotationTitle = [NSString stringWithFormat:@"%@ ~ %@",[firstAsset.creationDate stringWithFormat:@"yyyy-MM-dd"],[lastAsset.creationDate stringWithFormat:@"yyyy-MM-dd"]];
         }
         
-        NSMutableArray *ids = [NSMutableArray new];
-        [obj enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [ids addObject:obj.localIdentifier];
-        }];
-        anno.assetLocalIdentifiers = ids;
-        
-        [annotationsToAdd addObject:anno];
-        //[self.myMapView addAnnotation:anno];
-        
         EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation new];
         footprintAnnotation.coordinateWGS84 = firstAsset.location.coordinate;
         footprintAnnotation.altitude = firstAsset.location.altitude;
         footprintAnnotation.speed = firstAsset.location.speed;
         footprintAnnotation.startDate = firstAsset.creationDate;
         if (self.settingManager.mapBaseMode == MapBaseModeLocation) footprintAnnotation.endDate = lastAsset.creationDate;
+
+        NSMutableArray *ids = [NSMutableArray new];
+        [obj enumerateObjectsUsingBlock:^(PHAsset * _Nonnull asset, NSUInteger idx, BOOL * _Nonnull stop) {
+            [ids addObject:asset.localIdentifier];
+            
+            /*
+            PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:asset.localIdentifier inManagedObjectContext:self.cdManager.appDelegateMOC];
+            if (assetInfo.actAsThumbnail){
+                footprintAnnotation.thumbnail = [asset synchronousFetchUIImageAtTargetSize:CGSizeMake(asset.pixelWidth * 0.2, asset.pixelHeight * 0.2)];
+            }
+             */
+            
+        }];
+        anno.assetLocalIdentifiers = ids;
         
-        //if(DEBUGMODE) NSLog(@"\n%@",footprintAnnotation.gpx_wpt_String);
-        //if(DEBUGMODE) NSLog(@"\n%@",footprintAnnotation.gpx_trk_trkseg_trkpt_String);
+        [annotationsToAdd addObject:anno];
         
         [footprintAnnotationsToAdd addObject:footprintAnnotation];
     }];
     
     if (!annotationsToAdd || !annotationsToAdd.count) return;
     [self.myMapView addAnnotations:annotationsToAdd];
+    
     self.addedIDAnnos = annotationsToAdd;
     self.addedEWAnnos = annotationsToAdd;
     self.addedEWFootprintAnnotations = footprintAnnotationsToAdd;
 }
+
+
+- (void)updateThumbnailForAddedEWFootprintAnnotations{
+    //NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationsToAdd = [NSMutableArray new];
+    NSInteger index = 0;
+    for (EverywhereAnnotation *everywhereAnnotation in self.addedEWAnnos) {
+        for (NSString *assetLocalIdentifier in everywhereAnnotation.assetLocalIdentifiers) {
+            PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:assetLocalIdentifier inManagedObjectContext:self.cdManager.appDelegateMOC];
+            
+            if (assetInfo.actAsThumbnail){
+                PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetInfo.localIdentifier] options:nil].firstObject;
+                EverywhereFootprintAnnotation *footprintAnnotation = self.addedEWFootprintAnnotations[index];
+                footprintAnnotation.thumbnail = [asset synchronousFetchUIImageAtTargetSize:CGSizeMake(asset.pixelWidth * 0.2, asset.pixelHeight * 0.2)];
+            }
+        }
+        index++;
+    }
+    
+}
+
 
 - (void)addLineOverlaysPro:(NSArray <id<MKAnnotation>> *)annotationArray{
     [self.myMapView removeOverlays:self.myMapView.overlays];
@@ -2601,9 +2629,6 @@
         pinAV.leftCalloutAccessoryView = imageView;
         pinAV.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
         return pinAV;
-        
-        //MKAnnotationView *annoView = (MKAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"annoView"];
-        
     }else if ([annotation isKindOfClass:[EverywhereFootprintAnnotation class]]){
         
         MKPinAnnotationView *pinAV = (MKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"pinShareAV"];
@@ -2617,6 +2642,19 @@
         else pinAV.pinColor = footprintAnnotation.isUserManuallyAdded ? MKPinAnnotationColorRed : MKPinAnnotationColorGreen;
         
         pinAV.canShowCallout = YES;
+        
+        if (footprintAnnotation.thumbnail){
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+            imageView.contentMode = UIViewContentModeScaleAspectFill;
+            imageView.userInteractionEnabled = YES;
+            UITapGestureRecognizer *imageViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapGR2:)];
+            [imageView addGestureRecognizer:imageViewTapGR];
+            imageView.image = footprintAnnotation.thumbnail;
+            
+            pinAV.leftCalloutAccessoryView = imageView;
+        }else{
+            pinAV.leftCalloutAccessoryView = nil;
+        }
         
         pinAV.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
         
@@ -2639,6 +2677,14 @@
     showVC.assetLocalIdentifiers = annotation.assetLocalIdentifiers;
     
     [self presentViewController:showVC animated:YES completion:nil];
+}
+
+- (void)imageViewTapGR2:(UITapGestureRecognizer *)sender{
+    EverywhereFootprintAnnotation *footprintAnnotation = (EverywhereFootprintAnnotation *)self.myMapView.selectedAnnotations.firstObject;
+    ImageVC *imageVC = [[ImageVC alloc] initWithImage:footprintAnnotation.thumbnail];
+    popupController = [[STPopupController alloc] initWithRootViewController:imageVC];
+    popupController.containerView.layer.cornerRadius = 4;
+    [popupController presentInViewController:self];
 }
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{

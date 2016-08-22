@@ -9,12 +9,15 @@
 #import "AssetDetailVC.h"
 @import Photos;
 @import AVKit;
-#import "PHAsset+Assistant.h"
-#import "UIView+AutoLayout.h"
 
+#import "PHAsset+Assistant.h"
+
+#import "PHAssetInfo.h"
+#import "EverywhereCoreDataManager.h"
 
 @interface AssetDetailVC ()
 @property (assign,nonatomic) NSInteger currentIndex;
+@property (assign,nonatomic) PHAssetInfo *currentAssetInfo;
 @end
 
 @implementation AssetDetailVC{
@@ -26,9 +29,19 @@
     
     UILabel *noteLabel;
     
+    UISwitch *isTakenByUserSwitch,*actAsThumbnailSwitch;
+    
     AVPlayerItem *playerItem;
 }
 
+/*
+- (NSArray<NSString *> *)assetLocalIdentifiers{
+    if(!_assetLocalIdentifiers){
+        _assetLocalIdentifiers = self.ewAnnotation.assetLocalIdentifiers;
+    }
+    return _assetLocalIdentifiers;
+}
+*/
 
 - (void)setCurrentIndex:(NSInteger)currentIndex{
     if (currentIndex >= 0 && currentIndex <= assetArray.count - 1) {
@@ -56,6 +69,12 @@
         
         if (currentIndex > 0) noteLabel.text = [NSString stringWithFormat:@"%lu/%lu",(unsigned long)(currentIndex + 1),(unsigned long)assetArray.count];
         else noteLabel.text = NSLocalizedString(@"Swipe up to quite", @"上滑退出");
+        
+        self.currentAssetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:currentAsset.localIdentifier inManagedObjectContext:[EverywhereCoreDataManager defaultManager].appDelegateMOC];
+        
+        isTakenByUserSwitch.on = self.currentAssetInfo.isTakenByUser;
+        actAsThumbnailSwitch.on = self.currentAssetInfo.actAsThumbnail;
+        
     }
 }
 
@@ -105,6 +124,38 @@
     [self.view addSubview:noteLabel];
     [noteLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 0, 0, 0) excludingEdge:ALEdgeBottom];
     
+    UIView *bottomView = [UIView newAutoLayoutView];
+    [self.view addSubview:bottomView];
+    [bottomView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
+    [bottomView autoSetDimension:ALDimensionHeight toSize:30];
+    
+    UILabel *isTakenByUserLabel = [UILabel newAutoLayoutView];
+    isTakenByUserLabel.textColor = [UIColor whiteColor];
+    isTakenByUserLabel.text = NSLocalizedString(@"Is taken by me :", @"我拍摄的：");
+    [bottomView addSubview:isTakenByUserLabel];
+    [isTakenByUserLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
+    [isTakenByUserLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    
+    isTakenByUserSwitch = [UISwitch newAutoLayoutView];
+    [isTakenByUserSwitch addTarget:self action:@selector(isTakenByUserSwitchValueChanged:) forControlEvents:UIControlEventValueChanged];
+    [bottomView addSubview:isTakenByUserSwitch];
+    [isTakenByUserSwitch autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:isTakenByUserLabel withOffset:10];
+    [isTakenByUserSwitch autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    
+
+    actAsThumbnailSwitch = [UISwitch newAutoLayoutView];
+    [actAsThumbnailSwitch addTarget:self action:@selector(actAsThumbnailSwitchValueChanged:) forControlEvents:UIControlEventValueChanged];
+    [bottomView addSubview:actAsThumbnailSwitch];
+    [actAsThumbnailSwitch autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
+    [actAsThumbnailSwitch autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    
+    UILabel *actAsThumbnailLabel = [UILabel newAutoLayoutView];
+    actAsThumbnailLabel.textColor = [UIColor whiteColor];
+    actAsThumbnailLabel.text = NSLocalizedString(@"Act As Thumbnail :", @"用作缩略图：");
+    [bottomView addSubview:actAsThumbnailLabel];
+    [actAsThumbnailLabel autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:actAsThumbnailSwitch withOffset:-10];
+    [actAsThumbnailLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+
     self.currentIndex = 0;
 }
 
@@ -134,6 +185,17 @@
 
     }
 }
+
+- (void)isTakenByUserSwitchValueChanged:(UISwitch *)sender{
+    self.currentAssetInfo.isTakenByUser = @(sender.on);
+    [[EverywhereCoreDataManager defaultManager].appDelegateMOC save:NULL];
+}
+
+- (void)actAsThumbnailSwitchValueChanged:(UISwitch *)sender{
+    self.currentAssetInfo.actAsThumbnail = @(sender.on);
+    [[EverywhereCoreDataManager defaultManager].appDelegateMOC save:NULL];
+}
+
 
 @end
 
