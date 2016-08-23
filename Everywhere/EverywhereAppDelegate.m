@@ -68,6 +68,11 @@
 
     }
     
+    // 设置 SVProgressHUD 样式
+    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+    [SVProgressHUD setDefaultAnimationType:SVProgressHUDAnimationTypeFlat];
+    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeGradient];
+    [SVProgressHUD setMinimumDismissTimeInterval:3.0];
     return YES;
 }
 

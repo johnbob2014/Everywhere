@@ -79,8 +79,7 @@ typedef NS_ENUM(NSInteger, DateMode) {
     DateModeWeek,
     DateModeMonth,
     DateModeYear,
-    DateModeAll,
-    DateModeRange
+    DateModeCustom
 };
 
 typedef NS_ENUM(NSInteger, LocationMode) {

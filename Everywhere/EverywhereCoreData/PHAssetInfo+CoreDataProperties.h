@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSString *subThoroughfare_Placemark;
 @property (nullable, nonatomic, retain) NSString *thoroughfare_Placemark;
 @property (nullable, nonatomic, retain) NSNumber *verticalAccuracy_Location;
-@property (nullable, nonatomic, retain) NSNumber *isTakenByUser;
+@property (nullable, nonatomic, retain) NSNumber *eliminateThisAsset;
 @property (nullable, nonatomic, retain) NSNumber *actAsThumbnail;
 
 @end

@@ -172,15 +172,15 @@ static const NSInteger BIG_MONTH[7] = {1,3,5,7,8,10,12};
     return [[NSDate currentCalendar] dateFromComponents:components];
 }
 
-- (NSDate *) dateAtStartOfThisWeek{
+- (NSDate *) dateAtStartOfThisWeek:(enum FirstDayOfWeek)firstDayOfWeek{
     NSDateComponents *components = [[NSDate currentCalendar] components:NSCalendarUnitWeekday fromDate:self];
-    NSDate *monday = [self dateBySubtractingDays:components.weekday - 1];
+    NSDate *monday = [self dateBySubtractingDays:components.weekday - 1 - firstDayOfWeek];
     return [monday dateAtStartOfToday];
 }
 
-- (NSDate *) dateAtEndOfThisWeek{
+- (NSDate *) dateAtEndOfThisWeek:(enum FirstDayOfWeek)firstDayOfWeek{
     NSDateComponents *components = [[NSDate currentCalendar] components:NSCalendarUnitWeekday fromDate:self];
-    NSDate *monday = [self dateByAddingDays:7 - components.weekday];
+    NSDate *monday = [self dateByAddingDays:7 - components.weekday + firstDayOfWeek];
     return [monday dateAtEndOfToday];
 }
 
@@ -244,15 +244,15 @@ static const NSInteger BIG_MONTH[7] = {1,3,5,7,8,10,12};
     return [formatter stringFromDate:self];
 }
 
-+ (NSString *)localizedStringWithFormat:(NSString *)format startDate:(NSDate *)startDate endDate:(NSDate *)endDate{
++ (NSString *)localizedStringWithFormat:(NSString *)format startDate:(NSDate *)startDate endDate:(NSDate *)endDate firstDayOfWeek:(enum FirstDayOfWeek)firstDayOfWeek{
     if (!startDate || !endDate) return nil;
     if ([startDate isSameDay:endDate]){
         if ([startDate isSameDay:[NSDate date]]) return NSLocalizedString(@"Today", @"今天");
         else return [startDate stringWithFormat:format];
     }
     if ([startDate isInSameWeek:endDate]) {
-        if ([startDate isSameDay:[startDate dateAtStartOfThisWeek]]) {
-            if ([endDate isSameDay:[endDate dateAtEndOfThisWeek]]) {
+        if ([startDate isSameDay:[startDate dateAtStartOfThisWeek:firstDayOfWeek]]) {
+            if ([endDate isSameDay:[endDate dateAtEndOfThisWeek:firstDayOfWeek]]) {
                 if ([startDate isInSameWeek:[NSDate date]]) return NSLocalizedString(@"This Week", @"本周");
             }
         }

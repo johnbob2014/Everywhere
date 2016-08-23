@@ -10,12 +10,13 @@
 #import "RETableViewManager.h"
 
 @interface DatePickerProVC () <RETableViewManagerDelegate>
+
 @end
 
 @implementation DatePickerProVC{
     UISegmentedControl *dateModeSeg;
-    //UILabel *dateLabel;
-    UIButton *okButton;
+    UILabel *nowLabel;
+    UIButton *todayButton,*okButton;
     
     RETableViewManager *reTVManager;
     UITableView *datePickerTableView;
@@ -31,9 +32,9 @@
     self.title = NSLocalizedString(@"Date Picker", @"日期选择器");
     
     [self initDateModeSeg];
-    [self initOKButton];
+    [self initNowLabel];
+    [self initButtons];
     [self initRETableView];
-    //[self initDateLabel];
 }
 
 - (void)initDateModeSeg{
@@ -51,63 +52,78 @@
 }
 
 - (void)segValueChanged:(UISegmentedControl *)sender{
-    if (self.dateModeChangedHandler) self.dateModeChangedHandler(sender.selectedSegmentIndex);
-    //
-    switch (dateModeSeg.selectedSegmentIndex) {
-        case DateModeDay:{
-            startDateTimeItem.value = [[NSDate date] dateAtStartOfToday];
-            endDateTimeItem.value = [[NSDate date] dateAtEndOfToday];
-        }
+    self.dateMode = sender.selectedSegmentIndex;
+    if (self.dateModeChangedHandler) self.dateModeChangedHandler(self.dateMode);
+    [self updateDateData:self.dateMode];
+}
+
+- (void)updateDateData:(enum DateMode)dateMode{
+    switch (dateMode) {
+        case DateModeDay:
+            startDateTimeItem.value = [startDateTimeItem.value dateAtStartOfToday];
+            endDateTimeItem.value = [startDateTimeItem.value dateAtEndOfToday];
             break;
-        case DateModeWeek:{
-            startDateTimeItem.value = [[NSDate date] dateAtStartOfThisWeek];
-            endDateTimeItem.value = [[NSDate date] dateAtEndOfThisWeek];
-        }
+        case DateModeWeek:
+            startDateTimeItem.value = [startDateTimeItem.value dateAtStartOfThisWeek:self.firstDayOfWeek];
+            endDateTimeItem.value = [startDateTimeItem.value dateAtEndOfThisWeek:self.firstDayOfWeek];
             break;
-        case DateModeMonth:{
-            startDateTimeItem.value = [[NSDate date] dateAtStartOfThisMonth];
-            endDateTimeItem.value = [[NSDate date] dateAtEndOfThisMonth];
-        }
+        case DateModeMonth:
+            startDateTimeItem.value = [startDateTimeItem.value dateAtStartOfThisMonth];
+            endDateTimeItem.value = [startDateTimeItem.value dateAtEndOfThisMonth];
             break;
-        case DateModeYear:{
-            startDateTimeItem.value = [[NSDate date] dateAtStartOfThisYear];
-            endDateTimeItem.value = [[NSDate date] dateAtEndOfThisYear];
-        }
+        case DateModeYear:
+            startDateTimeItem.value = [startDateTimeItem.value dateAtStartOfThisYear];
+            endDateTimeItem.value = [startDateTimeItem.value dateAtEndOfThisYear];
+            break;
+        case DateModeCustom:
+            startDateTimeItem.value = [startDateTimeItem.value dateAtStartOfToday];
+            endDateTimeItem.value = [endDateTimeItem.value dateAtEndOfToday];
             break;
         default:
             break;
     }
     
     [datePickerTableView reloadData];
+}
+
+
+- (void)initNowLabel{
+    nowLabel = [UILabel newAutoLayoutView];
+    nowLabel.textAlignment = NSTextAlignmentCenter;
+    nowLabel.text = [[NSDate date] stringWithFormat:@"yyyy-MM-dd  EEEE"];
+    [nowLabel setStyle:UILabelStyleBrownBold];
+    nowLabel.font = [UIFont bodyFontWithSizeMultiplier:1.5];
+    [self.view addSubview:nowLabel];
+    [nowLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:dateModeSeg withOffset:10];
+    [nowLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
+}
+
+
+- (void)initButtons{
+    todayButton = [UIButton newAutoLayoutView];
+    [todayButton setStyle:UIButtonStylePrimary];
+    [todayButton setTitle:NSLocalizedString(@"Today", @"今天") forState:UIControlStateNormal];
+    [todayButton addTarget:self action:@selector(todayButtonTouchDown:) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:todayButton];
+    [todayButton autoSetDimension:ALDimensionHeight toSize:40];
+    [todayButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+    [todayButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
     
-    //[self updateDateLabel];
-}
-
-
-/*
-- (void)initDateLabel{
-    dateLabel = [UILabel newAutoLayoutView];
-    dateLabel.textAlignment = NSTextAlignmentCenter;
-    dateLabel.font = [UIFont systemFontOfSize:18];
-    [self.view addSubview:dateLabel];
-    [dateLabel autoSetDimension:ALDimensionHeight toSize:20];
-    [dateLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 0, 55, 0) excludingEdge:ALEdgeTop];
-}
- 
- - (void)updateDateLabel{
- dateLabel.text = [[startDateTimeItem.value stringWithFormat:@"yyyy-MM-dd ~ "] stringByAppendingString:[endDateTimeItem.value stringWithFormat:@"yyyy-MM-dd"]];
- }
-*/
-
-- (void)initOKButton{
     okButton = [UIButton newAutoLayoutView];
     [okButton setStyle:UIButtonStylePrimary];
     [okButton setTitle:NSLocalizedString(@"OK", @"确定") forState:UIControlStateNormal];
     [okButton addTarget:self action:@selector(okButtonTouchDown:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:okButton];
+    [okButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+    [okButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
     [okButton autoSetDimension:ALDimensionHeight toSize:40];
-    [okButton autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(5, 5, 5, 5) excludingEdge:ALEdgeTop];
-    
+    [okButton autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:todayButton];
+    [okButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:todayButton withOffset:10];
+}
+
+- (void)todayButtonTouchDown:(UIButton *)sender{
+    startDateTimeItem.value = [NSDate date];
+    [self updateDateData:self.dateMode];
 }
 
 - (void)okButtonTouchDown:(UIButton *)sender{
@@ -116,9 +132,9 @@
     [[NSUserDefaults standardUserDefaults] setValue:endDateTimeItem.value forKey:DatePickerCustomEndDate];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
-    [self dismissViewControllerAnimated:YES completion:nil];
-    
-    if (self.dateRangeChangedHandler) self.dateRangeChangedHandler(startDateTimeItem.value,endDateTimeItem.value);
+    [self dismissViewControllerAnimated:YES completion:^{
+        if (self.dateRangeChangedHandler) self.dateRangeChangedHandler(startDateTimeItem.value,endDateTimeItem.value);
+    }];
 }
 
 - (void)initRETableView{
@@ -127,7 +143,7 @@
     datePickerTableView.scrollEnabled = NO;
     [self.view addSubview:datePickerTableView];
     
-    [datePickerTableView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:dateModeSeg withOffset:20];
+    [datePickerTableView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:nowLabel withOffset:10];
     [datePickerTableView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
     [datePickerTableView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
     [datePickerTableView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:okButton withOffset:-10];
@@ -140,14 +156,19 @@
     NSDate *startDate = [[NSUserDefaults standardUserDefaults] valueForKey:DatePickerCustomStartDate];
     if (!startDate) startDate = [[NSDate date] dateAtStartOfToday];
     
-    startDateTimeItem = [REDateTimeItem itemWithTitle:NSLocalizedString(@"Start Date", @"开始时间") value:startDate placeholder:nil format:@"yyyy-MM-dd" datePickerMode:UIDatePickerModeDate];
-    
+    WEAKSELF(weakSelf);
+    startDateTimeItem = [REDateTimeItem itemWithTitle:NSLocalizedString(@"Start Date", @"开始时间") value:startDate placeholder:nil format:@"yyyy-MM-dd  EEEE" datePickerMode:UIDatePickerModeDate];
+    startDateTimeItem.locale = [NSCalendar currentCalendar].locale;
+    startDateTimeItem.onChange = ^(REDateTimeItem *item){
+        [weakSelf updateDateData:weakSelf.dateMode];
+    };
     startDateTimeItem.inlineDatePicker=YES;
     
     NSDate *endDate = [[NSUserDefaults standardUserDefaults] valueForKey:DatePickerCustomEndDate];
     if (!endDate) endDate = [[NSDate date] dateAtEndOfToday];
 
-    endDateTimeItem = [REDateTimeItem itemWithTitle:NSLocalizedString(@"End Date", @"结束时间") value:endDate placeholder:nil format:@"yyyy-MM-dd" datePickerMode:UIDatePickerModeDate];
+    endDateTimeItem = [REDateTimeItem itemWithTitle:NSLocalizedString(@"End Date", @"结束时间") value:endDate placeholder:nil format:@"yyyy-MM-dd  EEEE" datePickerMode:UIDatePickerModeDate];
+    endDateTimeItem.locale = [NSCalendar currentCalendar].locale;
     endDateTimeItem.inlineDatePicker=YES;
     
     [datePickerSection addItemsFromArray:@[startDateTimeItem,endDateTimeItem]];

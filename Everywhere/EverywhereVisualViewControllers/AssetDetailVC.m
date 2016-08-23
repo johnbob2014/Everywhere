@@ -29,7 +29,7 @@
     
     UILabel *noteLabel;
     
-    UISwitch *isTakenByUserSwitch,*actAsThumbnailSwitch;
+    UISwitch *eliminateThisAssetSwitch,*actAsThumbnailSwitch;
     
     AVPlayerItem *playerItem;
 }
@@ -72,8 +72,8 @@
         
         self.currentAssetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:currentAsset.localIdentifier inManagedObjectContext:[EverywhereCoreDataManager defaultManager].appDelegateMOC];
         
-        isTakenByUserSwitch.on = self.currentAssetInfo.isTakenByUser;
-        actAsThumbnailSwitch.on = self.currentAssetInfo.actAsThumbnail;
+        eliminateThisAssetSwitch.on = [self.currentAssetInfo.eliminateThisAsset boolValue];
+        actAsThumbnailSwitch.on = [self.currentAssetInfo.actAsThumbnail boolValue];
         
     }
 }
@@ -129,18 +129,18 @@
     [bottomView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
     [bottomView autoSetDimension:ALDimensionHeight toSize:30];
     
-    UILabel *isTakenByUserLabel = [UILabel newAutoLayoutView];
-    isTakenByUserLabel.textColor = [UIColor whiteColor];
-    isTakenByUserLabel.text = NSLocalizedString(@"Is taken by me :", @"我拍摄的：");
-    [bottomView addSubview:isTakenByUserLabel];
-    [isTakenByUserLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
-    [isTakenByUserLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    UILabel *eliminateThisAssetLabel = [UILabel newAutoLayoutView];
+    eliminateThisAssetLabel.textColor = [UIColor whiteColor];
+    eliminateThisAssetLabel.text = NSLocalizedString(@"Eliminate:", @"排除：");
+    [bottomView addSubview:eliminateThisAssetLabel];
+    [eliminateThisAssetLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
+    [eliminateThisAssetLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
     
-    isTakenByUserSwitch = [UISwitch newAutoLayoutView];
-    [isTakenByUserSwitch addTarget:self action:@selector(isTakenByUserSwitchValueChanged:) forControlEvents:UIControlEventValueChanged];
-    [bottomView addSubview:isTakenByUserSwitch];
-    [isTakenByUserSwitch autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:isTakenByUserLabel withOffset:10];
-    [isTakenByUserSwitch autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    eliminateThisAssetSwitch = [UISwitch newAutoLayoutView];
+    [eliminateThisAssetSwitch addTarget:self action:@selector(eliminateThisAssetSwitchValueChanged:) forControlEvents:UIControlEventValueChanged];
+    [bottomView addSubview:eliminateThisAssetSwitch];
+    [eliminateThisAssetSwitch autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:eliminateThisAssetLabel withOffset:10];
+    [eliminateThisAssetSwitch autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
     
 
     actAsThumbnailSwitch = [UISwitch newAutoLayoutView];
@@ -151,7 +151,7 @@
     
     UILabel *actAsThumbnailLabel = [UILabel newAutoLayoutView];
     actAsThumbnailLabel.textColor = [UIColor whiteColor];
-    actAsThumbnailLabel.text = NSLocalizedString(@"Act As Thumbnail :", @"用作缩略图：");
+    actAsThumbnailLabel.text = NSLocalizedString(@"Act As Thumbnail:", @"用作缩略图：");
     [bottomView addSubview:actAsThumbnailLabel];
     [actAsThumbnailLabel autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:actAsThumbnailSwitch withOffset:-10];
     [actAsThumbnailLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
@@ -186,8 +186,8 @@
     }
 }
 
-- (void)isTakenByUserSwitchValueChanged:(UISwitch *)sender{
-    self.currentAssetInfo.isTakenByUser = @(sender.on);
+- (void)eliminateThisAssetSwitchValueChanged:(UISwitch *)sender{
+    self.currentAssetInfo.eliminateThisAsset = @(sender.on);
     [[EverywhereCoreDataManager defaultManager].appDelegateMOC save:NULL];
 }
 

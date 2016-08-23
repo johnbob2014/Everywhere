@@ -21,7 +21,7 @@
         <attribute name="thoroughfare_Placemark" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="PHAssetInfo" representedClassName="PHAssetInfo" syncable="YES">
-        <attribute name="actAsThumbnail" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="actAsThumbnail" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="administrativeArea_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="altitude_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="burstIdentifier" optional="YES" attributeType="String" syncable="YES"/>
@@ -31,11 +31,11 @@
         <attribute name="course_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="creationDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="eliminateThisAsset" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="favorite" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="hidden" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="horizontalAccuracy_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="inlandWater_Placemark" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="isTakenByUser" optional="YES" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="latitude_Coordinate_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="level_floor_Location" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="localIdentifier" attributeType="String" syncable="YES"/>

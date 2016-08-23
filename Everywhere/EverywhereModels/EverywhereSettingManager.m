@@ -450,4 +450,35 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (float)thumbnailScaleRate{
+    float thumbnailScaleRate = [[NSUserDefaults standardUserDefaults] floatForKey:@"thumbnailScaleRate"];
+    if (thumbnailScaleRate == 0) thumbnailScaleRate = 0.15;
+    return thumbnailScaleRate;
+}
+
+- (void)setThumbnailScaleRate:(float)thumbnailScaleRate{
+    [[NSUserDefaults standardUserDefaults] setFloat:thumbnailScaleRate forKey:@"thumbnailScaleRate"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (float)thumbnailCompressionQuality{
+    float thumbnailCompressionQuality = [[NSUserDefaults standardUserDefaults] floatForKey:@"thumbnailCompressionQuality"];
+    if (thumbnailCompressionQuality == 0) thumbnailCompressionQuality = 0.5;
+    return thumbnailCompressionQuality;
+}
+
+- (void)setThumbnailCompressionQuality:(float)thumbnailCompressionQuality{
+    [[NSUserDefaults standardUserDefaults] setFloat:thumbnailCompressionQuality forKey:@"thumbnailCompressionQuality"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (FirstDayOfWeek)firstDayOfWeek{
+    return [[NSUserDefaults standardUserDefaults] integerForKey:@"firstDayOfWeek"];
+}
+
+- (void)setFirstDayOfWeek:(FirstDayOfWeek)firstDayOfWeek{
+    [[NSUserDefaults standardUserDefaults] setInteger:firstDayOfWeek forKey:@"firstDayOfWeek"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 @end

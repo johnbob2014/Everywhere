@@ -44,6 +44,11 @@
 + (NSArray <PHAssetInfo *> *)fetchAssetInfosFormStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate inManagedObjectContext:(NSManagedObjectContext *)context;
 
 /**
+ *  获取 排除的 实例
+ */
++ (NSArray <PHAssetInfo *> *)fetchEliminatedAssetInfosInManagedObjectContext:(NSManagedObjectContext *)context;
+
+/**
  * 获取 包含指定Placemark信息的 全部实例- PHAssetInfo+Assistant
  */
 + (NSArray <PHAssetInfo *> *)fetchAssetInfosContainsPlacemark:(NSString *)subPlacemark inManagedObjectContext:(NSManagedObjectContext *)context;

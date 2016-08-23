@@ -48,7 +48,7 @@
 @dynamic subThoroughfare_Placemark;
 @dynamic thoroughfare_Placemark;
 @dynamic verticalAccuracy_Location;
-@dynamic isTakenByUser;
+@dynamic eliminateThisAsset;
 @dynamic actAsThumbnail;
 
 @end

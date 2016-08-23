@@ -87,4 +87,19 @@
 
 @property (assign,nonatomic) DefaultTransport defaultTransport;
 
+/**
+ *  缩略图大小比值（缩略图边长 除以 原图边长）
+ */
+@property (assign,nonatomic) float thumbnailScaleRate;
+
+/**
+ *  缩略图质量（0最差 1最好）
+ */
+@property (assign,nonatomic) float thumbnailCompressionQuality;
+
+/**
+ *  每周第一天是星期天还是星期一
+ */
+@property (assign,nonatomic) FirstDayOfWeek firstDayOfWeek;
+
 @end

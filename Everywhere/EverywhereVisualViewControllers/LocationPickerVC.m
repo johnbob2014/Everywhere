@@ -106,8 +106,10 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (self.locationDidChangeHandler) self.locationDidChangeHandler(currentGroupArray[indexPath.row]);
-    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        if (self.locationDidChangeHandler) self.locationDidChangeHandler(currentGroupArray[indexPath.row]);
+    }];
 }
 
 @end

@@ -16,7 +16,9 @@ typedef void(^DateModeChangedHandler)(DateMode choosedDateMode);
 
 @interface DatePickerProVC : UIViewController
 
-//@property (assign,nonatomic) DateMode *dateMode;
+@property (assign,nonatomic) DateMode dateMode;
+@property (assign,nonatomic) FirstDayOfWeek firstDayOfWeek;
+
 @property (copy,nonatomic) DateRangeChangedHandler dateRangeChangedHandler;
 @property (copy,nonatomic) DateModeChangedHandler dateModeChangedHandler;
 

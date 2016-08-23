@@ -8,6 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSUInteger, FirstDayOfWeek) {
+    FirstDayOfWeekIsSunday = 0,
+    FirstDayOfWeekIsMonday = 1
+};
+
 static const NSTimeInterval TI_MINUTE;
 static const NSTimeInterval TI_HOUR;
 static const NSTimeInterval TI_DAY;
@@ -22,8 +27,8 @@ static const NSTimeInterval TI_WEEK;
 
 - (NSDate *) dateAtStartOfToday;
 - (NSDate *) dateAtEndOfToday;
-- (NSDate *) dateAtStartOfThisWeek;
-- (NSDate *) dateAtEndOfThisWeek;
+- (NSDate *) dateAtStartOfThisWeek:(enum FirstDayOfWeek)firstDayOfWeek;
+- (NSDate *) dateAtEndOfThisWeek:(enum FirstDayOfWeek)firstDayOfWeek;
 - (NSDate *) dateAtStartOfThisMonth;
 - (NSDate *) dateAtEndOfThisMonth;
 - (NSDate *) dateAtStartOfThisYear;
@@ -44,7 +49,7 @@ static const NSTimeInterval TI_WEEK;
 - (NSString *) stringWithDefaultFormat;
 - (NSString *) stringWithFormat: (NSString *) format;
 - (NSString *) stringWithDateStyle: (NSDateFormatterStyle) dateStyle timeStyle: (NSDateFormatterStyle) timeStyle;
-+ (NSString *) localizedStringWithFormat:(NSString *)format startDate:(NSDate *)startDate endDate:(NSDate *)endDate;
++ (NSString *) localizedStringWithFormat:(NSString *)format startDate:(NSDate *)startDate endDate:(NSDate *)endDate firstDayOfWeek:(enum FirstDayOfWeek)firstDayOfWeek;
 
 + (NSDate *)dateFromGPXTimeString:(NSString *)timeString;
 @end

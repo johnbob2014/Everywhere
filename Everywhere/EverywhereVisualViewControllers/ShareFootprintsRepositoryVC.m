@@ -10,6 +10,7 @@
 #import "ShareFootprintsRepositoryVC.h"
 #import "EverywhereFootprintsRepositoryManager.h"
 #import "EverywhereSettingManager.h"
+#import "EverywhereFootprintAnnotation.h"
 
 #define ShareButtonHeight 44
 #define LabelHeight 20
@@ -166,6 +167,8 @@
     if (exportSucceeded){
         documentInteractionController.URL = [NSURL fileURLWithPath:filePath];
         [documentInteractionController presentOptionsMenuFromRect:self.view.frame inView:self.view animated:YES];
+    }else{
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Create File Failed!",@"生成文件失败！")];
     }
 }
 
@@ -216,12 +219,18 @@
 - (NSString *)createFootprintsRepositoryString{
     self.footprintsRepository.title = titleTF.text;
     
-    NSData *footprintsRepositoryData = [NSKeyedArchiver archivedDataWithRootObject:self.footprintsRepository];
+    // 清除缩略图数据
+    EverywhereFootprintsRepository *copyedFR = [self.footprintsRepository copy];
+    for (EverywhereFootprintAnnotation *footprintAnnotation in copyedFR.footprintAnnotations) {
+        footprintAnnotation.thumbnail = nil;
+    }
+    
+    NSData *footprintsRepositoryData = [NSKeyedArchiver archivedDataWithRootObject:copyedFR];
     
     NSString *footprintsRepositoryString = [footprintsRepositoryData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
     
     if (footprintsRepositoryString.length > 10*1024*8) {
-        if(DEBUGMODE) NSLog(@"footprintsOrPositionURL is too Long!");
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"FootprintsRepository is too big!",@"足迹包数据量太大，无法用微信分享！")];
         return nil;
     }
     NSString *headerString = [NSString stringWithFormat:@"%@://AlbumMaps/",[EverywhereSettingManager defaultManager].wxAppID];

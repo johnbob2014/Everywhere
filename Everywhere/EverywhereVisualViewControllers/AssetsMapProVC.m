@@ -13,7 +13,8 @@
 #define LandscapeContentSizeInPopup_Big CGSizeMake(ScreenHeight - 10 - 80, ScreenWidth - 10)
 
 #define NaviBarButtonSize CGSizeMake(30, 30)
-#define NaviBarButtonOffset ScreenWidth > 375 ? 30 : 15
+//#define NaviBarButtonOffset ScreenWidth > 375 ? 30 : 15
+#define NaviBarButtonOffset (ScreenWidth - 30 * 5 - 10 - 20)/4.0
 
 #define ButtionSize (ScreenHeight > 568 ? CGSizeMake(44, 44) : CGSizeMake(36, 36))
 #define ButtonEdgeLength (ScreenHeight > 568 ? 44 : 36)
@@ -146,7 +147,9 @@
     
     UIView *recordModeBar;
     UIButton *startPauseRecordButton;
-    UILabel *velocityLabel;
+    UILabel *velocityLabelInRMB;
+    UILabel *distanceAndFPCountLabelInRMB;
+    CLLocationDistance totalDistanceForRecord;
     
     LocationInfoWithCoordinateInfoBar *locationInfoWithCoordinateInfoBar;
     float locationInfoWithCoordinateInfoBarHeight;
@@ -275,6 +278,7 @@
     locationInfoWithCoordinateInfoBar.backgroundColor = newColor;
     placemarkInfoBar.backgroundColor = newColor;
     naviBar.backgroundColor = newColor;
+    currentAnnotationIndexLabel.backgroundColor = newColor;
     shareBar.backgroundColor = newColor;
     
     msBaseModeBar.contentViewBackgroundColor = newColor;
@@ -453,7 +457,8 @@
     //locationInfoWithCoordinateInfoBar.userCoordinateWGS84 = userLocationWGS84.coordinate;
     CLLocationSpeed velocitymPerSecond = userLocationWGS84.speed;
     CLLocationSpeed velocitykmPerhour = velocitymPerSecond * 3600.0 / 1000.0;
-    velocityLabel.text = [NSString stringWithFormat:@"%.2fkm/h %.2fm/s",velocitykmPerhour,velocitymPerSecond];
+    velocityLabelInRMB.text = [NSString stringWithFormat:@"%.2fkm/h %.2fm/s",velocitykmPerhour,velocitymPerSecond];
+    velocityLabelInRMB.text = [NSString stringWithFormat:@"%.2fkm/h",velocitykmPerhour];
 }
 
 - (void)setUserLocationGCJ02:(CLLocation *)userLocationGCJ02{
@@ -492,20 +497,33 @@
     // 更新Placemark信息
     self.placemarkDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:assetInfoArray];
     
+    BOOL noAsset = YES;
     if (assetInfoArray.count > 0) {
+        
         NSMutableArray *assetIDArry = [NSMutableArray new];
         [assetInfoArray enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [assetIDArry addObject:obj.localIdentifier];
+            if(![obj.eliminateThisAsset boolValue])
+                [assetIDArry addObject:obj.localIdentifier];
         }];
         
-        PHFetchOptions *options = [PHFetchOptions new];
-        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
-        PHFetchResult <PHAsset *> *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:assetIDArry options:options];
-        
-        self.startDate = fetchResult.firstObject.creationDate;
-        self.endDate = fetchResult.lastObject.creationDate;
-        
-        self.assetArray = (NSArray <PHAsset *> *)fetchResult;
+        if (assetIDArry.count > 0){
+            noAsset = NO;
+            
+            [SVProgressHUD showWithStatus:NSLocalizedString(@"Reading Data", @"正在读取数据")];
+            PHFetchOptions *options = [PHFetchOptions new];
+            options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+            PHFetchResult <PHAsset *> *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:assetIDArry options:options];
+            
+            self.startDate = fetchResult.firstObject.creationDate;
+            self.endDate = fetchResult.lastObject.creationDate;
+            
+            self.assetArray = (NSArray <PHAsset *> *)fetchResult;
+        }
+    }
+    
+    if (noAsset){
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"No photos in selected date range or location", @"所选日期或地点没有照片")];
+        [SVProgressHUD dismissWithDelay:3.0];
     }
 }
 
@@ -547,6 +565,8 @@
     
     // 如果地图已经初始化，才进行更新
     if (self.myMapView) [self updateVisualViewForEWAnnos];
+    
+    [SVProgressHUD dismiss];
 }
 
 - (void)setAddedIDAnnos:(NSArray<id<MKAnnotation>> *)addedIDAnnos{
@@ -746,7 +766,7 @@
 - (void)updateMapModeBar{
     switch (self.settingManager.mapBaseMode) {
         case MapBaseModeMoment:
-            msBaseModeBar.info = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate];
+            msBaseModeBar.info = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate firstDayOfWeek:self.settingManager.firstDayOfWeek];
             savedTitleForMomentMode = msBaseModeBar.info;
             break;
         case MapBaseModeLocation:
@@ -761,6 +781,8 @@
 
 - (void)showDatePicker{
     DatePickerProVC *datePickerProVC = [DatePickerProVC new];
+    datePickerProVC.dateMode = self.settingManager.dateMode;
+    datePickerProVC.firstDayOfWeek = self.settingManager.firstDayOfWeek;
     
     WEAKSELF(weakSelf);
     
@@ -848,9 +870,8 @@
     firstButton.alpha = 0.6;
     [naviBar addSubview:firstButton];
     [firstButton autoSetDimensionsToSize:NaviBarButtonSize];
-    [firstButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+    [firstButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
     [firstButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-    //[firstButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
     
     previousButton = [UIButton newAutoLayoutView];
     [previousButton setImage:[UIImage imageNamed:@"IcoMoon_Arrow-Top_WBG"] forState:UIControlStateNormal];
@@ -894,10 +915,9 @@
     
     currentAnnotationIndexLabel = [UILabel newAutoLayoutView];
     currentAnnotationIndexLabel.textColor = [UIColor whiteColor];
-    [naviBar addSubview:currentAnnotationIndexLabel];
-    [currentAnnotationIndexLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
-    [currentAnnotationIndexLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-    //[currentAnnotationIndexLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:lastButton withOffset:10];
+    [self.view addSubview:currentAnnotationIndexLabel];
+    [currentAnnotationIndexLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-5];
+    [currentAnnotationIndexLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
     
     self.currentAnnotationIndex = 0;
     
@@ -929,12 +949,12 @@
 - (void)playButtonPressed:(id)sender{
     if (isPlaying) {
         // 暂停播放
-        //[sender setTitle:@"▶️" forState:UIControlStateNormal];
+        playButton.transform = CGAffineTransformIdentity;
         [playTimer invalidate];
         playTimer = nil;
     }else{
         // 开始播放
-        //[sender setTitle:@"⏸" forState:UIControlStateNormal];
+        playButton.transform = CGAffineTransformMakeScale(1.5, 1.5);
         playTimer = [NSTimer scheduledTimerWithTimeInterval:self.settingManager.playTimeInterval target:self selector:@selector(nextButtonPressed:) userInfo:nil repeats:YES];
     }
     isPlaying = !isPlaying;
@@ -1406,7 +1426,7 @@
     [recordModeBarButtonContainer addSubview:firstButtonInRMB];
     [firstButtonInRMB autoSetDimensionsToSize:ButtionSize];
     [firstButtonInRMB autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-    [firstButtonInRMB autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:ButtonOffset / 2.0];
+    [firstButtonInRMB autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
     
     UIButton *secondButtonInRMB = [UIButton newAutoLayoutView];
     secondButtonInRMB.alpha = 0.6;
@@ -1451,18 +1471,31 @@
     // 需要外部引用，用于改变图片
     startPauseRecordButton = firstButtonInRMB;
     
-    velocityLabel = [UILabel newAutoLayoutView];
-    velocityLabel.layer.backgroundColor = self.settingManager.extendedTintColor.CGColor;
-    velocityLabel.layer.borderColor = self.settingManager.extendedTintColor.CGColor;
-    velocityLabel.layer.borderWidth = 1;
-    velocityLabel.layer.cornerRadius = 0.4;
-    velocityLabel.text = NSLocalizedString(@"Paused", @"已暂停");
-    velocityLabel.textAlignment = NSTextAlignmentCenter;
-    velocityLabel.textColor = [UIColor whiteColor];
-    velocityLabel.font = [UIFont bodyFontWithSizeMultiplier:1.2];
-    [recordModeBar addSubview:velocityLabel];
-    [velocityLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [velocityLabel autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
+    velocityLabelInRMB = [UILabel newAutoLayoutView];
+    velocityLabelInRMB.layer.backgroundColor = self.settingManager.extendedTintColor.CGColor;
+    velocityLabelInRMB.layer.borderColor = self.settingManager.extendedTintColor.CGColor;
+    velocityLabelInRMB.layer.borderWidth = 1;
+    velocityLabelInRMB.layer.cornerRadius = 0.4;
+    velocityLabelInRMB.text = NSLocalizedString(@"Paused", @"已暂停");
+    velocityLabelInRMB.textAlignment = NSTextAlignmentCenter;
+    velocityLabelInRMB.textColor = [UIColor whiteColor];
+    velocityLabelInRMB.font = [UIFont bodyFontWithSizeMultiplier:1.2];
+    [recordModeBar addSubview:velocityLabelInRMB];
+    [velocityLabelInRMB autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+    [velocityLabelInRMB autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
+    
+    distanceAndFPCountLabelInRMB = [UILabel newAutoLayoutView];
+    distanceAndFPCountLabelInRMB.layer.backgroundColor = self.settingManager.extendedTintColor.CGColor;
+    distanceAndFPCountLabelInRMB.layer.borderColor = self.settingManager.extendedTintColor.CGColor;
+    distanceAndFPCountLabelInRMB.layer.borderWidth = 1;
+    distanceAndFPCountLabelInRMB.layer.cornerRadius = 0.4;
+    distanceAndFPCountLabelInRMB.text = NSLocalizedString(@"Distance,Count", @"里程,点数");
+    distanceAndFPCountLabelInRMB.textAlignment = NSTextAlignmentCenter;
+    distanceAndFPCountLabelInRMB.textColor = [UIColor whiteColor];
+    distanceAndFPCountLabelInRMB.font = [UIFont bodyFontWithSizeMultiplier:1.2];
+    [recordModeBar addSubview:distanceAndFPCountLabelInRMB];
+    [distanceAndFPCountLabelInRMB autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+    [distanceAndFPCountLabelInRMB autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
 }
 
 - (void)manullyAddFootprint{
@@ -1572,8 +1605,8 @@
                 }
                     break;
                 case DateModeWeek:{
-                    self.startDate = [NOW dateAtStartOfThisWeek];
-                    self.endDate = [NOW dateAtEndOfThisWeek];
+                    self.startDate = [NOW dateAtStartOfThisWeek:self.settingManager.firstDayOfWeek];
+                    self.endDate = [NOW dateAtEndOfThisWeek:self.settingManager.firstDayOfWeek];
                 }
                     break;
                 case DateModeMonth:{
@@ -1586,15 +1619,12 @@
                     self.endDate = [NOW dateAtEndOfThisYear];
                 }
                     break;
-                case DateModeAll:{
-                    self.startDate = nil;
-                    self.endDate = nil;
+                case DateModeCustom:{
+                    self.startDate = [[NSUserDefaults standardUserDefaults] valueForKey:DatePickerCustomStartDate];
+                    self.endDate = [[NSUserDefaults standardUserDefaults] valueForKey:DatePickerCustomEndDate];
                 }
                     break;
-                default:{
-                    self.startDate = [NOW dateAtStartOfThisMonth];
-                    self.endDate = [NOW dateAtEndOfThisMonth];
-                }
+                default:
                     break;
             }
             
@@ -1640,7 +1670,7 @@
         [ms appendString:NSLocalizedString(@"I've been in ", @"我到过 ")];
     }
     */
-    NSString *dateString = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate];
+    NSString *dateString = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate firstDayOfWeek:self.settingManager.firstDayOfWeek];
     if (dateString) [ms appendFormat:@"%@ ",dateString];
     
     [ms appendString:NSLocalizedString(@"I went to ", @"我到了 ")];
@@ -1798,7 +1828,7 @@
     footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeSent;
     footprintsRepository.placemarkInfo = ms;
     
-    footprintsRepository.title = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate];
+    footprintsRepository.title = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate firstDayOfWeek:self.settingManager.firstDayOfWeek];
     if (self.settingManager.mapBaseMode == MapBaseModeLocation) footprintsRepository.title = [footprintsRepository.title stringByAppendingFormat:@" %@",self.lastPlacemark];
     
     ShareFootprintsRepositoryVC *shareFRVC = [ShareFootprintsRepositoryVC new];
@@ -1897,13 +1927,19 @@
     msExtenedModeBar.hidden = NO;
     
     naviBar.backgroundColor = self.settingManager.extendedTintColor;
+    currentAnnotationIndexLabel.backgroundColor = self.settingManager.extendedTintColor;
     locationInfoWithCoordinateInfoBar.backgroundColor = self.settingManager.extendedTintColor;
     recordModeSettingBar.backgroundColor = self.settingManager.extendedTintColor;
-    velocityLabel.layer.backgroundColor = self.settingManager.extendedTintColor.CGColor;
-    velocityLabel.layer.borderColor = self.settingManager.extendedTintColor.CGColor;
+    velocityLabelInRMB.layer.backgroundColor = self.settingManager.extendedTintColor.CGColor;
+    velocityLabelInRMB.layer.borderColor = self.settingManager.extendedTintColor.CGColor;
+    distanceAndFPCountLabelInRMB.layer.backgroundColor = self.settingManager.extendedTintColor.CGColor;
+    distanceAndFPCountLabelInRMB.layer.borderColor = self.settingManager.extendedTintColor.CGColor;
 }
 
 - (void)quiteExtendedMode{
+    // 设置颜色，所以这一句要放在最前面
+    self.isInBaseMode = YES;
+    
     msBaseModeBar.hidden = NO;
     placemarkInfoBar.hidden = NO;
     leftVerticalBar.hidden = NO;
@@ -1912,6 +1948,7 @@
     msExtenedModeBar.hidden = YES;
     
     naviBar.backgroundColor = self.settingManager.baseTintColor;
+    currentAnnotationIndexLabel.backgroundColor = self.settingManager.baseTintColor;
     locationInfoWithCoordinateInfoBar.backgroundColor = self.settingManager.baseTintColor;
     
     // 清理Extended Mode地图
@@ -1929,8 +1966,6 @@
     self.endDate = savedEndDateForBaseMode;
     
     [self updateVisualViewForEWAnnos];
-    
-    self.isInBaseMode = YES;
     if(DEBUGMODE) NSLog(@"退出扩展模式");
 }
 
@@ -2070,6 +2105,7 @@
     lastRecordLocation = nil;
     lastRecordDate = nil;
     recordedFootprintAnnotations = [NSMutableArray new];
+    totalDistanceForRecord = 0;
 
 }
 
@@ -2105,7 +2141,7 @@
         [timerForRecord invalidate];
         timerForRecord = nil;
         
-        velocityLabel.text = NSLocalizedString(@"Paused", @"已暂停");
+        velocityLabelInRMB.text = NSLocalizedString(@"Paused", @"已暂停");
         msExtenedModeBar.alpha = 1;
         
         if(DEBUGMODE) NSLog(@"暂停记录");
@@ -2268,6 +2304,8 @@
     recordedFootprintAnnotations = [NSMutableArray new];
     [recordedFootprintAnnotations addObject:lastfpAnnotation];
     
+    totalDistanceForRecord = 0;
+    
     // 保存完成，继续记录
     self.isRecording = YES;
 }
@@ -2351,16 +2389,30 @@
 - (void)updateThumbnailForAddedEWFootprintAnnotations{
     //NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationsToAdd = [NSMutableArray new];
     NSInteger index = 0;
+    // 第1层循环
     for (EverywhereAnnotation *everywhereAnnotation in self.addedEWAnnos) {
+        
+        // 第2层循环
+        BOOL hasAddedThumbnail = NO;
         for (NSString *assetLocalIdentifier in everywhereAnnotation.assetLocalIdentifiers) {
             PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:assetLocalIdentifier inManagedObjectContext:self.cdManager.appDelegateMOC];
             
+            if (hasAddedThumbnail) break;
+            
+            // 以第一张actAsThumbnail属性为真的PHAssetInfo对应的缩略图作为该FootprintAnnotation的缩略图
             if (assetInfo.actAsThumbnail){
                 PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetInfo.localIdentifier] options:nil].firstObject;
                 EverywhereFootprintAnnotation *footprintAnnotation = self.addedEWFootprintAnnotations[index];
-                footprintAnnotation.thumbnail = [asset synchronousFetchUIImageAtTargetSize:CGSizeMake(asset.pixelWidth * 0.2, asset.pixelHeight * 0.2)];
+                
+                UIImage *image = [asset synchronousFetchUIImageAtTargetSize:CGSizeMake(asset.pixelWidth * self.settingManager.thumbnailScaleRate, asset.pixelHeight * self.settingManager.thumbnailScaleRate)];
+                NSData *imageDate = UIImageJPEGRepresentation(image,self.settingManager.thumbnailCompressionQuality);
+                footprintAnnotation.thumbnail = [[UIImage alloc] initWithData:imageDate];
+                
+                //footprintAnnotation.thumbnail
+                hasAddedThumbnail = YES;
             }
         }
+        
         index++;
     }
     
@@ -2592,9 +2644,9 @@
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation{
     if ([annotation isKindOfClass:[EverywhereAnnotation class]]) {
-        MKPinAnnotationView *pinAV = (MKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"pinAV"];
-        if (!pinAV) pinAV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pinAV"];
-        
+        //MKPinAnnotationView *pinAV = (MKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"pinAV"];
+        //if (!pinAV) pinAV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pinAV"];
+        MKPinAnnotationView *pinAV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pinAV"];
         pinAV.animatesDrop = NO;
         
         if(iOS9) pinAV.pinTintColor = self.currentTintColor;//[UIColor greenColor];
@@ -2631,8 +2683,9 @@
         return pinAV;
     }else if ([annotation isKindOfClass:[EverywhereFootprintAnnotation class]]){
         
-        MKPinAnnotationView *pinAV = (MKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"pinShareAV"];
-        if (!pinAV) pinAV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pinShareAV"];
+        //MKPinAnnotationView *pinAV = (MKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"pinShareAV"];
+        //if (!pinAV) pinAV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pinShareAV"];
+        MKPinAnnotationView *pinAV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pinShareAV"];
         
         EverywhereFootprintAnnotation *footprintAnnotation = (EverywhereFootprintAnnotation *)annotation;
         
@@ -2838,33 +2891,26 @@
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations{
-    CLLocation *lastLocation = locations.lastObject;
+    CLLocation *newLocation = locations.lastObject;
     
     // 地址不准确，直接返回
-    if (![self checkCoordinate:lastLocation.coordinate]) return;
+    if (![self checkCoordinate:newLocation.coordinate]) return;
     
-    self.userLocationWGS84 = lastLocation;
+    self.userLocationWGS84 = newLocation;
     
     if (!lastRecordLocation) {
-        lastRecordLocation = lastLocation;
-        lastRecordDate = NOW;
-        [self addRecordedFootprintAnnotationsWithLocation:lastRecordLocation isUserManuallyAdded:NO];
+        [self addRecordedFootprintAnnotationsWithLocation:newLocation isUserManuallyAdded:NO];
     }
     
-    CLLocation *currentLocation = lastLocation;
     // 满足最小记录距离条件
-    if ([currentLocation distanceFromLocation:lastRecordLocation] > self.minDistanceForRecord) {
+    if ([newLocation distanceFromLocation:lastRecordLocation] > self.minDistanceForRecord) {
         // 满足最小记录时间条件
         if([NOW timeIntervalSinceDate:lastRecordDate] > self.minTimeIntervalForRecord){
-            [self addRecordedFootprintAnnotationsWithLocation:currentLocation isUserManuallyAdded:NO];
-            
-            // 记录新足迹点后，再更新
-            lastRecordLocation = currentLocation;
-            lastRecordDate = NOW;
+            [self addRecordedFootprintAnnotationsWithLocation:newLocation isUserManuallyAdded:NO];
         }
        
     }
-    //if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
+    
 }
 
 - (void)addRecordedFootprintAnnotationsWithLocation:(CLLocation *)newLocation isUserManuallyAdded:(BOOL)isUserManuallyAdded{
@@ -2886,10 +2932,19 @@
         [self.myMapView addOverlay:[AssetsMapProVC createArrowMKPolygonBetweenStartCoordinate:lastAnno.coordinate endCoordinate:footprintAnnotation.coordinate]];
     }
     
+    totalDistanceForRecord += [newLocation distanceFromLocation:lastRecordLocation];
+    if (totalDistanceForRecord > 0){
+        distanceAndFPCountLabelInRMB.text = [NSString stringWithFormat:@"%.2fkm,%lufp",totalDistanceForRecord/1000.0,recordedFootprintAnnotations.count];
+    }
+    
     // 如果达到设置最大数据，重新开始一条新的记录，用于节省内存，防止崩溃
     if (recordedFootprintAnnotations.count == self.settingManager.maxFootprintsCountForRecord) {
         [self intelligentlySaveRecordedFootprintAnnotationsAndClearCatche];
     }
+    
+    // 记录新足迹点后，再更新
+    lastRecordLocation = newLocation;
+    lastRecordDate = NOW;
 }
 
 @end

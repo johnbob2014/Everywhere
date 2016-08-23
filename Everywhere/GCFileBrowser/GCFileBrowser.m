@@ -59,7 +59,9 @@
     
     UIView *bottomView;
     UIView *buttonContainerView;
-    UIButton *copyButton,*cutButton,*pasteButton,*deleteButton,*renameButton,*showHideBottomInfoLabelButton;
+    UIButton *copyButton,*cutButton,*pasteButton,*deleteButton,*renameButton,*newFolderButton,*showHideBottomInfoTVButton;
+    UIView *labelPlaceHolderView;
+    UILabel *copyButtonLabel,*cutButtonLabel,*pasteButtonLabel,*deleteButtonLabel,*renameButtonLabel,*newFolderButtonLabel,*showHideBottomInfoTVButtonLabel;
     UITextView *infoTextViewInBottomView;
     NSLayoutConstraint *bottomConstraintForBottomView;
     
@@ -220,7 +222,7 @@
     if (infoTextViewInBottomView){
         infoTextViewInBottomView.text = nil;
         if (self.waitToCopyCADMA.count == 0 && self.waitToMoveCADMA.count == 0){
-            [self hideBottomInfoLabel];
+            [self hideBottomInfoTV];
         }else if (self.waitToCopyCADMA.count > 0){
             bottomConstraintForBottomView.constant = 0;
             self.infoStringToAdd = [NSString stringWithFormat:@"%lu %@",(unsigned long)self.waitToCopyCADMA.count,NSLocalizedString(@"items has been copied.Select destination to paste.", @"项已复制，请选择目标位置进行粘贴。")];
@@ -261,7 +263,7 @@
     bottomView = [UIView newAutoLayoutView];
     bottomView.backgroundColor = ClearColor;//DEBUGMODE ? RandomFlatColor : ClearColor;
     [self.view addSubview:bottomView];
-    [bottomView autoSetDimension:ALDimensionHeight toSize:5 + FileActionButtonEdgeLength + 5 + TextViewHeight + 5];
+    [bottomView autoSetDimension:ALDimensionHeight toSize:5 + FileActionButtonEdgeLength + FileActionLabelHeight + 5 + TextViewHeight + 5];
     [bottomView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
     [bottomView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
     bottomConstraintForBottomView = [bottomView autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:- BottomConstraintConstant];
@@ -269,7 +271,7 @@
     buttonContainerView = [UIView newAutoLayoutView];
     buttonContainerView.backgroundColor = ClearColor;//DEBUGMODE ? RandomFlatColor : ClearColor;
     [bottomView addSubview:buttonContainerView];
-    [buttonContainerView autoSetDimensionsToSize:CGSizeMake(FileActionButtonEdgeLength * 6 + FileActionButtonOffset * 5, FileActionButtonEdgeLength)];
+    [buttonContainerView autoSetDimensionsToSize:CGSizeMake(FileActionButtonEdgeLength * 7 + FileActionButtonOffset * 6, FileActionButtonEdgeLength)];
     [buttonContainerView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
     [buttonContainerView autoAlignAxisToSuperviewAxis:ALAxisVertical];
     
@@ -318,17 +320,104 @@
     [renameButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
     [renameButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:deleteButton withOffset:FileActionButtonOffset];
     
-    showHideBottomInfoLabelButton = [UIButton newAutoLayoutView];
-    [showHideBottomInfoLabelButton setImage:[UIImage imageNamed:@"icon-view1@2x"] forState:UIControlStateNormal];
-    [showHideBottomInfoLabelButton setImage:[UIImage imageNamed:@"icon-view2@2x"] forState:UIControlStateHighlighted];
-    [showHideBottomInfoLabelButton addTarget:self action:@selector(showHideBottomInfoLabelButtonTD) forControlEvents:UIControlEventTouchDown];
-    [buttonContainerView addSubview:showHideBottomInfoLabelButton];
-    [showHideBottomInfoLabelButton autoSetDimensionsToSize:FileActionButtonSize];
-    [showHideBottomInfoLabelButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-    [showHideBottomInfoLabelButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:renameButton withOffset:FileActionButtonOffset];
+    newFolderButton = [UIButton newAutoLayoutView];
+    [newFolderButton setTitle:@"📁" forState:UIControlStateNormal];
+    //[newFolderButton setImage:[UIImage imageNamed:@"icon-rename1@2x"] forState:UIControlStateNormal];
+    //[newFolderButton setImage:[UIImage imageNamed:@"icon-rename2@2x"] forState:UIControlStateHighlighted];
+    [newFolderButton addTarget:self action:@selector(newFolderButtonTD) forControlEvents:UIControlEventTouchDown];
+    [buttonContainerView addSubview:newFolderButton];
+    [newFolderButton autoSetDimensionsToSize:FileActionButtonSize];
+    [newFolderButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    [newFolderButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:renameButton withOffset:FileActionButtonOffset];
+    
+    showHideBottomInfoTVButton = [UIButton newAutoLayoutView];
+    [showHideBottomInfoTVButton setImage:[UIImage imageNamed:@"icon-view1@2x"] forState:UIControlStateNormal];
+    [showHideBottomInfoTVButton setImage:[UIImage imageNamed:@"icon-view2@2x"] forState:UIControlStateHighlighted];
+    [showHideBottomInfoTVButton addTarget:self action:@selector(showHideBottomInfoTVButtonTD) forControlEvents:UIControlEventTouchDown];
+    [buttonContainerView addSubview:showHideBottomInfoTVButton];
+    [showHideBottomInfoTVButton autoSetDimensionsToSize:FileActionButtonSize];
+    [showHideBottomInfoTVButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+    [showHideBottomInfoTVButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:newFolderButton withOffset:FileActionButtonOffset];
     
     //if (ScreenWidth > 320) buttonContainerView.transform = CGAffineTransformMakeScale(1.3, 1.3);
     
+    labelPlaceHolderView = [UIView newAutoLayoutView];
+    [bottomView addSubview:labelPlaceHolderView];
+    [labelPlaceHolderView autoSetDimension:ALDimensionHeight toSize:FileActionLabelHeight];
+    [labelPlaceHolderView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:buttonContainerView];
+    [labelPlaceHolderView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+    [labelPlaceHolderView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+    
+    copyButtonLabel = [UILabel newAutoLayoutView];
+    copyButtonLabel.textColor = [UIColor blackColor];
+    copyButtonLabel.textAlignment = NSTextAlignmentCenter;
+    copyButtonLabel.font = FileActionLabelFont;
+    copyButtonLabel.text = NSLocalizedString(@"Copy", @"复制");
+    [bottomView addSubview:copyButtonLabel];
+    [copyButtonLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:labelPlaceHolderView];
+    [copyButtonLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:copyButton];
+    [copyButtonLabel autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:copyButton];
+    
+    cutButtonLabel = [UILabel newAutoLayoutView];
+    cutButtonLabel.textColor = [UIColor blackColor];
+    cutButtonLabel.textAlignment = NSTextAlignmentCenter;
+    cutButtonLabel.font = FileActionLabelFont;
+    cutButtonLabel.text = NSLocalizedString(@"Cut", @"剪切");
+    [bottomView addSubview:cutButtonLabel];
+    [cutButtonLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:labelPlaceHolderView];
+    [cutButtonLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:cutButton];
+    [cutButtonLabel autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:cutButton];
+    
+    pasteButtonLabel = [UILabel newAutoLayoutView];
+    pasteButtonLabel.textColor = [UIColor blackColor];
+    pasteButtonLabel.textAlignment = NSTextAlignmentCenter;
+    pasteButtonLabel.font = FileActionLabelFont;
+    pasteButtonLabel.text = NSLocalizedString(@"Paste", @"粘贴");
+    [bottomView addSubview:pasteButtonLabel];
+    [pasteButtonLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:labelPlaceHolderView];
+    [pasteButtonLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:pasteButton];
+    [pasteButtonLabel autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:pasteButton];
+    
+    deleteButtonLabel = [UILabel newAutoLayoutView];
+    deleteButtonLabel.textColor = [UIColor blackColor];
+    deleteButtonLabel.textAlignment = NSTextAlignmentCenter;
+    deleteButtonLabel.font = FileActionLabelFont;
+    deleteButtonLabel.text = NSLocalizedString(@"Delete", @"删除");
+    [bottomView addSubview:deleteButtonLabel];
+    [deleteButtonLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:labelPlaceHolderView];
+    [deleteButtonLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:deleteButton];
+    [deleteButtonLabel autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:deleteButton];
+    
+    renameButtonLabel = [UILabel newAutoLayoutView];
+    renameButtonLabel.textColor = [UIColor blackColor];
+    renameButtonLabel.textAlignment = NSTextAlignmentCenter;
+    renameButtonLabel.font = FileActionLabelFont;
+    renameButtonLabel.text = NSLocalizedString(@"Rename", @"重命名");
+    [bottomView addSubview:renameButtonLabel];
+    [renameButtonLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:labelPlaceHolderView];
+    [renameButtonLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:renameButton];
+    [renameButtonLabel autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:renameButton  withMultiplier:1.2];
+    
+    newFolderButtonLabel = [UILabel newAutoLayoutView];
+    newFolderButtonLabel.textColor = [UIColor blackColor];
+    newFolderButtonLabel.textAlignment = NSTextAlignmentCenter;
+    newFolderButtonLabel.font = FileActionLabelFont;
+    newFolderButtonLabel.text = NSLocalizedString(@"New", @"新文件夹");
+    [bottomView addSubview:newFolderButtonLabel];
+    [newFolderButtonLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:labelPlaceHolderView];
+    [newFolderButtonLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:newFolderButton];
+    [newFolderButtonLabel autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:newFolderButton];
+    
+    showHideBottomInfoTVButtonLabel = [UILabel newAutoLayoutView];
+    showHideBottomInfoTVButtonLabel.textColor = [UIColor blackColor];
+    showHideBottomInfoTVButtonLabel.textAlignment = NSTextAlignmentCenter;
+    showHideBottomInfoTVButtonLabel.font = FileActionLabelFont;
+    showHideBottomInfoTVButtonLabel.text = NSLocalizedString(@"Info", @"详情");
+    [bottomView addSubview:showHideBottomInfoTVButtonLabel];
+    [showHideBottomInfoTVButtonLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:labelPlaceHolderView];
+    [showHideBottomInfoTVButtonLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:showHideBottomInfoTVButton];
+    [showHideBottomInfoTVButtonLabel autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:showHideBottomInfoTVButton];
+
     infoTextViewInBottomView = [UITextView newAutoLayoutView];
     infoTextViewInBottomView.editable = NO;
     infoTextViewInBottomView.textAlignment = NSTextAlignmentLeft;
@@ -340,7 +429,7 @@
 
 - (void)copyButtonTD{
     infoTextViewInBottomView.text = nil;
-    [self showBottomInfoLabel];
+    [self showBottomInfoTV];
     if (self.selectedCADMA.count > 0){
         self.waitToCopyCADMA = (NSMutableArray<NSDictionary *> *)self.selectedCADMA;
         
@@ -353,7 +442,7 @@
 
 - (void)cutButtonTD{
     infoTextViewInBottomView.text = nil;
-    [self showBottomInfoLabel];
+    [self showBottomInfoTV];
     if (self.selectedCADMA.count > 0){
         
         self.waitToMoveCADMA = (NSMutableArray<NSDictionary *> *)self.selectedCADMA;
@@ -370,7 +459,7 @@
         self.infoStringToAdd = NSLocalizedString(@"No item to copy or move.", @"没有要复制或移动的项目。");
         return;
     }else if (self.waitToCopyCADMA.count > 0){
-        [self showBottomInfoLabel];
+        [self showBottomInfoTV];
         
         __block NSUInteger successCount = 0;
         [self.waitToCopyCADMA enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -401,7 +490,7 @@
         self.waitToCopyCADMA = nil;
         [self updateDataWithNewDirectoryPath:self.directoryPath];
     }else if (self.waitToMoveCADMA.count > 0){
-        [self showBottomInfoLabel];
+        [self showBottomInfoTV];
         
         __block NSUInteger successCount = 0;
         [self.waitToMoveCADMA enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -440,7 +529,7 @@
     if (self.selectedCADMA.count > 0){
         
         UIAlertActionHandler okActionHandler = ^(UIAlertAction *action) {
-            [self showBottomInfoLabel];
+            [self showBottomInfoTV];
             __block NSUInteger successCount = 0;
             [self.selectedCADMA enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 NSString *contentPath = obj[kContentPath];
@@ -510,25 +599,39 @@
         [self presentViewController:renameAC animated:YES completion:nil];
 
     }else{
-        [self showBottomInfoLabel];
+        [self showBottomInfoTV];
         self.infoStringToAdd = NSLocalizedString(@"Only support 1 item at once.", @"每次只能重命名1个项目。");
     }
 }
 
-- (void)showHideBottomInfoLabelButtonTD{
+- (void)newFolderButtonTD{
+    infoTextViewInBottomView.text = nil;
+    [self showBottomInfoTV];
+    NSString *newFolderName = [NSString stringWithFormat:@"%@-%.0f",NSLocalizedString(@"NewFolder", @"新文件夹"),[[NSDate date] timeIntervalSinceReferenceDate]*1000];;
+    NSString *newFolderPath = [self.directoryPath stringByAppendingPathComponent:newFolderName];
+    NSError *error;
+    if ([[NSFileManager defaultManager] createDirectoryAtPath:newFolderPath withIntermediateDirectories:NO attributes:nil error:&error]){
+        self.infoStringToAdd = NSLocalizedString(@"Create new folder succeeded", @"新建文件夹成功");
+        [self updateDataWithNewDirectoryPath:self.directoryPath];
+    }else{
+        self.infoStringToAdd = NSLocalizedString(@"Create new folder failed", @"新建文件夹失败");
+    }
+}
+
+- (void)showHideBottomInfoTVButtonTD{
     infoTextViewInBottomView.text = nil;
     [UIView animateWithDuration:1.0 animations:^{
         bottomConstraintForBottomView.constant = bottomConstraintForBottomView.constant == 0 ? BottomConstraintConstant : 0;
     }];
 }
 
-- (void)showBottomInfoLabel{
+- (void)showBottomInfoTV{
     [UIView animateWithDuration:1.0 animations:^{
         bottomConstraintForBottomView.constant = 0;
     }];
 }
 
-- (void)hideBottomInfoLabel{
+- (void)hideBottomInfoTV{
     [UIView animateWithDuration:1.0 animations:^{
         bottomConstraintForBottomView.constant = BottomConstraintConstant;
     }];
@@ -692,7 +795,8 @@
 
 - (void)fileTableViewCell:(GCFileTableViewCell *)cell didTapIconAtIndexPath:(NSIndexPath *)indexPath{
     if (self.isWaitingToPaste){
-        infoLabelInTopView.text = NSLocalizedString(@"Waiting to paste.", @"等待粘贴，无法选择。");
+        [self showBottomInfoTV];
+        self.infoStringToAdd = NSLocalizedString(@"Waiting to paste.Can not choose now.", @"等待粘贴，无法选择。");
         return;
     }
     

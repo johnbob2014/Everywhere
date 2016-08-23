@@ -121,6 +121,15 @@
     return matches;
 }
 
++ (NSArray <PHAssetInfo *> *)fetchEliminatedAssetInfosInManagedObjectContext:(NSManagedObjectContext *)context{
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:EntityName_PHAssetInfo];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"eliminateThisAsset = %@",[NSNumber numberWithBool:YES]];
+    NSError *fetchError;
+    NSArray <PHAssetInfo *> *matches = [context executeFetchRequest:fetchRequest error:&fetchError];
+    if (fetchError) if(DEBUGMODE) NSLog(@"Fetch Eliminated PHAssetInfos Error : %@",fetchError.localizedDescription);
+    return matches;
+}
+
 + (BOOL)deleteAllAssetInfosInManagedObjectContext:(NSManagedObjectContext *)context{
     NSArray <PHAssetInfo *> *allAssets = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:context];
     [allAssets enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -199,26 +208,29 @@
     NSMutableArray <NSString *> *subThoroughfare_Placemark = [NSMutableArray new];
 
     [assetInfoArray enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (obj.country_Placemark) {
-            if (![country_Placemark containsObject:obj.country_Placemark]) [country_Placemark addObject:obj.country_Placemark];
-        }
-        if (obj.administrativeArea_Placemark){
-            if (![administrativeArea_Placemark containsObject:obj.administrativeArea_Placemark]) [administrativeArea_Placemark addObject:obj.administrativeArea_Placemark];
-        }
-        if (obj.subAdministrativeArea_Placemark){
-            if (![subAdministrativeArea_Placemark containsObject:obj.subAdministrativeArea_Placemark]) [subAdministrativeArea_Placemark addObject:obj.subAdministrativeArea_Placemark];
-        }
-        if (obj.locality_Placemark){
-            if (![locality_Placemark containsObject:obj.locality_Placemark]) [locality_Placemark addObject:obj.locality_Placemark];
-        }
-        if (obj.subLocality_Placemark){
-            if (![subLocality_Placemark containsObject:obj.subLocality_Placemark]) [subLocality_Placemark addObject:obj.subLocality_Placemark];
-        }
-        if (obj.thoroughfare_Placemark){
-            if (![thoroughfare_Placemark containsObject:obj.thoroughfare_Placemark]) [thoroughfare_Placemark addObject:obj.thoroughfare_Placemark];
-        }
-        if (obj.subThoroughfare_Placemark){
-            if (![subThoroughfare_Placemark containsObject:obj.subThoroughfare_Placemark]) [subThoroughfare_Placemark addObject:obj.subThoroughfare_Placemark];
+        // 不排除的照片，才统计信息
+        if (!obj.eliminateThisAsset){
+            if (obj.country_Placemark) {
+                if (![country_Placemark containsObject:obj.country_Placemark]) [country_Placemark addObject:obj.country_Placemark];
+            }
+            if (obj.administrativeArea_Placemark){
+                if (![administrativeArea_Placemark containsObject:obj.administrativeArea_Placemark]) [administrativeArea_Placemark addObject:obj.administrativeArea_Placemark];
+            }
+            if (obj.subAdministrativeArea_Placemark){
+                if (![subAdministrativeArea_Placemark containsObject:obj.subAdministrativeArea_Placemark]) [subAdministrativeArea_Placemark addObject:obj.subAdministrativeArea_Placemark];
+            }
+            if (obj.locality_Placemark){
+                if (![locality_Placemark containsObject:obj.locality_Placemark]) [locality_Placemark addObject:obj.locality_Placemark];
+            }
+            if (obj.subLocality_Placemark){
+                if (![subLocality_Placemark containsObject:obj.subLocality_Placemark]) [subLocality_Placemark addObject:obj.subLocality_Placemark];
+            }
+            if (obj.thoroughfare_Placemark){
+                if (![thoroughfare_Placemark containsObject:obj.thoroughfare_Placemark]) [thoroughfare_Placemark addObject:obj.thoroughfare_Placemark];
+            }
+            if (obj.subThoroughfare_Placemark){
+                if (![subThoroughfare_Placemark containsObject:obj.subThoroughfare_Placemark]) [subThoroughfare_Placemark addObject:obj.subThoroughfare_Placemark];
+            }
         }
     }];
     
