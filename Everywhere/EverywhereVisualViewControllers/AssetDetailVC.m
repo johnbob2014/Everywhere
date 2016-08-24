@@ -83,6 +83,8 @@
 }
 
 - (void)viewDidLoad{
+    [super viewDidLoad];
+    
     self.view.backgroundColor = [UIColor blackColor];
     
     PHFetchOptions *options = [PHFetchOptions new];

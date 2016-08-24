@@ -25,11 +25,18 @@
     UITextField *titleTF;
     UITextView *statisticsInfoTV;
     UIButton *firstBtn,*sencondBtn,*thirdBtn;
+    
+    EverywhereSettingManager *settingManager;
+    NSString *mfrString;
+    NSString *gpxString;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    settingManager = [EverywhereSettingManager defaultManager];
+    mfrString = NSLocalizedString(@"MFR Share", @"MFR 分享");
+    gpxString = NSLocalizedString(@"GPX Share", @"GPX 分享");
     
     self.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.9, 300);
     self.landscapeContentSizeInPopup = CGSizeMake(300, ScreenWidth * 0.9);
@@ -49,7 +56,6 @@
     titleTF.textAlignment = NSTextAlignmentCenter;
     titleTF.font = [UIFont fontWithName:@"FontAwesome" size:titleTF.font.pointSize * 1.2];
     titleTF.layer.borderWidth = 1;
-    //titleTF.layer.borderColor =
     titleTF.layer.cornerRadius = 3.0;
     titleTF.layer.masksToBounds = YES;
     titleTF.text = self.footprintsRepository.title;
@@ -76,7 +82,7 @@
     //statisticsInfoTV.layer.borderColor =
     statisticsInfoTV.layer.cornerRadius = 3.0;
     //statisticsInfoTV.layer.masksToBounds = YES;
-    statisticsInfoTV.text = self.footprintsRepository.placemarkInfo;
+    statisticsInfoTV.text = self.footprintsRepository.placemarkStatisticalInfo;
     //if (DEBUGMODE) NSLog(@"%@",statisticsInfoTV.text);
     [self.view addSubview:statisticsInfoTV];
     [statisticsInfoTV autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:statisticsInfoLabel withOffset:5];
@@ -95,7 +101,7 @@
 
 
     firstBtn = [UIButton newAutoLayoutView];
-    [firstBtn setTitle:NSLocalizedString(@"Try WeChat Share", @"体验微信分享") forState:UIControlStateNormal];
+    [firstBtn setTitle:NSLocalizedString(@"WeChat Share", @"微信分享") forState:UIControlStateNormal];
     [firstBtn setStyle:UIButtonStylePrimary];
     firstBtn.tag = WXSceneSession;
     [firstBtn addTarget:self action:@selector(wxShare:) forControlEvents:UIControlEventTouchDown];
@@ -105,9 +111,13 @@
     [firstBtn autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:infoButton withOffset:-10];
     [firstBtn autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight];
     
-
+    NSString *tempString = mfrString;
+    
     sencondBtn = [UIButton newAutoLayoutView];
-    [sencondBtn setTitle:NSLocalizedString(@"MFR File Share", @"MFR 文件分享") forState:UIControlStateNormal];
+    if (!settingManager.hasPurchasedShareAndBrowse){
+        tempString = [tempString stringByAppendingFormat:@"(%lu)",(long)settingManager.trialCountForMFR];
+    }
+    [sencondBtn setTitle:tempString forState:UIControlStateNormal];
     [sencondBtn setStyle:UIButtonStylePrimary];
     sencondBtn.tag = 0;
     [sencondBtn addTarget:self action:@selector(fileShare:) forControlEvents:UIControlEventTouchDown];
@@ -118,8 +128,12 @@
     [sencondBtn autoSetDimension:ALDimensionWidth toSize:(self.view.frame.size.width - 30 - 40)/2.0];
     [sencondBtn autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight];
     
+    tempString = gpxString;
     thirdBtn = [UIButton newAutoLayoutView];
-    [thirdBtn setTitle:NSLocalizedString(@"GPX File Share", @"GPX 文件分享") forState:UIControlStateNormal];
+    if (!settingManager.hasPurchasedShareAndBrowse){
+         tempString = [tempString stringByAppendingFormat:@"(%lu)",(long)settingManager.trialCountForGPX];
+    }
+    [thirdBtn setTitle:tempString forState:UIControlStateNormal];
     [thirdBtn setStyle:UIButtonStylePrimary];
     thirdBtn.tag = 1;
     [thirdBtn addTarget:self action:@selector(fileShare:) forControlEvents:UIControlEventTouchDown];
@@ -136,17 +150,25 @@
 
 - (void)fileShare:(UIButton *)sender{
     
-    if (![EverywhereSettingManager defaultManager].hasPurchasedShareAndBrowse && self.userDidSelectedPurchaseShareFunctionHandler){
-        self.userDidSelectedPurchaseShareFunctionHandler();
-        return;
+    if (![EverywhereSettingManager defaultManager].hasPurchasedShareAndBrowse){
+        if (sender.tag == 0 && settingManager.trialCountForMFR > 0){
+            settingManager.trialCountForMFR--;
+            [sender setTitle:[NSString stringWithFormat:@"%@(%lu)",mfrString,(long)settingManager.trialCountForMFR] forState:UIControlStateNormal];
+        }else if (sender.tag == 1 && settingManager.trialCountForGPX > 0){
+            settingManager.trialCountForGPX--;
+            [sender setTitle:[NSString stringWithFormat:@"%@(%lu)",gpxString,(long)settingManager.trialCountForGPX] forState:UIControlStateNormal];
+        }else{
+            if(self.userDidSelectedPurchaseShareFunctionHandler) self.userDidSelectedPurchaseShareFunctionHandler();
+            return;
+        }
     }
     
     self.footprintsRepository.title = titleTF.text;
-    self.footprintsRepository.placemarkInfo = statisticsInfoTV.text;
+    self.footprintsRepository.placemarkStatisticalInfo = statisticsInfoTV.text;
     
     NSString *filePath = [Path_Caches stringByAppendingPathComponent:self.footprintsRepository.title];
     
-    BOOL exportSucceeded;
+    BOOL exportSucceeded = NO;
     documentInteractionController = [UIDocumentInteractionController new];
     documentInteractionController.delegate = self;
     
@@ -208,7 +230,8 @@
     
     if (succeeded){
         // 如果发送成功，保存到我的分享
-        [EverywhereFootprintsRepositoryManager addFootprintsRepository:self.footprintsRepository];
+        #warning addFootprintsRepository
+        //[EverywhereFootprintsRepositoryManager addFootprintsRepository:self.footprintsRepository];
         //if(DEBUGMODE) NSLog(@"%@",self.footprintsRepository);
     }
     

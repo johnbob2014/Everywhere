@@ -31,6 +31,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     [self updateDataSource:groupSeg.selectedSegmentIndex];
 }
 
@@ -113,8 +114,8 @@
     NSMutableArray *receivedArray = [NSMutableArray new];
     NSMutableArray *recordedArray = [NSMutableArray new];
     NSMutableArray *editedArray = [NSMutableArray new];
-    
-    footprintsRepositoryMA = [NSMutableArray arrayWithArray:[EverywhereFootprintsRepositoryManager footprintsRepositoryArray]];
+#warning footprintsRepositoryArray
+    //footprintsRepositoryMA = [NSMutableArray arrayWithArray:[EverywhereFootprintsRepositoryManager footprintsRepositoryArray]];
     
     [footprintsRepositoryMA enumerateObjectsUsingBlock:^(EverywhereFootprintsRepository * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         switch (obj.footprintsRepositoryType) {
@@ -275,7 +276,8 @@
                                                                 if(DEBUGMODE) NSLog(@"EverywhereFootprintsRepository new name : %@",copyFootprintsRepository.title);
                                                                 [footprintsRepositoryMA removeObject:footprintsRepository];
                                                                 [footprintsRepositoryMA addObject:copyFootprintsRepository];
-                                                                [EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:footprintsRepositoryMA];
+#warning setFootprintsRepositoryArray
+                                                                //[EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:footprintsRepositoryMA];
                                                                 [self updateDataSource:groupSeg.selectedSegmentIndex];
                                                                 
                                                             } textFieldConfigurationHandler:^(UITextField *textField) {
@@ -290,7 +292,8 @@
                                                            style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * _Nonnull action) {
                                                              [footprintsRepositoryMA removeObject:footprintsRepository];
-                                                             [EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:footprintsRepositoryMA];
+                                                             #warning setFootprintsRepositoryArray
+                                                             //[EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:footprintsRepositoryMA];
                                                              [self updateDataSource:groupSeg.selectedSegmentIndex];
                                                          }];
 
@@ -342,7 +345,8 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         EverywhereFootprintsRepository *footprintsRepository = currentGroupArray[indexPath.row];
         [footprintsRepositoryMA removeObject:footprintsRepository];
-        [EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:footprintsRepositoryMA];
+        #warning setFootprintsRepositoryArray
+        //[EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:footprintsRepositoryMA];
         
         [self updateDataSource:groupSeg.selectedSegmentIndex];
     }

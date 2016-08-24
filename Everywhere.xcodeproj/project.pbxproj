@@ -105,6 +105,7 @@
 		4B0BFDEC1D6B069100F8CAA5 /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0BFDE61D6B069100F8CAA5 /* SVProgressHUD.m */; };
 		4B0BFDED1D6B069100F8CAA5 /* SVRadialGradientLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0BFDE81D6B069100F8CAA5 /* SVRadialGradientLayer.m */; };
 		4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */; };
+		4B0EA9C91D6DA72100A33E01 /* NSFileManager+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0EA9C81D6DA72100A33E01 /* NSFileManager+Assistant.m */; };
 		4B12E6FD1D5AC8400035D16D /* XMLDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B12E6FC1D5AC8400035D16D /* XMLDictionary.m */; };
 		4B15B5D31D3F5E5E0096EE89 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B15B5D21D3F5E5E0096EE89 /* Assets.xcassets */; };
 		4B15B5D61D3F79CF0096EE89 /* FootprintsRepositoryEditerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B15B5D51D3F79CF0096EE89 /* FootprintsRepositoryEditerVC.m */; };
@@ -133,6 +134,8 @@
 		4BD51FC91D2B47B900F18244 /* PHAssetInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FC71D2B47B900F18244 /* PHAssetInfo.m */; };
 		4BD51FCC1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FCB1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m */; };
 		4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */; };
+		4BE1C8451D6D21FC008F6B51 /* NSData+NSHash.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE1C8421D6D21FC008F6B51 /* NSData+NSHash.m */; };
+		4BE1C8461D6D21FC008F6B51 /* NSString+NSHash.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE1C8441D6D21FC008F6B51 /* NSString+NSHash.m */; };
 		4BE88A9F1D332B38009501CE /* EverywhereSettingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE88A9E1D332B38009501CE /* EverywhereSettingManager.m */; };
 		4BE88AA21D333A46009501CE /* MapModeBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE88AA11D333A46009501CE /* MapModeBar.m */; };
 		4BF277151D63F3DE009626B5 /* UITextField+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF277141D63F3DE009626B5 /* UITextField+Assistant.m */; };
@@ -298,6 +301,8 @@
 		4B0BFDE81D6B069100F8CAA5 /* SVRadialGradientLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVRadialGradientLayer.m; sourceTree = "<group>"; };
 		4B0D09261D23C94D0047D7E0 /* PHAsset+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PHAsset+Assistant.h"; path = "PHAsset+Assistant/PHAsset+Assistant.h"; sourceTree = "<group>"; };
 		4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PHAsset+Assistant.m"; path = "PHAsset+Assistant/PHAsset+Assistant.m"; sourceTree = "<group>"; };
+		4B0EA9C71D6DA72100A33E01 /* NSFileManager+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSFileManager+Assistant.h"; path = "NSFileManager+Assistant/NSFileManager+Assistant.h"; sourceTree = "<group>"; };
+		4B0EA9C81D6DA72100A33E01 /* NSFileManager+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSFileManager+Assistant.m"; path = "NSFileManager+Assistant/NSFileManager+Assistant.m"; sourceTree = "<group>"; };
 		4B12E6FB1D5AC8400035D16D /* XMLDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLDictionary.h; sourceTree = "<group>"; };
 		4B12E6FC1D5AC8400035D16D /* XMLDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLDictionary.m; sourceTree = "<group>"; };
 		4B15B5D21D3F5E5E0096EE89 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -350,6 +355,10 @@
 		4BD51FCB1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PHAssetInfo+Assistant.m"; path = "EverywhereCoreData/PHAssetInfo+Assistant.m"; sourceTree = "<group>"; };
 		4BD51FCD1D2B4B8400F18244 /* EverywhereCoreDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereCoreDataManager.h; path = EverywhereCoreData/EverywhereCoreDataManager.h; sourceTree = "<group>"; };
 		4BD51FCE1D2B4B8400F18244 /* EverywhereCoreDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereCoreDataManager.m; path = EverywhereCoreData/EverywhereCoreDataManager.m; sourceTree = "<group>"; };
+		4BE1C8411D6D21FC008F6B51 /* NSData+NSHash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+NSHash.h"; sourceTree = "<group>"; };
+		4BE1C8421D6D21FC008F6B51 /* NSData+NSHash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+NSHash.m"; sourceTree = "<group>"; };
+		4BE1C8431D6D21FC008F6B51 /* NSString+NSHash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+NSHash.h"; sourceTree = "<group>"; };
+		4BE1C8441D6D21FC008F6B51 /* NSString+NSHash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+NSHash.m"; sourceTree = "<group>"; };
 		4BE88A9D1D332B38009501CE /* EverywhereSettingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereSettingManager.h; path = EverywhereModels/EverywhereSettingManager.h; sourceTree = "<group>"; };
 		4BE88A9E1D332B38009501CE /* EverywhereSettingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereSettingManager.m; path = EverywhereModels/EverywhereSettingManager.m; sourceTree = "<group>"; };
 		4BE88AA01D333A46009501CE /* MapModeBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapModeBar.h; path = EverywhereVisualViewControllers/MapModeBar.h; sourceTree = "<group>"; };
@@ -746,6 +755,15 @@
 			name = "PHAsset+Assistant";
 			sourceTree = "<group>";
 		};
+		4B0EA9C61D6DA6DD00A33E01 /* NSFileManager+Assistant */ = {
+			isa = PBXGroup;
+			children = (
+				4B0EA9C71D6DA72100A33E01 /* NSFileManager+Assistant.h */,
+				4B0EA9C81D6DA72100A33E01 /* NSFileManager+Assistant.m */,
+			);
+			name = "NSFileManager+Assistant";
+			sourceTree = "<group>";
+		};
 		4B12E6FA1D5AC8400035D16D /* XMLDictionary */ = {
 			isa = PBXGroup;
 			children = (
@@ -798,6 +816,7 @@
 		4B3AF9CE1D2F3EBA009BD545 /* GeneralCategory */ = {
 			isa = PBXGroup;
 			children = (
+				4B0EA9C61D6DA6DD00A33E01 /* NSFileManager+Assistant */,
 				4BF277121D63F397009626B5 /* UITextField+Assistant */,
 				4B69F5031D6156A800575AC3 /* UIButton+Assistant */,
 				4B69F4FF1D614D5700575AC3 /* UILabel+Assistant */,
@@ -815,6 +834,7 @@
 		4B3AF9CF1D2F3ECE009BD545 /* GeneralClass */ = {
 			isa = PBXGroup;
 			children = (
+				4BE1C8401D6D21FC008F6B51 /* NSHash */,
 				4B0BFDDE1D6B069100F8CAA5 /* SVProgressHUD */,
 				1E8189171D65B18200F57714 /* GCCoordinateTransformer */,
 				1E81890F1D659A6000F57714 /* GCMaps */,
@@ -879,6 +899,17 @@
 				4B5E6A7D1D66B1C9000D2F60 /* EverywhereCoreDataHeader.h */,
 			);
 			name = EverywhereCoreData;
+			sourceTree = "<group>";
+		};
+		4BE1C8401D6D21FC008F6B51 /* NSHash */ = {
+			isa = PBXGroup;
+			children = (
+				4BE1C8411D6D21FC008F6B51 /* NSData+NSHash.h */,
+				4BE1C8421D6D21FC008F6B51 /* NSData+NSHash.m */,
+				4BE1C8431D6D21FC008F6B51 /* NSString+NSHash.h */,
+				4BE1C8441D6D21FC008F6B51 /* NSString+NSHash.m */,
+			);
+			path = NSHash;
 			sourceTree = "<group>";
 		};
 		4BF277121D63F397009626B5 /* UITextField+Assistant */ = {
@@ -1129,6 +1160,7 @@
 				4B079BA51D61B07800BC4115 /* UIColor+Chameleon.m in Sources */,
 				1EF62A541D3B8FD50084AF66 /* CoordinateInfo.m in Sources */,
 				4B12E6FD1D5AC8400035D16D /* XMLDictionary.m in Sources */,
+				4BE1C8451D6D21FC008F6B51 /* NSData+NSHash.m in Sources */,
 				4B69F50A1D6156A800575AC3 /* NSString+FontAwesome.m in Sources */,
 				4B079BA31D61B07800BC4115 /* UIAppearance+Swift.m in Sources */,
 				1EF62A5A1D3BB90F0084AF66 /* EverywhereFootprintsRepository.m in Sources */,
@@ -1138,6 +1170,7 @@
 				4B032FAF1D5C5DD800E83585 /* GCFileBrowser.m in Sources */,
 				4BE88AA21D333A46009501CE /* MapModeBar.m in Sources */,
 				4B27FDC81D2CAB5500067683 /* AssetDetailVC.m in Sources */,
+				4BE1C8461D6D21FC008F6B51 /* NSString+NSHash.m in Sources */,
 				4B079BAB1D61B07800BC4115 /* UIViewController+Chameleon.m in Sources */,
 				4B3AF9CB1D2F3E70009BD545 /* GCPolyline.m in Sources */,
 				4BFA063D1D4B306900AE8000 /* NSString+Hashing.m in Sources */,
@@ -1156,6 +1189,7 @@
 				1E81891A1D65B1C300F57714 /* GCCoordinateTransformer.m in Sources */,
 				4BFA06411D4B30CD00AE8000 /* GTM_Base64.m in Sources */,
 				4BFA063E1D4B306900AE8000 /* Qiniu.m in Sources */,
+				4B0EA9C91D6DA72100A33E01 /* NSFileManager+Assistant.m in Sources */,
 				4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */,
 				4B0BFDE91D6B069100F8CAA5 /* SVIndefiniteAnimatedView.m in Sources */,
 				4B079BA01D61B07800BC4115 /* Chameleon_.m in Sources */,

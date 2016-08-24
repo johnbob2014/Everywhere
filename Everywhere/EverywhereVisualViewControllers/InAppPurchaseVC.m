@@ -32,6 +32,7 @@
 #pragma mark - Life Cycle
 
 -(void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
     [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 }
 

@@ -102,4 +102,19 @@
  */
 @property (assign,nonatomic) FirstDayOfWeek firstDayOfWeek;
 
+/**
+ *  是否曾经登陆
+ */
+@property (assign,nonatomic) BOOL everLaunched;
+
+/**
+ *  MFR分享试用次数
+ */
+@property (assign,nonatomic) NSInteger trialCountForMFR;
+
+/**
+ *  GPX分享试用次数
+ */
+@property (assign,nonatomic) NSInteger trialCountForGPX;
+
 @end

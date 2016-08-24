@@ -39,6 +39,8 @@
 #import "UIView+AutoLayout.h"
 
 #import "NSDate+Assistant.h"
+#import "NSFileManager+Assistant.h"
+
 #import "UIButton+Assistant.h"
 #import "UIAlertController+Assistant.h"
 #import "UIImage+Assistant.h"

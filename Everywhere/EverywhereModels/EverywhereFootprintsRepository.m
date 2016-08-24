@@ -15,6 +15,27 @@
     else return self.creationDate;
 }
 
+- (double)distance{
+    if (self.footprintAnnotations.count <= 1) return 0;
+    
+    __block double distance = 0;
+    [self.footprintAnnotations enumerateObjectsUsingBlock:^(EverywhereFootprintAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (idx > 0){
+            distance += [obj.location distanceFromLocation:self.footprintAnnotations[idx - 1].location];
+        }
+    }];
+    
+    return distance;
+}
+
+- (NSString *)title{
+    if (_title) return _title;
+    else{
+        NSString *titleString =[NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Footprints Repository", @"足迹包"),[self.creationDate stringWithFormat:@"yyyy-MM-dd hh:mm:ss"]];
+        return titleString;
+    }
+}
+
 - (instancetype)initWithCoder:(NSCoder *)aDecoder{
     EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
     
@@ -30,7 +51,7 @@
     
     footprintsRepository.footprintsRepositoryType = [aDecoder decodeIntegerForKey:@"footprintsRepositoryType"];
     
-    footprintsRepository.placemarkInfo = [aDecoder decodeObjectForKey:@"placemarkInfo"];
+    footprintsRepository.placemarkStatisticalInfo = [aDecoder decodeObjectForKey:@"placemarkInfo"];
     
     return footprintsRepository;
 }
@@ -49,7 +70,7 @@
     
     [aCoder encodeInteger:self.footprintsRepositoryType forKey:@"footprintsRepositoryType"];
     
-    if (self.placemarkInfo) [aCoder encodeObject:self.placemarkInfo forKey:@"placemarkInfo"];
+    if (self.placemarkStatisticalInfo) [aCoder encodeObject:self.placemarkStatisticalInfo forKey:@"placemarkStatisticalInfo"];
 }
 
 - (id)copyWithZone:(NSZone *)zone{
@@ -61,7 +82,7 @@
     copyFootprintsRepository.creationDate = self.creationDate;
     copyFootprintsRepository.modificatonDate = self.modificatonDate;
     copyFootprintsRepository.footprintsRepositoryType = self.footprintsRepositoryType;
-    copyFootprintsRepository.placemarkInfo = self.placemarkInfo;
+    copyFootprintsRepository.placemarkStatisticalInfo = self.placemarkStatisticalInfo;
     
     return copyFootprintsRepository;
 }
@@ -168,7 +189,7 @@
 
 + (EverywhereFootprintsRepository *)importFromGPXFile:(NSString *)filePath{
     
-    if (![[filePath pathExtension] isEqualToString:@"gpx"]) return nil;
+    //if (![[filePath pathExtension] isEqualToString:@"gpx"]) return nil;
     
     // 使用XMLDictionary解析gpx文件
     NSDictionary *gpxFileDic = [NSDictionary dictionaryWithXMLFile:filePath];

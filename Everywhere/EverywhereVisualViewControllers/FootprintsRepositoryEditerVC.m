@@ -180,8 +180,8 @@
     editedFootprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Edit", @"编辑"),self.footprintsRepository.title];
     editedFootprintsRepository.creationDate = NOW;
     editedFootprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeEdited;
-    
-    [EverywhereFootprintsRepositoryManager addFootprintsRepository:editedFootprintsRepository];
+#warning addFootprintsRepository
+    //[EverywhereFootprintsRepositoryManager addFootprintsRepository:editedFootprintsRepository];
     
     NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@ : %.1f\n%@\n%@ :\n%@",modeString,distanceString,mergeDistance,reserveString,NSLocalizedString(@"Saved As", @"存储为"),editedFootprintsRepository.title];
     

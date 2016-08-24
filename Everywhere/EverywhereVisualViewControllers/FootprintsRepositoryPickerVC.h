@@ -15,9 +15,6 @@ typedef void(^FootprintsRepositoryDidChangeHandler)(EverywhereFootprintsReposito
 
 @property (assign,nonatomic) NSUInteger showFootprintsRepositoryType;
 
-//@property (strong,nonatomic) NSArray <EverywhereFootprintsRepository *> *footprintsRepositoryArray;
 @property (copy,nonatomic) FootprintsRepositoryDidChangeHandler footprintsRepositoryDidChangeHandler;
-
-//@property (assign,nonatomic) BOOL isRecording;
 
 @end

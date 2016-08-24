@@ -33,13 +33,21 @@
     settingManager = [EverywhereSettingManager defaultManager];
     
 #warning Fix Before Submit
-//    settingManager.hasPurchasedRecordAndEdit = NO;
-//    settingManager.hasPurchasedShareAndBrowse = NO;
-//    settingManager.hasPurchasedImportAndExport = NO;
-//    
+    settingManager.hasPurchasedRecordAndEdit = NO;
+    settingManager.hasPurchasedShareAndBrowse = NO;
+    settingManager.hasPurchasedImportAndExport = NO;
+
     settingManager.hasPurchasedRecordAndEdit = YES;
     settingManager.hasPurchasedShareAndBrowse = YES;
     settingManager.hasPurchasedImportAndExport = YES;
+    
+    // 首次启动
+    if(!settingManager.everLaunched){
+        settingManager.everLaunched = YES;
+        
+        settingManager.trialCountForMFR = 10;
+        settingManager.trialCountForGPX = 10;
+    }
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     assetsMapProVC = [AssetsMapProVC new];
@@ -72,7 +80,7 @@
     [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
     [SVProgressHUD setDefaultAnimationType:SVProgressHUDAnimationTypeFlat];
     [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeGradient];
-    [SVProgressHUD setMinimumDismissTimeInterval:3.0];
+    [SVProgressHUD setMinimumDismissTimeInterval:2.0];
     return YES;
 }
 

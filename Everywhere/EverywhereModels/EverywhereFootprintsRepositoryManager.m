@@ -41,6 +41,7 @@
 }
  */
 
+/*
 
 + (void)addFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository{
     if (![EverywhereFootprintsRepositoryManager footprintsRepositoryExists:footprintsRepository]){
@@ -52,6 +53,28 @@
     }else{
         if(DEBUGMODE) NSLog(@"addFootprintsRepository error : duplicate footprintsRepository");
     }
+}
+*/
+
+
++ (NSString *)storeDirectoryPathWithFootprintsRepositoryType:(FootprintsRepositoryType)footprintsRepositoryType{
+    NSString *storeDirectoryPath;
+    NSString *everyWhereDirectoryPath = [Path_Documents stringByAppendingPathComponent:@"Everywhere"];
+    NSLog(@"创建Everywhere文件夹失败！");
+    
+    switch (footprintsRepositoryType) {
+        case FootprintsRepositoryTypeSent:
+            storeDirectoryPath = [everyWhereDirectoryPath stringByAppendingPathComponent:@"Sent"];
+            break;
+            
+        default:
+            break;
+    }
+    return storeDirectoryPath;
+}
+
++ (void)addFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository{
+    //footprintsRepository.foot
 }
 
 + (void)removeLastAddedFootprintsRepository{

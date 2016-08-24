@@ -481,4 +481,31 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (BOOL)everLaunched{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"everLaunched"];
+}
+
+- (void)setEverLaunched:(BOOL)everLaunched{
+    [[NSUserDefaults standardUserDefaults] setBool:everLaunched forKey:@"everLaunched"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (NSInteger)trialCountForMFR{
+    return [[NSUserDefaults standardUserDefaults] integerForKey:@"trialCountForMFR"];
+}
+
+- (void)setTrialCountForMFR:(NSInteger)trialCountForMFR{
+    [[NSUserDefaults standardUserDefaults] setInteger:trialCountForMFR forKey:@"trialCountForMFR"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (NSInteger)trialCountForGPX{
+    return [[NSUserDefaults standardUserDefaults] integerForKey:@"trialCountForGPX"];
+}
+
+- (void)setTrialCountForGPX:(NSInteger)trialCountForGPX{
+    [[NSUserDefaults standardUserDefaults] setInteger:trialCountForGPX forKey:@"trialCountForGPX"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 @end

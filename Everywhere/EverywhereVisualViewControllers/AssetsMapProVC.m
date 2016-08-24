@@ -915,7 +915,7 @@
     
     currentAnnotationIndexLabel = [UILabel newAutoLayoutView];
     currentAnnotationIndexLabel.textColor = [UIColor whiteColor];
-    [self.view addSubview:currentAnnotationIndexLabel];
+    [naviBar addSubview:currentAnnotationIndexLabel];
     [currentAnnotationIndexLabel autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-5];
     [currentAnnotationIndexLabel autoAlignAxisToSuperviewAxis:ALAxisVertical];
     
@@ -980,9 +980,11 @@
             [self.myMapView setCenterCoordinate:idAnno.coordinate animated:NO];
             [self.myMapView selectAnnotation:idAnno animated:YES];
         }
+        /*
         if (index == self.addedIDAnnos.count) {
             [self playButtonPressed:playButton];
         }
+        */
     }
 }
 
@@ -994,7 +996,7 @@
 
 - (CLLocation *)averageLocationForLocations:(NSArray <CLLocation *> *)locations{
     
-    CLLocationCoordinate2D resultCoordinate;
+    CLLocationCoordinate2D resultCoordinate = CLLocationCoordinate2DMake(0, 0);
     CLLocationDistance resultAltitude = 0;
     
     for (CLLocation *location in locations) {
@@ -1211,7 +1213,7 @@
     leftBtn3.alpha = 0.6;
     [leftBtn3 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Glasses_WBG"] forState:UIControlStateNormal];
     leftBtn3.translatesAutoresizingMaskIntoConstraints = NO;
-    [leftBtn3 addTarget:self action:@selector(showHideMapModeBar) forControlEvents:UIControlEventTouchDown];
+    [leftBtn3 addTarget:self action:@selector(alphaShowHideMapModeBar) forControlEvents:UIControlEventTouchDown];
     [leftVerticalBar addSubview:leftBtn3];
     [leftBtn3 autoSetDimensionsToSize:ButtionSize];
     [leftBtn3 autoAlignAxisToSuperviewAxis:ALAxisVertical];
@@ -1221,7 +1223,7 @@
     leftBtn4.alpha = 0.6;
     [leftBtn4 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_StatisticBar1_WBG"] forState:UIControlStateNormal];
     leftBtn4.translatesAutoresizingMaskIntoConstraints = NO;
-    [leftBtn4 addTarget:self action:@selector(showHidePlacemarkInfoBar) forControlEvents:UIControlEventTouchDown];
+    [leftBtn4 addTarget:self action:@selector(alphaShowHidePlacemarkInfoBar) forControlEvents:UIControlEventTouchDown];
     [leftVerticalBar addSubview:leftBtn4];
     [leftBtn4 autoSetDimensionsToSize:ButtionSize];
     [leftBtn4 autoAlignAxisToSuperviewAxis:ALAxisVertical];
@@ -1231,7 +1233,7 @@
     leftBtn5.alpha = 0.6;
     [leftBtn5 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Play_WBG"] forState:UIControlStateNormal];
     leftBtn5.translatesAutoresizingMaskIntoConstraints = NO;
-    [leftBtn5 addTarget:self action:@selector(showHideNaviBar) forControlEvents:UIControlEventTouchDown];
+    [leftBtn5 addTarget:self action:@selector(alphaShowHideNaviBar) forControlEvents:UIControlEventTouchDown];
     [leftVerticalBar addSubview:leftBtn5];
     [leftBtn5 autoSetDimensionsToSize:ButtionSize];
     [leftBtn5 autoAlignAxisToSuperviewAxis:ALAxisVertical];
@@ -1311,32 +1313,33 @@
 }
 
 - (void)alphaShowHideVerticalBar{
+    // 基础模式专用栏
     leftVerticalBar.alpha = leftVerticalBar.alpha == 1 ?  0 : 1;
     rightVerticalBar.alpha = rightVerticalBar.alpha == 1 ? 0 : 1;
     
-    if (recordModeSettingBar.alpha != 1){
-        rightSwipeVerticalBar.alpha = rightSwipeVerticalBar.alpha == 1 ? 0 : 1;
-        userLocationButton.hidden = userLocationButton.hidden ? NO : YES;
-    }
+    // 通用栏
+    rightSwipeVerticalBar.alpha = rightSwipeVerticalBar.alpha == 1 ? 0 : 1;
+    // userLocationButton的alpha是0.6，所以不能用alpha
+    userLocationButton.hidden = userLocationButton.hidden ? NO : YES;
     
     verticalBarIsAlphaZero = verticalBarIsAlphaZero ? NO : YES;
 }
 
-- (void)showHideMapModeBar{
+- (void)alphaShowHideMapModeBar{
     [UIView animateWithDuration:0.3 animations:^{
         msBaseModeBar.alpha = (msBaseModeBar.alpha == 1) ? 0 : 1;
     }];
     
 }
 
-- (void)showHidePlacemarkInfoBar{
+- (void)alphaShowHidePlacemarkInfoBar{
     [UIView animateWithDuration:0.3 animations:^{
         placemarkInfoBar.alpha = (placemarkInfoBar.alpha == 1) ? 0 : 1;
     }];
     
 }
 
-- (void)showHideNaviBar{
+- (void)alphaShowHideNaviBar{
     [UIView animateWithDuration:0.3 animations:^{
         naviBar.alpha = (naviBar.alpha == 1) ? 0 : 1;
     }];
@@ -1517,10 +1520,11 @@
     [UIView animateWithDuration:0.3 animations:^{
         recordModeSettingBar.alpha = recordModeSettingBar.alpha ==1 ? 0 : 1;
         
-        if (recordModeSettingBar.alpha == 1){
-            rightSwipeVerticalBar.alpha =  0 ;
-            userLocationButton.hidden =  YES;
+        
+        if (recordModeSettingBar.alpha == 1 && !verticalBarIsAlphaZero){
+            [self alphaShowHideVerticalBar];
         }
+        
     }];
 }
 
@@ -1826,7 +1830,7 @@
     else footprintsRepository.radius = self.settingManager.mergeDistanceForLocation / 2.0;
     footprintsRepository.creationDate = NOW;
     footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeSent;
-    footprintsRepository.placemarkInfo = ms;
+    footprintsRepository.placemarkStatisticalInfo = ms;
     
     footprintsRepository.title = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate firstDayOfWeek:self.settingManager.firstDayOfWeek];
     if (self.settingManager.mapBaseMode == MapBaseModeLocation) footprintsRepository.title = [footprintsRepository.title stringByAppendingFormat:@" %@",self.lastPlacemark];
@@ -1852,9 +1856,9 @@
     
     // 修改属性
     footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeReceived;
-    
+    #warning addFootprintsRepository
     // 新接收到，先保存footprintsRepository，如果用户选择丢弃，再删除掉
-    [EverywhereFootprintsRepositoryManager addFootprintsRepository:footprintsRepository];
+    //[EverywhereFootprintsRepositoryManager addFootprintsRepository:footprintsRepository];
     //if (DEBUGMODE) if(DEBUGMODE) NSLog(@"footprintsRepositoryArray count : %lu",(unsigned long)[EverywhereFootprintsRepositoryManager footprintsRepositoryArray].count);
     
     // 显示主界面
@@ -1864,7 +1868,7 @@
     
     NSMutableString *ms = [NSMutableString new];
     [ms appendFormat:@"\n%@ : %@\n%@ : %lu\n",NSLocalizedString(@"Title", @"标题"),footprintsRepository.title,NSLocalizedString(@"Footprints Count", @"足迹点数"),(unsigned long)footprintsRepository.footprintAnnotations.count];
-    if (footprintsRepository.placemarkInfo) [ms appendFormat:@"%@ : %@",NSLocalizedString(@"Statistics Info", @"统计信息"),footprintsRepository.placemarkInfo];
+    if (footprintsRepository.placemarkStatisticalInfo) [ms appendFormat:@"%@ : %@",NSLocalizedString(@"Statistics Info", @"统计信息"),footprintsRepository.placemarkStatisticalInfo];
     [ms appendFormat:@"\n%@\n",NSLocalizedString(@"Would you like to accept the footprints and enter Browser Mode?", @"是否接收足迹并进入浏览模式？")];
     NSString *alertMessage = ms;
     
@@ -2062,8 +2066,9 @@
     UIAlertAction *dropAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Drop",@"丢弃")
                                                          style:UIAlertActionStyleDefault
                                                        handler:^(UIAlertAction * action) {
+#warning removeLastAddedFootprintsRepository
                                                            // 用户选择丢弃，则删除保存的footprintsRepository
-                                                           [EverywhereFootprintsRepositoryManager removeLastAddedFootprintsRepository];
+                                                           //[EverywhereFootprintsRepositoryManager removeLastAddedFootprintsRepository];
                                                            [self quiteBrowserMode];
                                                            [self quiteExtendedMode];
                                                        }];
@@ -2255,8 +2260,8 @@
     footprintsRepository.creationDate = NOW;
     footprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Record", @"记录"),[footprintsRepository.creationDate stringWithDefaultFormat]];
     footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeRecorded;
-    
-    [EverywhereFootprintsRepositoryManager addFootprintsRepository:footprintsRepository];
+#warning addFootprintsRepository
+    //[EverywhereFootprintsRepositoryManager addFootprintsRepository:footprintsRepository];
     if(DEBUGMODE) NSLog(@"记录已经保存");
     
     // 显示保存通知
@@ -2934,7 +2939,7 @@
     
     totalDistanceForRecord += [newLocation distanceFromLocation:lastRecordLocation];
     if (totalDistanceForRecord > 0){
-        distanceAndFPCountLabelInRMB.text = [NSString stringWithFormat:@"%.2fkm,%lufp",totalDistanceForRecord/1000.0,recordedFootprintAnnotations.count];
+        distanceAndFPCountLabelInRMB.text = [NSString stringWithFormat:@"%.2fkm,%lufp",totalDistanceForRecord/1000.0,(unsigned long)recordedFootprintAnnotations.count];
     }
     
     // 如果达到设置最大数据，重新开始一条新的记录，用于节省内存，防止崩溃

@@ -11,12 +11,14 @@
 
 @interface EverywhereFootprintsRepositoryManager : NSObject
 
+/*
 + (void)addFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository;
 + (void)removeLastAddedFootprintsRepository;
 + (NSArray <EverywhereFootprintsRepository *> *)footprintsRepositoryArray;
 + (void)setFootprintsRepositoryArray:(NSArray <EverywhereFootprintsRepository *> *)footprintsRepositoryArray;
 
 + (BOOL)footprintsRepositoryExists:(EverywhereFootprintsRepository *)footprintsRepository;
+*/
 
 + (NSUInteger)exportFootprintsRepositoryToMFRFilesAtPath:(NSString *)directoryPath;
 + (NSUInteger)exportFootprintsRepositoryToGPXFilesAtPath:(NSString *)directoryPath;

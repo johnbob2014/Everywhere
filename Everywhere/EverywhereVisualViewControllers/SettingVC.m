@@ -418,10 +418,10 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         [item deselectRowAnimated:YES];
         
         UIAlertActionHandler okActionHandler = ^(UIAlertAction *action) {
+#warning clear
+            NSUInteger count = 0;//[EverywhereFootprintsRepositoryManager footprintsRepositoryArray].count;
             
-            NSUInteger count = [EverywhereFootprintsRepositoryManager footprintsRepositoryArray].count;
-            
-            [EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:nil];
+            //[EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:nil];
             
             NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Delete footprints repository count", @"删除足迹包数量"),(unsigned long)count];
             UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
