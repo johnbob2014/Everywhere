@@ -12,11 +12,6 @@ typedef void(^MinDistanceOrTimeIntervalDidChangeHanlder)(CLLocationDistance sele
 
 @interface RecordModeSettingBar : UIView
 
-@property (assign,nonatomic,readonly) double velocitykmPerhour;
-@property (assign,nonatomic,readonly) double velocitymPerSecond;
-@property (assign,nonatomic,readonly) CLLocationDistance minDistance;
-@property (assign,nonatomic,readonly) NSTimeInterval minTimeInterval;
-
 @property (assign,nonatomic) CLLocationDistance customMinDistance;
 @property (assign,nonatomic) NSTimeInterval customMinTimeInterval;
 

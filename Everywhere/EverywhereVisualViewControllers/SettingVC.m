@@ -15,7 +15,6 @@
 #import "GCFileBrowser.h"
 
 #import "EverywhereSettingManager.h"
-#import "EverywhereFootprintsRepositoryManager.h"
 #import "WXApi.h"
 
 #import "EverywhereCoreDataManager.h"
@@ -23,8 +22,6 @@
 #import "AssetDetailVC.h"
 
 typedef BOOL (^OnChangeCharacterInRange)(RETextItem *item, NSRange range, NSString *replacementString);
-
-
 
 const NSString *APP_DOWNLOAD_URL=@"https://itunes.apple.com/app/id1072387063";
 const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/ChinaSceneryIntroduction.html";
@@ -36,14 +33,6 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 
 @property (nonatomic,strong) EverywhereSettingManager *settingManager;
 
-//@property (nonatomic,assign) int productIndex;
-
-//@property (nonatomic,strong) NSString *shareTitle;
-//@property (nonatomic,strong) NSString *shareDescription;
-//@property (nonatomic,strong) NSString *shareWebpageUrl;
-//@property (nonatomic,strong) NSData *shareThumbData;
-
-
 @end
 
 @implementation SettingVC
@@ -52,7 +41,6 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
     self.settingManager = [EverywhereSettingManager defaultManager];
     
@@ -66,11 +54,6 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 
 - (void)backToMain{
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
-}
-
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-    //[self initSettingUI];
 }
 
 -(void)initSettingUI{
@@ -203,7 +186,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 #pragma mark 已排除照片管理
     RETableViewItem *eliminatedAssetsItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"🌁 Eliminated Photos",@"🌁 已排除照片") accessoryType:UITableViewCellAccessoryDisclosureIndicator  selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
-        NSArray<PHAssetInfo *> *eliminatedArray = [PHAssetInfo fetchEliminatedAssetInfosInManagedObjectContext:[EverywhereCoreDataManager defaultManager].appDelegateMOC];
+        NSArray<PHAssetInfo *> *eliminatedArray = [PHAssetInfo fetchEliminatedAssetInfosInManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
         
         if (eliminatedArray.count > 0){
             __block NSMutableArray <NSString *> *assetLocalIdentifiers = [NSMutableArray new];
@@ -347,22 +330,6 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         fileBrowser.enableDocumentInteractionController = [EverywhereSettingManager defaultManager].hasPurchasedShareAndBrowse;
         
         [self.navigationController pushViewController:fileBrowser animated:YES];
-        /*
-         UIAlertActionHandler okActionHandler = ^(UIAlertAction *action) {
-         NSUInteger count = [EverywhereFootprintsRepositoryManager clearFootprintsRepositoryFilesAtPath:Path_Documents];
-         
-         NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Delete footprints repository files count", @"删除足迹包文件数量"),(unsigned long)count];
-         UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
-         message:alertMessage];
-         [weakSelf presentViewController:alertController animated:YES completion:nil];
-         
-         };
-         
-         UIAlertController *alertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Attention", @"警告")
-         message:NSLocalizedString(@"All your footprints repository files in Documents directory will be deleted and can not be restored! Are you sure?", @"您用户文档中的所有足迹包文件都将被删除，此操作无法恢复，请务必谨慎。确认删除？")
-         okActionHandler:okActionHandler];
-         [weakSelf presentViewController:alertController animated:YES completion:nil];
-         */
         
     }];
     
@@ -373,7 +340,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         if ([self checkhasPurchasedImportAndExport]){
             
             [SVProgressHUD showWithStatus:NSLocalizedString(@"Exporting", @"正在导出")];
-            NSUInteger count = [EverywhereFootprintsRepositoryManager exportFootprintsRepositoryToMFRFilesAtPath:[Path_Documents stringByAppendingPathComponent:@"Exported MFR"]];
+            NSUInteger count = [EverywhereCoreDataManager  exportFootprintsRepositoryToMFRFilesAtPath:[Path_Documents stringByAppendingPathComponent:@"Exported"]];
             [SVProgressHUD dismiss];
             
             NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully export repository to mfr files count", @"成功导出足迹包至MFR文件数量"),(unsigned long)count];
@@ -388,7 +355,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         if ([self checkhasPurchasedImportAndExport]){
             
             [SVProgressHUD showWithStatus:NSLocalizedString(@"Exporting", @"正在导出")];
-            NSUInteger count = [EverywhereFootprintsRepositoryManager exportFootprintsRepositoryToGPXFilesAtPath:[Path_Documents stringByAppendingPathComponent:@"Exported GPX"]];
+            NSUInteger count = [EverywhereCoreDataManager  exportFootprintsRepositoryToGPXFilesAtPath:[Path_Documents stringByAppendingPathComponent:@"Exported"]];
             [SVProgressHUD dismiss];
             NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully export repository to gpx files count", @"成功导出足迹包至GPX文件数量"),(unsigned long)count];
             UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
@@ -402,11 +369,10 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         if ([self checkhasPurchasedImportAndExport]){
             
             [SVProgressHUD showWithStatus:NSLocalizedString(@"Importing", @"正在导入")];
-            NSString *moveDirectoryPath = [Path_Documents stringByAppendingPathComponent:@"Imported Files"];
-            NSArray <EverywhereFootprintsRepository *> *importedArray = [EverywhereFootprintsRepositoryManager importFootprintsRepositoryFromFilesAtPath:Path_Documents moveAddedFilesToPath:moveDirectoryPath];
+            NSString *moveDirectoryPath = [Path_Documents stringByAppendingPathComponent:@"Imported"];
+            NSUInteger count = [EverywhereCoreDataManager  importFootprintsRepositoryFromFilesAtPath:Path_Documents moveAddedFilesToPath:moveDirectoryPath];
             [SVProgressHUD dismiss];
             
-            NSUInteger count = importedArray.count;
             NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully import repository count", @"成功导入足迹包数量"),(unsigned long)count];
             UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
                                                                                                message:alertMessage];
@@ -418,10 +384,8 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         [item deselectRowAnimated:YES];
         
         UIAlertActionHandler okActionHandler = ^(UIAlertAction *action) {
-#warning clear
-            NSUInteger count = 0;//[EverywhereFootprintsRepositoryManager footprintsRepositoryArray].count;
-            
-            //[EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:nil];
+
+            NSUInteger count = [EverywhereCoreDataManager removeAllEWFRInfos];
             
             NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Delete footprints repository count", @"删除足迹包数量"),(unsigned long)count];
             UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")

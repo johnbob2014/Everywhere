@@ -70,7 +70,7 @@
         if (currentIndex > 0) noteLabel.text = [NSString stringWithFormat:@"%lu/%lu",(unsigned long)(currentIndex + 1),(unsigned long)assetArray.count];
         else noteLabel.text = NSLocalizedString(@"Swipe up to quite", @"上滑退出");
         
-        self.currentAssetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:currentAsset.localIdentifier inManagedObjectContext:[EverywhereCoreDataManager defaultManager].appDelegateMOC];
+        self.currentAssetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:currentAsset.localIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
         
         eliminateThisAssetSwitch.on = [self.currentAssetInfo.eliminateThisAsset boolValue];
         actAsThumbnailSwitch.on = [self.currentAssetInfo.actAsThumbnail boolValue];
@@ -190,12 +190,12 @@
 
 - (void)eliminateThisAssetSwitchValueChanged:(UISwitch *)sender{
     self.currentAssetInfo.eliminateThisAsset = @(sender.on);
-    [[EverywhereCoreDataManager defaultManager].appDelegateMOC save:NULL];
+    [[EverywhereCoreDataManager appDelegateMOC] save:NULL];
 }
 
 - (void)actAsThumbnailSwitchValueChanged:(UISwitch *)sender{
     self.currentAssetInfo.actAsThumbnail = @(sender.on);
-    [[EverywhereCoreDataManager defaultManager].appDelegateMOC save:NULL];
+    [[EverywhereCoreDataManager appDelegateMOC] save:NULL];
 }
 
 

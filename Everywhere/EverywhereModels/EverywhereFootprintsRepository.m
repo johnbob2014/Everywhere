@@ -28,6 +28,26 @@
     return distance;
 }
 
+- (NSDate *)startDate{
+    return self.footprintAnnotations.firstObject.startDate;
+}
+
+- (NSDate *)endDate{
+    return self.footprintAnnotations.lastObject.startDate;
+}
+
+- (NSTimeInterval)duration{
+    return [self.footprintAnnotations.lastObject.startDate timeIntervalSinceDate:self.footprintAnnotations.firstObject.startDate];
+}
+
+- (double)averageSpeed{
+    return self.distance/self.duration;
+}
+
+- (NSString *)identifier{
+    return [[NSKeyedArchiver archivedDataWithRootObject:self.footprintAnnotations] MD5String];
+}
+
 - (NSString *)title{
     if (_title) return _title;
     else{
@@ -94,12 +114,17 @@
 }
 
 + (EverywhereFootprintsRepository *)importFromMFRFile:(NSString *)filePath{
+    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+        if(DEBUGMODE) NSLog(@"MFR文件不存在，从MFR文件生成足迹包失败！");
+        return nil;
+    }
+    
     EverywhereFootprintsRepository *footprintsRepository = nil;
     @try {
         footprintsRepository = (EverywhereFootprintsRepository *)[NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
     }
     @catch (NSException *exception) {
-        if(DEBUGMODE) NSLog(@"从MFR文件生成足迹包出错！");
+        if(DEBUGMODE) NSLog(@"数据解析错误，从MFR文件生成足迹包失败！");
         return nil;
     }
     @finally {

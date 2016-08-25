@@ -10,7 +10,7 @@
 
 #import "FootprintsRepositoryEditerVC.h"
 
-#import "EverywhereFootprintsRepositoryManager.h"
+#import "EverywhereCoreDataManager.h"
 #import "EverywhereSettingManager.h"
 #import "ShareFootprintsRepositoryVC.h"
 
@@ -21,9 +21,8 @@
 @implementation FootprintsRepositoryPickerVC{
     UISegmentedControl *groupSeg;
     NSArray <NSString *> *groupNameArray;
-    NSArray <EverywhereFootprintsRepository *> *currentGroupArray;
-    
-    NSMutableArray <EverywhereFootprintsRepository *> *footprintsRepositoryMA;
+    NSArray <EWFRInfo *> *currentGroupArray;
+    NSArray <EWFRInfo *> *ewfrInfoArray;
 
     UITableView *myTableView;
     
@@ -114,11 +113,11 @@
     NSMutableArray *receivedArray = [NSMutableArray new];
     NSMutableArray *recordedArray = [NSMutableArray new];
     NSMutableArray *editedArray = [NSMutableArray new];
-#warning footprintsRepositoryArray
-    //footprintsRepositoryMA = [NSMutableArray arrayWithArray:[EverywhereFootprintsRepositoryManager footprintsRepositoryArray]];
+
+    ewfrInfoArray = [EverywhereCoreDataManager allEWFRs];
     
-    [footprintsRepositoryMA enumerateObjectsUsingBlock:^(EverywhereFootprintsRepository * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        switch (obj.footprintsRepositoryType) {
+    [ewfrInfoArray enumerateObjectsUsingBlock:^(EWFRInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        switch ([obj.footprintsRepositoryType integerValue]) {
             case FootprintsRepositoryTypeSent:
                 [sentArray addObject:obj];
                 break;
@@ -174,10 +173,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
     cell.accessoryType = UITableViewCellAccessoryDetailButton;
-    EverywhereFootprintsRepository *footprintsRepository = currentGroupArray[indexPath.row];
+    EWFRInfo *ewfrInfo = currentGroupArray[indexPath.row];
     NSString *headerString;
     
-    switch (footprintsRepository.footprintsRepositoryType) {
+    switch ([ewfrInfo.footprintsRepositoryType integerValue]) {
         case FootprintsRepositoryTypeSent:
             headerString = @"📤";
             break;
@@ -194,14 +193,16 @@
             break;
     }
     
-    cell.textLabel.text = [NSString stringWithFormat:@"%lu %@ %@",(unsigned long)(indexPath.row + 1),headerString,footprintsRepository.title];
+    cell.textLabel.text = [NSString stringWithFormat:@"%lu %@ %@",(unsigned long)(indexPath.row + 1),headerString,ewfrInfo.title];
     
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ : %lu , %@ : %@",NSLocalizedString(@"Footprints Count", @"足迹点数"),(unsigned long)footprintsRepository.footprintAnnotations.count,NSLocalizedString(@"Modification Date", @"修改时间"),[footprintsRepository.modificatonDate stringWithDefaultFormat]];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ : %lu , %@ : %@",NSLocalizedString(@"Footprints Count", @"足迹点数"),(unsigned long)[ewfrInfo.footprintsCount integerValue] ,NSLocalizedString(@"Modification Date", @"修改时间"),[ewfrInfo.modificatonDate stringWithDefaultFormat]];
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    EverywhereFootprintsRepository *footprintsRepository = currentGroupArray[indexPath.row];
+    EWFRInfo *ewfrInfo = currentGroupArray[indexPath.row];
+    EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository importFromMFRFile:[ewfrInfo filePath]];
+    footprintsRepository.title = ewfrInfo.title;
     
     NSString *alertTitle = NSLocalizedString(@"Items", @"选项");
     NSString *alertMessage = NSLocalizedString(@"Select an action", @"请选择操作");
@@ -212,7 +213,9 @@
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction * _Nonnull action) {
                                                          [self dismissViewControllerAnimated:YES completion:nil];
-                                                         if (self.footprintsRepositoryDidChangeHandler) self.footprintsRepositoryDidChangeHandler(currentGroupArray[indexPath.row]);
+                                                         if (self.footprintsRepositoryDidChangeHandler) {
+                                                             self.footprintsRepositoryDidChangeHandler(footprintsRepository);
+                                                         }
                                                      }];
     
     UIAlertAction *shareAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Share",@"分享")
@@ -227,11 +230,6 @@
                                                                [self presentViewController:alertController animated:YES completion:nil];
                                                            };
                                                            
-                                                           /*
-                                                           shareFRVC.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.9, 200);
-                                                           shareFRVC.landscapeContentSizeInPopup = CGSizeMake(200, ScreenWidth * 0.9);
-                                                           */
-                                                           
                                                            if(self.popupController) [self.popupController pushViewController:shareFRVC animated:YES];
                                                            
                                                        }];
@@ -243,10 +241,9 @@
                                                                  UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note",@"提示") message:NSLocalizedString(@"You haven't puchased ImportAndExport.",@"您尚未购买导入和导出！")];
                                                                  [self presentViewController:alertController animated:YES completion:nil];
                                                              }else{
-                                                                 NSString *dirPath = [Path_Documents stringByAppendingPathComponent:@"Single Exported"];
-                                                                 if (![[NSFileManager defaultManager] fileExistsAtPath:dirPath]){
-                                                                     [[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:NO attributes:nil error:NULL];
-                                                                 }
+
+                                                                 NSString *dirPath = [Path_Documents stringByAppendingPathComponent:@"Exported"];
+                                                                 [NSFileManager directoryExistsAtPath:dirPath autoCreate:YES];
                                                                  
                                                                  NSString *exportToGPXPath = [dirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.gpx",footprintsRepository.title]];
                                                                  BOOL exportToGPX = [footprintsRepository exportToGPXFile:exportToGPXPath];
@@ -271,13 +268,9 @@
                                                             __block UITextField *tf;
                                                             UIAlertController *renameAC = [UIAlertController renameAlertControllerWithActionHandler:^(UIAlertAction *action) {
                                                                 
-                                                                EverywhereFootprintsRepository *copyFootprintsRepository = [footprintsRepository copy];
-                                                                copyFootprintsRepository.title = tf.text;
-                                                                if(DEBUGMODE) NSLog(@"EverywhereFootprintsRepository new name : %@",copyFootprintsRepository.title);
-                                                                [footprintsRepositoryMA removeObject:footprintsRepository];
-                                                                [footprintsRepositoryMA addObject:copyFootprintsRepository];
-#warning setFootprintsRepositoryArray
-                                                                //[EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:footprintsRepositoryMA];
+                                                                ewfrInfo.title = tf.text;
+                                                                [ewfrInfo.managedObjectContext save:NULL];
+                                                                
                                                                 [self updateDataSource:groupSeg.selectedSegmentIndex];
                                                                 
                                                             } textFieldConfigurationHandler:^(UITextField *textField) {
@@ -291,9 +284,7 @@
     UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Delete",@"删除")
                                                            style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * _Nonnull action) {
-                                                             [footprintsRepositoryMA removeObject:footprintsRepository];
-                                                             #warning setFootprintsRepositoryArray
-                                                             //[EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:footprintsRepositoryMA];
+                                                             [EverywhereCoreDataManager removeEWFRInfo:ewfrInfo];
                                                              [self updateDataSource:groupSeg.selectedSegmentIndex];
                                                          }];
 
@@ -312,7 +303,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
-    EverywhereFootprintsRepository *footprintsRepository = currentGroupArray[indexPath.row];
+    EWFRInfo *ewfrInfo = currentGroupArray[indexPath.row];
+    EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository importFromMFRFile:[ewfrInfo filePath]];
+    footprintsRepository.title = ewfrInfo.title;
     
     if ([EverywhereSettingManager defaultManager].hasPurchasedRecordAndEdit) {
         FootprintsRepositoryEditerVC *footprintsRepositoryEditerVC = [FootprintsRepositoryEditerVC new];
@@ -343,11 +336,8 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        EverywhereFootprintsRepository *footprintsRepository = currentGroupArray[indexPath.row];
-        [footprintsRepositoryMA removeObject:footprintsRepository];
-        #warning setFootprintsRepositoryArray
-        //[EverywhereFootprintsRepositoryManager setFootprintsRepositoryArray:footprintsRepositoryMA];
-        
+        EWFRInfo *ewfrInfo = currentGroupArray[indexPath.row];
+        [EverywhereCoreDataManager removeEWFRInfo:ewfrInfo];
         [self updateDataSource:groupSeg.selectedSegmentIndex];
     }
 }

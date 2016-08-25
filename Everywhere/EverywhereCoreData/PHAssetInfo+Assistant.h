@@ -10,7 +10,7 @@
 @import Photos;
 
 #pragma mark
-#define EntityName_PHAssetInfo @"PHAssetInfo"
+
 @interface PHAssetInfo (Assistant)
 
 #pragma mark - 生成

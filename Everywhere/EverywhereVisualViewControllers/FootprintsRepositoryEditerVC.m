@@ -8,7 +8,6 @@
 
 #import "FootprintsRepositoryEditerVC.h"
 #import "EverywhereSettingManager.h"
-#import "EverywhereFootprintsRepositoryManager.h"
 #import "GCLocationAnalyser.h"
 
 @interface FootprintsRepositoryEditerVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
@@ -181,7 +180,7 @@
     editedFootprintsRepository.creationDate = NOW;
     editedFootprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeEdited;
 #warning addFootprintsRepository
-    //[EverywhereFootprintsRepositoryManager addFootprintsRepository:editedFootprintsRepository];
+    //[EverywhereCoreDataManager  addFootprintsRepository:editedFootprintsRepository];
     
     NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@ : %.1f\n%@\n%@ :\n%@",modeString,distanceString,mergeDistance,reserveString,NSLocalizedString(@"Saved As", @"存储为"),editedFootprintsRepository.title];
     

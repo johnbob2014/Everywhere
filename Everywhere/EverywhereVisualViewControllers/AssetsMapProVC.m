@@ -31,7 +31,6 @@
 #import "EverywhereSettingManager.h"
 #import "EverywhereFootprintAnnotation.h"
 #import "EverywhereFootprintsRepository.h"
-#import "EverywhereFootprintsRepositoryManager.h"
 
 #import "ImageVC.h"
 
@@ -74,7 +73,7 @@
 @property (strong,nonatomic) CLLocation *userLocationGCJ02;
 
 #pragma mark 数据管理器
-@property (strong,nonatomic) EverywhereCoreDataManager *cdManager;
+//@property (strong,nonatomic) EverywhereCoreDataManager *cdManager;
 @property (strong,nonatomic) EverywhereSettingManager *settingManager;
 
 #pragma mark 用于更新数据
@@ -110,6 +109,7 @@
     CLLocationManager *locationManagerForUserLocation;
     UIButton *userLocationButton;
     NSTimer *checkAuthorizationStatusTimer;
+    EverywhereFootprintsRepository *lastReceivedEWFR;
     
 #pragma mark 用于模式转换时恢复数据
     NSString *savedTitleForBaseMode;
@@ -147,7 +147,7 @@
     
     UIView *recordModeBar;
     UIButton *startPauseRecordButton;
-    UILabel *velocityLabelInRMB;
+    UILabel *speedLabelInRMB;
     UILabel *distanceAndFPCountLabelInRMB;
     CLLocationDistance totalDistanceForRecord;
     
@@ -205,7 +205,7 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     
-    self.cdManager = [EverywhereCoreDataManager defaultManager];
+    //EverywhereCoreDataManager = [EverywhereCoreDataManager defaultManager];
     self.settingManager = [EverywhereSettingManager defaultManager];
     
     self.isInBaseMode = YES;
@@ -246,7 +246,7 @@
     
     // 更新地址数据
     if (!allPlaceMarkReverseGeocodeSucceedForThisTime) {
-        [self.cdManager asyncUpdatePlacemarkForPHAssetInfoWithCompletionBlock:^(NSInteger reverseGeocodeSucceedCountForThisTime, NSInteger reverseGeocodeSucceedCountForTotal, NSInteger totalPHAssetInfoCount) {
+        [EverywhereCoreDataManager asyncUpdatePlacemarkForPHAssetInfoWithCompletionBlock:^(NSInteger reverseGeocodeSucceedCountForThisTime, NSInteger reverseGeocodeSucceedCountForTotal, NSInteger totalPHAssetInfoCount) {
             allPlaceMarkReverseGeocodeSucceedForThisTime = reverseGeocodeSucceedCountForTotal == totalPHAssetInfoCount;
         }];
     }
@@ -291,7 +291,7 @@
     
     if ([self checkPHAuthorizationStatus]){
         // 更新照片数据
-        [self showNotification:@([self.cdManager updatePHAssetInfoFromPhotoLibrary])];
+        [self showNotification:@([EverywhereCoreDataManager updatePHAssetInfoFromPhotoLibrary])];
     }
 }
 
@@ -329,7 +329,7 @@
 - (void)observePHAuthorizationStatus{
     if ([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusAuthorized ){
         
-        [self showNotification:@([self.cdManager updatePHAssetInfoFromPhotoLibrary])];
+        [self showNotification:@([EverywhereCoreDataManager updatePHAssetInfoFromPhotoLibrary])];
         
         [checkAuthorizationStatusTimer invalidate];
         checkAuthorizationStatusTimer = nil;
@@ -340,8 +340,8 @@
     NSInteger count = [countNumber integerValue];
     if (count > 0){
         NSString *secondLastUpdateDateString = nil;
-        if (self.cdManager.secondLastUpdateDate)
-            secondLastUpdateDateString = [NSString stringWithFormat:@"%@ : %@",NSLocalizedString(@"Last update time", @"上次更新时间"),[self.cdManager.secondLastUpdateDate stringWithFormat:@"yyyy-MM-dd hh:mm:ss"]];
+        if (EverywhereCoreDataManager.secondLastUpdateDate)
+            secondLastUpdateDateString = [NSString stringWithFormat:@"%@ : %@",NSLocalizedString(@"Last update time", @"上次更新时间"),[EverywhereCoreDataManager.secondLastUpdateDate stringWithFormat:@"yyyy-MM-dd hh:mm:ss"]];
         
         UILocalNotification *noti = [UILocalNotification new];
         
@@ -455,10 +455,10 @@
 - (void)setUserLocationWGS84:(CLLocation *)userLocationWGS84{
     _userLocationWGS84 = userLocationWGS84;
     //locationInfoWithCoordinateInfoBar.userCoordinateWGS84 = userLocationWGS84.coordinate;
-    CLLocationSpeed velocitymPerSecond = userLocationWGS84.speed;
-    CLLocationSpeed velocitykmPerhour = velocitymPerSecond * 3600.0 / 1000.0;
-    velocityLabelInRMB.text = [NSString stringWithFormat:@"%.2fkm/h %.2fm/s",velocitykmPerhour,velocitymPerSecond];
-    velocityLabelInRMB.text = [NSString stringWithFormat:@"%.2fkm/h",velocitykmPerhour];
+    CLLocationSpeed speedmPerSecond = userLocationWGS84.speed;
+    CLLocationSpeed speedkmPerhour = speedmPerSecond * 3600.0 / 1000.0;
+    speedLabelInRMB.text = [NSString stringWithFormat:@"%.2fkm/h %.2fm/s",speedkmPerhour,speedmPerSecond];
+    speedLabelInRMB.text = [NSString stringWithFormat:@"%.2fkm/h",speedkmPerhour];
 }
 
 - (void)setUserLocationGCJ02:(CLLocation *)userLocationGCJ02{
@@ -794,7 +794,7 @@
         //settingManager.mapBaseMode = MapBaseModeMoment;
         weakSelf.startDate = choosedStartDate;
         weakSelf.endDate = choosedEndDate;
-        weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:weakSelf.startDate toEndDate:weakSelf.endDate inManagedObjectContext:weakSelf.cdManager.appDelegateMOC];
+        weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:weakSelf.startDate toEndDate:weakSelf.endDate inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
     };
     
     popupController = [[STPopupController alloc] initWithRootViewController:datePickerProVC];
@@ -805,7 +805,7 @@
 - (void)showLocationPicker{
     WEAKSELF(weakSelf);
     LocationPickerVC *locationPickerVC = [LocationPickerVC new];
-    NSArray <PHAssetInfo *> *allAssetInfoArray = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:weakSelf.cdManager.appDelegateMOC];
+    NSArray <PHAssetInfo *> *allAssetInfoArray = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
     locationPickerVC.placemarkInfoDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:allAssetInfoArray];
     
     locationPickerVC.locationModeDidChangeHandler = ^(LocationMode choosedLocationMode){
@@ -815,7 +815,7 @@
     locationPickerVC.locationDidChangeHandler = ^(NSString *choosedLocation){
         weakSelf.settingManager.lastPlacemark = choosedLocation;
         weakSelf.lastPlacemark = choosedLocation;
-        weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:choosedLocation inManagedObjectContext:weakSelf.cdManager.appDelegateMOC];
+        weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:choosedLocation inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
     };
     
     locationPickerVC.contentSizeInPopup = ContentSizeInPopup_Big;
@@ -1474,18 +1474,18 @@
     // 需要外部引用，用于改变图片
     startPauseRecordButton = firstButtonInRMB;
     
-    velocityLabelInRMB = [UILabel newAutoLayoutView];
-    velocityLabelInRMB.layer.backgroundColor = self.settingManager.extendedTintColor.CGColor;
-    velocityLabelInRMB.layer.borderColor = self.settingManager.extendedTintColor.CGColor;
-    velocityLabelInRMB.layer.borderWidth = 1;
-    velocityLabelInRMB.layer.cornerRadius = 0.4;
-    velocityLabelInRMB.text = NSLocalizedString(@"Paused", @"已暂停");
-    velocityLabelInRMB.textAlignment = NSTextAlignmentCenter;
-    velocityLabelInRMB.textColor = [UIColor whiteColor];
-    velocityLabelInRMB.font = [UIFont bodyFontWithSizeMultiplier:1.2];
-    [recordModeBar addSubview:velocityLabelInRMB];
-    [velocityLabelInRMB autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
-    [velocityLabelInRMB autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
+    speedLabelInRMB = [UILabel newAutoLayoutView];
+    speedLabelInRMB.layer.backgroundColor = self.settingManager.extendedTintColor.CGColor;
+    speedLabelInRMB.layer.borderColor = self.settingManager.extendedTintColor.CGColor;
+    speedLabelInRMB.layer.borderWidth = 1;
+    speedLabelInRMB.layer.cornerRadius = 0.4;
+    speedLabelInRMB.text = NSLocalizedString(@"Paused", @"已暂停");
+    speedLabelInRMB.textAlignment = NSTextAlignmentCenter;
+    speedLabelInRMB.textColor = [UIColor whiteColor];
+    speedLabelInRMB.font = [UIFont bodyFontWithSizeMultiplier:1.2];
+    [recordModeBar addSubview:speedLabelInRMB];
+    [speedLabelInRMB autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+    [speedLabelInRMB autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
     
     distanceAndFPCountLabelInRMB = [UILabel newAutoLayoutView];
     distanceAndFPCountLabelInRMB.layer.backgroundColor = self.settingManager.extendedTintColor.CGColor;
@@ -1632,13 +1632,13 @@
                     break;
             }
             
-            self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:self.startDate toEndDate:self.endDate inManagedObjectContext:self.cdManager.appDelegateMOC];
+            self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:self.startDate toEndDate:self.endDate inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
         }
             break;
         case MapBaseModeLocation:{
             // 位置模式初始化
             self.lastPlacemark = self.settingManager.lastPlacemark;
-            self.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:self.settingManager.lastPlacemark inManagedObjectContext:self.cdManager.appDelegateMOC];
+            self.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:self.settingManager.lastPlacemark inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
         }
             break;
         default:
@@ -1856,10 +1856,6 @@
     
     // 修改属性
     footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeReceived;
-    #warning addFootprintsRepository
-    // 新接收到，先保存footprintsRepository，如果用户选择丢弃，再删除掉
-    //[EverywhereFootprintsRepositoryManager addFootprintsRepository:footprintsRepository];
-    //if (DEBUGMODE) if(DEBUGMODE) NSLog(@"footprintsRepositoryArray count : %lu",(unsigned long)[EverywhereFootprintsRepositoryManager footprintsRepositoryArray].count);
     
     // 显示主界面
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -1883,13 +1879,22 @@
                                                          msExtenedModeBar.selectedSegmentIndex = 0;
                                                          [self enterBrowserMode];
                                                          [self checkBeforeShowFootprintsRepository:footprintsRepository];
+                                                         
+                                                         if (self.settingManager.hasPurchasedShareAndBrowse){
+                                                             [self asyncSaveLastReceivedEWFR];
+                                                         }
                                                      }];
     
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消")
+                                                           style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {
+                                                               lastReceivedEWFR = nil;
+    }];
     [alertController addAction:okAction];
     [alertController addAction:cancelAction];
     
     [self presentViewController:alertController animated:YES completion:nil];
+    
+    lastReceivedEWFR = footprintsRepository;
 }
 
 #pragma mark Enter And Quite Mode
@@ -1934,8 +1939,8 @@
     currentAnnotationIndexLabel.backgroundColor = self.settingManager.extendedTintColor;
     locationInfoWithCoordinateInfoBar.backgroundColor = self.settingManager.extendedTintColor;
     recordModeSettingBar.backgroundColor = self.settingManager.extendedTintColor;
-    velocityLabelInRMB.layer.backgroundColor = self.settingManager.extendedTintColor.CGColor;
-    velocityLabelInRMB.layer.borderColor = self.settingManager.extendedTintColor.CGColor;
+    speedLabelInRMB.layer.backgroundColor = self.settingManager.extendedTintColor.CGColor;
+    speedLabelInRMB.layer.borderColor = self.settingManager.extendedTintColor.CGColor;
     distanceAndFPCountLabelInRMB.layer.backgroundColor = self.settingManager.extendedTintColor.CGColor;
     distanceAndFPCountLabelInRMB.layer.borderColor = self.settingManager.extendedTintColor.CGColor;
 }
@@ -2035,14 +2040,9 @@
 
 - (void)showQuiteBrowserModeAlertController{
     
-    if (!self.addedEWFootprintAnnotations || self.addedEWFootprintAnnotations.count == 0){
-        [self quiteBrowserMode];
-        [self quiteExtendedMode];
-        return;
-    }
-    
-    if (self.settingManager.hasPurchasedShareAndBrowse) {
-        // 如果已经购买了分享功能，直接退出（内容已经保存），不再询问
+    //if (!self.addedEWFootprintAnnotations || self.addedEWFootprintAnnotations.count == 0){
+    if (!lastReceivedEWFR || self.settingManager.hasPurchasedShareAndBrowse){
+        // 如果没有接收的足迹包 或者 已经购买了分享功能，直接退出（用户有分享功能，则选择接收时已经进行了保存），不再询问
         [self quiteBrowserMode];
         [self quiteExtendedMode];
         return;
@@ -2066,9 +2066,7 @@
     UIAlertAction *dropAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Drop",@"丢弃")
                                                          style:UIAlertActionStyleDefault
                                                        handler:^(UIAlertAction * action) {
-#warning removeLastAddedFootprintsRepository
-                                                           // 用户选择丢弃，则删除保存的footprintsRepository
-                                                           //[EverywhereFootprintsRepositoryManager removeLastAddedFootprintsRepository];
+                                                           lastReceivedEWFR = nil;
                                                            [self quiteBrowserMode];
                                                            [self quiteExtendedMode];
                                                        }];
@@ -2081,6 +2079,16 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
+- (void)asyncSaveLastReceivedEWFR{
+    // 新接收到，先保存footprintsRepository，如果用户选择丢弃，再删除掉
+    //[SVProgressHUD showWithStatus:NSLocalizedString(@"Storing Footprints Repository...", @"存储足迹包...")];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        [EverywhereCoreDataManager addEWFR:lastReceivedEWFR];
+        lastReceivedEWFR = nil;
+    });
+    
+    //[SVProgressHUD dismiss];
+}
 - (void)quiteBrowserMode{
     if(DEBUGMODE) NSLog(@"退出浏览模式");
     quiteBrowserModeButton.hidden = YES;
@@ -2146,7 +2154,7 @@
         [timerForRecord invalidate];
         timerForRecord = nil;
         
-        velocityLabelInRMB.text = NSLocalizedString(@"Paused", @"已暂停");
+        speedLabelInRMB.text = NSLocalizedString(@"Paused", @"已暂停");
         msExtenedModeBar.alpha = 1;
         
         if(DEBUGMODE) NSLog(@"暂停记录");
@@ -2260,8 +2268,7 @@
     footprintsRepository.creationDate = NOW;
     footprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Record", @"记录"),[footprintsRepository.creationDate stringWithDefaultFormat]];
     footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeRecorded;
-#warning addFootprintsRepository
-    //[EverywhereFootprintsRepositoryManager addFootprintsRepository:footprintsRepository];
+    [EverywhereCoreDataManager  addEWFR:footprintsRepository];
     if(DEBUGMODE) NSLog(@"记录已经保存");
     
     // 显示保存通知
@@ -2368,7 +2375,7 @@
             [ids addObject:asset.localIdentifier];
             
             /*
-            PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:asset.localIdentifier inManagedObjectContext:self.cdManager.appDelegateMOC];
+            PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:asset.localIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
             if (assetInfo.actAsThumbnail){
                 footprintAnnotation.thumbnail = [asset synchronousFetchUIImageAtTargetSize:CGSizeMake(asset.pixelWidth * 0.2, asset.pixelHeight * 0.2)];
             }
@@ -2400,7 +2407,7 @@
         // 第2层循环
         BOOL hasAddedThumbnail = NO;
         for (NSString *assetLocalIdentifier in everywhereAnnotation.assetLocalIdentifiers) {
-            PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:assetLocalIdentifier inManagedObjectContext:self.cdManager.appDelegateMOC];
+            PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:assetLocalIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
             
             if (hasAddedThumbnail) break;
             
@@ -2750,7 +2757,7 @@
         if ([view.annotation isKindOfClass:[EverywhereAnnotation class]]) {
             EverywhereAnnotation *anno = (EverywhereAnnotation *)view.annotation;
             
-            PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:self.cdManager.appDelegateMOC];
+            PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
             if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
             
             [self updateLocationInfoWithCoordinateInfoBarWithPHAssetInfo:assetInfo];
@@ -2767,7 +2774,7 @@
 }
 
 - (void)updateLocationInfoWithCoordinateInfoBarWithPHAssetInfo:(PHAssetInfo *)assetInfo{
-    CoordinateInfo *coordinateInfo = [CoordinateInfo coordinateInfoWithPHAssetInfo:assetInfo inManagedObjectContext:[EverywhereCoreDataManager defaultManager].appDelegateMOC];
+    CoordinateInfo *coordinateInfo = [CoordinateInfo coordinateInfoWithPHAssetInfo:assetInfo inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
     
     if (!coordinateInfo.reverseGeocodeSucceed) {
         [CoordinateInfo updatePlacemarkForCoordinateInfo:coordinateInfo];
@@ -2778,7 +2785,7 @@
 }
 
 - (void)updateLocationInfoWithCoordinateInfoBarWithWSG84Coordinate:(CLLocationCoordinate2D)aCoordinate{
-    CoordinateInfo *coordinateInfo = [CoordinateInfo coordinateInfoWithLatitude:aCoordinate.latitude longitude:aCoordinate.longitude inManagedObjectContext:[EverywhereCoreDataManager defaultManager].appDelegateMOC];
+    CoordinateInfo *coordinateInfo = [CoordinateInfo coordinateInfoWithLatitude:aCoordinate.latitude longitude:aCoordinate.longitude inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
     
     if (!coordinateInfo.reverseGeocodeSucceed) {
         [CoordinateInfo updatePlacemarkForCoordinateInfo:coordinateInfo];
@@ -2853,7 +2860,7 @@
         //self.currentAnnotationIndex = [self.addedEWAnnos indexOfObject:view.annotation];
         
         EverywhereAnnotation *anno = (EverywhereAnnotation *)view.annotation;
-        PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:self.cdManager.appDelegateMOC];
+        PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
         if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
         
         [self updateLocationInfoWithCoordinateInfoBarWithPHAssetInfo:assetInfo];

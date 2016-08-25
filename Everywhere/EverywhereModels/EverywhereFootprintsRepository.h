@@ -28,6 +28,11 @@
 @property (assign,nonatomic) double radius;
 
 /**
+ *  类型
+ */
+@property (assign,nonatomic) FootprintsRepositoryType footprintsRepositoryType;
+
+/**
  *  标题
  */
 @property (strong,nonatomic) NSString *title;
@@ -43,16 +48,37 @@
 @property (strong,nonatomic) NSDate *modificatonDate;
 
 /**
- *  类型
+ *  只读，唯一标识符
  */
-@property (assign,nonatomic) FootprintsRepositoryType footprintsRepositoryType;
+@property (strong,nonatomic,readonly) NSString *identifier;
 
+#pragma mark - 属性，仅 radius == 0 时有才有意义
 /**
- *  长度
+ *  只读，长度
  */
 @property (assign,nonatomic,readonly) double distance;
 
-#pragma mark - 方法
+/**
+ *  只读，足迹开始时间
+ */
+@property (strong,nonatomic) NSDate *startDate;
+
+/**
+ *  只读，足迹结束时间
+ */
+@property (strong,nonatomic) NSDate *endDate;
+
+/**
+ *  只读，持续时间
+ */
+@property (assign,nonatomic,readonly) NSTimeInterval duration;
+
+/**
+ *  只读，平均速度(m/s)
+ */
+@property (assign,nonatomic,readonly) double averageSpeed;
+
+#pragma mark - 导入和导出方法
 /**
  *  写入MFR文件
  */

@@ -15,7 +15,7 @@
 #endif /* PrefixHeader_pch */
 
 #warning Fix Before Submit
-#define DEBUGMODE 0
+#define DEBUGMODE 1
 
 #define NOW [NSDate date]
 
@@ -40,6 +40,8 @@
 
 #import "NSDate+Assistant.h"
 #import "NSFileManager+Assistant.h"
+#import "NSData+NSHash.h"
+#import "NSString+NSHash.h"
 
 #import "UIButton+Assistant.h"
 #import "UIAlertController+Assistant.h"

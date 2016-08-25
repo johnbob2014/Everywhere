@@ -8,8 +8,10 @@
 
 #import "WXApi.h"
 #import "ShareFootprintsRepositoryVC.h"
-#import "EverywhereFootprintsRepositoryManager.h"
+
 #import "EverywhereSettingManager.h"
+#import "EverywhereCoreDataManager.h"
+
 #import "EverywhereFootprintAnnotation.h"
 
 #define ShareButtonHeight 44
@@ -231,7 +233,7 @@
     if (succeeded){
         // 如果发送成功，保存到我的分享
         #warning addFootprintsRepository
-        //[EverywhereFootprintsRepositoryManager addFootprintsRepository:self.footprintsRepository];
+        [EverywhereCoreDataManager  addEWFR:self.footprintsRepository];
         //if(DEBUGMODE) NSLog(@"%@",self.footprintsRepository);
     }
     

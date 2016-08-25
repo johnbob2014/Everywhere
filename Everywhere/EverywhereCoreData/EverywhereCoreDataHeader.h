@@ -21,3 +21,10 @@
 #define kSubLocalityArray @"kSubLocalityArray"
 #define kThoroughfareArray @"kThoroughfareArray"
 #define kSubThoroughfareArray @"kSubThoroughfareArray"
+
+
+#define EWFRStorageDirectoryPath [Path_Caches stringByAppendingPathComponent:@"Everywhere"]
+
+#define EntityName_PHAssetInfo @"PHAssetInfo"
+#define EntityName_CoordinateInfo @"CoordinateInfo"
+#define EntityName_EWFRInfo @"EWFRInfo"

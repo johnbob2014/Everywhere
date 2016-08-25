@@ -73,7 +73,10 @@
     }else if (!matches || fetchError || [matches count]>1) {
         if(!matches) if(DEBUGMODE) NSLog(@"Fetch PHAssetInfo Result : Not Found.");
         if(fetchError) if(DEBUGMODE) NSLog(@"Fetch PHAssetInfo Result : %@",fetchError.localizedDescription);
-        if(matches.count > 1) if(DEBUGMODE) NSLog(@"Fetch PHAssetInfo Result : More than 1 result.");
+        if(matches.count > 1) {
+            if(DEBUGMODE) NSLog(@"Fetch PHAssetInfo Result : More than 1 result.");
+            info = matches.firstObject;
+        }
     }
     
     return info;
@@ -157,6 +160,8 @@
 }
 
 + (void)updatePlacemarkForAssetInfo:(PHAssetInfo *)assetInfo{
+#warning assetInfo is nil ???
+    if (!assetInfo) return;
     PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetInfo.localIdentifier] options:nil].firstObject;
     
     [[PHAssetInfo defaultGeocoder] reverseGeocodeLocation:asset.location

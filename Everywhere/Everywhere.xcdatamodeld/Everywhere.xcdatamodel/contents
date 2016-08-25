@@ -20,14 +20,19 @@
         <attribute name="subThoroughfare_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="thoroughfare_Placemark" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
-    <entity name="EWFRStorer" syncable="YES">
+    <entity name="EWFRInfo" representedClassName="EWFRInfo" syncable="YES">
+        <attribute name="averageSpeed" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="creationDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="footprintAnnotationsData" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="footprintAnnotationsMD5" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="distance" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="endDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="footprintsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="footprintsRepositoryType" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="identifier" attributeType="String" syncable="YES"/>
         <attribute name="modificatonDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="placemarkStatisticalInfo" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="radius" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="PHAssetInfo" representedClassName="PHAssetInfo" syncable="YES">
@@ -71,7 +76,7 @@
     </entity>
     <elements>
         <element name="CoordinateInfo" positionX="-63" positionY="135" width="128" height="315"/>
+        <element name="EWFRInfo" positionX="-63" positionY="135" width="128" height="240"/>
         <element name="PHAssetInfo" positionX="-63" positionY="-18" width="128" height="600"/>
-        <element name="EWFRStorer" positionX="-63" positionY="135" width="128" height="165"/>
     </elements>
 </model>

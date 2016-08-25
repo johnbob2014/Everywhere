@@ -11,8 +11,15 @@
 
 @interface RecordModeSettingBar ()
 
-@property (assign,nonatomic,readwrite) double velocitykmPerhour;
-@property (assign,nonatomic,readwrite) double velocitymPerSecond;
+/*
+@property (assign,nonatomic,readonly) double speedkmPerhour;
+@property (assign,nonatomic,readonly) double speedmPerSecond;
+@property (assign,nonatomic,readonly) CLLocationDistance minDistance;
+@property (assign,nonatomic,readonly) NSTimeInterval minTimeInterval;
+*/
+
+@property (assign,nonatomic,readwrite) double speedkmPerhour;
+@property (assign,nonatomic,readwrite) double speedmPerSecond;
 
 @property (assign,nonatomic,readwrite) CLLocationDistance minDistance;
 @property (assign,nonatomic,readwrite) NSTimeInterval minTimeInterval;
@@ -23,11 +30,11 @@
     UISegmentedControl *groupSeg;
     NSArray <NSString *> *groupNameArray;
     
-    UILabel *velocityLabel,*sDLabel,*sTILabel;
-    NSString *velocityLabelTitle,*sDLabelTitle,*sTILabelTitle;
+    UILabel *speedLabel,*sDLabel,*sTILabel;
+    NSString *speedLabelTitle,*sDLabelTitle,*sTILabelTitle;
     
-    UISlider *velocitySlider;
-    float lastVelocityBeforeSegValueChaned;
+    UISlider *speedSlider;
+    float lastspeedBeforeSegValueChaned;
     
     EverywhereSettingManager *settingManager;
 }
@@ -39,7 +46,7 @@
         
         sDLabelTitle = NSLocalizedString(@"Record Distance",@"记录距离");
         sTILabelTitle = NSLocalizedString(@"Record TimeInterval",@"记录间隔");
-        velocityLabelTitle = NSLocalizedString(@"Velocity",@"速度");
+        speedLabelTitle = NSLocalizedString(@"speed",@"速度");
         
         // Do any additional setup after loading the view.
         groupNameArray = @[NSLocalizedString(@"Custom", @"自定义"),
@@ -83,31 +90,31 @@
         [sTILabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:groupSeg withOffset:10];
         
         
-        velocityLabel = [UILabel newAutoLayoutView];
-        velocityLabel.font = labelFont;
-        velocityLabel.text = velocityLabelTitle;
-        velocityLabel.textColor = [UIColor whiteColor];
-        velocityLabel.textAlignment = NSTextAlignmentLeft;
-        //velocityLabel.layer.cornerRadius = 0.4;
-        //velocityLabel.layer.borderWidth = 1;
-        //velocityLabel.layer.borderColor = self.tintColor.CGColor;
-        [self addSubview:velocityLabel];
-        [velocityLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:sDLabel withOffset:10];
-        [velocityLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+        speedLabel = [UILabel newAutoLayoutView];
+        speedLabel.font = labelFont;
+        speedLabel.text = speedLabelTitle;
+        speedLabel.textColor = [UIColor whiteColor];
+        speedLabel.textAlignment = NSTextAlignmentLeft;
+        //speedLabel.layer.cornerRadius = 0.4;
+        //speedLabel.layer.borderWidth = 1;
+        //speedLabel.layer.borderColor = self.tintColor.CGColor;
+        [self addSubview:speedLabel];
+        [speedLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:sDLabel withOffset:10];
+        [speedLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
         
-        CGFloat velocitySliderWidth = ScreenWidth > 375 ? 150 : 100;
+        CGFloat speedSliderWidth = ScreenWidth > 375 ? 150 : 100;
         
-        velocitySlider = [UISlider newAutoLayoutView];
-        velocitySlider.tintColor = [UIColor whiteColor];
-        velocitySlider.minimumValue = - 0.6;
-        velocitySlider.maximumValue = 0.6;
-        velocitySlider.continuous = NO;
-        velocitySlider.value = 0;
-        [velocitySlider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
-        [self addSubview:velocitySlider];
-        [velocitySlider autoAlignAxis:ALAxisHorizontal toSameAxisOfView:velocityLabel];
-        [velocitySlider autoSetDimension:ALDimensionWidth toSize:velocitySliderWidth];
-        [velocitySlider autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
+        speedSlider = [UISlider newAutoLayoutView];
+        speedSlider.tintColor = [UIColor whiteColor];
+        speedSlider.minimumValue = - 0.6;
+        speedSlider.maximumValue = 0.6;
+        speedSlider.continuous = NO;
+        speedSlider.value = 0;
+        [speedSlider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
+        [self addSubview:speedSlider];
+        [speedSlider autoAlignAxis:ALAxisHorizontal toSameAxisOfView:speedLabel];
+        [speedSlider autoSetDimension:ALDimensionWidth toSize:speedSliderWidth];
+        [speedSlider autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
         
         self.customMinDistance = settingManager.minDistanceForRecord;
         self.customMinTimeInterval = settingManager.minTimeIntervalForRecord;
@@ -124,7 +131,7 @@
 }
 
 - (void)segValueChanged:(UISegmentedControl *)sender{
-    velocitySlider.value = 0;
+    speedSlider.value = 0;
     [self updateData:sender.selectedSegmentIndex];
 }
 
@@ -134,44 +141,44 @@
     switch (index) {
         case 0:
             // 注意这里的速度计算
-            self.velocitykmPerhour = self.customMinDistance / self.customMinTimeInterval * 3600.0 / 1000.0;
+            self.speedkmPerhour = self.customMinDistance / self.customMinTimeInterval * 3600.0 / 1000.0;
             self.minDistance = self.customMinDistance;
             self.minTimeInterval = self.customMinTimeInterval;
             break;
         case 1:
             self.minDistance = settingManager.minDistanceWalkForRecord;
-            self.velocitykmPerhour = 5.0;
+            self.speedkmPerhour = 5.0;
             break;
         case 2:
             self.minDistance = settingManager.minDistanceRideForRecord;
-            self.velocitykmPerhour = 15.0;
+            self.speedkmPerhour = 15.0;
             break;
         case 3:
             self.minDistance = settingManager.minDistanceDriveForRecord;
-            self.velocitykmPerhour = 70.0;
+            self.speedkmPerhour = 70.0;
             break;
         case 4:
             self.minDistance = settingManager.minDistanceHighSpeedForRecord;
-            self.velocitykmPerhour = 200.0;
+            self.speedkmPerhour = 200.0;
             break;
         default:
             break;
     }
-    lastVelocityBeforeSegValueChaned = self.velocitykmPerhour;
+    lastspeedBeforeSegValueChaned = self.speedkmPerhour;
 }
 
 - (void)sliderValueChanged:(UISlider *)sender{
-    self.velocitykmPerhour = lastVelocityBeforeSegValueChaned * (1 + sender.value);
+    self.speedkmPerhour = lastspeedBeforeSegValueChaned * (1 + sender.value);
 }
 
-- (void)setVelocitykmPerhour:(double)velocitykmPerhour{
-    _velocitykmPerhour = velocitykmPerhour;
-    self.velocitymPerSecond = velocitykmPerhour * 1000.0 / 3600.0;
-    self.minTimeInterval = self.minDistance / self.velocitymPerSecond;
+- (void)setSpeedkmPerhour:(double)speedkmPerhour{
+    _speedkmPerhour = speedkmPerhour;
+    self.speedmPerSecond = speedkmPerhour * 1000.0 / 3600.0;
+    self.minTimeInterval = self.minDistance / self.speedmPerSecond;
     if (ScreenWidth > 375){
-        velocityLabel.text = [NSString stringWithFormat:@"%@ : %.1fkm/h %.1fm/s",velocityLabelTitle,velocitykmPerhour,self.velocitymPerSecond];
+        speedLabel.text = [NSString stringWithFormat:@"%@ : %.1fkm/h %.1fm/s",speedLabelTitle,speedkmPerhour,self.speedmPerSecond];
     }else{
-        velocityLabel.text = [NSString stringWithFormat:@"%.1fkm/h %.1fm/s",velocitykmPerhour,self.velocitymPerSecond];
+        speedLabel.text = [NSString stringWithFormat:@"%.1fkm/h %.1fm/s",speedkmPerhour,self.speedmPerSecond];
     }
     
 }

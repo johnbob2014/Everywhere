@@ -10,7 +10,7 @@
 
 #import "EverywhereCoreDataManager.h"
 #import "EverywhereSettingManager.h"
-#import "EverywhereFootprintsRepositoryManager.h"
+#import "EverywhereFootprintsRepository.h"
 
 #import "AssetsMapProVC.h"
 
@@ -117,7 +117,7 @@
         [assetsMapProVC.locationManagerForRecording startUpdatingLocation];
     }
     
-    [[EverywhereCoreDataManager defaultManager] asyncUpdatePlacemarkForPHAssetInfoWithCompletionBlock:^(NSInteger reverseGeocodeSucceedCountForThisTime, NSInteger reverseGeocodeSucceedCountForTotal, NSInteger totalPHAssetInfoCount) {
+    [EverywhereCoreDataManager asyncUpdatePlacemarkForPHAssetInfoWithCompletionBlock:^(NSInteger reverseGeocodeSucceedCountForThisTime, NSInteger reverseGeocodeSucceedCountForTotal, NSInteger totalPHAssetInfoCount) {
         
     }];
 }
@@ -168,6 +168,8 @@
     NSString *filePath = [Path_Inbox stringByAppendingPathComponent:fileName];
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) return;
     
+    /*
+     // 移动到接收文件夹的代码，勿删！！！
     NSString *receivedDirectoryPath = [Path_Documents stringByAppendingPathComponent:@"Received Files"];
     if (![[NSFileManager defaultManager] fileExistsAtPath:receivedDirectoryPath isDirectory:NULL]){
         if (![[NSFileManager defaultManager] createDirectoryAtPath:receivedDirectoryPath withIntermediateDirectories:NO attributes:nil error:NULL]){
@@ -190,14 +192,19 @@
         if(DEBUGMODE) NSLog(@"移动接收的文件到接收文件夹失败！");
         return;
     }
+    */
     
     EverywhereFootprintsRepository *footprintsRepository = nil;
-    NSString *pathExtension = [[newFilePath pathExtension] lowercaseString];
+    NSString *pathExtension = [[filePath pathExtension] lowercaseString];
     
     if ([pathExtension isEqualToString:@"mfr"]){
-        footprintsRepository = [EverywhereFootprintsRepository importFromMFRFile:newFilePath];
+        [SVProgressHUD showWithStatus:NSLocalizedString(@"Receiving data...", @"接收数据中...")];
+        footprintsRepository = [EverywhereFootprintsRepository importFromMFRFile:filePath];
+        [SVProgressHUD dismiss];
     }else if ([pathExtension isEqualToString:@"gpx"]){
-        footprintsRepository = [EverywhereFootprintsRepository importFromGPXFile:newFilePath];
+        [SVProgressHUD showWithStatus:NSLocalizedString(@"Receiving data...", @"接收数据中...")];
+        footprintsRepository = [EverywhereFootprintsRepository importFromGPXFile:filePath];
+        [SVProgressHUD dismiss];
     }else{
         [assetsMapProVC dismissViewControllerAnimated:YES completion:nil];
         [assetsMapProVC presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Unsupported file types.\nPlease import MFR or GPX files.", @"文件格式不支持。\n请导入MFR或GPX文件。")]
@@ -215,6 +222,8 @@
     }
     
     [assetsMapProVC didReceiveFootprintsRepository:footprintsRepository];
+    
+    [[NSFileManager defaultManager] removeItemAtPath:filePath error:NULL];
 }
 
 - (void)didReceiveFootprintsRepositoryString:(NSString *)receivedString{
