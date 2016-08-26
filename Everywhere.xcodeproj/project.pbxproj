@@ -98,6 +98,7 @@
 		4B0866311D3738B3000300AD /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B0866301D3738B3000300AD /* libsqlite3.0.tbd */; };
 		4B0866331D373987000300AD /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B0866321D373987000300AD /* CoreTelephony.framework */; };
 		4B0866351D373993000300AD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B0866341D373993000300AD /* Security.framework */; };
+		4B098ED01D6FD0090071EAC2 /* NSURL+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B098ECF1D6FD0090071EAC2 /* NSURL+Assistant.m */; };
 		4B0BFDE91D6B069100F8CAA5 /* SVIndefiniteAnimatedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0BFDE01D6B069100F8CAA5 /* SVIndefiniteAnimatedView.m */; };
 		4B0BFDEA1D6B069100F8CAA5 /* SVProgressAnimatedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0BFDE21D6B069100F8CAA5 /* SVProgressAnimatedView.m */; };
 		4B0BFDEB1D6B069100F8CAA5 /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4B0BFDE41D6B069100F8CAA5 /* SVProgressHUD.bundle */; };
@@ -288,6 +289,8 @@
 		4B0866301D3738B3000300AD /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 		4B0866321D373987000300AD /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		4B0866341D373993000300AD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		4B098ECE1D6FD0090071EAC2 /* NSURL+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURL+Assistant.h"; path = "NSURL+Assistant/NSURL+Assistant.h"; sourceTree = "<group>"; };
+		4B098ECF1D6FD0090071EAC2 /* NSURL+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURL+Assistant.m"; path = "NSURL+Assistant/NSURL+Assistant.m"; sourceTree = "<group>"; };
 		4B0BFDDD1D6AE51800F8CAA5 /* Everywhere Version300.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Everywhere Version300.xcdatamodel"; sourceTree = "<group>"; };
 		4B0BFDDF1D6B069100F8CAA5 /* SVIndefiniteAnimatedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVIndefiniteAnimatedView.h; sourceTree = "<group>"; };
 		4B0BFDE01D6B069100F8CAA5 /* SVIndefiniteAnimatedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVIndefiniteAnimatedView.m; sourceTree = "<group>"; };
@@ -733,6 +736,15 @@
 			path = WeChatSDK1.7.2;
 			sourceTree = "<group>";
 		};
+		4B098ECD1D6FCFDD0071EAC2 /* NSURL+Assistant */ = {
+			isa = PBXGroup;
+			children = (
+				4B098ECE1D6FD0090071EAC2 /* NSURL+Assistant.h */,
+				4B098ECF1D6FD0090071EAC2 /* NSURL+Assistant.m */,
+			);
+			name = "NSURL+Assistant";
+			sourceTree = "<group>";
+		};
 		4B0BFDDE1D6B069100F8CAA5 /* SVProgressHUD */ = {
 			isa = PBXGroup;
 			children = (
@@ -820,6 +832,7 @@
 		4B3AF9CE1D2F3EBA009BD545 /* GeneralCategory */ = {
 			isa = PBXGroup;
 			children = (
+				4B098ECD1D6FCFDD0071EAC2 /* NSURL+Assistant */,
 				4BE1C8401D6D21FC008F6B51 /* NSHash */,
 				4B0EA9C61D6DA6DD00A33E01 /* NSFileManager+Assistant */,
 				4BF277121D63F397009626B5 /* UITextField+Assistant */,
@@ -1171,6 +1184,7 @@
 				1EF62A541D3B8FD50084AF66 /* CoordinateInfo.m in Sources */,
 				4B12E6FD1D5AC8400035D16D /* XMLDictionary.m in Sources */,
 				4BE1C8451D6D21FC008F6B51 /* NSData+NSHash.m in Sources */,
+				4B098ED01D6FD0090071EAC2 /* NSURL+Assistant.m in Sources */,
 				4B69F50A1D6156A800575AC3 /* NSString+FontAwesome.m in Sources */,
 				4B079BA31D61B07800BC4115 /* UIAppearance+Swift.m in Sources */,
 				1EF62A5A1D3BB90F0084AF66 /* EverywhereFootprintsRepository.m in Sources */,

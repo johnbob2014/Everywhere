@@ -214,7 +214,7 @@
 
     [assetInfoArray enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         // 不排除的照片，才统计信息
-        if (!obj.eliminateThisAsset){
+        if (![obj.eliminateThisAsset boolValue]){
             if (obj.country_Placemark) {
                 if (![country_Placemark containsObject:obj.country_Placemark]) [country_Placemark addObject:obj.country_Placemark];
             }

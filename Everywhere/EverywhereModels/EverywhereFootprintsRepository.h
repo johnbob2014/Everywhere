@@ -54,22 +54,22 @@
 
 #pragma mark - 属性，仅 radius == 0 时有才有意义
 /**
- *  只读，长度
+ *  只读，长度(m)
  */
 @property (assign,nonatomic,readonly) double distance;
 
 /**
  *  只读，足迹开始时间
  */
-@property (strong,nonatomic) NSDate *startDate;
+@property (strong,nonatomic,readonly) NSDate *startDate;
 
 /**
  *  只读，足迹结束时间
  */
-@property (strong,nonatomic) NSDate *endDate;
+@property (strong,nonatomic,readonly) NSDate *endDate;
 
 /**
- *  只读，持续时间
+ *  只读，持续时间(s)
  */
 @property (assign,nonatomic,readonly) NSTimeInterval duration;
 

@@ -22,8 +22,7 @@
 #define kThoroughfareArray @"kThoroughfareArray"
 #define kSubThoroughfareArray @"kSubThoroughfareArray"
 
-
-#define EWFRStorageDirectoryPath [Path_Caches stringByAppendingPathComponent:@"Everywhere"]
+#define EWFRStorageDirectoryPath [[NSURL libraryURL].path stringByAppendingPathComponent:@"Everywhere"]
 
 #define EntityName_PHAssetInfo @"PHAssetInfo"
 #define EntityName_CoordinateInfo @"CoordinateInfo"

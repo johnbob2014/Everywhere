@@ -87,8 +87,10 @@
     [gpx_wpt_String appendFormat:@"<name>%@</name>",self.title];
     [gpx_wpt_String appendFormat:@"\n    "];
     [gpx_wpt_String appendFormat:@"<time>%@T%@Z</time>",[self.startDate stringWithFormat:@"yyyy-MM-dd"],[self.startDate stringWithFormat:@"hh:mm:ss"]];
-    [gpx_wpt_String appendFormat:@"\n    "];
-    [gpx_wpt_String appendFormat:@"<endtime>%@T%@Z</endtime>",[self.endDate stringWithFormat:@"yyyy-MM-dd"],[self.endDate stringWithFormat:@"hh:mm:ss"]];
+    if (self.endDate){
+        [gpx_wpt_String appendFormat:@"\n    "];
+        [gpx_wpt_String appendFormat:@"<endtime>%@T%@Z</endtime>",[self.endDate stringWithFormat:@"yyyy-MM-dd"],[self.endDate stringWithFormat:@"hh:mm:ss"]];
+    }
     [gpx_wpt_String appendFormat:@"\n    "];
     [gpx_wpt_String appendFormat:@"</wpt>"];
     return gpx_wpt_String;
@@ -101,8 +103,10 @@
     [gpx_trk_trkseg_trkpt_String appendFormat:@"<ele>%.2f</ele>",self.altitude];
     [gpx_trk_trkseg_trkpt_String appendFormat:@"\n            "];
     [gpx_trk_trkseg_trkpt_String appendFormat:@"<time>%@T%@Z</time>",[self.startDate stringWithFormat:@"yyyy-MM-dd"],[self.startDate stringWithFormat:@"hh:mm:ss"]];
-    [gpx_trk_trkseg_trkpt_String appendFormat:@"\n            "];
-    [gpx_trk_trkseg_trkpt_String appendFormat:@"<endtime>%@T%@Z</endtime>",[self.endDate stringWithFormat:@"yyyy-MM-dd"],[self.endDate stringWithFormat:@"hh:mm:ss"]];
+    if (self.endDate){
+        [gpx_trk_trkseg_trkpt_String appendFormat:@"\n            "];
+        [gpx_trk_trkseg_trkpt_String appendFormat:@"<endtime>%@T%@Z</endtime>",[self.endDate stringWithFormat:@"yyyy-MM-dd"],[self.endDate stringWithFormat:@"hh:mm:ss"]];
+    }
     [gpx_trk_trkseg_trkpt_String appendFormat:@"\n            "];
     [gpx_trk_trkseg_trkpt_String appendFormat:@"</trkpt>"];
     return gpx_trk_trkseg_trkpt_String;

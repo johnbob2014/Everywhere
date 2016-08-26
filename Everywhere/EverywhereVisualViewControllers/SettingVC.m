@@ -340,7 +340,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         if ([self checkhasPurchasedImportAndExport]){
             
             [SVProgressHUD showWithStatus:NSLocalizedString(@"Exporting", @"正在导出")];
-            NSUInteger count = [EverywhereCoreDataManager  exportFootprintsRepositoryToMFRFilesAtPath:[Path_Documents stringByAppendingPathComponent:@"Exported"]];
+            NSUInteger count = [EverywhereCoreDataManager  exportFootprintsRepositoryToMFRFilesAtPath:[[NSURL documentURL].path stringByAppendingPathComponent:@"Exported"]];
             [SVProgressHUD dismiss];
             
             NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully export repository to mfr files count", @"成功导出足迹包至MFR文件数量"),(unsigned long)count];
@@ -355,7 +355,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         if ([self checkhasPurchasedImportAndExport]){
             
             [SVProgressHUD showWithStatus:NSLocalizedString(@"Exporting", @"正在导出")];
-            NSUInteger count = [EverywhereCoreDataManager  exportFootprintsRepositoryToGPXFilesAtPath:[Path_Documents stringByAppendingPathComponent:@"Exported"]];
+            NSUInteger count = [EverywhereCoreDataManager  exportFootprintsRepositoryToGPXFilesAtPath:[[NSURL documentURL].path stringByAppendingPathComponent:@"Exported"]];
             [SVProgressHUD dismiss];
             NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully export repository to gpx files count", @"成功导出足迹包至GPX文件数量"),(unsigned long)count];
             UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
@@ -369,8 +369,8 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         if ([self checkhasPurchasedImportAndExport]){
             
             [SVProgressHUD showWithStatus:NSLocalizedString(@"Importing", @"正在导入")];
-            NSString *moveDirectoryPath = [Path_Documents stringByAppendingPathComponent:@"Imported"];
-            NSUInteger count = [EverywhereCoreDataManager  importFootprintsRepositoryFromFilesAtPath:Path_Documents moveAddedFilesToPath:moveDirectoryPath];
+            NSString *moveDirectoryPath = [[NSURL documentURL].path stringByAppendingPathComponent:@"Imported"];
+            NSUInteger count = [EverywhereCoreDataManager  importFootprintsRepositoryFromFilesAtPath:[NSURL documentURL].path moveAddedFilesToPath:moveDirectoryPath];
             [SVProgressHUD dismiss];
             
             NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully import repository count", @"成功导入足迹包数量"),(unsigned long)count];

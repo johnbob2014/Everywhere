@@ -120,9 +120,10 @@
 }
 
 + (void)asyncUpdatePlacemarkForPHAssetInfoWithCompletionBlock:(UpdatePlacemarkForPHAssetInfoCompletionBlock)completionBlock{
-    @synchronized (self) {
+    NSManagedObjectContext *context = [EverywhereCoreDataManager appDelegateMOC];
+    @synchronized (context) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-            NSArray <PHAssetInfo *> *allAssetInfoArray = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:self.appDelegateMOC];
+            NSArray <PHAssetInfo *> *allAssetInfoArray = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:context];
             
             __block NSInteger reverseGeocodeFailedCountBeforeUpdate = 0;
             [allAssetInfoArray enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {

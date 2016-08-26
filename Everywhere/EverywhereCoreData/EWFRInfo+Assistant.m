@@ -50,7 +50,7 @@
     info.startDate = ewfr.startDate;
     info.endDate = ewfr.endDate;
     info.duration = @(ewfr.duration);
-    info.averageSpeed = @(ewfr.duration);
+    info.averageSpeed = @(ewfr.averageSpeed);
     
     info.identifier = ewfr.identifier;
     

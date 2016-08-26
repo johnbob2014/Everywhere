@@ -81,6 +81,7 @@
     [SVProgressHUD setDefaultAnimationType:SVProgressHUDAnimationTypeFlat];
     [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeGradient];
     [SVProgressHUD setMinimumDismissTimeInterval:2.0];
+    
     return YES;
 }
 
@@ -146,6 +147,7 @@
 }
 
 - (void)checkInbox{
+    NSString *Path_Inbox = [NSURL inboxURL].path;
     if (![[NSFileManager defaultManager] fileExistsAtPath:Path_Inbox]) return;
     
     NSError *readContentsError;
@@ -274,11 +276,6 @@
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 
-- (NSURL *)applicationDocumentsDirectory {
-    // The directory the application uses to store the Core Data store file. This code uses a directory named "com.ZhangBaoGuo.Everywhere" in the application's documents directory.
-    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-}
-
 - (NSManagedObjectModel *)managedObjectModel {
     // The managed object model for the application. It is a fatal error for the application not to be able to find and load its model.
     if (_managedObjectModel != nil) {
@@ -297,7 +294,7 @@
     
     // Create the coordinator and store
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Everywhere.sqlite"];
+    NSURL *storeURL = [[NSURL libraryURL] URLByAppendingPathComponent:@"Everywhere.sqlite"];
     if(DEBUGMODE) NSLog(@"storeURL : %@",storeURL.absoluteString);
     NSError *error = nil;
     NSString *failureReason = @"There was an error creating or loading the application's saved data.";

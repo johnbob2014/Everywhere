@@ -83,7 +83,7 @@
 }
 
 - (void)fileShare{
-    NSString *filePath = [Path_Caches stringByAppendingPathComponent:@"shareImage.png"];
+    NSString *filePath = [[NSURL cachesURL].path stringByAppendingPathComponent:@"shareImage.png"];
     NSData *imageData = UIImagePNGRepresentation(self.shareImage);
     [imageData writeToFile:filePath atomically:YES];
     

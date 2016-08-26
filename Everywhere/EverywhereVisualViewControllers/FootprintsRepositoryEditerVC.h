@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EverywhereFootprintsRepository.h"
+#import "EWFRInfo.h"
 
-typedef void(^FootprintsRepositoryDidChangeHandler)(EverywhereFootprintsRepository *changedFootprintsRepository);
+
+//typedef void(^FootprintsRepositoryDidChangeHandler)(EverywhereFootprintsRepository *changedFootprintsRepository);
 
 @interface FootprintsRepositoryEditerVC : UIViewController
-@property (copy,nonatomic) EverywhereFootprintsRepository *footprintsRepository;
-@property (copy,nonatomic) FootprintsRepositoryDidChangeHandler footprintsRepositoryDidChangeHandler;
+@property (strong,nonatomic) EWFRInfo *ewfrInfo;
+//@property (copy,nonatomic) FootprintsRepositoryDidChangeHandler footprintsRepositoryDidChangeHandler;
 @end

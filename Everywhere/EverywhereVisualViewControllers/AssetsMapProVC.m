@@ -244,13 +244,6 @@
     [super viewWillAppear:animated];
     //if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     
-    // 更新地址数据
-    if (!allPlaceMarkReverseGeocodeSucceedForThisTime) {
-        [EverywhereCoreDataManager asyncUpdatePlacemarkForPHAssetInfoWithCompletionBlock:^(NSInteger reverseGeocodeSucceedCountForThisTime, NSInteger reverseGeocodeSucceedCountForTotal, NSInteger totalPHAssetInfoCount) {
-            allPlaceMarkReverseGeocodeSucceedForThisTime = reverseGeocodeSucceedCountForTotal == totalPHAssetInfoCount;
-        }];
-    }
-    
     EverywhereAppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
     
     if (self.isInBaseMode) {
@@ -292,6 +285,13 @@
     if ([self checkPHAuthorizationStatus]){
         // 更新照片数据
         [self showNotification:@([EverywhereCoreDataManager updatePHAssetInfoFromPhotoLibrary])];
+    }
+    
+    // 更新地址数据
+    if (!allPlaceMarkReverseGeocodeSucceedForThisTime) {
+        [EverywhereCoreDataManager asyncUpdatePlacemarkForPHAssetInfoWithCompletionBlock:^(NSInteger reverseGeocodeSucceedCountForThisTime, NSInteger reverseGeocodeSucceedCountForTotal, NSInteger totalPHAssetInfoCount) {
+            allPlaceMarkReverseGeocodeSucceedForThisTime = reverseGeocodeSucceedCountForTotal == totalPHAssetInfoCount;
+        }];
     }
 }
 

@@ -7,10 +7,13 @@
 //
 
 #import "FootprintsRepositoryEditerVC.h"
+#import "EverywhereFootprintsRepository.h"
 #import "EverywhereSettingManager.h"
+#import "EverywhereCoreDataManager.h"
 #import "GCLocationAnalyser.h"
 
 @interface FootprintsRepositoryEditerVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
+//@property (copy,nonatomic) EverywhereFootprintsRepository *footprintsRepository;
 @property (strong,nonatomic) NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationMA;
 @end
 
@@ -37,10 +40,12 @@
     // 默认合并时保留用户手动添加的足迹点
     reserveManuallyAddedFootprint = YES;
     
-    self.footprintAnnotationMA = [NSMutableArray arrayWithArray:self.footprintsRepository.footprintAnnotations];
+    EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository importFromMFRFile:[self.ewfrInfo filePath]];
+    
+    self.footprintAnnotationMA = [NSMutableArray arrayWithArray:footprintsRepository.footprintAnnotations];
     currentGroupArray = self.footprintAnnotationMA.reverseObjectEnumerator.allObjects;
     
-    self.title = self.footprintsRepository.title;
+    self.title = self.ewfrInfo.title;
     
     UIView *containerView = [UIView newAutoLayoutView];
     [self.view addSubview:containerView];
@@ -124,6 +129,7 @@
 }
 
 - (void)startMerge{
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Merging...", @"正在合并...")];
     
     float mergeDistance = [mergeDistanceTF.text floatValue];
     if (mergeDistance == 0) mergeDistance = 200;
@@ -176,18 +182,23 @@
     
     if (!mergeInOrder) editedFootprintsRepository.radius = mergeDistance / 2.0;
     
-    editedFootprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Edit", @"编辑"),self.footprintsRepository.title];
+    editedFootprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Edit", @"编辑"),self.ewfrInfo.title];
     editedFootprintsRepository.creationDate = NOW;
     editedFootprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeEdited;
-#warning addFootprintsRepository
-    //[EverywhereCoreDataManager  addFootprintsRepository:editedFootprintsRepository];
+
+    //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{});
+    
+    
+    BOOL succeeded = [EverywhereCoreDataManager addEWFR:editedFootprintsRepository];
+    NSString *succeededString = succeeded ? NSLocalizedString(@"Succeeded", @"成功") : NSLocalizedString(@"Failed", @"失败");
+    [SVProgressHUD showSuccessWithStatus:[NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Merge ", @"合并"),succeededString]];
+    [SVProgressHUD dismiss];
     
     NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@ : %.1f\n%@\n%@ :\n%@",modeString,distanceString,mergeDistance,reserveString,NSLocalizedString(@"Saved As", @"存储为"),editedFootprintsRepository.title];
     
     [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:alertMessage]
                        animated:YES completion:nil];
     
-    [mergeButton setTitle:NSLocalizedString(@"Merge Succeeded", @"合并成功") forState:UIControlStateNormal];
 }
 
 #pragma mark - TableView
@@ -209,9 +220,9 @@
     cell.textLabel.text = [NSString stringWithFormat:@"%lu %@ %@",(unsigned long)(indexPath.row + 1),headerString,footprintAnnotation.customTitle];
     
     NSMutableString *ms = [NSMutableString new];
-    [ms appendFormat:@"%.6f°,%.6f°",footprintAnnotation.coordinateWGS84.latitude,footprintAnnotation.coordinateWGS84.longitude];
-    if (footprintAnnotation.altitude != 0) [ms appendFormat:@"    %.2fm",footprintAnnotation.altitude];
-    if (footprintAnnotation.speed > 0) [ms appendFormat:@"    %.2fm/s",footprintAnnotation.speed];
+    [ms appendFormat:@"%@:%.6f°,%.6f°",NSLocalizedString(@"Coord", @"座标"),footprintAnnotation.coordinateWGS84.latitude,footprintAnnotation.coordinateWGS84.longitude];
+    if (footprintAnnotation.altitude != 0) [ms appendFormat:@"  %@:%.2fm",NSLocalizedString(@"Altitude", @"高度"),footprintAnnotation.altitude];
+    //if (footprintAnnotation.speed > 0) [ms appendFormat:@"  %@:%.2fkm/h",NSLocalizedString(@"Speed", @"速度"),footprintAnnotation.speed * 3.6];
     cell.detailTextLabel.text = ms;
     
     return cell;
@@ -219,6 +230,8 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
     EverywhereFootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
     
     NSString *alertTitle = NSLocalizedString(@"Items", @"选项");

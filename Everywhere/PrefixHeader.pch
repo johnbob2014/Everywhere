@@ -15,13 +15,13 @@
 #endif /* PrefixHeader_pch */
 
 #warning Fix Before Submit
-#define DEBUGMODE 1
+#define DEBUGMODE 0
 
 #define NOW [NSDate date]
 
-#define Path_Documents [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
-#define Path_Inbox [Path_Documents stringByAppendingPathComponent:@"Inbox"]
-#define Path_Caches [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches"]
+//#define Path_Documents [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
+//#define Path_Inbox [Path_Documents stringByAppendingPathComponent:@"Inbox"]
+//#define Path_Caches [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Caches"]
 
 #define WEAKSELF(weakSelf)  __weak __typeof (&*self)weakSelf = self;
 
@@ -38,6 +38,7 @@
 
 #import "UIView+AutoLayout.h"
 
+#import "NSURL+Assistant.h"
 #import "NSDate+Assistant.h"
 #import "NSFileManager+Assistant.h"
 #import "NSData+NSHash.h"

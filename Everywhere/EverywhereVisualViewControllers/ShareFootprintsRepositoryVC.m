@@ -168,7 +168,7 @@
     self.footprintsRepository.title = titleTF.text;
     self.footprintsRepository.placemarkStatisticalInfo = statisticsInfoTV.text;
     
-    NSString *filePath = [Path_Caches stringByAppendingPathComponent:self.footprintsRepository.title];
+    NSString *filePath = [[NSURL cachesURL].path stringByAppendingPathComponent:self.footprintsRepository.title];
     
     BOOL exportSucceeded = NO;
     documentInteractionController = [UIDocumentInteractionController new];
@@ -232,9 +232,10 @@
     
     if (succeeded){
         // 如果发送成功，保存到我的分享
-        #warning addFootprintsRepository
-        [EverywhereCoreDataManager  addEWFR:self.footprintsRepository];
-        //if(DEBUGMODE) NSLog(@"%@",self.footprintsRepository);
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            if(DEBUGMODE) NSLog(@"异步保存分享的足迹包");
+            [EverywhereCoreDataManager  addEWFR:self.footprintsRepository];
+        });
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];

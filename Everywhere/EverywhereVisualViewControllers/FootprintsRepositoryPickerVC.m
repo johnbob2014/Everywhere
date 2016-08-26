@@ -160,12 +160,6 @@
     [myTableView reloadData];
 }
 
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return  currentGroupArray.count;
 }
@@ -195,7 +189,11 @@
     
     cell.textLabel.text = [NSString stringWithFormat:@"%lu %@ %@",(unsigned long)(indexPath.row + 1),headerString,ewfrInfo.title];
     
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ : %lu , %@ : %@",NSLocalizedString(@"Footprints Count", @"足迹点数"),(unsigned long)[ewfrInfo.footprintsCount integerValue] ,NSLocalizedString(@"Modification Date", @"修改时间"),[ewfrInfo.modificatonDate stringWithDefaultFormat]];
+    NSMutableString *ms = [NSMutableString new];
+    [ms appendFormat:@"%@:%lu",NSLocalizedString(@"FpCount", @"足迹点数"),(unsigned long)[ewfrInfo.footprintsCount integerValue]];
+    [ms appendFormat:@"  %@:%.2fkm",NSLocalizedString(@"Distance", @"里程"),[ewfrInfo.distance doubleValue]/1000.0];
+    [ms appendFormat:@"  %@:%.2fkm/h",NSLocalizedString(@"AvgSpeed", @"平时时速"),[ewfrInfo.averageSpeed doubleValue]*3.6];
+    cell.detailTextLabel.text = ms;
     return cell;
 }
 
@@ -242,7 +240,7 @@
                                                                  [self presentViewController:alertController animated:YES completion:nil];
                                                              }else{
 
-                                                                 NSString *dirPath = [Path_Documents stringByAppendingPathComponent:@"Exported"];
+                                                                 NSString *dirPath = [[NSURL documentURL].path stringByAppendingPathComponent:@"Exported"];
                                                                  [NSFileManager directoryExistsAtPath:dirPath autoCreate:YES];
                                                                  
                                                                  NSString *exportToGPXPath = [dirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.gpx",footprintsRepository.title]];
@@ -304,12 +302,10 @@
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
     EWFRInfo *ewfrInfo = currentGroupArray[indexPath.row];
-    EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository importFromMFRFile:[ewfrInfo filePath]];
-    footprintsRepository.title = ewfrInfo.title;
     
     if ([EverywhereSettingManager defaultManager].hasPurchasedRecordAndEdit) {
         FootprintsRepositoryEditerVC *footprintsRepositoryEditerVC = [FootprintsRepositoryEditerVC new];
-        footprintsRepositoryEditerVC.footprintsRepository = [footprintsRepository copy];
+        footprintsRepositoryEditerVC.ewfrInfo = ewfrInfo;
         footprintsRepositoryEditerVC.contentSizeInPopup = self.contentSizeInPopup;
         footprintsRepositoryEditerVC.landscapeContentSizeInPopup = self.landscapeContentSizeInPopup;
         [self.popupController pushViewController:footprintsRepositoryEditerVC animated:YES];
