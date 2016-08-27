@@ -24,6 +24,8 @@
 		1ED1EE451D47A6D80068F0C6 /* LocationInfoWithCoordinateInfoBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ED1EE441D47A6D80068F0C6 /* LocationInfoWithCoordinateInfoBar.m */; };
 		1EEA79511D2791A0002B6291 /* EverywhereAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEA79501D2791A0002B6291 /* EverywhereAnnotation.m */; };
 		1EEE907D1D5F846E00B87064 /* AlbumMapsAppQRCodeImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEE907C1D5F846D00B87064 /* AlbumMapsAppQRCodeImage.png */; };
+		1EF5CB031D71D3D500D03D6F /* 地球_22_29.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EF5CB011D71D3D500D03D6F /* 地球_22_29.png */; };
+		1EF5CB041D71D3D500D03D6F /* 地球_44_58.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EF5CB021D71D3D500D03D6F /* 地球_44_58.png */; };
 		1EF62A531D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A501D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m */; };
 		1EF62A541D3B8FD50084AF66 /* CoordinateInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A521D3B8FD50084AF66 /* CoordinateInfo.m */; };
 		1EF62A571D3B902A0084AF66 /* CoordinateInfo+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A561D3B902A0084AF66 /* CoordinateInfo+Assistant.m */; };
@@ -108,7 +110,7 @@
 		4B0EA9C91D6DA72100A33E01 /* NSFileManager+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0EA9C81D6DA72100A33E01 /* NSFileManager+Assistant.m */; };
 		4B12E6FD1D5AC8400035D16D /* XMLDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B12E6FC1D5AC8400035D16D /* XMLDictionary.m */; };
 		4B15B5D31D3F5E5E0096EE89 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B15B5D21D3F5E5E0096EE89 /* Assets.xcassets */; };
-		4B15B5D61D3F79CF0096EE89 /* FootprintsRepositoryEditerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B15B5D51D3F79CF0096EE89 /* FootprintsRepositoryEditerVC.m */; };
+		4B15B5D61D3F79CF0096EE89 /* FootprintAnnotationPickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B15B5D51D3F79CF0096EE89 /* FootprintAnnotationPickerVC.m */; };
 		4B1B4BDC1D3879FE00CCD842 /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B1B4BDB1D3879FE00CCD842 /* libWeChatSDK.a */; };
 		4B1B4BE11D387A4200CCD842 /* AboutVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1B4BDE1D387A4200CCD842 /* AboutVC.m */; };
 		4B1B4BE21D387A4200CCD842 /* InAppPurchaseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1B4BE01D387A4200CCD842 /* InAppPurchaseVC.m */; };
@@ -186,6 +188,8 @@
 		1EEA79501D2791A0002B6291 /* EverywhereAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereAnnotation.m; path = EverywhereModels/EverywhereAnnotation.m; sourceTree = "<group>"; };
 		1EEE907B1D5F381500B87064 /* GCFileBrowserConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCFileBrowserConfiguration.h; path = GCFileBrowser/GCFileBrowserConfiguration.h; sourceTree = "<group>"; };
 		1EEE907C1D5F846D00B87064 /* AlbumMapsAppQRCodeImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AlbumMapsAppQRCodeImage.png; sourceTree = "<group>"; };
+		1EF5CB011D71D3D500D03D6F /* 地球_22_29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "地球_22_29.png"; sourceTree = "<group>"; };
+		1EF5CB021D71D3D500D03D6F /* 地球_44_58.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "地球_44_58.png"; sourceTree = "<group>"; };
 		1EF62A4F1D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CoordinateInfo+CoreDataProperties.h"; path = "EverywhereCoreData/CoordinateInfo+CoreDataProperties.h"; sourceTree = "<group>"; };
 		1EF62A501D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CoordinateInfo+CoreDataProperties.m"; path = "EverywhereCoreData/CoordinateInfo+CoreDataProperties.m"; sourceTree = "<group>"; };
 		1EF62A511D3B8FD50084AF66 /* CoordinateInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoordinateInfo.h; path = EverywhereCoreData/CoordinateInfo.h; sourceTree = "<group>"; };
@@ -309,8 +313,8 @@
 		4B12E6FB1D5AC8400035D16D /* XMLDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLDictionary.h; sourceTree = "<group>"; };
 		4B12E6FC1D5AC8400035D16D /* XMLDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLDictionary.m; sourceTree = "<group>"; };
 		4B15B5D21D3F5E5E0096EE89 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		4B15B5D41D3F79CF0096EE89 /* FootprintsRepositoryEditerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FootprintsRepositoryEditerVC.h; path = EverywhereVisualViewControllers/FootprintsRepositoryEditerVC.h; sourceTree = "<group>"; };
-		4B15B5D51D3F79CF0096EE89 /* FootprintsRepositoryEditerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FootprintsRepositoryEditerVC.m; path = EverywhereVisualViewControllers/FootprintsRepositoryEditerVC.m; sourceTree = "<group>"; };
+		4B15B5D41D3F79CF0096EE89 /* FootprintAnnotationPickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FootprintAnnotationPickerVC.h; path = EverywhereVisualViewControllers/FootprintAnnotationPickerVC.h; sourceTree = "<group>"; };
+		4B15B5D51D3F79CF0096EE89 /* FootprintAnnotationPickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FootprintAnnotationPickerVC.m; path = EverywhereVisualViewControllers/FootprintAnnotationPickerVC.m; sourceTree = "<group>"; };
 		4B1B4BDB1D3879FE00CCD842 /* libWeChatSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK.a; sourceTree = "<group>"; };
 		4B1B4BDD1D387A4200CCD842 /* AboutVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AboutVC.h; path = EverywhereVisualViewControllers/AboutVC.h; sourceTree = "<group>"; };
 		4B1B4BDE1D387A4200CCD842 /* AboutVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AboutVC.m; path = EverywhereVisualViewControllers/AboutVC.m; sourceTree = "<group>"; };
@@ -536,8 +540,8 @@
 				4BFA4EB21D33791A007DDA87 /* LocationPickerVC.m */,
 				4B31B4361D3C5EE20072044F /* FootprintsRepositoryPickerVC.h */,
 				4B31B4371D3C5EE20072044F /* FootprintsRepositoryPickerVC.m */,
-				4B15B5D41D3F79CF0096EE89 /* FootprintsRepositoryEditerVC.h */,
-				4B15B5D51D3F79CF0096EE89 /* FootprintsRepositoryEditerVC.m */,
+				4B15B5D41D3F79CF0096EE89 /* FootprintAnnotationPickerVC.h */,
+				4B15B5D51D3F79CF0096EE89 /* FootprintAnnotationPickerVC.m */,
 			);
 			name = EverywherePicker;
 			sourceTree = "<group>";
@@ -686,6 +690,8 @@
 				1EEE907C1D5F846D00B87064 /* AlbumMapsAppQRCodeImage.png */,
 				4B03B4BE1D59E784007FA6C6 /* 地球_320_320.png */,
 				4B03B4BF1D59E784007FA6C6 /* 地球_64_64.png */,
+				1EF5CB011D71D3D500D03D6F /* 地球_22_29.png */,
+				1EF5CB021D71D3D500D03D6F /* 地球_44_58.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -1071,12 +1077,14 @@
 				4B0330051D5C626500E83585 /* item-icon-folder@2x.png in Resources */,
 				4B032FF01D5C626500E83585 /* icon-rename1.png in Resources */,
 				4B032FEC1D5C626500E83585 /* icon-play1.png in Resources */,
+				1EF5CB031D71D3D500D03D6F /* 地球_22_29.png in Resources */,
 				1ECE892D1D4ACF55004B5875 /* Localizable.strings in Resources */,
 				4B0330031D5C626500E83585 /* item-icon-folder-selected@2x.png in Resources */,
 				4B032FE61D5C626500E83585 /* icon-export2.png in Resources */,
 				4B032FF91D5C626500E83585 /* icon-view1@2x.png in Resources */,
 				4B032FF41D5C626500E83585 /* icon-trash1.png in Resources */,
 				4B032FE91D5C626500E83585 /* icon-move1@2x.png in Resources */,
+				1EF5CB041D71D3D500D03D6F /* 地球_44_58.png in Resources */,
 				4B032FF51D5C626500E83585 /* icon-trash1@2x.png in Resources */,
 				4B03B4C11D59E784007FA6C6 /* 地球_64_64.png in Resources */,
 				4B032FDD1D5C626500E83585 /* file-cell-short@2x.png in Resources */,
@@ -1177,7 +1185,7 @@
 				4B079BA71D61B07800BC4115 /* UIImage+ChameleonPrivate.m in Sources */,
 				1ED1EE451D47A6D80068F0C6 /* LocationInfoWithCoordinateInfoBar.m in Sources */,
 				4B69F5021D614DA100575AC3 /* UILabel+Assistant.m in Sources */,
-				4B15B5D61D3F79CF0096EE89 /* FootprintsRepositoryEditerVC.m in Sources */,
+				4B15B5D61D3F79CF0096EE89 /* FootprintAnnotationPickerVC.m in Sources */,
 				4B079BA91D61B07800BC4115 /* UINavigationController+Chameleon.m in Sources */,
 				4B1B4BE21D387A4200CCD842 /* InAppPurchaseVC.m in Sources */,
 				4B079BA51D61B07800BC4115 /* UIColor+Chameleon.m in Sources */,

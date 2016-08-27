@@ -1,23 +1,23 @@
 //
-//  FootprintsRepositoryEditerVC.m
+//  FootprintAnnotationPickerVC.m
 //  Everywhere
 //
 //  Created by BobZhang on 16/7/20.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#import "FootprintsRepositoryEditerVC.h"
+#import "FootprintAnnotationPickerVC.h"
 #import "EverywhereFootprintsRepository.h"
 #import "EverywhereSettingManager.h"
 #import "EverywhereCoreDataManager.h"
 #import "GCLocationAnalyser.h"
 
-@interface FootprintsRepositoryEditerVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
+@interface FootprintAnnotationPickerVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 //@property (copy,nonatomic) EverywhereFootprintsRepository *footprintsRepository;
 @property (strong,nonatomic) NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationMA;
 @end
 
-@implementation FootprintsRepositoryEditerVC{
+@implementation FootprintAnnotationPickerVC{
     NSArray <EverywhereFootprintAnnotation *> *currentGroupArray;
     //NSMutableArray <EverywhereFootprintAnnotation *> *editedArray;
     UITextField *mergeDistanceTF;
@@ -43,7 +43,7 @@
     EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository importFromMFRFile:[self.ewfrInfo filePath]];
     
     self.footprintAnnotationMA = [NSMutableArray arrayWithArray:footprintsRepository.footprintAnnotations];
-    currentGroupArray = self.footprintAnnotationMA.reverseObjectEnumerator.allObjects;
+    currentGroupArray = self.footprintAnnotationMA;//self.footprintAnnotationMA.reverseObjectEnumerator.allObjects;
     
     self.title = self.ewfrInfo.title;
     
@@ -73,6 +73,7 @@
     mergeDistanceTF.textAlignment = NSTextAlignmentCenter;
     mergeDistanceTF.clearButtonMode = UITextFieldViewModeAlways;
     mergeDistanceTF.layer.borderWidth = 1;
+    mergeDistanceTF.layer.cornerRadius = 3;
     mergeDistanceTF.layer.borderColor = [[EverywhereSettingManager defaultManager].extendedTintColor CGColor];
     [containerView addSubview: mergeDistanceTF];
     [mergeDistanceTF autoAlignAxis:ALAxisHorizontal toSameAxisOfView:mergeDistanceLabel];
@@ -319,15 +320,17 @@
 #pragma mark - Text Field
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
-    NSString *allowedString=NumberAndDecimal;
-    NSCharacterSet *forbidenCharacterSet=[[NSCharacterSet characterSetWithCharactersInString:allowedString] invertedSet];
-    NSArray *filteredArray=[string componentsSeparatedByCharactersInSet:forbidenCharacterSet];
-    NSString *filteredString=[filteredArray componentsJoinedByString:@""];
+    NSString *allowedString = NumberAndDecimal;
+    NSCharacterSet *forbidenCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:allowedString] invertedSet];
+    NSArray *filteredArray = [string componentsSeparatedByCharactersInSet:forbidenCharacterSet];
+    NSString *filteredString = [filteredArray componentsJoinedByString:@""];
     
     if (![string isEqualToString:filteredString]) {
         if(DEBUGMODE) NSLog(@"The character 【%@】 is not allowed!",string);
     }
     
     return [string isEqualToString:filteredString];
+    
+    //return [NumberAndDecimal containsString:string];
 }
 @end

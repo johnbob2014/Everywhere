@@ -6,7 +6,8 @@
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#define MFRUTI @"com.ZhangBaoGuo.AlbumMaps.mfr"
+#define UTI_MFR @"com.ZhangBaoGuo.AlbumMaps.mfr"
+#define UTI_GPX @"com.ZhangBaoGuo.AlbumMaps.gpx"
 
 #import <Foundation/Foundation.h>
 
@@ -86,6 +87,11 @@
 @property (assign,nonatomic) NSInteger praiseCount;
 
 @property (assign,nonatomic) DefaultTransport defaultTransport;
+
+/**
+ *  是否自动以第一张图片作为分享缩略图
+ */
+@property (assign,nonatomic) BOOL autoUseFirstAssetAsThumbnail;
 
 /**
  *  缩略图大小比值（缩略图边长 除以 原图边长）

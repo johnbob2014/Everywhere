@@ -52,6 +52,12 @@
  */
 @property (strong,nonatomic,readonly) NSString *identifier;
 
+/**
+ *  只读，缩略图数量
+ */
+@property (assign,nonatomic,readonly) NSInteger thumbnailCount;
+
+
 #pragma mark - 属性，仅 radius == 0 时有才有意义
 /**
  *  只读，长度(m)

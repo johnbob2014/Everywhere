@@ -23,14 +23,17 @@
 
 @implementation ShareFootprintsRepositoryVC{
     UIDocumentInteractionController *documentInteractionController;
-    UILabel *titleLabel,*statisticsInfoLabel;
+    UILabel *titleLabel,*statisticsInfoLabel,*thumbnailLabel;
     UITextField *titleTF;
     UITextView *statisticsInfoTV;
+    UIScrollView *thumbnailSV;
     UIButton *firstBtn,*sencondBtn,*thirdBtn;
     
-    EverywhereSettingManager *settingManager;
     NSString *mfrString;
     NSString *gpxString;
+    
+    EverywhereSettingManager *settingManager;
+    EverywhereFootprintsRepository *wxShareFR;
 }
 
 - (void)viewDidLoad {
@@ -40,8 +43,8 @@
     mfrString = NSLocalizedString(@"MFR Share", @"MFR 分享");
     gpxString = NSLocalizedString(@"GPX Share", @"GPX 分享");
     
-    self.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.9, 300);
-    self.landscapeContentSizeInPopup = CGSizeMake(300, ScreenWidth * 0.9);
+    self.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.9, 500);
+    self.landscapeContentSizeInPopup = CGSizeMake(500, ScreenWidth * 0.9);
     
     self.view.backgroundColor = [EverywhereSettingManager defaultManager].backgroundColor;
     self.title = NSLocalizedString(@"Share footprints", @"分享足迹");
@@ -92,15 +95,46 @@
     [statisticsInfoTV autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
     [statisticsInfoTV autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight * 1.5];
     
+    thumbnailLabel = [UILabel newAutoLayoutView];
+    thumbnailLabel.text = [NSString stringWithFormat:@"%@(%lu)",NSLocalizedString(@"Thumbnail", @"缩略图"),self.footprintsRepository.thumbnailCount];
+    thumbnailLabel.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:thumbnailLabel];
+    [thumbnailLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:statisticsInfoTV withOffset:10];
+    [thumbnailLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+    [thumbnailLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+    [thumbnailLabel autoSetDimension:ALDimensionHeight toSize:LabelHeight];
+    
+    thumbnailSV = [UIScrollView newAutoLayoutView];
+    thumbnailSV.backgroundColor = ClearColor;
+    [self.view addSubview:thumbnailSV];
+    [thumbnailSV autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:thumbnailLabel withOffset:5];
+    [thumbnailSV autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
+    [thumbnailSV autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
+    [thumbnailSV autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight * 4 + 5];
+    
+    CGFloat thumbnailOffset = 5;
+    CGFloat thumbnailWidth = (ScreenWidth - 20 - 2 * thumbnailOffset)/3.0;
+    
+    thumbnailSV.contentSize = CGSizeMake((thumbnailWidth + thumbnailOffset) * self.footprintsRepository.thumbnailCount, ShareButtonHeight * 4);
+    [self.footprintsRepository.footprintAnnotations enumerateObjectsUsingBlock:^(EverywhereFootprintAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.thumbnail){
+            UIImageView *iv = [[UIImageView alloc] initWithImage:obj.thumbnail];
+            iv.backgroundColor = ClearColor;
+            iv.contentMode = UIViewContentModeScaleAspectFit;
+            iv.frame = CGRectMake((thumbnailWidth + thumbnailOffset) * idx, 0, thumbnailWidth, ShareButtonHeight * 4);
+            [thumbnailSV addSubview:iv];
+        }
+    }];
+    
+    
     UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeInfoLight];
     infoButton.backgroundColor = DEBUGMODE ? [[UIColor cyanColor] colorWithAlphaComponent:0.6] : [UIColor clearColor];
     infoButton.translatesAutoresizingMaskIntoConstraints = NO;
     [infoButton addTarget:self action:@selector(showInfoAboutWXShareAlertController) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:infoButton];
-    [infoButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:statisticsInfoTV withOffset:15];
+    [infoButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:thumbnailSV withOffset:15];
     [infoButton autoSetDimensionsToSize:CGSizeMake(ShareButtonHeight,ShareButtonHeight)];
     [infoButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
-
 
     firstBtn = [UIButton newAutoLayoutView];
     [firstBtn setTitle:NSLocalizedString(@"WeChat Share", @"微信分享") forState:UIControlStateNormal];
@@ -108,7 +142,7 @@
     firstBtn.tag = WXSceneSession;
     [firstBtn addTarget:self action:@selector(wxShare:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:firstBtn];
-    [firstBtn autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:statisticsInfoTV withOffset:15];
+    [firstBtn autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:thumbnailSV withOffset:15];
     [firstBtn autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
     [firstBtn autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:infoButton withOffset:-10];
     [firstBtn autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight];
@@ -178,11 +212,12 @@
         case 0:
             filePath = [filePath stringByAppendingString:@".mfr"];
             exportSucceeded = [self.footprintsRepository exportToMFRFile:filePath];
-            documentInteractionController.UTI = MFRUTI;
+            documentInteractionController.UTI = UTI_MFR;
             break;
         case 1:
             filePath = [filePath stringByAppendingString:@".gpx"];
             exportSucceeded = [self.footprintsRepository exportToGPXFile:filePath];
+            documentInteractionController.UTI = UTI_GPX;
             break;
         default:
             break;
@@ -191,8 +226,14 @@
     if (exportSucceeded){
         documentInteractionController.URL = [NSURL fileURLWithPath:filePath];
         [documentInteractionController presentOptionsMenuFromRect:self.view.frame inView:self.view animated:YES];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            if(DEBUGMODE) NSLog(@"异步保存分享的足迹包");
+            [EverywhereCoreDataManager  addEWFR:self.footprintsRepository];
+        });
+        
     }else{
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Create File Failed!",@"生成文件失败！")];
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"File Share Failed!",@"文件分享失败！")];
     }
 }
 
@@ -226,32 +267,27 @@
     req.message=mediaMessage;
     req.bText=NO;
     req.scene= (int)sender.tag;
-    //if(DEBUGMODE) NSLog(@"%@",req);
     BOOL succeeded=[WXApi sendReq:req];
-    if(DEBUGMODE) NSLog(@"SendMessageToWXReq : %@",succeeded? @"Succeeded" : @"Failed");
     
     if (succeeded){
-        // 如果发送成功，保存到我的分享
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-            if(DEBUGMODE) NSLog(@"异步保存分享的足迹包");
-            [EverywhereCoreDataManager  addEWFR:self.footprintsRepository];
-        });
+        // 如果发送成功，保存到我的分享（微信分享数据量很小，直接保存）
+        [EverywhereCoreDataManager addEWFR:wxShareFR];
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }else{
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"WeChat Share Failed!",@"微信分享失败！")];
     }
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-    
 }
 
 - (NSString *)createFootprintsRepositoryString{
     self.footprintsRepository.title = titleTF.text;
     
     // 清除缩略图数据
-    EverywhereFootprintsRepository *copyedFR = [self.footprintsRepository copy];
-    for (EverywhereFootprintAnnotation *footprintAnnotation in copyedFR.footprintAnnotations) {
+    wxShareFR = [self.footprintsRepository copy];
+    for (EverywhereFootprintAnnotation *footprintAnnotation in wxShareFR.footprintAnnotations) {
         footprintAnnotation.thumbnail = nil;
     }
     
-    NSData *footprintsRepositoryData = [NSKeyedArchiver archivedDataWithRootObject:copyedFR];
+    NSData *footprintsRepositoryData = [NSKeyedArchiver archivedDataWithRootObject:wxShareFR];
     
     NSString *footprintsRepositoryString = [footprintsRepositoryData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
     

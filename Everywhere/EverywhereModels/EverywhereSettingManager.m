@@ -450,6 +450,15 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (BOOL)autoUseFirstAssetAsThumbnail{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"autoUseFirstAssetAsThumbnail"];
+}
+
+- (void)setAutoUseFirstAssetAsThumbnail:(BOOL)autoUseFirstAssetAsThumbnail{
+    [[NSUserDefaults standardUserDefaults] setBool:autoUseFirstAssetAsThumbnail forKey:@"autoUseFirstAssetAsThumbnail"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (float)thumbnailScaleRate{
     float thumbnailScaleRate = [[NSUserDefaults standardUserDefaults] floatForKey:@"thumbnailScaleRate"];
     if (thumbnailScaleRate == 0) thumbnailScaleRate = 0.15;

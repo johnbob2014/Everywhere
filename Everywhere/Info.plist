@@ -10,7 +10,12 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeIconFiles</key>
-			<array/>
+			<array>
+				<string>地球_22_29</string>
+				<string>地球_44_58</string>
+				<string>地球_64_64</string>
+				<string>地球_320_320</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>AlbumMaps Footprints Repository File</string>
 			<key>CFBundleTypeRole</key>
@@ -24,16 +29,21 @@
 		</dict>
 		<dict>
 			<key>CFBundleTypeIconFiles</key>
-			<array/>
+			<array>
+				<string>地球_22_29</string>
+				<string>地球_44_58</string>
+				<string>地球_64_64</string>
+				<string>地球_320_320</string>
+			</array>
 			<key>CFBundleTypeName</key>
-			<string>All</string>
+			<string>AlbumMaps GPX File</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>public.data</string>
+				<string>com.ZhangBaoGuo.AlbumMaps.gpx</string>
 			</array>
 		</dict>
 	</array>
@@ -128,7 +138,7 @@
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>
-			<key>UITypeTagSpecification</key>
+			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
 				<array>
@@ -148,15 +158,12 @@
 			<key>UTTypeSize64IconFile</key>
 			<string>地球_64_64</string>
 		</dict>
-	</array>
-	<key>UTImportedTypeDeclarations</key>
-	<array>
 		<dict>
-			<key>UITypeTagSpecification</key>
+			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
 				<array>
-					<string>mfr</string>
+					<string>gpx</string>
 				</array>
 			</dict>
 			<key>UTTypeConformsTo</key>
@@ -164,9 +171,9 @@
 				<string>public.data</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>AlbumMaps Footprints Repository File</string>
+			<string>AlbumMaps GPX File</string>
 			<key>UTTypeIdentifier</key>
-			<string>com.ZhangBaoGuo.AlbumMaps.mfr</string>
+			<string>com.ZhangBaoGuo.AlbumMaps.gpx</string>
 			<key>UTTypeSize320IconFile</key>
 			<string>地球_320_320</string>
 			<key>UTTypeSize64IconFile</key>

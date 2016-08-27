@@ -9,6 +9,7 @@
     self.layer.masksToBounds = YES;
     [self setAdjustsImageWhenHighlighted:NO];
     [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self setTitleColor:[UIColor grayColor] forState:UIControlStateDisabled];
     [self.titleLabel setFont:[UIFont fontWithName:@"FontAwesome" size:self.titleLabel.font.pointSize]];
 }
 

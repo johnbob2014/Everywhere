@@ -1,5 +1,5 @@
 //
-//  FootprintsRepositoryEditerVC.h
+//  FootprintAnnotationPickerVC.h
 //  Everywhere
 //
 //  Created by BobZhang on 16/7/20.
@@ -12,7 +12,7 @@
 
 //typedef void(^FootprintsRepositoryDidChangeHandler)(EverywhereFootprintsRepository *changedFootprintsRepository);
 
-@interface FootprintsRepositoryEditerVC : UIViewController
+@interface FootprintAnnotationPickerVC : UIViewController
 @property (strong,nonatomic) EWFRInfo *ewfrInfo;
 //@property (copy,nonatomic) FootprintsRepositoryDidChangeHandler footprintsRepositoryDidChangeHandler;
 @end

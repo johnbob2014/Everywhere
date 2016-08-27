@@ -60,7 +60,7 @@
 
 + (NSArray <EWFRInfo *> *)fetchAllEWFRInfosInManagedObjectContext:(NSManagedObjectContext *)context{
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:EntityName_EWFRInfo];
-    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
     NSError *fetchError;
     NSArray <EWFRInfo *> *matches = [context executeFetchRequest:fetchRequest error:&fetchError];
     if (fetchError) NSLog(@"Fetch All Error : %@",fetchError.localizedDescription);

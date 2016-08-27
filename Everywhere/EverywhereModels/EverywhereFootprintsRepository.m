@@ -48,6 +48,17 @@
     return [[NSKeyedArchiver archivedDataWithRootObject:self.footprintAnnotations] MD5String];
 }
 
+- (NSInteger)thumbnailCount{
+    __block NSInteger thumbnailCount = 0;
+    [self.footprintAnnotations enumerateObjectsUsingBlock:^(EverywhereFootprintAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.thumbnail){
+            thumbnailCount++;
+        }
+    }];
+    
+    return thumbnailCount;
+}
+
 - (NSString *)title{
     if (_title) return _title;
     else{

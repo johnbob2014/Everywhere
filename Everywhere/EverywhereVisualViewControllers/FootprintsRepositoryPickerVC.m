@@ -8,7 +8,7 @@
 
 #import "FootprintsRepositoryPickerVC.h"
 
-#import "FootprintsRepositoryEditerVC.h"
+#import "FootprintAnnotationPickerVC.h"
 
 #import "EverywhereCoreDataManager.h"
 #import "EverywhereSettingManager.h"
@@ -25,9 +25,13 @@
     NSArray <EWFRInfo *> *ewfrInfoArray;
 
     UITableView *myTableView;
+    UITableViewCellEditingStyle cellEditingStyle;
     
-    //UIButton *clearAllButton;
+    UIButton *leftButton,*rightButton;
+    NSMutableArray <EWFRInfo *> *selectedEWFRInfoArray;
 }
+
+#pragma mark - Life Cycle
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
@@ -36,25 +40,36 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+
+    cellEditingStyle = UITableViewCellEditingStyleDelete;
     
+    [self initSegmentedControl];
+    [self initButtons];
+    [self initTableView];
+    
+    [self updateDataSource:0];
+}
+
+#pragma mark - SegmentedControl
+
+- (void)initSegmentedControl{
     switch (self.showFootprintsRepositoryType) {
-        /*
-        case FootprintsRepositoryTypeSent|FootprintsRepositoryTypeReceived|FootprintsRepositoryTypeRecorded|FootprintsRepositoryTypeEdited|FootprintsRepositoryTypeImported:
-            groupNameArray = @[NSLocalizedString(@"Sent", @"发送的"),
-                               NSLocalizedString(@"Received", @"接收的"),
-                               NSLocalizedString(@"Recorded", @"记录的"),
-                               NSLocalizedString(@"Edited", @"编辑的"),
-                               NSLocalizedString(@"Imported", @"导入的")];
-            break;
-        */
+            /*
+             case FootprintsRepositoryTypeSent|FootprintsRepositoryTypeReceived|FootprintsRepositoryTypeRecorded|FootprintsRepositoryTypeEdited|FootprintsRepositoryTypeImported:
+             groupNameArray = @[NSLocalizedString(@"Sent", @"发送的"),
+             NSLocalizedString(@"Received", @"接收的"),
+             NSLocalizedString(@"Recorded", @"记录的"),
+             NSLocalizedString(@"Edited", @"编辑的"),
+             NSLocalizedString(@"Imported", @"导入的")];
+             break;
+             */
         case FootprintsRepositoryTypeSent|FootprintsRepositoryTypeReceived|FootprintsRepositoryTypeRecorded|FootprintsRepositoryTypeEdited:
             groupNameArray = @[NSLocalizedString(@"Sent", @"发送的"),
                                NSLocalizedString(@"Received", @"接收的"),
                                NSLocalizedString(@"Recorded", @"记录的"),
                                NSLocalizedString(@"Edited", @"编辑的")];
             break;
-
+            
         case FootprintsRepositoryTypeSent|FootprintsRepositoryTypeReceived:
             groupNameArray = @[NSLocalizedString(@"Sent", @"发送的"),
                                NSLocalizedString(@"Received", @"接收的")];
@@ -78,33 +93,12 @@
     [groupSeg autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(10, 10, 0, 10) excludingEdge:ALEdgeBottom];
     
     if (groupNameArray.count == 1) groupSeg.hidden = YES;
-    
-    /*
-    clearAllButton = [UIButton newAutoLayoutView];
-    [clearAllButton infoStyle];
-    [clearAllButton addTarget:self action:@selector(clearAll) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:clearAllButton];
-    [clearAllButton autoSetDimension:ALDimensionHeight toSize:44];
-    [clearAllButton autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:self.view withMultiplier:0.8];
-    [clearAllButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
-    [clearAllButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
-     */
-    
-    myTableView = [UITableView newAutoLayoutView];
-    myTableView.delegate = self;
-    myTableView.dataSource = self;
-    [myTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
-    [self.view addSubview:myTableView];
-    [myTableView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:groupSeg withOffset:10];
-    [myTableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 10, 10, 10) excludingEdge:ALEdgeTop];
-    //[myTableView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
-    //[myTableView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:clearAllButton withOffset:-10];
-    
-    [self updateDataSource:0];
+
 }
 
 - (void)segValueChanged:(UISegmentedControl *)sender{
     // if (self.locationModeDidChangeHandler) self.locationModeDidChangeHandler(sender.selectedSegmentIndex);
+    [self endEditing];
     [self updateDataSource:sender.selectedSegmentIndex];
 }
 
@@ -113,7 +107,7 @@
     NSMutableArray *receivedArray = [NSMutableArray new];
     NSMutableArray *recordedArray = [NSMutableArray new];
     NSMutableArray *editedArray = [NSMutableArray new];
-
+    
     ewfrInfoArray = [EverywhereCoreDataManager allEWFRs];
     
     [ewfrInfoArray enumerateObjectsUsingBlock:^(EWFRInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -160,6 +154,150 @@
     [myTableView reloadData];
 }
 
+#pragma mark - Buttons
+
+- (void)initButtons{
+    leftButton = [UIButton newAutoLayoutView];
+    [leftButton setStyle:UIButtonStylePrimary];
+    [leftButton setTitle:NSLocalizedString(@"Multi", @"多选") forState:UIControlStateNormal];
+    [leftButton addTarget:self action:@selector(leftButtonTouchDown) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:leftButton];
+    [leftButton autoSetDimension:ALDimensionHeight toSize:40];
+    [leftButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+    [leftButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+    
+    rightButton = [UIButton newAutoLayoutView];
+    [rightButton setStyle:UIButtonStylePrimary];
+    [rightButton setTitle:NSLocalizedString(@"Merge", @"合并") forState:UIControlStateNormal];
+    [rightButton addTarget:self action:@selector(rightButtonTouchDown) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:rightButton];
+    [rightButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+    [rightButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
+    [rightButton autoSetDimension:ALDimensionHeight toSize:40];
+    [rightButton autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:leftButton];
+    [rightButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:leftButton withOffset:10];
+    
+    rightButton.enabled = NO;
+    
+    /*
+     clearAllButton = [UIButton newAutoLayoutView];
+     [clearAllButton infoStyle];
+     [clearAllButton addTarget:self action:@selector(clearAll) forControlEvents:UIControlEventTouchDown];
+     [self.view addSubview:clearAllButton];
+     [clearAllButton autoSetDimension:ALDimensionHeight toSize:44];
+     [clearAllButton autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:self.view withMultiplier:0.8];
+     [clearAllButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+     [clearAllButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
+     */
+
+}
+
+- (void)leftButtonTouchDown{
+    if (![self checkHasPurchasedRecordAndEdit]) return;
+    
+    if (cellEditingStyle == UITableViewCellEditingStyleDelete){
+        [self startEditing];
+    }
+    else{
+        [self endEditing];
+    }
+    //[myTableView reloadData];
+}
+
+- (void)startEditing{
+    cellEditingStyle = UITableViewCellEditingStyleDelete|UITableViewCellEditingStyleInsert;
+    myTableView.editing = YES;
+    selectedEWFRInfoArray = [NSMutableArray new];
+    //[selectedEWFRInfoArray.count addObserver:self forKeyPath:@"count" options:NSKeyValueObservingOptionNew context:nil];
+    [leftButton setTitle:NSLocalizedString(@"Cancel", @"取消") forState:UIControlStateNormal];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context{
+    NSLog(@"keyPath : %@\nobject : %@\nchange : %@",keyPath,object,change);
+}
+
+- (void)endEditing{
+    cellEditingStyle = UITableViewCellEditingStyleDelete;
+    myTableView.editing = NO;
+    selectedEWFRInfoArray = nil;
+    [leftButton setTitle:NSLocalizedString(@"Multi", @"多选") forState:UIControlStateNormal];
+    rightButton.enabled = NO;
+}
+
+- (void)rightButtonTouchDown{
+    if (![self checkHasPurchasedRecordAndEdit]) return;
+    
+    if (!myTableView.editing || !selectedEWFRInfoArray) return;
+    
+    if (selectedEWFRInfoArray.count <2 ){
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"Two or more footprints repositories are needed", @"需要2个以上足迹包")];
+        return;
+    }
+    
+    [SVProgressHUD show];
+    
+    __block NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationMA = [NSMutableArray new];
+    [selectedEWFRInfoArray enumerateObjectsUsingBlock:^(EWFRInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        EverywhereFootprintsRepository *ewfr = [EverywhereFootprintsRepository importFromMFRFile:[obj filePath]];
+        [footprintAnnotationMA addObjectsFromArray:ewfr.footprintAnnotations];
+    }];
+    
+    [footprintAnnotationMA sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        NSComparisonResult comparisonResult;
+        
+        NSTimeInterval ti = [((EverywhereFootprintAnnotation *)obj1).startDate timeIntervalSinceDate:((EverywhereFootprintAnnotation *)obj2).startDate];
+        
+        if (ti < 0) comparisonResult = NSOrderedAscending;
+        else if (ti == 0) comparisonResult = NSOrderedSame;
+        else comparisonResult = NSOrderedDescending;
+        
+        return comparisonResult;
+    }];
+    
+    EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
+    footprintsRepository.footprintAnnotations = footprintAnnotationMA;
+    footprintsRepository.creationDate = NOW;
+    footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeEdited;
+    footprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Mearged", @"合并"),[NOW stringWithDefaultFormat]];
+    
+    BOOL succeeded = [EverywhereCoreDataManager addEWFR:footprintsRepository];
+    NSString *succeededString = succeeded ? NSLocalizedString(@"Succeeded", @"成功") : NSLocalizedString(@"Failed", @"失败");
+    [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Merge ", @"合并"),succeededString]];
+    [SVProgressHUD dismiss];
+    
+    if (succeeded){
+        NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu\n%@ :\n%@",NSLocalizedString(@"Footprints repository count", @"合并足迹包个数"),(unsigned long)selectedEWFRInfoArray.count,NSLocalizedString(@"Saved As", @"存储为"),footprintsRepository.title];
+        
+        [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:alertMessage]
+                           animated:YES completion:nil];
+    }
+    
+    [self endEditing];
+}
+
+- (BOOL)checkHasPurchasedRecordAndEdit{
+    if ([EverywhereSettingManager defaultManager].hasPurchasedRecordAndEdit) return YES;
+    else{
+        UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note",@"提示") message:NSLocalizedString(@"You haven't puchased RecordAndEdit fucntion so you can not edit it.",@"您没有购买 记录和编辑 功能，无法编辑。")];
+        [self presentViewController:alertController animated:YES completion:nil];
+        return NO;
+    }
+}
+
+#pragma mark - TableView
+
+- (void)initTableView{
+    myTableView = [UITableView newAutoLayoutView];
+    myTableView.delegate = self;
+    myTableView.dataSource = self;
+    [myTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+    [self.view addSubview:myTableView];
+    [myTableView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:groupSeg withOffset:10];
+    [myTableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 10, 50, 10) excludingEdge:ALEdgeTop];
+    //[myTableView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
+    //[myTableView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:clearAllButton withOffset:-10];
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return  currentGroupArray.count;
 }
@@ -190,15 +328,25 @@
     cell.textLabel.text = [NSString stringWithFormat:@"%lu %@ %@",(unsigned long)(indexPath.row + 1),headerString,ewfrInfo.title];
     
     NSMutableString *ms = [NSMutableString new];
-    [ms appendFormat:@"%@:%lu",NSLocalizedString(@"FpCount", @"足迹点数"),(unsigned long)[ewfrInfo.footprintsCount integerValue]];
-    [ms appendFormat:@"  %@:%.2fkm",NSLocalizedString(@"Distance", @"里程"),[ewfrInfo.distance doubleValue]/1000.0];
-    [ms appendFormat:@"  %@:%.2fkm/h",NSLocalizedString(@"AvgSpeed", @"平时时速"),[ewfrInfo.averageSpeed doubleValue]*3.6];
+    [ms appendFormat:@"%@:%lu",NSLocalizedString(@"FootprintsCount", @"足迹点数"),(unsigned long)[ewfrInfo.footprintsCount integerValue]];
+    if (ewfrInfo.distance > 0) [ms appendFormat:@"  %@:%.2fkm",NSLocalizedString(@"Distance", @"里程"),[ewfrInfo.distance doubleValue]/1000.0];
+    if (ewfrInfo.averageSpeed > 0) [ms appendFormat:@"  %@:%.2fkm/h",NSLocalizedString(@"AvgSpeed", @"平时时速"),[ewfrInfo.averageSpeed doubleValue]*3.6];
     cell.detailTextLabel.text = ms;
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     EWFRInfo *ewfrInfo = currentGroupArray[indexPath.row];
+    
+    if (tableView.editing){
+        if (selectedEWFRInfoArray && ![selectedEWFRInfoArray containsObject:ewfrInfo]){
+            [selectedEWFRInfoArray addObject:ewfrInfo];
+            rightButton.enabled = selectedEWFRInfoArray.count >=2 ? YES : NO;
+            if (DEBUGMODE) NSLog(@"当前选中足迹包个数：%lu",(unsigned long)selectedEWFRInfoArray.count);
+        }
+        return;
+    }
+    
     EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository importFromMFRFile:[ewfrInfo filePath]];
     footprintsRepository.title = ewfrInfo.title;
     
@@ -300,19 +448,28 @@
  
 }
 
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
+    EWFRInfo *ewfrInfo = currentGroupArray[indexPath.row];
+    
+    if (tableView.editing){
+        if (selectedEWFRInfoArray && [selectedEWFRInfoArray containsObject:ewfrInfo]){
+            [selectedEWFRInfoArray removeObject:ewfrInfo];
+            rightButton.enabled = selectedEWFRInfoArray.count >=2 ? YES : NO;
+            if (DEBUGMODE) NSLog(@"当前选中足迹包个数：%lu",(unsigned long)selectedEWFRInfoArray.count);
+        }
+    }
+}
+
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
     EWFRInfo *ewfrInfo = currentGroupArray[indexPath.row];
     
-    if ([EverywhereSettingManager defaultManager].hasPurchasedRecordAndEdit) {
-        FootprintsRepositoryEditerVC *footprintsRepositoryEditerVC = [FootprintsRepositoryEditerVC new];
-        footprintsRepositoryEditerVC.ewfrInfo = ewfrInfo;
-        footprintsRepositoryEditerVC.contentSizeInPopup = self.contentSizeInPopup;
-        footprintsRepositoryEditerVC.landscapeContentSizeInPopup = self.landscapeContentSizeInPopup;
-        [self.popupController pushViewController:footprintsRepositoryEditerVC animated:YES];
-    }else{
-        [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"You haven't got RecordFucntionAndRecordMode so you can not edit it.", @"您没有购买足迹记录 & 记录模式，无法编辑。")]
-                           animated:YES
-                         completion:nil];
+    if ([self checkHasPurchasedRecordAndEdit]){
+        FootprintAnnotationPickerVC *footprintAnnotationPickerVC = [FootprintAnnotationPickerVC new];
+        footprintAnnotationPickerVC.ewfrInfo = ewfrInfo;
+        footprintAnnotationPickerVC.contentSizeInPopup = self.contentSizeInPopup;
+        footprintAnnotationPickerVC.landscapeContentSizeInPopup = self.landscapeContentSizeInPopup;
+        [self.popupController pushViewController:footprintAnnotationPickerVC animated:YES];
+
     }
 }
 
@@ -321,7 +478,7 @@
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return UITableViewCellEditingStyleDelete;
+    return cellEditingStyle;
 }
 
 /*

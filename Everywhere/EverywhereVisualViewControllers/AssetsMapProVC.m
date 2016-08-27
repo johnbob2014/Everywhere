@@ -53,7 +53,7 @@
 #import "ShareBar.h"
 #import "InAppPurchaseVC.h"
 #import "FootprintsRepositoryPickerVC.h"
-#import "FootprintsRepositoryEditerVC.h"
+#import "FootprintAnnotationPickerVC.h"
 #import "CLPlacemark+Assistant.h"
 #import "RecordModeSettingBar.h"
 
@@ -2266,7 +2266,7 @@
     EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
     footprintsRepository.footprintAnnotations = recordedFootprintAnnotations;
     footprintsRepository.creationDate = NOW;
-    footprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Record", @"记录"),[footprintsRepository.creationDate stringWithDefaultFormat]];
+    footprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Recorded", @"记录"),[footprintsRepository.creationDate stringWithDefaultFormat]];
     footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeRecorded;
     [EverywhereCoreDataManager  addEWFR:footprintsRepository];
     if(DEBUGMODE) NSLog(@"记录已经保存");
@@ -2275,7 +2275,7 @@
     UILocalNotification *noti = [UILocalNotification new];
     
     NSMutableString *messageMS = [NSMutableString new];
-    [messageMS appendFormat:@"%@\n%@\n%@ %lu",NSLocalizedString(@"Record has been sucessfully saved :", @"记录保存成功 :"),footprintsRepository.title,NSLocalizedString(@"Footprints Count: ", @"足迹点数量 : "),(long)recordedFootprintAnnotations.count];
+    [messageMS appendFormat:@"%@\n%@\n%@ %lu",NSLocalizedString(@"Recorded footprints has been sucessfully saved :", @"记录保存成功 :"),footprintsRepository.title,NSLocalizedString(@"Footprints Count: ", @"足迹点数量 : "),(long)recordedFootprintAnnotations.count];
     
     noti.alertBody = messageMS;
     noti.alertAction = NSLocalizedString(@"Action", @"操作");
@@ -2400,36 +2400,54 @@
 
 - (void)updateThumbnailForAddedEWFootprintAnnotations{
     //NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationsToAdd = [NSMutableArray new];
-    NSInteger index = 0;
+    NSInteger faIndex = 0;
     // 第1层循环
     for (EverywhereAnnotation *everywhereAnnotation in self.addedEWAnnos) {
+        EverywhereFootprintAnnotation *footprintAnnotation = self.addedEWFootprintAnnotations[faIndex++];
+        
+        if (self.settingManager.autoUseFirstAssetAsThumbnail){
+            NSString *firstID = everywhereAnnotation.assetLocalIdentifiers.firstObject;
+            NSData *imageDate = [self thumbnailDataWithLocalIdentifier:firstID];
+            footprintAnnotation.thumbnail = [[UIImage alloc] initWithData:imageDate];
+            continue;
+        }
         
         // 第2层循环
         BOOL hasAddedThumbnail = NO;
+        //NSInteger assetIndex = 0;
         for (NSString *assetLocalIdentifier in everywhereAnnotation.assetLocalIdentifiers) {
             PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:assetLocalIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
+            
             
             if (hasAddedThumbnail) break;
             
             // 以第一张actAsThumbnail属性为真的PHAssetInfo对应的缩略图作为该FootprintAnnotation的缩略图
-            if (assetInfo.actAsThumbnail){
+            if ([assetInfo.actAsThumbnail boolValue]){
+                /*
                 PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetInfo.localIdentifier] options:nil].firstObject;
-                EverywhereFootprintAnnotation *footprintAnnotation = self.addedEWFootprintAnnotations[index];
-                
                 UIImage *image = [asset synchronousFetchUIImageAtTargetSize:CGSizeMake(asset.pixelWidth * self.settingManager.thumbnailScaleRate, asset.pixelHeight * self.settingManager.thumbnailScaleRate)];
                 NSData *imageDate = UIImageJPEGRepresentation(image,self.settingManager.thumbnailCompressionQuality);
-                footprintAnnotation.thumbnail = [[UIImage alloc] initWithData:imageDate];
+                */
                 
-                //footprintAnnotation.thumbnail
+                NSData *imageDate = [self thumbnailDataWithLocalIdentifier:assetInfo.localIdentifier];
+                footprintAnnotation.thumbnail = [[UIImage alloc] initWithData:imageDate];
                 hasAddedThumbnail = YES;
             }
+            
+            //assetIndex++;
         }
         
-        index++;
+        //faIndex++;
     }
     
 }
 
+- (NSData *)thumbnailDataWithLocalIdentifier:(NSString *)localIdentifier{
+    PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[localIdentifier] options:nil].firstObject;
+    UIImage *image = [asset synchronousFetchUIImageAtTargetSize:CGSizeMake(asset.pixelWidth * self.settingManager.thumbnailScaleRate, asset.pixelHeight * self.settingManager.thumbnailScaleRate)];
+    NSData *imageDate = UIImageJPEGRepresentation(image,self.settingManager.thumbnailCompressionQuality);
+    return imageDate;
+}
 
 - (void)addLineOverlaysPro:(NSArray <id<MKAnnotation>> *)annotationArray{
     [self.myMapView removeOverlays:self.myMapView.overlays];
