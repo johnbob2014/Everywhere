@@ -137,6 +137,7 @@
 
 - (void)updateData:(NSInteger)index{
     settingManager.defaultTransport = index;
+    if (DEBUGMODE) NSLog(@"defaultTransport : %lu",settingManager.defaultTransport);
     
     switch (index) {
         case 0:
@@ -180,7 +181,6 @@
     }else{
         speedLabel.text = [NSString stringWithFormat:@"%.1fkm/h %.1fm/s",speedkmPerhour,self.speedmPerSecond];
     }
-    
 }
 
 - (void)setMinDistance:(CLLocationDistance)minDistance{

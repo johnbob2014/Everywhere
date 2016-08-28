@@ -8,15 +8,18 @@
 
 #import "ImageVC.h"
 
+@interface ImageVC() <UIScrollViewDelegate>
+@property (strong,nonatomic) NSArray <UIImage *> *imageArray;
+@end
+
 @implementation ImageVC{
     UIScrollView *scrollView;
-    UIImageView *imageView;
 }
 
-- (instancetype)initWithImage:(UIImage *)image{
+- (instancetype)initWithImageArray:(NSArray<UIImage *> *)imageArray{
     self = [super init];
     if (self) {
-        self.image = image;
+        self.imageArray = imageArray;
     }
     return self;
 }
@@ -24,25 +27,33 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     
+    /*
     CGFloat showWidth = self.image.size.width < ScreenWidth ? self.image.size.width : ScreenWidth - 20;
     CGFloat showHeight = self.image.size.height < ScreenHeight ? self.image.size.height : ScreenHeight - 80;
     self.contentSizeInPopup = CGSizeMake(showWidth, showHeight);
     self.landscapeContentSizeInPopup = CGSizeMake(showHeight, showWidth);
+    */
+    
+    self.title = [NSString stringWithFormat:@"%@ - %lu",self.title,self.imageArray.count];
+    
+    CGFloat imageWidth = self.view.frame.size.width;
+    CGFloat imageOffset = 20;
     
     scrollView = [UIScrollView newAutoLayoutView];
     scrollView.backgroundColor = [UIColor blackColor];
-    scrollView.contentSize = self.image.size;
+    scrollView.contentSize = CGSizeMake((imageWidth + imageOffset) * self.imageArray.count - imageOffset, self.view.frame.size.height - 10);
+    scrollView.delegate = self;
     [self.view addSubview:scrollView];
     [scrollView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
     
-    imageView = [UIImageView newAutoLayoutView];
-    imageView.backgroundColor = [UIColor blackColor];
-    imageView.contentMode = UIViewContentModeScaleAspectFit;
-    imageView.image = self.image;
-    [scrollView addSubview:imageView];
-    [imageView autoSetDimensionsToSize:self.image.size];
-    [imageView autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
-    [imageView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+    [self.imageArray enumerateObjectsUsingBlock:^(UIImage * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        UIImageView *imageView;
+        imageView = [[UIImageView alloc] initWithImage:obj];
+        imageView.backgroundColor = ClearColor;
+        imageView.contentMode = UIViewContentModeScaleAspectFit;
+        imageView.frame = CGRectMake((imageWidth + imageOffset) * idx, 0, imageWidth, self.view.frame.size.height - 10);
+        [scrollView addSubview:imageView];
+    }];
     
 }
 

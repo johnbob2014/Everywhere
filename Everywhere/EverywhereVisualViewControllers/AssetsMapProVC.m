@@ -18,7 +18,7 @@
 
 #define ButtionSize (ScreenHeight > 568 ? CGSizeMake(44, 44) : CGSizeMake(36, 36))
 #define ButtonEdgeLength (ScreenHeight > 568 ? 44 : 36)
-#define ButtonOffset (ScreenHeight > 568 ? 16 : 8)
+#define ButtonOffset (ScreenHeight > 568 ? 16 : 16)
 
 #import "AssetsMapProVC.h"
 @import Photos;
@@ -119,6 +119,7 @@
     NSDate *savedStartDateForBaseMode;
     NSDate *savedEndDateForBaseMode;
     
+    /*
     NSString *savedTitleForMomentMode;
     NSArray<id<MKAnnotation>> *savedAnnotationsForMomentMode;
     NSArray<id<MKOverlay>> *savedOverlaysForMomentMode;
@@ -130,6 +131,7 @@
     NSArray<id<MKOverlay>> *savedOverlaysForLocationMode;
     NSDate *savedStartDateForLocationMode;
     NSDate *savedEndDateForLocationMode;
+    */
 
 #pragma mark 用于RecordMode
     CLLocation *lastRecordLocation;
@@ -603,7 +605,7 @@
     [self alphaShowHideVerticalBar];
     self.settingManager.praiseCount++;
     if(DEBUGMODE) NSLog(@"praiseCount : %lu",(long)self.settingManager.praiseCount);
-    if (self.settingManager.praiseCount == 60) {
+    if (self.settingManager.praiseCount == 50) {
         [self askForPraise];
         self.settingManager.praiseCount = 0;
     }
@@ -611,7 +613,7 @@
 
 - (void)askForPraise{
     NSString *alertTitle = NSLocalizedString(@"AlbumMaps", @"相册地图");
-    NSString *alertMessage = NSLocalizedString(@"Praise me , please!", @"没有广告是不是很清爽？作者也不容易，抽空给个好评呗！🙏");
+    NSString *alertMessage = NSLocalizedString(@"Is it cool without any advertisements? The author is toil and moil. So take a little time to praise me, please!🙏", @"没有广告是不是很清爽？作者也不容易，抽空给个好评呗！🙏");
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Praise",@"去给好评") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -699,6 +701,7 @@
 }
 
 - (void)changeToBaseMode:(MapBaseMode)mapBaseMode{
+    /*
     // 保存现有数据
     if (mapBaseMode == MapBaseModeMoment) {
         // 保存LocationMode数据
@@ -715,9 +718,11 @@
         savedStartDateForMomentMode = self.startDate;
         savedEndDateForMomentMode = self.endDate;
     }
+    */
     
     [self clearMapData];
     
+    /*
     // 恢复之前的数据
     if (mapBaseMode == MapBaseModeMoment){
         // 恢复MomentMode数据
@@ -738,6 +743,7 @@
         [self.myMapView addAnnotations:self.addedEWAnnos];
         [self.myMapView addOverlays:savedOverlaysForLocationMode];
     }
+    */
     
     [self updateVisualViewForEWAnnos];
 }
@@ -767,11 +773,11 @@
     switch (self.settingManager.mapBaseMode) {
         case MapBaseModeMoment:
             msBaseModeBar.info = [NSDate localizedStringWithFormat:@"yyyy-MM-dd" startDate:self.startDate endDate:self.endDate firstDayOfWeek:self.settingManager.firstDayOfWeek];
-            savedTitleForMomentMode = msBaseModeBar.info;
+            //savedTitleForMomentMode = msBaseModeBar.info;
             break;
         case MapBaseModeLocation:
             msBaseModeBar.info = self.lastPlacemark;
-            savedTitleForLocationMode = msBaseModeBar.info;
+            //savedTitleForLocationMode = msBaseModeBar.info;
             break;
         default:
             break;
@@ -1183,7 +1189,7 @@
 #pragma mark leftVerticalBar 屏幕左下方，userLocationButton上方，包含设置、显示隐藏等4个按钮
     
     leftVerticalBar = [UIView newAutoLayoutView];
-    leftVerticalBar.backgroundColor = DEBUGMODE ? [[UIColor cyanColor] colorWithAlphaComponent:0.6] : [UIColor clearColor];
+    leftVerticalBar.backgroundColor = DEBUGMODE ? [RandomFlatColor colorWithAlphaComponent:0.6] : [UIColor clearColor];
     [self.view addSubview:leftVerticalBar];
     [leftVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
     [leftVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:userLocationButton withOffset:-ButtonOffset];
@@ -1243,7 +1249,7 @@
 #pragma mark rightSwipeVerticalBar 屏幕右下方，naviBar上方
     
     rightSwipeVerticalBar = [UIView newAutoLayoutView];
-    rightSwipeVerticalBar.backgroundColor = DEBUGMODE ? [[UIColor cyanColor] colorWithAlphaComponent:0.6] : [UIColor clearColor];
+    rightSwipeVerticalBar.backgroundColor = DEBUGMODE ? [RandomFlatColor colorWithAlphaComponent:0.6] : [UIColor clearColor];
     [self.view addSubview:rightSwipeVerticalBar];
     [rightSwipeVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
     [rightSwipeVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
@@ -1274,7 +1280,7 @@
 #pragma mark rightVerticalBar 屏幕右下方，rightSwipeVerticalBar上方，包含分享截图、分享足迹、进入扩展模式3个按钮
     
     rightVerticalBar = [UIView newAutoLayoutView];
-    rightVerticalBar.backgroundColor = DEBUGMODE ? [[UIColor cyanColor] colorWithAlphaComponent:0.6] : [UIColor clearColor];
+    rightVerticalBar.backgroundColor = DEBUGMODE ? [RandomFlatColor colorWithAlphaComponent:0.6] : [UIColor clearColor];
     [self.view addSubview:rightVerticalBar];
     [rightVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
     [rightVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:rightSwipeVerticalBar withOffset: - 20 - ButtonOffset];
@@ -1282,9 +1288,9 @@
     
     UIButton *rightBtn1 = [UIButton newAutoLayoutView];
     rightBtn1.alpha = 0.6;
-    [rightBtn1 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share_WBG"] forState:UIControlStateNormal];
+    [rightBtn1 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share2_WBG"] forState:UIControlStateNormal];
     rightBtn1.translatesAutoresizingMaskIntoConstraints = NO;
-    [rightBtn1 addTarget:self action:@selector(showShareImageVC) forControlEvents:UIControlEventTouchDown];
+    [rightBtn1 addTarget:self action:@selector(showShareFootprintsRepositoryVC) forControlEvents:UIControlEventTouchDown];
     [rightVerticalBar addSubview:rightBtn1];
     [rightBtn1 autoSetDimensionsToSize:ButtionSize];
     [rightBtn1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
@@ -1292,9 +1298,9 @@
     
     UIButton *rightBtn2 = [UIButton newAutoLayoutView];
     rightBtn2.alpha = 0.6;
-    [rightBtn2 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share2_WBG"] forState:UIControlStateNormal];
+    [rightBtn2 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share_WBG"] forState:UIControlStateNormal];
     rightBtn2.translatesAutoresizingMaskIntoConstraints = NO;
-    [rightBtn2 addTarget:self action:@selector(showShareFootprintsRepositoryVC) forControlEvents:UIControlEventTouchDown];
+    [rightBtn2 addTarget:self action:@selector(showShareImageVC) forControlEvents:UIControlEventTouchDown];
     [rightVerticalBar addSubview:rightBtn2];
     [rightBtn2 autoSetDimensionsToSize:ButtionSize];
     [rightBtn2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
@@ -1407,7 +1413,7 @@
 - (void)initRecordModeBar{
     // 需要外部引用，用于显示隐藏
     recordModeBar = [UIView newAutoLayoutView];
-    recordModeBar.backgroundColor = [UIColor clearColor];//[UIColor cyanColor]; //
+    recordModeBar.backgroundColor = DEBUGMODE ? [RandomFlatColor colorWithAlphaComponent:0.6] : [UIColor clearColor];
     [self.view addSubview:recordModeBar];
     [recordModeBar autoSetDimensionsToSize:CGSizeMake(ButtonEdgeLength * 5 + ButtonOffset * 4, ButtonEdgeLength + 30)];
     //[recordModeBar autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:msExtenedModeBar withOffset:10];
@@ -1659,6 +1665,13 @@
 }
 
 - (void)showShareImageVC{
+    if (!self.addedEWFootprintAnnotations || self.addedEWFootprintAnnotations.count == 0) {
+        [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"No footprints yet.Please choose a date or a location to add your album footprints.", @"您还没有添加足迹点，请选择日期或地址添加您的相册足迹。")]
+                           animated:YES completion:nil];
+        
+        return;
+    }
+
     if (!verticalBarIsAlphaZero) [self alphaShowHideVerticalBar];
     msBaseModeBar.alpha = 0;
     placemarkInfoBar.alpha = 0;
@@ -1810,6 +1823,7 @@
         
         return;
     }
+    [SVProgressHUD show];
     
     // placemarkInfo信息
     NSMutableString *ms = [NSMutableString new];
@@ -1819,10 +1833,9 @@
     [ms appendString:NSLocalizedString(@"Total ", @"总")];
     [ms appendFormat:@"%@ %@",placemarkInfoBar.totalTitle,placemarkInfoBar.totalString];
     
-    [SVProgressHUD show];
+    // 更新缩略图信息，比较耗时！！
     [self updateThumbnailForAddedEWFootprintAnnotations];
-    [SVProgressHUD dismiss];
-
+    
     // 生成分享对象
     EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
     footprintsRepository.footprintAnnotations = self.addedEWFootprintAnnotations;
@@ -1847,6 +1860,8 @@
    
     popupController = [[STPopupController alloc] initWithRootViewController:shareFRVC];
     popupController.containerView.layer.cornerRadius = 4;
+    
+    [SVProgressHUD dismiss];
     [popupController presentInViewController:self];
 }
 
@@ -2405,39 +2420,30 @@
     for (EverywhereAnnotation *everywhereAnnotation in self.addedEWAnnos) {
         EverywhereFootprintAnnotation *footprintAnnotation = self.addedEWFootprintAnnotations[faIndex++];
         
+        // 如果用户选择自动添加第一张照片作为缩略图
         if (self.settingManager.autoUseFirstAssetAsThumbnail){
             NSString *firstID = everywhereAnnotation.assetLocalIdentifiers.firstObject;
             NSData *imageDate = [self thumbnailDataWithLocalIdentifier:firstID];
-            footprintAnnotation.thumbnail = [[UIImage alloc] initWithData:imageDate];
+            footprintAnnotation.thumbnailArray = @[[[UIImage alloc] initWithData:imageDate]];
             continue;
         }
         
-        // 第2层循环
-        BOOL hasAddedThumbnail = NO;
-        //NSInteger assetIndex = 0;
+        
+        // 否则，开始第2层循环，添加actAsThumbnail属性为真的PHAssetInfo对应的缩略图
+        NSMutableArray <UIImage *> *ma = [NSMutableArray new];
         for (NSString *assetLocalIdentifier in everywhereAnnotation.assetLocalIdentifiers) {
             PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:assetLocalIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
             
-            
-            if (hasAddedThumbnail) break;
-            
-            // 以第一张actAsThumbnail属性为真的PHAssetInfo对应的缩略图作为该FootprintAnnotation的缩略图
+            // actAsThumbnail属性为真的PHAssetInfo对应的缩略图 添加到FootprintAnnotation的缩略图数组中
             if ([assetInfo.actAsThumbnail boolValue]){
-                /*
-                PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetInfo.localIdentifier] options:nil].firstObject;
-                UIImage *image = [asset synchronousFetchUIImageAtTargetSize:CGSizeMake(asset.pixelWidth * self.settingManager.thumbnailScaleRate, asset.pixelHeight * self.settingManager.thumbnailScaleRate)];
-                NSData *imageDate = UIImageJPEGRepresentation(image,self.settingManager.thumbnailCompressionQuality);
-                */
-                
+               
                 NSData *imageDate = [self thumbnailDataWithLocalIdentifier:assetInfo.localIdentifier];
-                footprintAnnotation.thumbnail = [[UIImage alloc] initWithData:imageDate];
-                hasAddedThumbnail = YES;
+                [ma addObject:[[UIImage alloc] initWithData:imageDate]];
             }
             
-            //assetIndex++;
         }
         
-        //faIndex++;
+        footprintAnnotation.thumbnailArray = ma;
     }
     
 }
@@ -2726,13 +2732,23 @@
         
         pinAV.canShowCallout = YES;
         
-        if (footprintAnnotation.thumbnail){
+        if (footprintAnnotation.thumbnailArray.count > 0){
             UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
             imageView.contentMode = UIViewContentModeScaleAspectFill;
             imageView.userInteractionEnabled = YES;
             UITapGestureRecognizer *imageViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapGR2:)];
             [imageView addGestureRecognizer:imageViewTapGR];
-            imageView.image = footprintAnnotation.thumbnail;
+            imageView.image = footprintAnnotation.thumbnailArray.firstObject;
+            
+            UIButton *badgeButton = [UIButton newAutoLayoutView];
+            badgeButton.userInteractionEnabled = NO;
+            [badgeButton setBackgroundImage:[UIImage imageNamed:@"badge"] forState:UIControlStateNormal];
+            [badgeButton setTitle:[NSString stringWithFormat:@"%ld",(long)footprintAnnotation.thumbnailArray.count] forState:UIControlStateNormal];
+            badgeButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
+            [imageView addSubview:badgeButton];
+            [badgeButton autoSetDimensionsToSize:CGSizeMake(20, 20)];
+            [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
+            [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
             
             pinAV.leftCalloutAccessoryView = imageView;
         }else{
@@ -2764,7 +2780,11 @@
 
 - (void)imageViewTapGR2:(UITapGestureRecognizer *)sender{
     EverywhereFootprintAnnotation *footprintAnnotation = (EverywhereFootprintAnnotation *)self.myMapView.selectedAnnotations.firstObject;
-    ImageVC *imageVC = [[ImageVC alloc] initWithImage:footprintAnnotation.thumbnail];
+    ImageVC *imageVC = [[ImageVC alloc] initWithImageArray:footprintAnnotation.thumbnailArray];
+    imageVC.title = footprintAnnotation.customTitle;
+    imageVC.contentSizeInPopup = ContentSizeInPopup_Big;
+    imageVC.landscapeContentSizeInPopup = LandscapeContentSizeInPopup_Big;
+    
     popupController = [[STPopupController alloc] initWithRootViewController:imageVC];
     popupController.containerView.layer.cornerRadius = 4;
     [popupController presentInViewController:self];

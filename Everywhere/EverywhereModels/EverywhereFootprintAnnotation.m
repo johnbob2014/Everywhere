@@ -39,7 +39,7 @@
     footprintAnnotation.isUserManuallyAdded = [aDecoder decodeBoolForKey:@"isUserManuallyAdded"];
     footprintAnnotation.altitude = [aDecoder decodeDoubleForKey:@"altitude"];
     footprintAnnotation.speed = [aDecoder decodeDoubleForKey:@"speed"];
-    footprintAnnotation.thumbnail = [aDecoder decodeObjectForKey:@"thumbnail"];
+    footprintAnnotation.thumbnailArray = [aDecoder decodeObjectForKey:@"thumbnailArray"];
     return footprintAnnotation;
 }
 
@@ -69,9 +69,8 @@
         [aCoder encodeDouble:self.speed forKey:@"speed"];
     }
     
-    if (self.thumbnail){
-        //NSData *thumbnailDate = UIImageJPEGRepresentation(self.thumbnail, 0.5);
-        [aCoder encodeObject:self.thumbnail forKey:@"thumbnail"];
+    if (self.thumbnailArray){
+        [aCoder encodeObject:self.thumbnailArray forKey:@"thumbnailArray"];
     }
 }
 

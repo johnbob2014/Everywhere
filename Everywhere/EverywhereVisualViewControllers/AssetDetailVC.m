@@ -67,8 +67,10 @@
             playButton.hidden = YES;
         }
         
-        if (currentIndex > 0) noteLabel.text = [NSString stringWithFormat:@"%lu/%lu",(unsigned long)(currentIndex + 1),(unsigned long)assetArray.count];
-        else noteLabel.text = NSLocalizedString(@"Swipe up to quite", @"上滑退出");
+        noteLabel.text = [NSString stringWithFormat:@"%lu/%lu",(unsigned long)(currentIndex + 1),(unsigned long)assetArray.count];
+        if (currentIndex == 0 || currentIndex == assetArray.count - 1){
+            noteLabel.text = [NSString stringWithFormat:@"%@\n%@",noteLabel.text,NSLocalizedString(@"Swipe up to quite", @"上滑退出")];
+        }
         
         self.currentAssetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:currentAsset.localIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
         
@@ -122,7 +124,7 @@
     noteLabel.textColor = [UIColor whiteColor];
     noteLabel.textAlignment = NSTextAlignmentCenter;
     noteLabel.font = [UIFont bodyFontWithSizeMultiplier:1.2];
-    noteLabel.text = NSLocalizedString(@"Swipe up to quite", @"上滑退出");
+    noteLabel.numberOfLines = 0;
     [self.view addSubview:noteLabel];
     [noteLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 0, 0, 0) excludingEdge:ALEdgeBottom];
     
@@ -197,7 +199,6 @@
     self.currentAssetInfo.actAsThumbnail = @(sender.on);
     [[EverywhereCoreDataManager appDelegateMOC] save:NULL];
 }
-
 
 @end
 

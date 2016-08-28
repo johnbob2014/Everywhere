@@ -445,7 +445,6 @@
 }
 
 - (void)setDefaultTransport:(DefaultTransport)defaultTransport{
-    //if(DEBUGMODE) NSLog(@"%ld",(long)defaultTransport);
     [[NSUserDefaults standardUserDefaults] setInteger:defaultTransport forKey:@"defaultTransport"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }

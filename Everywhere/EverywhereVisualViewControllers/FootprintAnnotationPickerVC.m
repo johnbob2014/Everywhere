@@ -71,7 +71,7 @@
     mergeDistanceTF.delegate = self;
     mergeDistanceTF.text = @"200";
     mergeDistanceTF.textAlignment = NSTextAlignmentCenter;
-    mergeDistanceTF.clearButtonMode = UITextFieldViewModeAlways;
+    mergeDistanceTF.clearButtonMode = UITextFieldViewModeWhileEditing;
     mergeDistanceTF.layer.borderWidth = 1;
     mergeDistanceTF.layer.cornerRadius = 3;
     mergeDistanceTF.layer.borderColor = [[EverywhereSettingManager defaultManager].extendedTintColor CGColor];

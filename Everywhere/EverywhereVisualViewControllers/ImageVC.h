@@ -9,6 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @interface ImageVC : UIViewController
-- (instancetype)initWithImage:(UIImage *)image;
-@property (strong,nonatomic) UIImage *image;
+//- (instancetype)initWithImage:(UIImage *)image;
+//@property (strong,nonatomic) UIImage *image;
+
+- (instancetype)initWithImageArray:(NSArray <UIImage *> *)imageArray;
+
+
 @end

@@ -87,7 +87,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 #pragma mark 每周第一天
     NSArray *firstDayOfWeekArray = @[NSLocalizedString(@"Sunday",@"星期日"),NSLocalizedString(@"Monday",@"星期一")];
     NSString *currentFirstDayOfWeek = firstDayOfWeekArray[self.settingManager.firstDayOfWeek < firstDayOfWeekArray.count ? self.settingManager.firstDayOfWeek : firstDayOfWeekArray.count - 1];
-    REPickerItem *firstDayOfWeekPickerItem = [REPickerItem itemWithTitle:NSLocalizedString(@"First Day Of Week",@"每周第一天")
+    REPickerItem *firstDayOfWeekPickerItem = [REPickerItem itemWithTitle:NSLocalizedString(@"🌓 First Day Of Week",@"🌓 每周第一天")
                                                                    value:@[currentFirstDayOfWeek]
                                                              placeholder:nil
                                                                  options:@[firstDayOfWeekArray]];
@@ -223,6 +223,12 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     // Use inline picker in iOS 7
     //
     extendedModeColorSchemePickerItem.inlinePicker = YES;
+
+    [extendedModeSection addItemsFromArray:@[extendedModeColorSchemePickerItem]];
+    
+#pragma mark - 扩展模式 分享
+    RETableViewSection *extendedModeShareSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Extended Mode - Share", @"扩展模式 - 分享")];
+    [extendedModeShareSection setHeaderHeight:20];
     
 #pragma mark 缩略图缩放比例
     
@@ -237,14 +243,24 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 #pragma mark 缩略图质量
     
     tempString = [NSString stringWithFormat:@"%.2f",self.settingManager.thumbnailCompressionQuality];
-    RETextItem *thumbnailCompressionQualityItem = [RETextItem itemWithTitle:NSLocalizedString(@"🔎 Thumbail Compression",@"🔎 缩略图压缩比") value:tempString placeholder:@""];
+    RETextItem *thumbnailCompressionQualityItem = [RETextItem itemWithTitle:NSLocalizedString(@"🔱 Thumbail Compression",@"🔱 缩略图压缩比") value:tempString placeholder:@""];
     thumbnailCompressionQualityItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     thumbnailCompressionQualityItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
         self.settingManager.thumbnailCompressionQuality = [item.value doubleValue];
     };
-    
 
+#pragma mark 是否自动以第一张图片作为分享缩略图
+    REBoolItem *autoUseFirstAssetAsThumbnailItem = [REBoolItem itemWithTitle:NSLocalizedString(@"Auto Use First Asset As Thumbnail", @"自动以第一张图片作为分享缩略图") value:self.settingManager.autoUseFirstAssetAsThumbnail switchValueChangeHandler:^(REBoolItem *item) {
+        self.settingManager.autoUseFirstAssetAsThumbnail = item.value;
+    }];
+    
+    [extendedModeShareSection addItemsFromArray:@[thumbnailScaleRateItem,thumbnailCompressionQualityItem,autoUseFirstAssetAsThumbnailItem]];
+
+#pragma mark - 扩展模式 记录
+    RETableViewSection *extendedModeRecordSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Extended Mode - Record", @"扩展模式 - 记录")];
+    [extendedModeRecordSection setHeaderHeight:20];
+    
 #pragma mark 最大足迹点数
     tempString = [NSString stringWithFormat:@"%lu",(long)self.settingManager.maxFootprintsCountForRecord];
     RETextItem *maxFootprintsCountForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"🎚 Max Footprints Count",@"🎚 单条记录最大足迹点数") value:tempString placeholder:@""];
@@ -254,6 +270,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         self.settingManager.maxFootprintsCountForRecord = [item.value integerValue];
     };
 
+/*
 #pragma mark 间隔
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.minTimeIntervalForRecord];
     RETextItem *minTimeIntervalForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"⏱ Custom Record TimeInterval",@"⏱ 自定义记录间隔") value:tempString placeholder:@"s"];
@@ -262,8 +279,10 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         if(DEBUGMODE) NSLog(@"%@",item.value);
         self.settingManager.minTimeIntervalForRecord = [item.value doubleValue];
     };
-
-#pragma mark 距离
+*/
+    
+    
+#pragma mark 自定义距离
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.minDistanceForRecord];
     RETextItem *minDistanceForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Custom Record Distance",@"📏 自定义记录距离") value:tempString placeholder:@"m"];
     minDistanceForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
@@ -274,7 +293,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 
 #pragma mark 步行距离
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.minDistanceWalkForRecord];
-    RETextItem *minDistanceWalkForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Walk Record Distance",@"📏 步行记录距离") value:tempString placeholder:@"m"];
+    RETextItem *minDistanceWalkForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"🏃🏻 Walk Record Distance",@"🏃🏻 步行记录距离") value:tempString placeholder:@"m"];
     minDistanceWalkForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     minDistanceWalkForRecordItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
@@ -283,7 +302,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     
 #pragma mark 骑行距离
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.minDistanceRideForRecord];
-    RETextItem *minDistanceRideForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Ride Record Distance",@"📏 骑行记录距离") value:tempString placeholder:@"m"];
+    RETextItem *minDistanceRideForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"🚴 Ride Record Distance",@"🚴 骑行记录距离") value:tempString placeholder:@"m"];
     minDistanceRideForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     minDistanceRideForRecordItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
@@ -292,32 +311,32 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 
 #pragma mark 驾车距离
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.minDistanceDriveForRecord];
-    RETextItem *minDistanceDriveForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Drive Record Distance",@"📏 驾车记录距离") value:tempString placeholder:@"m"];
+    RETextItem *minDistanceDriveForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"🚙 Drive Record Distance",@"🚙 驾车记录距离") value:tempString placeholder:@"m"];
     minDistanceDriveForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     minDistanceDriveForRecordItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
         self.settingManager.minDistanceDriveForRecord = [item.value doubleValue];
     };
 
-#pragma mark 驾车距离
+#pragma mark 高速距离
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.minDistanceHighSpeedForRecord];
-    RETextItem *minDistanceHighSpeedForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 HighSpeed Record Distance",@"📏 高速记录距离") value:tempString placeholder:@"m"];
+    RETextItem *minDistanceHighSpeedForRecordItem = [RETextItem itemWithTitle:NSLocalizedString(@"🚄 HighSpeed Record Distance",@"🚄 高速记录距离") value:tempString placeholder:@"m"];
     minDistanceHighSpeedForRecordItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     minDistanceHighSpeedForRecordItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
         self.settingManager.minDistanceHighSpeedForRecord = [item.value doubleValue];
     };
     
-    [extendedModeSection addItemsFromArray:@[extendedModeColorSchemePickerItem,thumbnailScaleRateItem,thumbnailCompressionQualityItem,maxFootprintsCountForRecordItem,minTimeIntervalForRecordItem,minDistanceForRecordItem,minDistanceWalkForRecordItem,minDistanceRideForRecordItem,minDistanceDriveForRecordItem,minDistanceHighSpeedForRecordItem]];
+    [extendedModeRecordSection addItemsFromArray:@[maxFootprintsCountForRecordItem,minDistanceForRecordItem,minDistanceWalkForRecordItem,minDistanceRideForRecordItem,minDistanceDriveForRecordItem,minDistanceHighSpeedForRecordItem]];
     
 #pragma mark - 足迹包管理
-    RETableViewSection *frManagementSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Footpinrts Repository Management", @"足迹包管理")];
-    [frManagementSection setHeaderHeight:20];
+    RETableViewSection *extendedModeFRManagementSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Footpinrts Repository Management", @"足迹包管理")];
+    [extendedModeFRManagementSection setHeaderHeight:20];
 
 #pragma mark  文件管理
     //RETableViewSection *fileManagementSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"File Management", @"文件管理")];
     //[fileManagementSection setHeaderHeight:20];
-    RETableViewItem *documentsItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"🗂 File Browser",@"🗂 文件浏览器") accessoryType:UITableViewCellAccessoryDisclosureIndicator  selectionHandler:^(RETableViewItem *item) {
+    RETableViewItem *documentsItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"🗂 File Manager",@"🗂 文件管理器") accessoryType:UITableViewCellAccessoryDisclosureIndicator  selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         
         [self checkhasPurchasedImportAndExport];
@@ -334,7 +353,25 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     }];
     
     //[fileManagementSection addItemsFromArray:@[documentsItem]];
+#pragma mark  导入
+    RETableViewItem *importRepositoryItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📥 Import From Documents Directory",@"📥 从Documents目录导入足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        if ([self checkhasPurchasedImportAndExport]){
+            
+            [SVProgressHUD showWithStatus:NSLocalizedString(@"Importing", @"正在导入")];
+            NSString *moveDirectoryPath = [[NSURL documentURL].path stringByAppendingPathComponent:@"Imported"];
+            NSUInteger count = [EverywhereCoreDataManager  importFootprintsRepositoryFromFilesAtPath:[NSURL documentURL].path moveAddedFilesToPath:moveDirectoryPath];
+            [SVProgressHUD dismiss];
+            
+            NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully import repository count", @"成功导入足迹包数量"),(unsigned long)count];
+            UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
+                                                                                                message:alertMessage];
+            [weakSelf presentViewController:alertController animated:YES completion:nil];
+        }
+    }];
+    
 
+#pragma mark  导出
     RETableViewItem *exportRepositoryToMFRItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📤 Export to MFR Files",@"📤 导出足迹包至MFR文件") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         if ([self checkhasPurchasedImportAndExport]){
@@ -363,23 +400,8 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
             [weakSelf presentViewController:alertController animated:YES completion:nil];
         }
     }];
-    
-    RETableViewItem *importRepositoryItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📥 Import From Documents Directory",@"📥 从Documents目录导入足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
-        [item deselectRowAnimated:YES];
-        if ([self checkhasPurchasedImportAndExport]){
-            
-            [SVProgressHUD showWithStatus:NSLocalizedString(@"Importing", @"正在导入")];
-            NSString *moveDirectoryPath = [[NSURL documentURL].path stringByAppendingPathComponent:@"Imported"];
-            NSUInteger count = [EverywhereCoreDataManager  importFootprintsRepositoryFromFilesAtPath:[NSURL documentURL].path moveAddedFilesToPath:moveDirectoryPath];
-            [SVProgressHUD dismiss];
-            
-            NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully import repository count", @"成功导入足迹包数量"),(unsigned long)count];
-            UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
-                                                                                               message:alertMessage];
-            [weakSelf presentViewController:alertController animated:YES completion:nil];
-        }
-    }];
-    
+
+#pragma mark  清空
     RETableViewItem *clearCatchItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"❌ Clear All Footprints Repositories",@"❌ 清空所有足迹包") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         
@@ -401,10 +423,9 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         
     }];
     
-
+    [extendedModeFRManagementSection addItemsFromArray:@[documentsItem,importRepositoryItem,exportRepositoryToMFRItem,exportRepositoryToGPXItem,clearCatchItem]];
     
-    [frManagementSection addItemsFromArray:@[documentsItem,exportRepositoryToMFRItem,exportRepositoryToGPXItem,importRepositoryItem,clearCatchItem]];
-#pragma mark 购买
+#pragma mark - 购买
     
     RETableViewSection *purchaseSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Purchase and Restore", @"购买与恢复")];
     [purchaseSection setHeaderHeight:20];
@@ -479,7 +500,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     }]];
     
     // 添加sections
-    [self.reTVManager addSectionsFromArray:@[globleSection,baseModeSection,extendedModeSection,frManagementSection,purchaseSection,shareSection,aboutSection]];
+    [self.reTVManager addSectionsFromArray:@[globleSection,baseModeSection,extendedModeSection,extendedModeShareSection,extendedModeRecordSection,extendedModeFRManagementSection,purchaseSection,shareSection,aboutSection]];
 }
 
 - (BOOL)checkhasPurchasedImportAndExport{

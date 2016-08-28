@@ -31,7 +31,7 @@
     self.title = NSLocalizedString(@"Share Snap Shots", @"分享截图");
     
     UIView *buttonContainer = [UIView newAutoLayoutView];
-    buttonContainer.backgroundColor = DEBUGMODE ? [[UIColor cyanColor] colorWithAlphaComponent:0.6] : [UIColor clearColor];
+    buttonContainer.backgroundColor = DEBUGMODE ? [RandomFlatColor colorWithAlphaComponent:0.6] : [UIColor clearColor];
     [self.view addSubview:buttonContainer];
     [buttonContainer autoSetDimensionsToSize:CGSizeMake(ButtonEdgeLength * 3 + ButtonOffset * 2, ButtonEdgeLength)];
     [buttonContainer autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];

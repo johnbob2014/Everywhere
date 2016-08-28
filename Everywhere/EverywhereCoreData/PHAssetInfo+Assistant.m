@@ -160,7 +160,6 @@
 }
 
 + (void)updatePlacemarkForAssetInfo:(PHAssetInfo *)assetInfo{
-#warning assetInfo is nil ???
     if (!assetInfo) return;
     PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetInfo.localIdentifier] options:nil].firstObject;
     

@@ -40,15 +40,12 @@
     settingManager.hasPurchasedRecordAndEdit = YES;
     settingManager.hasPurchasedShareAndBrowse = YES;
     settingManager.hasPurchasedImportAndExport = YES;
-    settingManager.autoUseFirstAssetAsThumbnail = YES;
-    
     
     // 首次启动
     if(!settingManager.everLaunched){
         NSLog(@"首次启动!!!");
         settingManager.everLaunched = YES;
         
-        settingManager.autoUseFirstAssetAsThumbnail = YES;
         settingManager.trialCountForMFR = 10;
         settingManager.trialCountForGPX = 10;
     }

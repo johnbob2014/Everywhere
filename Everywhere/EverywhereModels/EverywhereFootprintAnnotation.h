@@ -56,7 +56,7 @@
 /**
  *  缩略图
  */
-@property (strong,nonatomic) UIImage *thumbnail;
+@property (strong,nonatomic) NSArray <UIImage *> *thumbnailArray;
 
 - (NSString *)gpx_wpt_String;
 

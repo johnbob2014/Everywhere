@@ -76,8 +76,8 @@
         [self.rightButton addTarget:self action:@selector(rightButtonTouchDown:) forControlEvents:UIControlEventTouchDown];
         [rightView addSubview:self.rightButton];
         
-        self.leftButtonEnabled = YES;
-        self.rightButtonEnabled = YES;
+        self.leftButtonEnabled = selectedSegIndex == 0 ? YES : NO;
+        self.rightButtonEnabled = !self.leftButtonEnabled;
 
     }
     return self;

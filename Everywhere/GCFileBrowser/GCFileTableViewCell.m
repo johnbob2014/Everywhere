@@ -37,7 +37,7 @@
         scrollViewForTitle.delegate = self;
         scrollViewForTitle.userInteractionEnabled = NO;
         scrollViewForTitle.showsHorizontalScrollIndicator = YES;
-        scrollViewForTitle.backgroundColor = DEBUGMODE ? [[UIColor cyanColor] colorWithAlphaComponent:0.6] : [UIColor clearColor];
+        scrollViewForTitle.backgroundColor = DEBUGMODE ? [RandomFlatColor colorWithAlphaComponent:0.6] : [UIColor clearColor];
         [self.contentView addSubview:scrollViewForTitle];
         [scrollViewForTitle autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
         [scrollViewForTitle autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:30];
