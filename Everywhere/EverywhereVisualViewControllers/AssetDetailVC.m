@@ -155,7 +155,7 @@
     
     UILabel *actAsThumbnailLabel = [UILabel newAutoLayoutView];
     actAsThumbnailLabel.textColor = [UIColor whiteColor];
-    actAsThumbnailLabel.text = NSLocalizedString(@"Thumbnail:", @"用作缩略图：");
+    actAsThumbnailLabel.text = NSLocalizedString(@"Share:", @"分享：");
     [bottomView addSubview:actAsThumbnailLabel];
     [actAsThumbnailLabel autoPinEdge:ALEdgeRight toEdge:ALEdgeLeft ofView:actAsThumbnailSwitch withOffset:-10];
     [actAsThumbnailLabel autoAlignAxisToSuperviewAxis:ALAxisHorizontal];

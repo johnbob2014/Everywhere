@@ -10,9 +10,13 @@
 
 @implementation UIFont (Assistant)
 
-+(UIFont *)bodyFontWithSizeMultiplier:(CGFloat)multiplier{
++ (UIFont *)bodyFontWithSizeMultiplier:(CGFloat)multiplier{
     UIFont *bodyFont=[UIFont preferredFontForTextStyle:UIFontTextStyleBody];
-    return [UIFont fontWithName:bodyFont.fontName size:bodyFont.pointSize*multiplier];
+    return [UIFont fontWithName:bodyFont.fontName size:bodyFont.pointSize * multiplier];
+}
+
++ (UIFont *)boldBodyFontWithSizeMultiplier:(CGFloat)multiplier{
+    return [UIFont boldSystemFontOfSize:[UIFont bodyFontWithSizeMultiplier:multiplier].pointSize];
 }
 
 @end

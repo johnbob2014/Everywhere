@@ -6,8 +6,8 @@
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#define MKPolylineTitleSearched @"MKPolylineTitleSearched"
-#define MKPolylineTitleSavedForRecored @"MKPolylineTitleSavedForRecored"
+#define MKOverlayTitleForRedColor @"MKOverlayTitleForRedColor"
+#define MKOverlayTitleForRandomColor @"MKOverlayTitleForRandomColor"
 
 #define ContentSizeInPopup_Big CGSizeMake(ScreenWidth - 10, ScreenHeight - 10 - 80)
 #define LandscapeContentSizeInPopup_Big CGSizeMake(ScreenHeight - 10 - 80, ScreenWidth - 10)
@@ -32,7 +32,7 @@
 #import "EverywhereFootprintAnnotation.h"
 #import "EverywhereFootprintsRepository.h"
 
-#import "ImageVC.h"
+#import "SimpleImageBrowser.h"
 
 #import "UIFont+Assistant.h"
 #import "GCLocationAnalyser.h"
@@ -61,9 +61,11 @@
 #import "PHAssetInfo.h"
 #import "CoordinateInfo.h"
 
+/*
 #import "GCPolyline.h"
 #import "GCRoutePolyline.h"
 #import "GCRoutePolylineManager.h"
+*/
 
 @interface AssetsMapProVC () <MKMapViewDelegate,CLLocationManagerDelegate,UIGestureRecognizerDelegate>
 
@@ -102,12 +104,13 @@
 #pragma mark 用于Record模式的用户设置
 @property (assign,nonatomic) CLLocationDistance minDistanceForRecord;
 @property (assign,nonatomic) NSTimeInterval minTimeIntervalForRecord;
+
+@property (strong,nonatomic) EverywhereFootprintsRepository *currentShowEWFR;
 @end
 
 @implementation AssetsMapProVC{
     
     CLLocationManager *locationManagerForUserLocation;
-    UIButton *userLocationButton;
     NSTimer *checkAuthorizationStatusTimer;
     EverywhereFootprintsRepository *lastReceivedEWFR;
     
@@ -163,6 +166,10 @@
     
     ShareBar *shareBar;
     
+    UIButton *changeOverlayStyleButton;
+    UIButton *userLocationButton;
+    
+    UIView *leftBottomVerticalBar;
     UIView *leftVerticalBar;
     UIView *rightVerticalBar;
     UIView *rightSwipeVerticalBar;
@@ -183,9 +190,11 @@
 
 #pragma mark 用于更新地图
     __block BOOL allPlaceMarkReverseGeocodeSucceedForThisTime;
-    __block CLLocationDistance maxDistance;
+    //__block CLLocationDistance maxDistance;
     __block CLLocationDistance totalDistance;
     __block CLLocationDistance totalArea;
+    
+    UIColor *lastRandomColor;
 }
 
 #pragma mark - Life Cycle
@@ -520,6 +529,7 @@
             self.endDate = fetchResult.lastObject.creationDate;
             
             self.assetArray = (NSArray <PHAsset *> *)fetchResult;
+            [SVProgressHUD dismiss];
         }
     }
     
@@ -554,27 +564,21 @@
     self.addedEWFootprintAnnotations = nil;
     [self addAnnotations];
     
-    switch (self.settingManager.mapBaseMode) {
-        case MapBaseModeMoment:
-            [self addLineOverlaysPro:self.addedEWAnnos];
-            break;
-        case MapBaseModeLocation:
-            [self addCircleOverlaysPro:self.addedEWAnnos radius:self.settingManager.mergeDistanceForLocation / 2.0];
-            break;
-        default:
-            break;
+    if (self.settingManager.mapBaseMode == MapBaseModeMoment){
+        [self addLineOverlaysPro:self.addedEWAnnos];
+        [self updatePlacemarkInfoBarTotolInfo];
+        
+    }else{
+        [self addCircleOverlaysPro:self.addedEWAnnos radius:self.settingManager.mergeDistanceForLocation / 2.0];
+        //[self updateVisualViewForEWAnnos];
     }
-    
-    // 如果地图已经初始化，才进行更新
-    if (self.myMapView) [self updateVisualViewForEWAnnos];
-    
-    [SVProgressHUD dismiss];
 }
 
 - (void)setAddedIDAnnos:(NSArray<id<MKAnnotation>> *)addedIDAnnos{
     _addedIDAnnos = addedIDAnnos;
     // 设置导航序号
     self.currentAnnotationIndex = 0;
+    if(addedIDAnnos) [self moveMapViewToFirstAnnotationWithDistance:1000];
 }
 
 - (void)setIsInBaseMode:(BOOL)isInBaseMode{
@@ -597,8 +601,16 @@
     
     UITapGestureRecognizer *mapViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mapViewTapGR:)];
     mapViewTapGR.delegate = self;
-    mapViewTapGR.numberOfTouchesRequired = 1;
+    mapViewTapGR.numberOfTapsRequired = 1;
     [self.myMapView addGestureRecognizer:mapViewTapGR];
+    
+    /*
+    UITapGestureRecognizer *mapViewThreeTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mapViewThreeTapGR:)];
+    mapViewThreeTapGR.delegate = self;
+    mapViewThreeTapGR.numberOfTouchesRequired = 3;
+    mapViewThreeTapGR.numberOfTapsRequired = 1;
+    [self.myMapView addGestureRecognizer:mapViewThreeTapGR];
+     */
 }
 
 - (void)mapViewTapGR:(id)sender{
@@ -610,6 +622,12 @@
         self.settingManager.praiseCount = 0;
     }
 }
+
+/*
+- (void)mapViewThreeTapGR:(id)sender{
+    [self changeToRouteOverlays];
+}
+*/
 
 - (void)askForPraise{
     NSString *alertTitle = NSLocalizedString(@"AlbumMaps", @"相册地图");
@@ -745,7 +763,7 @@
     }
     */
     
-    [self updateVisualViewForEWAnnos];
+    //[self updateVisualViewForEWAnnos];
 }
 
 - (void)clearMapData{
@@ -1039,7 +1057,7 @@
     locationInfoWithCoordinateInfoBar.didGetMKDirectionsResponseHandler = ^(MKDirectionsResponse *response){
         MKRoute *route = response.routes.firstObject;
         MKPolyline *routePolyline = route.polyline;
-        routePolyline.title = MKPolylineTitleSearched;
+        routePolyline.title = MKOverlayTitleForRedColor;
         dispatch_async(dispatch_get_main_queue(), ^{
             if(routePolyline) [weakSelf.myMapView addOverlay:routePolyline];
         });
@@ -1174,17 +1192,35 @@
 
 - (void)initVerticalBars{
 
-#pragma mark userLocationButton 屏幕左下方，naviBar上方
+#pragma mark leftBottomVerticalBar 屏幕左下方，naviBar上方 包括 userLocationButton 和 changeOverlayStyleButton
+    
+    leftBottomVerticalBar = [UIView newAutoLayoutView];
+    leftBottomVerticalBar.backgroundColor = DEBUGMODE ? [RandomFlatColor colorWithAlphaComponent:0.6] : [UIColor clearColor];
+    [self.view addSubview:leftBottomVerticalBar];
+    [leftBottomVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+    [leftBottomVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
+    [leftBottomVerticalBar autoSetDimensionsToSize:CGSizeMake(ButtonEdgeLength, ButtonEdgeLength * 2 + ButtonOffset)];
+    
+    changeOverlayStyleButton = [UIButton newAutoLayoutView];
+    changeOverlayStyleButton.alpha = 0.6;
+    [changeOverlayStyleButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Repeat_WBG"] forState:UIControlStateNormal];
+    changeOverlayStyleButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [changeOverlayStyleButton addTarget:self action:@selector(changeOverlayStyle:) forControlEvents:UIControlEventTouchDown];
+    changeOverlayStyleButton.tag = 0;
+    [leftBottomVerticalBar addSubview:changeOverlayStyleButton];
+    [changeOverlayStyleButton autoSetDimensionsToSize:ButtionSize];
+    [changeOverlayStyleButton autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [changeOverlayStyleButton autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
+    
     userLocationButton = [UIButton newAutoLayoutView];
     userLocationButton.alpha = 0.6;
     [userLocationButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_User"] forState:UIControlStateNormal];
     userLocationButton.translatesAutoresizingMaskIntoConstraints = NO;
     [userLocationButton addTarget:self action:@selector(changeShowUserLocationMode) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:userLocationButton];
+    [leftBottomVerticalBar addSubview:userLocationButton];
     [userLocationButton autoSetDimensionsToSize:ButtionSize];
-    //[userLocationButton autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [userLocationButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
-    [userLocationButton autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:naviBar withOffset:-10];
+    [userLocationButton autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [userLocationButton autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:changeOverlayStyleButton withOffset:ButtonOffset];
     
 #pragma mark leftVerticalBar 屏幕左下方，userLocationButton上方，包含设置、显示隐藏等4个按钮
     
@@ -1192,7 +1228,7 @@
     leftVerticalBar.backgroundColor = DEBUGMODE ? [RandomFlatColor colorWithAlphaComponent:0.6] : [UIColor clearColor];
     [self.view addSubview:leftVerticalBar];
     [leftVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
-    [leftVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:userLocationButton withOffset:-ButtonOffset];
+    [leftVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:leftBottomVerticalBar withOffset:-ButtonOffset];
     [leftVerticalBar autoSetDimensionsToSize:CGSizeMake(ButtonEdgeLength, ButtonEdgeLength * 5 + ButtonOffset * 4)];
     
     UIButton *leftBtn1 = [UIButton newAutoLayoutView];
@@ -1320,13 +1356,15 @@
 
 - (void)alphaShowHideVerticalBar{
     // 基础模式专用栏
-    leftVerticalBar.alpha = leftVerticalBar.alpha == 1 ?  0 : 1;
+    leftVerticalBar.alpha = leftVerticalBar.alpha == 1 ? 0 : 1;
     rightVerticalBar.alpha = rightVerticalBar.alpha == 1 ? 0 : 1;
     
     // 通用栏
+    leftBottomVerticalBar.alpha = leftBottomVerticalBar.alpha == 1 ? 0 : 1;
     rightSwipeVerticalBar.alpha = rightSwipeVerticalBar.alpha == 1 ? 0 : 1;
+    
     // userLocationButton的alpha是0.6，所以不能用alpha
-    userLocationButton.hidden = userLocationButton.hidden ? NO : YES;
+    // userLocationButton.hidden = userLocationButton.hidden ? NO : YES;
     
     verticalBarIsAlphaZero = verticalBarIsAlphaZero ? NO : YES;
 }
@@ -1380,6 +1418,47 @@
             [self.myMapView setRegion:newRegion animated:YES];
         }
     }
+}
+
+- (void)changeOverlayStyle:(UIButton *)sender{
+    NSString *status;
+    if (self.isInBaseMode && self.settingManager.mapBaseMode == MapBaseModeLocation){
+        status = NSLocalizedString(@"Now in Location Mode. Can not change route style between simulation and line.", @"当前为地点模式，无法进行模拟路线与箭头路线的相互转化。");
+        [SVProgressHUD showErrorWithStatus:status];//NSLocalizedString(@"Can't change route style.", @"当前无法转化路线")];
+        return;
+    }
+    
+    if (!self.isInBaseMode && self.currentShowEWFR.radius > 0){
+        status = NSLocalizedString(@"The footprints repository is created in Location Mode. Can not change route style between simulation and line.", @"足迹包从地点模式生成，无法进行模拟路线与箭头路线的相互转化。");
+        [SVProgressHUD showErrorWithStatus:status];//[SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Can't change route style.", @"当前无法转化路线")];
+        //[SVProgressHUD dismissWithDelay:3.0];
+        return;
+    }
+    
+    [self.myMapView removeOverlays:self.myMapView.overlays];
+    
+    if (sender.tag == 0){
+        sender.tag = 1;
+        sender.enabled = NO;
+        
+        // 直线路线转化为模拟路线
+        [self asyncAddRouteOverlays:self.addedIDAnnos completionBlock:^(NSInteger routePolylineCount, CLLocationDistance routeTotalDistance) {
+            totalDistance = routeTotalDistance;
+            [self updatePlacemarkInfoBarTotolInfo];
+            sender.enabled = YES;
+        }];
+        
+    }else{
+        sender.tag = 0;
+        sender.enabled = NO;
+        
+        // 模拟路线转化为直线路线
+        [self addLineOverlaysPro:self.addedIDAnnos];
+        [self updatePlacemarkInfoBarTotolInfo];
+        
+        sender.enabled = YES;
+    }
+    
 }
 
 - (void)changeShowUserLocationMode{
@@ -1925,6 +2004,7 @@
 - (void)enterExtendedMode{
     if(DEBUGMODE) NSLog(@"进入扩展模式");
     self.isInBaseMode = NO;
+    changeOverlayStyleButton.tag = 0;
     
     if (!locationInfoWithCoordinateInfoBarIsOutOfVisualView) locationInfoWithCoordinateInfoBar.hidden = YES;
     
@@ -1963,6 +2043,7 @@
 - (void)quiteExtendedMode{
     // 设置颜色，所以这一句要放在最前面
     self.isInBaseMode = YES;
+    changeOverlayStyleButton.tag = 0;
     
     msBaseModeBar.hidden = NO;
     placemarkInfoBar.hidden = NO;
@@ -1989,7 +2070,7 @@
     self.startDate = savedStartDateForBaseMode;
     self.endDate = savedEndDateForBaseMode;
     
-    [self updateVisualViewForEWAnnos];
+    //[self updateVisualViewForEWAnnos];
     if(DEBUGMODE) NSLog(@"退出扩展模式");
 }
 
@@ -2031,6 +2112,8 @@
     self.addedEWAnnos = nil;
     [self.myMapView removeAnnotations:self.myMapView.annotations];
     
+    self.currentShowEWFR = footprintsRepository;
+    
     // 添加要显示的FootprintAnnotations
     [self.myMapView addAnnotations:footprintsRepository.footprintAnnotations];
     
@@ -2049,7 +2132,7 @@
         [self addCircleOverlaysPro:footprintsRepository.footprintAnnotations radius:footprintsRepository.radius];
     }
     
-    [self updateVisualViewForEWFootprintAnnotations];
+    //[self updateVisualViewForEWFootprintAnnotations];
     
 }
 
@@ -2305,7 +2388,7 @@
     for (id<MKOverlay> overlay in self.myMapView.overlays) {
         if ([overlay isKindOfClass:[MKPolyline class]]){
             MKPolyline *polyline = (MKPolyline *)overlay;
-            if(![polyline.title isEqualToString:MKPolylineTitleSavedForRecored])
+            if(![polyline.title isEqualToString:MKOverlayTitleForRandomColor])
                [self.myMapView removeOverlay:overlay];
         }
     }
@@ -2319,7 +2402,7 @@
         coordinates[i++] = fpAnnotation.coordinate;
     }
     MKPolyline *polyline = [MKPolyline polylineWithCoordinates:coordinates count:recordedFootprintAnnotations.count];
-    polyline.title = MKPolylineTitleSavedForRecored;
+    polyline.title = MKOverlayTitleForRandomColor;
     
     if (!savedPolylineForRecord) savedPolylineForRecord = [NSMutableArray new];
     [savedPolylineForRecord addObject:polyline];
@@ -2457,7 +2540,7 @@
 
 - (void)addLineOverlaysPro:(NSArray <id<MKAnnotation>> *)annotationArray{
     [self.myMapView removeOverlays:self.myMapView.overlays];
-    maxDistance = 500;
+    //maxDistance = 500;
     if (annotationArray.count >= 2) {
         // 记录距离信息
         NSMutableArray *distanceArray = [NSMutableArray new];
@@ -2465,23 +2548,30 @@
         
         // 添加 MKOverlays
         
-        NSMutableArray <MKPolyline *> *polylinesToAdd = [NSMutableArray new];
-        NSMutableArray <MKPolygon *> *polygonsToAdd = [NSMutableArray new];
+        //NSMutableArray <MKPolyline *> *polylinesToAdd = [NSMutableArray new];
+        //NSMutableArray <MKPolygon *> *polygonsToAdd = [NSMutableArray new];
         __block CLLocationCoordinate2D lastCoordinate;
         [annotationArray enumerateObjectsUsingBlock:^(id<MKAnnotation> _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if (idx >= 1) {
                 
+                float progress = (float)(idx+1)/(float)annotationArray.count;
+                NSString *status = [NSString stringWithFormat:@"%@\n%lu/%lu",NSLocalizedString(@"Adding line route", @"正在添加箭头路线"),(idx + 1),annotationArray.count];
+                [SVProgressHUD showProgress:progress status:status];
+                
                 MKPolyline *polyline = [AssetsMapProVC createLineMKPolylineBetweenStartCoordinate:lastCoordinate endCoordinate:obj.coordinate];
-                [polylinesToAdd addObject:polyline];
+                //[polylinesToAdd addObject:polyline];
+                polyline.title = MKOverlayTitleForRandomColor;
                 
                 CLLocationDistance subDistance = MKMetersBetweenMapPoints(MKMapPointForCoordinate(lastCoordinate), MKMapPointForCoordinate(obj.coordinate));
-                if (maxDistance < subDistance) maxDistance = subDistance;
+                //if (maxDistance < subDistance) maxDistance = subDistance;
                 totalDistance += subDistance;
                 [distanceArray addObject:[NSNumber numberWithDouble:subDistance]];
                 
                 MKPolygon *polygon = [AssetsMapProVC createArrowMKPolygonBetweenStartCoordinate:lastCoordinate endCoordinate:obj.coordinate];
-                [polygonsToAdd addObject:polygon];
+                //[polygonsToAdd addObject:polygon];
+                polygon.title = MKOverlayTitleForRandomColor;
                 
+                [self.myMapView addOverlays:@[polyline,polygon]];
                 
                 lastCoordinate = obj.coordinate;
             }else{
@@ -2489,9 +2579,11 @@
             }
         }];
         
+        [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Finish adding line route", @"箭头路线添加完成")];
+        [SVProgressHUD dismissWithDelay:2.0];
         //if(DEBUGMODE) NSLog(@"%@",overlaysToAdd);
-        [self.myMapView addOverlays:polylinesToAdd];
-        [self.myMapView addOverlays:polygonsToAdd];
+        //[self.myMapView addOverlays:polylinesToAdd];
+        //[self.myMapView addOverlays:polygonsToAdd];
     }
 }
 
@@ -2535,104 +2627,108 @@
         
         // 添加 MKOverlays
         
-        NSMutableArray <MKCircle *> *circlesToAdd = [NSMutableArray new];
+        //NSMutableArray <MKCircle *> *circlesToAdd = [NSMutableArray new];
         
         [annotationArray enumerateObjectsUsingBlock:^(id<MKAnnotation> _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            //if ([obj respondsToSelector:@selector(radius)]) radius = (CLLocationDistance)[[obj performSelector:@selector(radius)] doubleValue];
+            float progress = (float)(idx+1)/(float)annotationArray.count;
+            NSString *status = [NSString stringWithFormat:@"%@\n%lu/%lu",NSLocalizedString(@"Adding range circle", @"正在添加范围圆圈"),(idx + 1),annotationArray.count];
+            [SVProgressHUD showProgress:progress status:status];
+            
             MKCircle *circle = [MKCircle circleWithCenterCoordinate:obj.coordinate radius:circleRadius];
-            if (circle) [circlesToAdd addObject:circle];
+            if (circle) [self.myMapView addOverlay:circle];//[circlesToAdd addObject:circle];
         }];
         
-        [self.myMapView addOverlays:circlesToAdd];
+        [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Finish adding range circle", @"范围圆圈添加完成")];
+        [SVProgressHUD dismissWithDelay:2.0];
+        //[self.myMapView addOverlays:circlesToAdd];
     }
 
 }
 
-- (void)asyncAddRouteOverlays{
+/**
+ *  异步添加模拟路线
+ *
+ *  @param annotationArray MKAnnotation数组
+ *  @param completionBlock 添加完成块
+ */
+- (void)asyncAddRouteOverlays:(NSArray <id<MKAnnotation>> *)annotationArray completionBlock:(void(^)(NSInteger routePolylineCount,CLLocationDistance routeTotalDistance))completionBlock{
     [self.myMapView removeOverlays:self.myMapView.overlays];
-    maxDistance = 500;
+    //maxDistance = 0;
+    
+    if (annotationArray.count < 2){
+        if(completionBlock) completionBlock(0,0);
+        return;
+    }
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        if (self.addedEWAnnos.count >= 2) {
-            // 记录距离信息
-            NSMutableArray *distanceArray = [NSMutableArray new];
-            totalDistance = 0;
-            __block CLLocationCoordinate2D lastCoordinate;
-            // 添加 MKOverlays
-            
-            //NSMutableArray <MKPolyline *> *polylinesToAdd = [NSMutableArray new];
-            GCRoutePolylineManager *rpManager = [GCRoutePolylineManager defaultManager];
-            
-            [self.addedEWAnnos enumerateObjectsUsingBlock:^(EverywhereAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                if (idx > 0){
-                    GCRoutePolyline *foundedRP = [rpManager fetchRoutePolylineWithSource:lastCoordinate destination:obj.coordinate];
-                    __block CLLocationDistance subDistance;
-                    if (foundedRP) {
-                        if(DEBUGMODE) NSLog(@"foundedRP : %@",foundedRP);
-                        //subDistance = foundedRP.routeDistance;
+        
+        // 记录距离信息
+        __block CLLocationDistance routeTotalDistance = 0;
+        __block NSInteger routePolylineCount = 0;
+        __block CLLocationCoordinate2D lastCoordinate;
+        
+        [annotationArray enumerateObjectsUsingBlock:^(id<MKAnnotation> _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (idx > 0){
+                float progress = (float)(idx+1)/(float)annotationArray.count;
+                NSString *status = [NSString stringWithFormat:@"%@\n%lu/%lu",NSLocalizedString(@"Adding simulation route", @"正在添加模拟路线"),(idx + 1),annotationArray.count];
+                [SVProgressHUD showProgress:progress status:status];
+                [AssetsMapProVC asyncCreateRouteMKPolylineBetweenStartCoordinate:lastCoordinate
+                                                                   endCoordinate:obj.coordinate
+                                                                 completionBlock:^(BOOL succeeded, MKPolyline *routePolyline, CLLocationDistance routeDistance) {
+                    if (succeeded){
+                        routePolylineCount++;
+                        //if (maxDistance < routeDistance) maxDistance = routeDistance;
+                        routeTotalDistance += routeDistance;
+
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            [self.myMapView addOverlay:foundedRP.polyline];
+                            [self.myMapView addOverlay:routePolyline];
                         });
                         
-                    }else{
-                        MKMapItem *lastMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:lastCoordinate addressDictionary:nil]];
-                        MKMapItem *currentMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:obj.coordinate addressDictionary:nil]];
-                        
-                        MKDirectionsRequest *directionsRequest = [MKDirectionsRequest new];
-                        [directionsRequest setSource:lastMapItem];
-                        [directionsRequest setDestination:currentMapItem];
-                        
-                        MKDirections *directions = [[MKDirections alloc] initWithRequest:directionsRequest];
-                        [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse * _Nullable response, NSError * _Nullable error) {
-                            MKRoute *route = response.routes.firstObject;
-                            
-                            subDistance = route.distance;
-                            
-                            
-                            MKPolyline *routePolyline = route.polyline;
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                if(routePolyline) [self.myMapView addOverlay:routePolyline];
-                            });
-                            
-                            if (routePolyline){
-                                GCRoutePolyline *newRP = [GCRoutePolyline newRoutePolyline:routePolyline source:lastCoordinate destination:obj.coordinate];
-                                newRP.routeDistance = subDistance;
-                                if(DEBUGMODE) NSLog(@"newRP : %@",newRP);
-                                [rpManager addRoutePolyline:newRP];
-                            }
-                            
-                            [NSThread sleepForTimeInterval:0.5];
-                        }];
-                        
                     }
-                    
-                    if (maxDistance < subDistance) maxDistance = subDistance;
-                    totalDistance += subDistance;
-                    [distanceArray addObject:[NSNumber numberWithDouble:subDistance]];
-                    
-                    
-                }else{
-                    lastCoordinate = obj.coordinate;
-                }
+                }];
                 
-            }];// 结束循环
-            
-            NSString *total;
-            NSString *totalString = NSLocalizedString(@"Total:", @"总里程:");
-            if (totalDistance >=1000) {
-                total = [NSString stringWithFormat:@"%@ %.2f km",totalString,totalDistance/1000];
-            }else{
-                total = [NSString stringWithFormat:@"%@ %.0f m",totalString,totalDistance];
+                [NSThread sleepForTimeInterval:0.2];
+                
+                lastCoordinate = obj.coordinate;
             }
-            if(DEBUGMODE) NSLog(@"%@",total);
             
-        }
+        }];// 结束循环
         
+        if (completionBlock){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionBlock(routePolylineCount,routeTotalDistance);
+                [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Finish adding simulation route", @"模拟路线添加完成")];
+                [SVProgressHUD dismissWithDelay:2.0];
+            });
+        }
     });
-    
 }
 
++ (void)asyncCreateRouteMKPolylineBetweenStartCoordinate:(CLLocationCoordinate2D)startCoord endCoordinate:(CLLocationCoordinate2D)endCoord completionBlock:(void(^)(BOOL succeeded,MKPolyline *routePolyline,CLLocationDistance routeDistance))completionBlock{
+    MKMapItem *startMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:startCoord addressDictionary:nil]];
+    MKMapItem *endCoordMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:endCoord addressDictionary:nil]];
+    
+    MKDirectionsRequest *directionsRequest = [MKDirectionsRequest new];
+    [directionsRequest setSource:startMapItem];
+    [directionsRequest setDestination:endCoordMapItem];
+    
+    MKDirections *directions = [[MKDirections alloc] initWithRequest:directionsRequest];
+    [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse * _Nullable response, NSError * _Nullable error) {
+        MKRoute *route = response.routes.firstObject;
+        if (route){
+            MKPolyline *randomColorPolyline = route.polyline;
+            randomColorPolyline.title = MKOverlayTitleForRandomColor;
+            completionBlock(YES,randomColorPolyline,route.distance);
+        }else{
+            completionBlock(NO,nil,0);
+        }
+    }];
+}
+
+/*
 - (void)updateVisualViewForEWAnnos{
+    if (!self.myMapView) return;
+    
     // 自己的
     if (self.addedEWAnnos.count > 0) {
         
@@ -2641,7 +2737,7 @@
         [self updatePlacemarkInfoBarTotolInfo];
         
         if (self.settingManager.mapBaseMode == MapBaseModeLocation){
-            maxDistance = self.settingManager.mergeDistanceForLocation * 8.0;
+            //maxDistance = self.settingManager.mergeDistanceForLocation * 8.0;
         }
     
         // 移动地图到第一个点
@@ -2674,6 +2770,21 @@
         [self.myMapView selectAnnotation:firstFootprintAnnotation animated:YES];
     }
 
+}
+*/
+
+- (void)moveMapViewToFirstAnnotationWithDistance:(CLLocationDistance)regionDistance{
+    
+    id<MKAnnotation> firstAnnotation = self.addedIDAnnos.firstObject;
+    
+    if (self.addedIDAnnos.count > 1){
+        id<MKAnnotation> secondAnnotation = self.addedIDAnnos[2];
+        regionDistance = fabs(MKMetersBetweenMapPoints(MKMapPointForCoordinate(firstAnnotation.coordinate), MKMapPointForCoordinate(secondAnnotation.coordinate))) * 4.0;
+    }
+    
+    MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(firstAnnotation.coordinate, regionDistance, regionDistance);
+    [self.myMapView setRegion:showRegion animated:NO];
+    [self.myMapView selectAnnotation:firstAnnotation animated:YES];
 }
 
 #pragma mark - MKMapViewDelegate
@@ -2780,7 +2891,7 @@
 
 - (void)imageViewTapGR2:(UITapGestureRecognizer *)sender{
     EverywhereFootprintAnnotation *footprintAnnotation = (EverywhereFootprintAnnotation *)self.myMapView.selectedAnnotations.firstObject;
-    ImageVC *imageVC = [[ImageVC alloc] initWithImageArray:footprintAnnotation.thumbnailArray];
+    SimpleImageBrowser *imageVC = [[SimpleImageBrowser alloc] initWithImageArray:footprintAnnotation.thumbnailArray];
     imageVC.title = footprintAnnotation.customTitle;
     imageVC.contentSizeInPopup = ContentSizeInPopup_Big;
     imageVC.landscapeContentSizeInPopup = LandscapeContentSizeInPopup_Big;
@@ -2834,15 +2945,17 @@
 }
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay{
+    
     if ([overlay isKindOfClass:[MKPolyline class]]) {
         MKPolylineRenderer *polylineRenderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
         MKPolyline *polyline = (MKPolyline *)overlay;
         
-        if ([polyline.title isEqualToString:MKPolylineTitleSavedForRecored]) {
-            // 记录的且已经保存的路线
+        if ([polyline.title isEqualToString:MKOverlayTitleForRandomColor]) {
+            // 模拟路线、记录的且已经保存的路线
             polylineRenderer.lineWidth = 2;
-            polylineRenderer.strokeColor = [UIColor randomFlatColor];
-        }else if ([polyline.title isEqualToString:MKPolylineTitleSearched]) {
+            lastRandomColor = [UIColor colorWithRandomFlatColorExcludingColorsInArray:@[FlatWhite,FlatWhiteDark,FlatBlack,FlatBlackDark,FlatRed,FlatRedDark]];
+            polylineRenderer.strokeColor = lastRandomColor;
+        }else if ([polyline.title isEqualToString:MKOverlayTitleForRedColor]) {
             // 查找的路线
             polylineRenderer.lineWidth = 2;
             polylineRenderer.strokeColor = [UIColor flatRedColor];//[UIColor brownColor];
@@ -2857,7 +2970,7 @@
         // 箭头
         MKPolygonRenderer *polygonRenderer = [[MKPolygonRenderer alloc] initWithPolygon:overlay];
         polygonRenderer.lineWidth = 2;
-        polygonRenderer.strokeColor = self.currentTintColor;//[[UIColor brownColor] colorWithAlphaComponent:0.6];
+        polygonRenderer.strokeColor = lastRandomColor;// self.currentTintColor;//[[UIColor brownColor] colorWithAlphaComponent:0.6];
         return polygonRenderer;
     }else if ([overlay isKindOfClass:[MKCircle class]]){
         // 范围圆圈

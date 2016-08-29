@@ -11,7 +11,7 @@
 
 typedef NS_ENUM(NSUInteger, UILabelStyle) {
     UILabelStyleBrownBold,
-    UILabelStyleSystem,
+    UILabelStyleWhiteFontBlackBackground,
     UILabelStyleGreen
 };
 

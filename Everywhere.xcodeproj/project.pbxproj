@@ -125,7 +125,7 @@
 		4B3AF9CC1D2F3E70009BD545 /* GCRoutePolyline.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3AF9C61D2F3E70009BD545 /* GCRoutePolyline.m */; };
 		4B3AF9CD1D2F3E70009BD545 /* GCRoutePolylineManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3AF9C81D2F3E70009BD545 /* GCRoutePolylineManager.m */; };
 		4B3C10081D1CDCA700C20C72 /* UIView+AutoLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */; };
-		4B448E1D1D6A9F6E0009ED09 /* ImageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B448E1C1D6A9F6E0009ED09 /* ImageVC.m */; };
+		4B448E1D1D6A9F6E0009ED09 /* SimpleImageBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B448E1C1D6A9F6E0009ED09 /* SimpleImageBrowser.m */; };
 		4B69F5021D614DA100575AC3 /* UILabel+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B69F5011D614DA100575AC3 /* UILabel+Assistant.m */; };
 		4B69F5091D6156A800575AC3 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4B69F5041D6156A800575AC3 /* FontAwesome.ttf */; };
 		4B69F50A1D6156A800575AC3 /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B69F5061D6156A800575AC3 /* NSString+FontAwesome.m */; };
@@ -341,8 +341,8 @@
 		4B3AF9C81D2F3E70009BD545 /* GCRoutePolylineManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCRoutePolylineManager.m; sourceTree = "<group>"; };
 		4B3C10061D1CDCA700C20C72 /* UIView+AutoLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AutoLayout.h"; sourceTree = "<group>"; };
 		4B3C10071D1CDCA700C20C72 /* UIView+AutoLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AutoLayout.m"; sourceTree = "<group>"; };
-		4B448E1B1D6A9F6E0009ED09 /* ImageVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImageVC.h; path = EverywhereVisualViewControllers/ImageVC.h; sourceTree = "<group>"; };
-		4B448E1C1D6A9F6E0009ED09 /* ImageVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImageVC.m; path = EverywhereVisualViewControllers/ImageVC.m; sourceTree = "<group>"; };
+		4B448E1B1D6A9F6E0009ED09 /* SimpleImageBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimpleImageBrowser.h; path = EverywhereVisualViewControllers/SimpleImageBrowser.h; sourceTree = "<group>"; };
+		4B448E1C1D6A9F6E0009ED09 /* SimpleImageBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SimpleImageBrowser.m; path = EverywhereVisualViewControllers/SimpleImageBrowser.m; sourceTree = "<group>"; };
 		4B5E6A7D1D66B1C9000D2F60 /* EverywhereCoreDataHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EverywhereCoreDataHeader.h; path = EverywhereCoreData/EverywhereCoreDataHeader.h; sourceTree = "<group>"; };
 		4B69F5001D614DA100575AC3 /* UILabel+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UILabel+Assistant.h"; path = "UILabel+Assistant/UILabel+Assistant.h"; sourceTree = "<group>"; };
 		4B69F5011D614DA100575AC3 /* UILabel+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UILabel+Assistant.m"; path = "UILabel+Assistant/UILabel+Assistant.m"; sourceTree = "<group>"; };
@@ -564,8 +564,8 @@
 				1E5A54171D28FE0F0056CF46 /* AssetsMapProVC.m */,
 				4B27FDC61D2CAB5500067683 /* AssetDetailVC.h */,
 				4B27FDC71D2CAB5500067683 /* AssetDetailVC.m */,
-				4B448E1B1D6A9F6E0009ED09 /* ImageVC.h */,
-				4B448E1C1D6A9F6E0009ED09 /* ImageVC.m */,
+				4B448E1B1D6A9F6E0009ED09 /* SimpleImageBrowser.h */,
+				4B448E1C1D6A9F6E0009ED09 /* SimpleImageBrowser.m */,
 				4B1D5E7D1D3645A70011552F /* SettingVC.h */,
 				4B1D5E7E1D3645A70011552F /* SettingVC.m */,
 				4B1B4BDD1D387A4200CCD842 /* AboutVC.h */,
@@ -1231,7 +1231,7 @@
 				4B1D5E7F1D3645A70011552F /* SettingVC.m in Sources */,
 				4B08662B1D373658000300AD /* ShareImageVC.m in Sources */,
 				4B1B4BE11D387A4200CCD842 /* AboutVC.m in Sources */,
-				4B448E1D1D6A9F6E0009ED09 /* ImageVC.m in Sources */,
+				4B448E1D1D6A9F6E0009ED09 /* SimpleImageBrowser.m in Sources */,
 				1EF62A531D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m in Sources */,
 				4B079BAA1D61B07800BC4115 /* UIView+ChameleonPrivate.m in Sources */,
 				4BF8DC151D37882E00BC7B64 /* ShareBar.m in Sources */,

@@ -1,5 +1,5 @@
 //
-//  ImageVC.h
+//  SimpleImageBrowser.h
 //  Everywhere
 //
 //  Created by BobZhang on 16/8/22.
@@ -8,11 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ImageVC : UIViewController
-//- (instancetype)initWithImage:(UIImage *)image;
-//@property (strong,nonatomic) UIImage *image;
+@interface SimpleImageBrowser : UIViewController
 
+/**
+ *  初始化方法
+ *
+ *  @param imageArray UIImage数组
+ *
+ *  @return 实例
+ */
 - (instancetype)initWithImageArray:(NSArray <UIImage *> *)imageArray;
-
 
 @end

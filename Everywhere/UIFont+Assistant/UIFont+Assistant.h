@@ -10,6 +10,7 @@
 
 @interface UIFont (Assistant)
 
-+(UIFont *)bodyFontWithSizeMultiplier:(CGFloat)multiplier;
++ (UIFont *)bodyFontWithSizeMultiplier:(CGFloat)multiplier;
++ (UIFont *)boldBodyFontWithSizeMultiplier:(CGFloat)multiplier;
 
 @end

@@ -37,6 +37,13 @@
             self.shadowColor = GCCOLOR_COUNTER_SHADOW;
             self.shadowOffset = CGSizeMake(0, 1);
             break;
+        case UILabelStyleWhiteFontBlackBackground:
+            //self.font = [UIFont bo]
+            self.textColor = [UIColor whiteColor];
+            self.backgroundColor = [UIColor blackColor];
+            self.shadowColor = GCCOLOR_COUNTER_SHADOW;
+            self.shadowOffset = CGSizeMake(0, 1);
+            break;
         default:
             break;
     }
