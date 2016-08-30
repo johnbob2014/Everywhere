@@ -7,6 +7,7 @@
 //
 
 #import "AboutVC.h"
+#import "EverywhereSettingManager.h"
 
 @interface AboutVC ()
 
@@ -32,7 +33,13 @@
 }
 
 -(void)initAboutUI{
+    UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGR:)];
+    tapGR.numberOfTapsRequired = 3;
+    tapGR.numberOfTouchesRequired = 1;
+    
     self.imageView=[[UIImageView alloc]initForAutoLayout];
+    self.imageView.userInteractionEnabled = YES;
+    [self.imageView addGestureRecognizer:tapGR];
     [self.imageView setImage:[UIImage imageNamed:@"地球_300_300"]];
     [self.view addSubview:self.imageView];
     [self.imageView autoSetDimensionsToSize:CGSizeMake(80, 80)];
@@ -55,7 +62,8 @@
 
     self.bottomLabel=[[UILabel alloc]initForAutoLayout];
     self.bottomLabel.numberOfLines = 0;
-    self.bottomLabel.text=NSLocalizedString(@"Phone & WeChat : 17096027537\nEmail : johnbob2014@icloud.com\n2016 CTP Technology Co.,Ltd", @"手机 & 微信 : 17096027537\n邮箱 : johnbob2014@icloud.com\n2016 CTP Technology Co.,Ltd");
+    self.bottomLabel.font = [UIFont bodyFontWithSizeMultiplier:0.8];
+    self.bottomLabel.text=NSLocalizedString(@"Phone & WeChat : +86 17096027537\nEmail : johnbob2014@icloud.com\n2016 CTP Technology Co.,Ltd", @"手机 & 微信 : +86 17096027537\n邮箱 : johnbob2014@icloud.com\n2016 CTP Technology Co.,Ltd");
     self.bottomLabel.textAlignment=NSTextAlignmentCenter;
     [self.view addSubview:self.bottomLabel];
     [self.bottomLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
@@ -63,13 +71,41 @@
     
     self.detailTextView=[[UITextView alloc]initForAutoLayout];
     self.detailTextView.editable=NO;
-    self.detailTextView.font=[UIFont bodyFontWithSizeMultiplier:0.8];
+    self.detailTextView.font=[UIFont bodyFontWithSizeMultiplier:1.0];
     self.detailTextView.text=NSLocalizedString(@"Your Album and Footprints Management Expert.", @"您的相册和足迹管理专家。");
     [self.view addSubview:self.detailTextView];
     [self.detailTextView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.imageView withOffset:20];
     [self.detailTextView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];
     [self.detailTextView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:20];
     [self.detailTextView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.bottomLabel withOffset:-20];
+}
+
+- (void)tapGR:(UITapGestureRecognizer *)sender{
+    __block UITextField *tf;
+    UIAlertController *alertController = [UIAlertController singleTextFieldAlertControllerWithTitle:NSLocalizedString(@"AlbumMaps", @"相册地图")
+                                                                                            message:NSLocalizedString(@"Enter debug code", @"请输入调试码")
+                                                                                    okActionHandler:^(UIAlertAction *action) {
+                                                                                        [self checkDebugCode:tf.text];
+                                                                                    }
+                                                                      textFieldConfigurationHandler:^(UITextField *textField) {
+                                                                          tf = textField;
+                                                                      }];
+    
+    [self presentViewController:alertController animated:YES completion:^{
+        
+    }];
+}
+
+- (void)checkDebugCode:(NSString *)debugCode{
+    [EverywhereSettingManager updateAppInfoWithCompletionBlock:^{
+        //EverywhereSettingManager.debugCode = @"haha";
+        if (DEBUGMODE) NSLog(@"debugCode : %@",EverywhereSettingManager.debugCode);
+        if([debugCode isEqualToString:EverywhereSettingManager.debugCode]){
+            [EverywhereSettingManager defaultManager].hasPurchasedShareAndBrowse = YES;
+            [EverywhereSettingManager defaultManager].hasPurchasedRecordAndEdit = YES;
+            [EverywhereSettingManager defaultManager].hasPurchasedImportAndExport = YES;
+        }
+    }];
 }
 
 @end

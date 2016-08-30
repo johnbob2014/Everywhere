@@ -14,8 +14,11 @@
 @interface EverywhereSettingManager : NSObject
 
 + (instancetype)defaultManager;
++ (void)updateAppInfoWithCompletionBlock:(void(^)())completionBlock;
 
-//+ (void)updateAppInfoAndAppQRCodeImage;
++ (NSString *)debugCode;
++ (void)setDebugCode:(NSString *)debugCode;
+
 @property (strong,nonatomic) NSDate *appInfoLastUpdateDate;
 @property (strong,nonatomic) NSDictionary *appInfoDictionary;
 @property (strong,nonatomic) NSString *appURLString;
@@ -23,6 +26,11 @@
 @property (strong,nonatomic) NSArray <NSString *> *appProductIDArray;
 @property (strong,nonatomic) NSString *wxAppID;
 
+
+/**
+ *  路线颜色，0为彩色（默认），1为单色
+ */
+@property (assign,nonatomic) NSInteger routeColorIsMonochrome;
 
 @property (assign,nonatomic) MapBaseMode mapBaseMode;
 @property (assign,nonatomic) MapExtendedMode mapExtendedMode;
@@ -92,6 +100,11 @@
  *  是否自动以第一张图片作为分享缩略图
  */
 @property (assign,nonatomic) BOOL autoUseFirstAssetAsThumbnail;
+
+/**
+ *  是否自动以第一张图片作为分享缩略图
+ */
+@property (assign,nonatomic) BOOL autoUseAllAssetsAsThumbnail;
 
 /**
  *  缩略图大小比值（缩略图边长 除以 原图边长）

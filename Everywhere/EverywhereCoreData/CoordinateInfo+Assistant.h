@@ -13,9 +13,9 @@
 
 @interface CoordinateInfo (Assistant)
 
-+ (CoordinateInfo *)coordinateInfoWithLatitude:(double)latitude longitude:(double)longitude inManagedObjectContext:(NSManagedObjectContext *)context;
++ (CoordinateInfo *)coordinateInfoWithCLLocation:(CLLocation *)location inManagedObjectContext:(NSManagedObjectContext *)context;
 + (CoordinateInfo *)coordinateInfoWithPHAssetInfo:(PHAssetInfo *)assetInfo inManagedObjectContext:(NSManagedObjectContext *)context;
-+ (void)updatePlacemarkForCoordinateInfo:(CoordinateInfo *)coordinateInfo;
++ (void)updatePlacemarkForCoordinateInfo:(CoordinateInfo *)coordinateInfo completionBlock:(void(^)(NSString *localizedPlaceString))completionBlock;
 + (NSDictionary <NSString *,NSArray<NSString *> *> *)placemarkInfoFromCoordinateInfos:(NSArray <CoordinateInfo *> *)coordinateInfoArray;
 
 @end

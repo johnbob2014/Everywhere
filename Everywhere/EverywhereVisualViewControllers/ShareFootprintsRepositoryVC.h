@@ -13,7 +13,7 @@ typedef void(^UserDidSelectedPurchaseShareFunctionHandler)();
 
 @interface ShareFootprintsRepositoryVC : UIViewController
 
-@property (copy,nonatomic) EverywhereFootprintsRepository *footprintsRepository;
+@property (strong,nonatomic) EverywhereFootprintsRepository *footprintsRepository;
 
 @property (strong,nonatomic) UIImage *thumbImage;
 

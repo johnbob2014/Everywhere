@@ -36,6 +36,8 @@
     //[self initNowLabel];
     [self initButtons];
     [self initRETableView];
+    
+    [self updateDateData:self.dateMode];
 }
 
 - (void)initDateModeSeg{
@@ -45,7 +47,7 @@
                                                 NSLocalizedString(@"Year", @"年"),
                                                 NSLocalizedString(@"Custom", @"自定义")];
     dateModeSeg = [[UISegmentedControl alloc] initWithItems:dateModeNameArray];
-    //dateModeSeg.selectedSegmentIndex = 4;
+    dateModeSeg.selectedSegmentIndex = self.dateMode;
     [dateModeSeg addTarget:self action:@selector(segValueChanged:) forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:dateModeSeg];
     dateModeSeg.translatesAutoresizingMaskIntoConstraints = NO;

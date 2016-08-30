@@ -51,7 +51,7 @@
 - (NSInteger)thumbnailCount{
     __block NSInteger thumbnailCount = 0;
     [self.footprintAnnotations enumerateObjectsUsingBlock:^(EverywhereFootprintAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (obj.thumbnailArray){
+        if (obj.thumbnailArray.count > 0){
             thumbnailCount += obj.thumbnailArray.count;
         }
     }];

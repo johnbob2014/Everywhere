@@ -6,8 +6,9 @@
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#define MKOverlayTitleForRedColor @"MKOverlayTitleForRedColor"
+#define MKOverlayTitleForMapModeColor @"MKOverlayTitleForMapModeColor"
 #define MKOverlayTitleForRandomColor @"MKOverlayTitleForRandomColor"
+#define MKOverlayTitleForRedColor @"MKOverlayTitleForRedColor"
 
 #define ContentSizeInPopup_Big CGSizeMake(ScreenWidth - 10, ScreenHeight - 10 - 80)
 #define LandscapeContentSizeInPopup_Big CGSizeMake(ScreenHeight - 10 - 80, ScreenWidth - 10)
@@ -18,7 +19,7 @@
 
 #define ButtionSize (ScreenHeight > 568 ? CGSizeMake(44, 44) : CGSizeMake(36, 36))
 #define ButtonEdgeLength (ScreenHeight > 568 ? 44 : 36)
-#define ButtonOffset (ScreenHeight > 568 ? 16 : 16)
+#define ButtonOffset (ScreenHeight > 568 ? 16 : 12)
 
 #import "AssetsMapProVC.h"
 @import Photos;
@@ -39,7 +40,7 @@
 #import <STPopup.h>
 #import "GCLocationAnalyser.h"
 #import "GCPhotoManager.h"
-#import "LocationInfoWithCoordinateInfoBar.h"
+#import "LocationInfoBar.h"
 #import "PlacemarkInfoBar.h"
 #import "CLPlacemark+Assistant.h"
 #import "DatePickerProVC.h"
@@ -156,9 +157,9 @@
     UILabel *distanceAndFPCountLabelInRMB;
     CLLocationDistance totalDistanceForRecord;
     
-    LocationInfoWithCoordinateInfoBar *locationInfoWithCoordinateInfoBar;
-    float locationInfoWithCoordinateInfoBarHeight;
-    BOOL locationInfoWithCoordinateInfoBarIsOutOfVisualView;
+    LocationInfoBar *locationInfoBar;
+    float locationInfoBarHeight;
+    BOOL locationInfoBarIsOutOfVisualView;
     
     PlacemarkInfoBar *placemarkInfoBar;
     float placemarkInfoBarHeight;
@@ -229,7 +230,7 @@
     
     [self initNaviBar];
     
-    [self initLocationInfoWithCoordinateInfoBar];
+    [self initLocationInfoBar];
     
     // PlacemarkInfoBar 位于 MapModeBar 下方10
     [self initPlacemarkInfoBar];
@@ -266,7 +267,7 @@
         
         msBaseModeBar.alpha = 1;
         naviBar.alpha = 1;
-        locationInfoWithCoordinateInfoBar.alpha = 1;
+        locationInfoBar.alpha = 1;
         shareBar.alpha = 0;
         
         appDelegate.window.tintColor = self.settingManager.baseTintColor;
@@ -279,7 +280,7 @@
 }
 
 - (void)updateBarColor:(UIColor *)newColor{
-    locationInfoWithCoordinateInfoBar.backgroundColor = newColor;
+    locationInfoBar.backgroundColor = newColor;
     placemarkInfoBar.backgroundColor = newColor;
     naviBar.backgroundColor = newColor;
     currentAnnotationIndexLabel.backgroundColor = newColor;
@@ -357,7 +358,7 @@
         UILocalNotification *noti = [UILocalNotification new];
         
         NSMutableString *messageMS = [NSMutableString new];
-        [messageMS appendFormat:@"%@ %lu",NSLocalizedString(@"Added New Photo Count: ", @"新添加照片数量 : "),(long)count];
+        [messageMS appendFormat:@"%@ : %lu",NSLocalizedString(@"Added New Photo Count", @"新增照片数量"),(long)count];
         if (secondLastUpdateDateString) [messageMS appendFormat:@"\n%@",secondLastUpdateDateString];
         
         noti.alertBody = messageMS;
@@ -365,7 +366,7 @@
         noti.soundName = UILocalNotificationDefaultSoundName;
         //noti.applicationIconBadgeNumber = count;
         [[UIApplication sharedApplication] presentLocalNotificationNow:noti];
-        
+#warning AlertController
         [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"AlbumMaps Notes", @"相册地图提示") message:messageMS]
                            animated:YES
                          completion:nil];
@@ -375,11 +376,11 @@
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration{
     if(toInterfaceOrientation == UIInterfaceOrientationPortrait || toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown){
-        locationInfoWithCoordinateInfoBarHeight = 150;
-        locationInfoWithCoordinateInfoBar.frame = CGRectMake(5, -locationInfoWithCoordinateInfoBarHeight - 40, ScreenWidth - 10 , locationInfoWithCoordinateInfoBarHeight);
+        locationInfoBarHeight = 150;
+        locationInfoBar.frame = CGRectMake(5, -locationInfoBarHeight - 40, ScreenWidth - 10 , locationInfoBarHeight);
     }else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight){
-        locationInfoWithCoordinateInfoBarHeight = 90;
-        locationInfoWithCoordinateInfoBar.frame = CGRectMake(5, -locationInfoWithCoordinateInfoBarHeight - 40, ScreenHeight - 10, locationInfoWithCoordinateInfoBarHeight);
+        locationInfoBarHeight = 90;
+        locationInfoBar.frame = CGRectMake(5, -locationInfoBarHeight - 40, ScreenHeight - 10, locationInfoBarHeight);
     }
 }
 
@@ -448,7 +449,7 @@
         }
         
         // ⭕️决定导航键是否可用
-        locationInfoWithCoordinateInfoBar.naviToHereButton.enabled = self.myMapView.showsUserLocation;
+        locationInfoBar.naviToHereButton.enabled = self.myMapView.showsUserLocation;
         
         // if (self.isInBaseMode) self.locationManagerForRecording.desiredAccuracy = kCLLocationAccuracyHundredMeters;
         
@@ -462,10 +463,10 @@
     }
 }
 
-// ⭕️实时更新locationInfoWithCoordinateInfoBar位置信息
+// ⭕️实时更新locationInfoBar位置信息
 - (void)setUserLocationWGS84:(CLLocation *)userLocationWGS84{
     _userLocationWGS84 = userLocationWGS84;
-    //locationInfoWithCoordinateInfoBar.userCoordinateWGS84 = userLocationWGS84.coordinate;
+    //locationInfoBar.userCoordinateWGS84 = userLocationWGS84.coordinate;
     CLLocationSpeed speedmPerSecond = userLocationWGS84.speed;
     CLLocationSpeed speedkmPerhour = speedmPerSecond * 3600.0 / 1000.0;
     speedLabelInRMB.text = [NSString stringWithFormat:@"%.2fkm/h %.2fm/s",speedkmPerhour,speedmPerSecond];
@@ -474,7 +475,7 @@
 
 - (void)setUserLocationGCJ02:(CLLocation *)userLocationGCJ02{
     _userLocationGCJ02 = userLocationGCJ02;
-    locationInfoWithCoordinateInfoBar.userCoordinateGCJ02 = userLocationGCJ02.coordinate;
+    locationInfoBar.userCoordinateGCJ02 = userLocationGCJ02.coordinate;
 }
 
 - (CLLocationDistance)minDistanceForRecord{
@@ -520,7 +521,7 @@
         if (assetIDArry.count > 0){
             noAsset = NO;
             
-            [SVProgressHUD showWithStatus:NSLocalizedString(@"Reading Data", @"正在读取数据")];
+            [SVProgressHUD showWithStatus:NSLocalizedString(@"Reading Photo Album...", @"正在读取相册...")];
             PHFetchOptions *options = [PHFetchOptions new];
             options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
             PHFetchResult <PHAsset *> *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:assetIDArry options:options];
@@ -529,19 +530,20 @@
             self.endDate = fetchResult.lastObject.creationDate;
             
             self.assetArray = (NSArray <PHAsset *> *)fetchResult;
-            [SVProgressHUD dismiss];
+            [SVProgressHUD dismissWithDelay:1.0];
         }
     }
     
     if (noAsset){
         [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"No photos in selected date range or location", @"所选日期或地点没有照片")];
-        [SVProgressHUD dismissWithDelay:3.0];
+        [SVProgressHUD dismissWithDelay:2.0];
     }
 }
 
 - (void)setAssetArray:(NSArray<PHAsset *> *)assetArray{
     if (!assetArray) return;
     
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Dividing into groups...", @"正在分组...")];
     _assetArray = assetArray;
     switch (self.settingManager.mapBaseMode) {
         case MapBaseModeMoment:
@@ -553,6 +555,8 @@
         default:
             break;
     }
+    [SVProgressHUD dismissWithDelay:1.0];
+    
 }
 
 - (void)setAssetsArray:(NSArray<NSArray<PHAsset *> *> *)assetsArray{
@@ -566,19 +570,18 @@
     
     if (self.settingManager.mapBaseMode == MapBaseModeMoment){
         [self addLineOverlaysPro:self.addedEWAnnos];
-        [self updatePlacemarkInfoBarTotolInfo];
-        
     }else{
         [self addCircleOverlaysPro:self.addedEWAnnos radius:self.settingManager.mergeDistanceForLocation / 2.0];
-        //[self updateVisualViewForEWAnnos];
     }
+    
+    [self updatePlacemarkInfoBarTotolInfo];
 }
 
 - (void)setAddedIDAnnos:(NSArray<id<MKAnnotation>> *)addedIDAnnos{
     _addedIDAnnos = addedIDAnnos;
     // 设置导航序号
     self.currentAnnotationIndex = 0;
-    if(addedIDAnnos) [self moveMapViewToFirstAnnotationWithDistance:1000];
+    if(addedIDAnnos) [self moveMapViewToFirstAnnotationWithDistance:0];
 }
 
 - (void)setIsInBaseMode:(BOOL)isInBaseMode{
@@ -818,6 +821,8 @@
         //settingManager.mapBaseMode = MapBaseModeMoment;
         weakSelf.startDate = choosedStartDate;
         weakSelf.endDate = choosedEndDate;
+        
+        [SVProgressHUD showWithStatus:NSLocalizedString(@"Reading data...", @"正在解析数据...")];
         weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:weakSelf.startDate toEndDate:weakSelf.endDate inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
     };
     
@@ -829,6 +834,8 @@
 - (void)showLocationPicker{
     WEAKSELF(weakSelf);
     LocationPickerVC *locationPickerVC = [LocationPickerVC new];
+    locationPickerVC.initLocationMode = self.settingManager.locationMode;
+    
     NSArray <PHAssetInfo *> *allAssetInfoArray = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
     locationPickerVC.placemarkInfoDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:allAssetInfoArray];
     
@@ -839,6 +846,8 @@
     locationPickerVC.locationDidChangeHandler = ^(NSString *choosedLocation){
         weakSelf.settingManager.lastPlacemark = choosedLocation;
         weakSelf.lastPlacemark = choosedLocation;
+        
+        [SVProgressHUD showWithStatus:NSLocalizedString(@"Reading data...", @"正在解析数据...")];
         weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:choosedLocation inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
     };
     
@@ -1042,19 +1051,19 @@
 
 #pragma mark Location Info Bar
 
-- (void)initLocationInfoWithCoordinateInfoBar{
-    locationInfoWithCoordinateInfoBarHeight = 170;
-    locationInfoWithCoordinateInfoBar = [[LocationInfoWithCoordinateInfoBar alloc] initWithFrame:CGRectMake(5, -locationInfoWithCoordinateInfoBarHeight - 40, ScreenWidth - 10, locationInfoWithCoordinateInfoBarHeight)];
-    [self.view addSubview:locationInfoWithCoordinateInfoBar];
-    locationInfoWithCoordinateInfoBarIsOutOfVisualView = YES;
+- (void)initLocationInfoBar{
+    locationInfoBarHeight = 170;
+    locationInfoBar = [[LocationInfoBar alloc] initWithFrame:CGRectMake(5, -locationInfoBarHeight - 40, ScreenWidth - 10, locationInfoBarHeight)];
+    [self.view addSubview:locationInfoBar];
+    locationInfoBarIsOutOfVisualView = YES;
     
-    UISwipeGestureRecognizer *swipeUpGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(locationInfoWithCoordinateInfoBarSwipeUp:)];
+    UISwipeGestureRecognizer *swipeUpGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(locationInfoBarSwipeUp:)];
     swipeUpGR.direction = UISwipeGestureRecognizerDirectionUp;
-    [locationInfoWithCoordinateInfoBar addGestureRecognizer:swipeUpGR];
+    [locationInfoBar addGestureRecognizer:swipeUpGR];
     
     
     WEAKSELF(weakSelf);
-    locationInfoWithCoordinateInfoBar.didGetMKDirectionsResponseHandler = ^(MKDirectionsResponse *response){
+    locationInfoBar.didGetMKDirectionsResponseHandler = ^(MKDirectionsResponse *response){
         MKRoute *route = response.routes.firstObject;
         MKPolyline *routePolyline = route.polyline;
         routePolyline.title = MKOverlayTitleForRedColor;
@@ -1063,20 +1072,20 @@
         });
     };
     
-    locationInfoWithCoordinateInfoBar.naviToHereButton.enabled = NO;
+    locationInfoBar.naviToHereButton.enabled = NO;
 }
 
-- (void)locationInfoWithCoordinateInfoBarSwipeUp:(UISwipeGestureRecognizer *)sender{
-    [self hideLocationInfoWithCoordinateInfoBar];
+- (void)locationInfoBarSwipeUp:(UISwipeGestureRecognizer *)sender{
+    [self hideLocationInfoBar];
 }
 
-- (void)showHideLocationInfoWithCoordinateInfoBar{
-    if (locationInfoWithCoordinateInfoBarIsOutOfVisualView) [self showLocationInfoWithCoordinateInfoBar];
-    else [self hideLocationInfoWithCoordinateInfoBar];
+- (void)showHideLocationInfoBar{
+    if (locationInfoBarIsOutOfVisualView) [self showLocationInfoBar];
+    else [self hideLocationInfoBar];
 }
 
-- (void)showLocationInfoWithCoordinateInfoBar{
-    if (locationInfoWithCoordinateInfoBar.hidden) locationInfoWithCoordinateInfoBar.hidden = NO;
+- (void)showLocationInfoBar{
+    if (locationInfoBar.hidden) locationInfoBar.hidden = NO;
     
     if (msBaseModeBar.alpha || placemarkInfoBar.alpha) {
         [UIView animateWithDuration:0.2 animations:^{
@@ -1099,34 +1108,34 @@
                                  options:UIViewKeyframeAnimationOptionBeginFromCurrentState
                               animations:^{
                                   [UIView addKeyframeWithRelativeStartTime:0 relativeDuration:0.4 animations:^{
-                                      locationInfoWithCoordinateInfoBar.frame = CGRectMake(5, 20 + 10, ScreenWidth - 10, locationInfoWithCoordinateInfoBarHeight);
+                                      locationInfoBar.frame = CGRectMake(5, 20 + 10, ScreenWidth - 10, locationInfoBarHeight);
                                   }];
                                   [UIView addKeyframeWithRelativeStartTime:0.4 relativeDuration:0.3 animations:^{
-                                      locationInfoWithCoordinateInfoBar.frame = CGRectMake(5, 20, ScreenWidth - 10, locationInfoWithCoordinateInfoBarHeight);
+                                      locationInfoBar.frame = CGRectMake(5, 20, ScreenWidth - 10, locationInfoBarHeight);
                                   }];
                                   
                               }
                               completion:^(BOOL finished) {
-                                  locationInfoWithCoordinateInfoBarIsOutOfVisualView = NO;
+                                  locationInfoBarIsOutOfVisualView = NO;
                               }];
 
 }
 
-- (void)hideLocationInfoWithCoordinateInfoBar{
+- (void)hideLocationInfoBar{
     [UIView animateKeyframesWithDuration:1
                                    delay:0
                                  options:UIViewKeyframeAnimationOptionBeginFromCurrentState
                               animations:^{
                                   [UIView addKeyframeWithRelativeStartTime:0 relativeDuration:0.3 animations:^{
-                                      locationInfoWithCoordinateInfoBar.frame = CGRectMake(5, 20 + 10, ScreenWidth - 10, locationInfoWithCoordinateInfoBarHeight);
+                                      locationInfoBar.frame = CGRectMake(5, 20 + 10, ScreenWidth - 10, locationInfoBarHeight);
                                   }];
                                   [UIView addKeyframeWithRelativeStartTime:0.3 relativeDuration:0.4 animations:^{
-                                      locationInfoWithCoordinateInfoBar.frame = CGRectMake(5, -locationInfoWithCoordinateInfoBarHeight, ScreenWidth - 10, locationInfoWithCoordinateInfoBarHeight);
+                                      locationInfoBar.frame = CGRectMake(5, -locationInfoBarHeight, ScreenWidth - 10, locationInfoBarHeight);
                                   }];
                                   
                               }
                               completion:^(BOOL finished) {
-                                  locationInfoWithCoordinateInfoBarIsOutOfVisualView = YES;
+                                  locationInfoBarIsOutOfVisualView = YES;
                                   [UIView animateWithDuration:0.2 animations:^{
                                       msBaseModeBar.alpha = 1;
                                       placemarkInfoBar.alpha = 1;
@@ -1245,7 +1254,7 @@
     leftBtn2.alpha = 0.6;
     [leftBtn2 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_MapMarker"] forState:UIControlStateNormal];
     leftBtn2.translatesAutoresizingMaskIntoConstraints = NO;
-    [leftBtn2 addTarget:self action:@selector(showHideLocationInfoWithCoordinateInfoBar) forControlEvents:UIControlEventTouchDown];
+    [leftBtn2 addTarget:self action:@selector(showHideLocationInfoBar) forControlEvents:UIControlEventTouchDown];
     [leftVerticalBar addSubview:leftBtn2];
     [leftBtn2 autoSetDimensionsToSize:ButtionSize];
     [leftBtn2 autoAlignAxisToSuperviewAxis:ALAxisVertical];
@@ -1437,8 +1446,7 @@
     
     [self.myMapView removeOverlays:self.myMapView.overlays];
     
-    if (sender.tag == 0){
-        sender.tag = 1;
+    if (sender.tag == 1){
         sender.enabled = NO;
         
         // 直线路线转化为模拟路线
@@ -1449,7 +1457,6 @@
         }];
         
     }else{
-        sender.tag = 0;
         sender.enabled = NO;
         
         // 模拟路线转化为直线路线
@@ -1755,7 +1762,7 @@
     msBaseModeBar.alpha = 0;
     placemarkInfoBar.alpha = 0;
     naviBar.alpha = 0;
-    locationInfoWithCoordinateInfoBar.alpha = 0;
+    locationInfoBar.alpha = 0;
     
     NSMutableString *ms = [NSMutableString new];
     /*
@@ -1823,7 +1830,7 @@
 
 - (void)showPurchaseRecordFunctionAlertController{
     NSString *alertTitle = NSLocalizedString(@"RecordAndEdit",@"记录和编辑");
-    NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",NSLocalizedString(@"You can get utilities below:", @"您将获得如下功能："),NSLocalizedString(@"1.Record your footprints , support background record, automatically save and manually add footprints", @"1.记录足迹，支持后台记录、自动保存、手动加点"),NSLocalizedString(@"2.Intelligently edit your footprints , support merge footprints by moment or location with custom merge distance and reserve manually added footprints", @"2.足迹智能编辑功能，支持按时刻、地点模式进行足迹点合并，可设置合并距离、是否保留手动加点"),NSLocalizedString(@"3.Unlock Record Mode to manage your recorded and edited footprints", @"3.解锁记录模式，管理记录和编辑的足迹"),NSLocalizedString(@"Cost $1.99,continue?", @"价格 ￥12元，是否购买？")];
+    NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@\n%@\n%@\n%@",NSLocalizedString(@"You can get utilities below:", @"您将获得如下功能："),NSLocalizedString(@"1.Record your footprints , support background record, automatically save and manually add footprints", @"1.记录足迹，支持后台记录、自动保存、手动加点"),NSLocalizedString(@"2.Intelligently edit your footprints , support merge footprints by moment or location with custom merge distance and reserve manually added footprints", @"2.足迹智能编辑功能，支持按时刻、地点模式进行足迹点合并，可设置分组距离、是否保留手动加点"),NSLocalizedString(@"3.Unlock Record Mode to manage your recorded and edited footprints", @"3.解锁记录模式，管理记录和编辑的足迹"),NSLocalizedString(@"Cost $1.99,continue?", @"价格 ￥12元，是否购买？")];
     [self showPurchaseAlertControllerWithTitle:alertTitle message:alertMessage productIndex:1];
 }
 
@@ -1902,7 +1909,7 @@
         
         return;
     }
-    [SVProgressHUD show];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Creating footprints repository for share...", @"正在创建分享足迹包...")];
     
     // placemarkInfo信息
     NSMutableString *ms = [NSMutableString new];
@@ -1928,7 +1935,7 @@
     if (self.settingManager.mapBaseMode == MapBaseModeLocation) footprintsRepository.title = [footprintsRepository.title stringByAppendingFormat:@" %@",self.lastPlacemark];
     
     ShareFootprintsRepositoryVC *shareFRVC = [ShareFootprintsRepositoryVC new];
-    shareFRVC.footprintsRepository = [footprintsRepository copy];
+    shareFRVC.footprintsRepository = footprintsRepository;
     shareFRVC.thumbImage = [UIImage imageNamed:@"地球_300_300"];
     
     WEAKSELF(weakSelf);
@@ -1940,8 +1947,9 @@
     popupController = [[STPopupController alloc] initWithRootViewController:shareFRVC];
     popupController.containerView.layer.cornerRadius = 4;
     
-    [SVProgressHUD dismiss];
-    [popupController presentInViewController:self];
+    [popupController presentInViewController:self completion:^{
+        [SVProgressHUD dismiss];
+    }];
 }
 
 - (void)didReceiveFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository{
@@ -2004,9 +2012,8 @@
 - (void)enterExtendedMode{
     if(DEBUGMODE) NSLog(@"进入扩展模式");
     self.isInBaseMode = NO;
-    changeOverlayStyleButton.tag = 0;
     
-    if (!locationInfoWithCoordinateInfoBarIsOutOfVisualView) locationInfoWithCoordinateInfoBar.hidden = YES;
+    if (!locationInfoBarIsOutOfVisualView) locationInfoBar.hidden = YES;
     
     // 保存BaseMode数据
     savedTitleForBaseMode = msBaseModeBar.info;
@@ -2032,7 +2039,7 @@
     
     naviBar.backgroundColor = self.settingManager.extendedTintColor;
     currentAnnotationIndexLabel.backgroundColor = self.settingManager.extendedTintColor;
-    locationInfoWithCoordinateInfoBar.backgroundColor = self.settingManager.extendedTintColor;
+    locationInfoBar.backgroundColor = self.settingManager.extendedTintColor;
     recordModeSettingBar.backgroundColor = self.settingManager.extendedTintColor;
     speedLabelInRMB.layer.backgroundColor = self.settingManager.extendedTintColor.CGColor;
     speedLabelInRMB.layer.borderColor = self.settingManager.extendedTintColor.CGColor;
@@ -2043,7 +2050,6 @@
 - (void)quiteExtendedMode{
     // 设置颜色，所以这一句要放在最前面
     self.isInBaseMode = YES;
-    changeOverlayStyleButton.tag = 0;
     
     msBaseModeBar.hidden = NO;
     placemarkInfoBar.hidden = NO;
@@ -2054,7 +2060,7 @@
     
     naviBar.backgroundColor = self.settingManager.baseTintColor;
     currentAnnotationIndexLabel.backgroundColor = self.settingManager.baseTintColor;
-    locationInfoWithCoordinateInfoBar.backgroundColor = self.settingManager.baseTintColor;
+    locationInfoBar.backgroundColor = self.settingManager.baseTintColor;
     
     // 清理Extended Mode地图
     [self.myMapView removeAnnotations:self.myMapView.annotations];
@@ -2450,6 +2456,9 @@
     [self.myMapView removeAnnotations:self.myMapView.annotations];
     
     [self.assetsArray enumerateObjectsUsingBlock:^(NSArray<PHAsset *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *status = [NSString stringWithFormat:@"%@\n%u/%lu",NSLocalizedString(@"Adding footprints...", @"正在添加足迹点..."),(idx + 1),(unsigned long)self.assetsArray.count];
+        [SVProgressHUD showInfoWithStatus:status];
+        
         EverywhereAnnotation *anno = [EverywhereAnnotation new];
         PHAsset *firstAsset = obj.firstObject;
         PHAsset *lastAsset = obj.lastObject;
@@ -2471,24 +2480,18 @@
         NSMutableArray *ids = [NSMutableArray new];
         [obj enumerateObjectsUsingBlock:^(PHAsset * _Nonnull asset, NSUInteger idx, BOOL * _Nonnull stop) {
             [ids addObject:asset.localIdentifier];
-            
-            /*
-            PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:asset.localIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
-            if (assetInfo.actAsThumbnail){
-                footprintAnnotation.thumbnail = [asset synchronousFetchUIImageAtTargetSize:CGSizeMake(asset.pixelWidth * 0.2, asset.pixelHeight * 0.2)];
-            }
-             */
-            
         }];
         anno.assetLocalIdentifiers = ids;
         
         [annotationsToAdd addObject:anno];
         
         [footprintAnnotationsToAdd addObject:footprintAnnotation];
+        
+        [self.myMapView addAnnotation:anno];
     }];
     
-    if (!annotationsToAdd || !annotationsToAdd.count) return;
-    [self.myMapView addAnnotations:annotationsToAdd];
+    [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Finish adding footprints", @"足迹点添加完成")];
+    [SVProgressHUD dismissWithDelay:1.0];
     
     self.addedIDAnnos = annotationsToAdd;
     self.addedEWAnnos = annotationsToAdd;
@@ -2517,13 +2520,14 @@
         for (NSString *assetLocalIdentifier in everywhereAnnotation.assetLocalIdentifiers) {
             PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:assetLocalIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
             
-            // actAsThumbnail属性为真的PHAssetInfo对应的缩略图 添加到FootprintAnnotation的缩略图数组中
-            if ([assetInfo.actAsThumbnail boolValue]){
-               
+            if (self.settingManager.autoUseAllAssetsAsThumbnail || [assetInfo.actAsThumbnail boolValue]){
+                // 如果用户选择自动添加全部照片作为缩略图
+                // 或者actAsThumbnail属性为真
+                // 均添加该PHAssetInfo对应的缩略图
                 NSData *imageDate = [self thumbnailDataWithLocalIdentifier:assetInfo.localIdentifier];
                 [ma addObject:[[UIImage alloc] initWithData:imageDate]];
             }
-            
+           
         }
         
         footprintAnnotation.thumbnailArray = ma;
@@ -2542,6 +2546,11 @@
     [self.myMapView removeOverlays:self.myMapView.overlays];
     //maxDistance = 500;
     if (annotationArray.count >= 2) {
+        // 将tag置为1，下次点击按钮时添加模拟路线
+        changeOverlayStyleButton.tag = 1;
+        // 将tag置为1，下次点击按钮时添加模拟路线
+        changeOverlayStyleButton.tag = 1;
+
         // 记录距离信息
         NSMutableArray *distanceArray = [NSMutableArray new];
         totalDistance = 0;
@@ -2554,13 +2563,13 @@
         [annotationArray enumerateObjectsUsingBlock:^(id<MKAnnotation> _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if (idx >= 1) {
                 
-                float progress = (float)(idx+1)/(float)annotationArray.count;
+                //float progress = (float)(idx+1)/(float)annotationArray.count;
                 NSString *status = [NSString stringWithFormat:@"%@\n%lu/%lu",NSLocalizedString(@"Adding line route", @"正在添加箭头路线"),(idx + 1),annotationArray.count];
-                [SVProgressHUD showProgress:progress status:status];
+                [SVProgressHUD showInfoWithStatus:status];
                 
                 MKPolyline *polyline = [AssetsMapProVC createLineMKPolylineBetweenStartCoordinate:lastCoordinate endCoordinate:obj.coordinate];
                 //[polylinesToAdd addObject:polyline];
-                polyline.title = MKOverlayTitleForRandomColor;
+                polyline.title = self.settingManager.routeColorIsMonochrome? MKOverlayTitleForMapModeColor : MKOverlayTitleForRandomColor;
                 
                 CLLocationDistance subDistance = MKMetersBetweenMapPoints(MKMapPointForCoordinate(lastCoordinate), MKMapPointForCoordinate(obj.coordinate));
                 //if (maxDistance < subDistance) maxDistance = subDistance;
@@ -2569,7 +2578,7 @@
                 
                 MKPolygon *polygon = [AssetsMapProVC createArrowMKPolygonBetweenStartCoordinate:lastCoordinate endCoordinate:obj.coordinate];
                 //[polygonsToAdd addObject:polygon];
-                polygon.title = MKOverlayTitleForRandomColor;
+                polygon.title = self.settingManager.routeColorIsMonochrome? MKOverlayTitleForMapModeColor : MKOverlayTitleForRandomColor;
                 
                 [self.myMapView addOverlays:@[polyline,polygon]];
                 
@@ -2580,7 +2589,7 @@
         }];
         
         [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Finish adding line route", @"箭头路线添加完成")];
-        [SVProgressHUD dismissWithDelay:2.0];
+        [SVProgressHUD dismissWithDelay:1.0];
         //if(DEBUGMODE) NSLog(@"%@",overlaysToAdd);
         //[self.myMapView addOverlays:polylinesToAdd];
         //[self.myMapView addOverlays:polygonsToAdd];
@@ -2630,16 +2639,22 @@
         //NSMutableArray <MKCircle *> *circlesToAdd = [NSMutableArray new];
         
         [annotationArray enumerateObjectsUsingBlock:^(id<MKAnnotation> _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            float progress = (float)(idx+1)/(float)annotationArray.count;
+            
+            /*
+            MKCoordinateRegion currentRegion = MKCoordinateRegionMakeWithDistance(obj.coordinate, circleRadius * 3, circleRadius * 3);
+            [self.myMapView setRegion:currentRegion animated:YES];
+            */
+            
+            //float progress = (float)(idx+1)/(float)annotationArray.count;
             NSString *status = [NSString stringWithFormat:@"%@\n%lu/%lu",NSLocalizedString(@"Adding range circle", @"正在添加范围圆圈"),(idx + 1),annotationArray.count];
-            [SVProgressHUD showProgress:progress status:status];
+            [SVProgressHUD showInfoWithStatus:status];
             
             MKCircle *circle = [MKCircle circleWithCenterCoordinate:obj.coordinate radius:circleRadius];
             if (circle) [self.myMapView addOverlay:circle];//[circlesToAdd addObject:circle];
         }];
         
         [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Finish adding range circle", @"范围圆圈添加完成")];
-        [SVProgressHUD dismissWithDelay:2.0];
+        [SVProgressHUD dismissWithDelay:1.0];
         //[self.myMapView addOverlays:circlesToAdd];
     }
 
@@ -2660,6 +2675,9 @@
         return;
     }
     
+    // 将tag置为0，下次点击按钮时添加箭头路线
+    changeOverlayStyleButton.tag = 0;
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         
         // 记录距离信息
@@ -2689,6 +2707,10 @@
                 
                 [NSThread sleepForTimeInterval:0.2];
                 
+                if (idx % 100 == 0){
+                    [NSThread sleepForTimeInterval:1.0];
+                }
+                
                 lastCoordinate = obj.coordinate;
             }
             
@@ -2698,7 +2720,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 completionBlock(routePolylineCount,routeTotalDistance);
                 [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Finish adding simulation route", @"模拟路线添加完成")];
-                [SVProgressHUD dismissWithDelay:2.0];
+                [SVProgressHUD dismissWithDelay:1.0];
             });
         }
     });
@@ -2777,9 +2799,28 @@
     
     id<MKAnnotation> firstAnnotation = self.addedIDAnnos.firstObject;
     
-    if (self.addedIDAnnos.count > 1){
-        id<MKAnnotation> secondAnnotation = self.addedIDAnnos[2];
-        regionDistance = fabs(MKMetersBetweenMapPoints(MKMapPointForCoordinate(firstAnnotation.coordinate), MKMapPointForCoordinate(secondAnnotation.coordinate))) * 4.0;
+    if (regionDistance == 0){
+        if (self.addedIDAnnos.count <= 1){
+            regionDistance = 1000;
+        }else if (self.addedIDAnnos.count > 1){
+            /*
+            id<MKAnnotation> secondAnnotation = self.addedIDAnnos[2];
+            regionDistance = fabs(MKMetersBetweenMapPoints(MKMapPointForCoordinate(firstAnnotation.coordinate), MKMapPointForCoordinate(secondAnnotation.coordinate))) * 4.0;
+            */
+            
+            __block CLLocationDistance maxDistance = 0;
+            __block CLLocationCoordinate2D lastCoordinate;
+            [self.addedIDAnnos enumerateObjectsUsingBlock:^(id<MKAnnotation>  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                if (idx > 0){
+                    CLLocationDistance currentDistance = MKMetersBetweenMapPoints(MKMapPointForCoordinate(obj.coordinate), MKMapPointForCoordinate(lastCoordinate));
+                    if (maxDistance < currentDistance) maxDistance = currentDistance;
+                }else{
+                    lastCoordinate = obj.coordinate;
+                }
+            }];
+            
+            regionDistance = maxDistance;
+        }
     }
     
     MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(firstAnnotation.coordinate, regionDistance, regionDistance);
@@ -2902,67 +2943,79 @@
 }
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
-    if ([view isKindOfClass:[MKPinAnnotationView class]]) {
-        if ([view.annotation isKindOfClass:[EverywhereAnnotation class]]) {
-            EverywhereAnnotation *anno = (EverywhereAnnotation *)view.annotation;
-            
-            PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
-            if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
-            
-            [self updateLocationInfoWithCoordinateInfoBarWithPHAssetInfo:assetInfo];
-        }else if ([view.annotation isKindOfClass:[EverywhereFootprintAnnotation class]]){
-            EverywhereFootprintAnnotation *footprintAnnotation = (EverywhereFootprintAnnotation *)view.annotation;
-
-            [self updateLocationInfoWithCoordinateInfoBarWithWSG84Coordinate:footprintAnnotation.coordinateWGS84];
-        }
-        
-        [self showHideLocationInfoWithCoordinateInfoBar];
-        
-    }
-    
+    [self updateLocationInfoBarWithAnnotationView:view];
+    [self showHideLocationInfoBar];
 }
 
-- (void)updateLocationInfoWithCoordinateInfoBarWithPHAssetInfo:(PHAssetInfo *)assetInfo{
+- (void)updateLocationInfoBarWithAnnotationView:(MKAnnotationView *)view{
+    if (![view isKindOfClass:[MKPinAnnotationView class]]) return;
+
+    CoordinateInfo *coordinateInfo;
+    if ([view.annotation isKindOfClass:[EverywhereAnnotation class]]) {
+        EverywhereAnnotation *anno = (EverywhereAnnotation *)view.annotation;
+        PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
+        
+        coordinateInfo = [CoordinateInfo coordinateInfoWithPHAssetInfo:assetInfo
+                                                                inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
+    }else if ([view.annotation isKindOfClass:[EverywhereFootprintAnnotation class]]){
+        EverywhereFootprintAnnotation *footprintAnnotation = (EverywhereFootprintAnnotation *)view.annotation;
+        coordinateInfo = [CoordinateInfo coordinateInfoWithCLLocation:footprintAnnotation.location
+                                                               inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
+    }
+    
+    if (![coordinateInfo.reverseGeocodeSucceed boolValue]) {
+        [CoordinateInfo updatePlacemarkForCoordinateInfo:coordinateInfo completionBlock:^(NSString *localizedPlaceString) {
+            locationInfoBar.currentShowCoordinateInfo = coordinateInfo;
+        }];
+    }
+    
+    locationInfoBar.currentShowCoordinateInfo = coordinateInfo;
+}
+
+/*
+- (void)updateLocationInfoBarWithPHAssetInfo:(PHAssetInfo *)assetInfo{
+    if (![assetInfo.reverseGeocodeSucceed boolValue]) {
+        [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
+        [NSThread sleepForTimeInterval:0.3];
+    }
+    
     CoordinateInfo *coordinateInfo = [CoordinateInfo coordinateInfoWithPHAssetInfo:assetInfo inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
     
-    if (!coordinateInfo.reverseGeocodeSucceed) {
-        [CoordinateInfo updatePlacemarkForCoordinateInfo:coordinateInfo];
+    locationInfoBar.currentShowCoordinateInfo = coordinateInfo;
+}
+
+
+- (void)updateLocationInfoBarWithCLLocation:(CLLocation *)location{
+    CoordinateInfo *coordinateInfo = [CoordinateInfo coordinateInfoWithCLLocation:location inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
+    
+    //NSLog(@"CoordinateInfo : %@",coordinateInfo);
+    if (![coordinateInfo.reverseGeocodeSucceed boolValue]) {
+        [CoordinateInfo updatePlacemarkForCoordinateInfo:coordinateInfo completionBlock:^(NSString *localizedPlaceString) {
+            locationInfoBar.currentShowCoordinateInfo = coordinateInfo;
+        }];
         [NSThread sleepForTimeInterval:0.3];
     }
     
-    locationInfoWithCoordinateInfoBar.currentShowCoordinateInfo = coordinateInfo;
+    locationInfoBar.currentShowCoordinateInfo = coordinateInfo;
 }
-
-- (void)updateLocationInfoWithCoordinateInfoBarWithWSG84Coordinate:(CLLocationCoordinate2D)aCoordinate{
-    CoordinateInfo *coordinateInfo = [CoordinateInfo coordinateInfoWithLatitude:aCoordinate.latitude longitude:aCoordinate.longitude inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
-    
-    if (!coordinateInfo.reverseGeocodeSucceed) {
-        [CoordinateInfo updatePlacemarkForCoordinateInfo:coordinateInfo];
-        [NSThread sleepForTimeInterval:0.3];
-    }
-    
-    locationInfoWithCoordinateInfoBar.currentShowCoordinateInfo = coordinateInfo;
-}
-
+*/
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay{
     
     if ([overlay isKindOfClass:[MKPolyline class]]) {
         MKPolylineRenderer *polylineRenderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
         MKPolyline *polyline = (MKPolyline *)overlay;
+        polylineRenderer.lineWidth = 2;
         
-        if ([polyline.title isEqualToString:MKOverlayTitleForRandomColor]) {
-            // 模拟路线、记录的且已经保存的路线
-            polylineRenderer.lineWidth = 2;
-            lastRandomColor = [UIColor colorWithRandomFlatColorExcludingColorsInArray:@[FlatWhite,FlatWhiteDark,FlatBlack,FlatBlackDark,FlatRed,FlatRedDark]];
+        if ([polyline.title isEqualToString:MKOverlayTitleForMapModeColor]) {
+            // 与地图主题颜色相同
+            polylineRenderer.strokeColor = [self.currentTintColor colorWithAlphaComponent:0.8];
+        }else if ([polyline.title isEqualToString:MKOverlayTitleForRandomColor]) {
+            // 随机颜色
+            lastRandomColor = [RandomFlatColorInArray([AssetsMapProVC preferredOverlayColors]) colorWithAlphaComponent:0.8];
             polylineRenderer.strokeColor = lastRandomColor;
         }else if ([polyline.title isEqualToString:MKOverlayTitleForRedColor]) {
-            // 查找的路线
-            polylineRenderer.lineWidth = 2;
-            polylineRenderer.strokeColor = [UIColor flatRedColor];//[UIColor brownColor];
-        }else{
-            // 直线带箭头路线
-            polylineRenderer.lineWidth = 2;
-            polylineRenderer.strokeColor = self.currentTintColor;//[UIColor brownColor];
+            // 红色
+            polylineRenderer.strokeColor = [FlatRed colorWithAlphaComponent:0.8];
         }
 
         return polylineRenderer;
@@ -2970,19 +3023,34 @@
         // 箭头
         MKPolygonRenderer *polygonRenderer = [[MKPolygonRenderer alloc] initWithPolygon:overlay];
         polygonRenderer.lineWidth = 2;
+        
         polygonRenderer.strokeColor = lastRandomColor;// self.currentTintColor;//[[UIColor brownColor] colorWithAlphaComponent:0.6];
         return polygonRenderer;
     }else if ([overlay isKindOfClass:[MKCircle class]]){
         // 范围圆圈
         MKCircleRenderer *circleRenderer = [[MKCircleRenderer alloc] initWithCircle:overlay];
         circleRenderer.lineWidth = 1;
-        circleRenderer.fillColor = self.currentTintColor;//[[UIColor flatBlueColor] colorWithAlphaComponent:0.4];
-        circleRenderer.strokeColor = [self.currentTintColor colorWithAlphaComponent:0.3];//[[UIColor flatBlueColor] colorWithAlphaComponent:0.6];
+        
+        UIColor *circleFillColor = self.settingManager.routeColorIsMonochrome ? self.currentTintColor : RandomFlatColorInArray([AssetsMapProVC preferredOverlayColors]);
+        
+        circleRenderer.fillColor = [circleFillColor colorWithAlphaComponent:0.3];
+        
+        circleRenderer.strokeColor = [circleFillColor colorWithAlphaComponent:0.4];
+        
         return circleRenderer;
     }
     else{
         return nil;
     }
+}
+
++ (NSArray <UIColor *> *)preferredAnnotationViewColors{
+    return @[FlatSkyBlue,FlatPink,FlatGray,FlatPlum,FlatBrown,FlatForestGreen,FlatOrange,FlatWatermelon];
+}
+
++ (NSArray <UIColor *> *)preferredOverlayColors{
+    return @[FlatOrangeDark,FlatYellowDark,FlatSandDark,FlatMagentaDark,FlatTeal,FlatTealDark,FlatSkyBlueDark,FlatGreen,FlatGreenDark,FlatMint,FlatMintDark,FlatForestGreenDark,FlatPurple,FlatPurpleDark,FlatBrownDark,FlatPlumDark,FlatWatermelonDark,FlatLime,FlatLimeDark,FlatPinkDark,FlatMaroon,FlatMaroonDark,FlatCoffee,FlatCoffeeDark];
+    //@[FlatSand,]
 }
 
 - (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation{
@@ -3007,22 +3075,7 @@
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view{
     self.currentAnnotationIndex = [self.addedIDAnnos indexOfObject:view.annotation];
     
-    if ([view.annotation isKindOfClass:[EverywhereAnnotation class]]) {
-        //self.currentAnnotationIndex = [self.addedEWAnnos indexOfObject:view.annotation];
-        
-        EverywhereAnnotation *anno = (EverywhereAnnotation *)view.annotation;
-        PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:anno.assetLocalIdentifiers.firstObject inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
-        if (![assetInfo.reverseGeocodeSucceed boolValue]) [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
-        
-        [self updateLocationInfoWithCoordinateInfoBarWithPHAssetInfo:assetInfo];
-        
-    }else if ([view.annotation isKindOfClass:[EverywhereFootprintAnnotation class]]){
-        EverywhereFootprintAnnotation *footprintAnnotation = (EverywhereFootprintAnnotation *)view.annotation;
-        //self.currentAnnotationIndex = [self.addedEWFootprintAnnotations indexOfObject:footprintAnnotation];
-        
-        //[self updateLocationInfoWithCoordinateInfoBarWithGCJCoordinate:footprintAnnotation.coordinate];
-        [self updateLocationInfoWithCoordinateInfoBarWithWSG84Coordinate:footprintAnnotation.coordinateWGS84];
-    }
+    [self updateLocationInfoBarWithAnnotationView:view];
 }
 
 - (void)setCurrentAnnotationIndex:(NSInteger)currentAnnotationIndex{
@@ -3091,8 +3144,11 @@
         //NSInteger lastIndex = [recordedFootprintAnnotations indexOfObject:footprintAnnotation];
         // 显示出两点之间的箭头
         EverywhereFootprintAnnotation *lastAnno = recordedFootprintAnnotations[recordedFootprintAnnotations.count - 2];
-        [self.myMapView addOverlay:[AssetsMapProVC createLineMKPolylineBetweenStartCoordinate:lastAnno.coordinate endCoordinate:footprintAnnotation.coordinate]];
-        [self.myMapView addOverlay:[AssetsMapProVC createArrowMKPolygonBetweenStartCoordinate:lastAnno.coordinate endCoordinate:footprintAnnotation.coordinate]];
+        MKPolyline *polyline = [AssetsMapProVC createLineMKPolylineBetweenStartCoordinate:lastAnno.coordinate endCoordinate:footprintAnnotation.coordinate];
+        polyline.title = self.settingManager.routeColorIsMonochrome? MKOverlayTitleForMapModeColor : MKOverlayTitleForRandomColor;
+        MKPolygon *polygon = [AssetsMapProVC createArrowMKPolygonBetweenStartCoordinate:lastAnno.coordinate endCoordinate:footprintAnnotation.coordinate];
+        polygon.title = self.settingManager.routeColorIsMonochrome? MKOverlayTitleForMapModeColor : MKOverlayTitleForRandomColor;
+        [self.myMapView addOverlays:@[polyline,polygon]];
     }
     
     totalDistanceForRecord += [newLocation distanceFromLocation:lastRecordLocation];

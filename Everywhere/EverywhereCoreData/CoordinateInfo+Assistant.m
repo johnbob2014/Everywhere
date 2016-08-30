@@ -32,16 +32,24 @@
     return info;
 }
 
-+ (CoordinateInfo *)coordinateInfoWithLatitude:(double)latitude longitude:(double)longitude inManagedObjectContext:(NSManagedObjectContext *)context{
++ (CoordinateInfo *)coordinateInfoWithCLLocation:(CLLocation *)location inManagedObjectContext:(NSManagedObjectContext *)context{
     // The instance has its entity description set and is inserted it into context.
     // 查找方法会进行截取，这里无需截取
-    CoordinateInfo *info = [CoordinateInfo fetchCoordinateInfoWithLatitude:latitude longitude:longitude inManagedObjectContext:context];
+    CoordinateInfo *info = [CoordinateInfo fetchCoordinateInfoWithLatitude:location.coordinate.latitude longitude:location.coordinate.longitude inManagedObjectContext:context];
     
     if (!info){
         info = [NSEntityDescription insertNewObjectForEntityForName:EntityName_CoordinateInfo inManagedObjectContext:context];
         // 赋值时，对参数值进行截取
-        info.latitude = @([CoordinateInfo truncatedValue:latitude]);
-        info.longitude = @([CoordinateInfo truncatedValue:longitude]);
+        info.latitude = @([CoordinateInfo truncatedValue:location.coordinate.latitude]);
+        info.longitude = @([CoordinateInfo truncatedValue:location.coordinate.longitude]);
+        info.altitude = @(location.altitude);
+        
+        info.speed = @(location.speed);
+        info.course = @(location.course);
+        info.horizontalAccuracy = @(location.horizontalAccuracy);
+        info.verticalAccuracy = @(location.verticalAccuracy);
+        info.level = @(location.floor.level);
+        
         // 保存修改后的信息
         [context save:NULL];
     }
@@ -59,8 +67,13 @@
         // 赋值时，对参数值进行截取
         info.latitude = @([CoordinateInfo truncatedValue:[assetInfo.latitude_Coordinate_Location doubleValue]]);
         info.longitude = @([CoordinateInfo truncatedValue:[assetInfo.longitude_Coordinate_Location doubleValue]]);
-        
         info.altitude = assetInfo.altitude_Location;
+        
+        info.speed = assetInfo.speed_Location;
+        info.course = assetInfo.course_Location;
+        info.horizontalAccuracy = assetInfo.horizontalAccuracy_Location;
+        info.verticalAccuracy = assetInfo.verticalAccuracy_Location;
+        info.level = assetInfo.level_floor_Location;
         
         if (assetInfo.reverseGeocodeSucceed) {
             
@@ -103,11 +116,10 @@
     return instance;
 }
 
-+ (void)updatePlacemarkForCoordinateInfo:(CoordinateInfo *)coordinateInfo{
++ (void)updatePlacemarkForCoordinateInfo:(CoordinateInfo *)coordinateInfo completionBlock:(void(^)(NSString *localizedPlaceString))completionBlock{
     
     [[CoordinateInfo defaultGeocoder] reverseGeocodeLocation:[[CLLocation alloc] initWithLatitude:[coordinateInfo.latitude doubleValue] longitude:[coordinateInfo.longitude doubleValue]]
                                         completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
-                                            NSString *placeInfo;
                                             
                                             if (!error) {
                                                 // 解析成功
@@ -131,7 +143,6 @@
                                                 
                                             }else{
                                                 // 解析失败
-                                                placeInfo = error.localizedDescription;
                                                 coordinateInfo.reverseGeocodeSucceed = @(NO);
                                             }
                                             
@@ -139,6 +150,8 @@
                                             
                                             // 保存修改后的信息
                                             [coordinateInfo.managedObjectContext save:NULL];
+                                            
+                                            if (completionBlock) completionBlock(coordinateInfo.localizedPlaceString_Placemark);
                                         }];
     
     

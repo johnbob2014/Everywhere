@@ -2,7 +2,7 @@
 //  CoordinateInfo+CoreDataProperties.m
 //  Everywhere
 //
-//  Created by 张保国 on 16/7/26.
+//  Created by BobZhang on 16/8/30.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -14,10 +14,12 @@
 @implementation CoordinateInfo (CoreDataProperties)
 
 @dynamic administrativeArea_Placemark;
+@dynamic altitude;
 @dynamic ccISOcountryCode_Placemark;
 @dynamic country_Placemark;
 @dynamic inlandWater_Placemark;
 @dynamic latitude;
+@dynamic level;
 @dynamic locality_Placemark;
 @dynamic localizedPlaceString_Placemark;
 @dynamic longitude;
@@ -29,7 +31,9 @@
 @dynamic subLocality_Placemark;
 @dynamic subThoroughfare_Placemark;
 @dynamic thoroughfare_Placemark;
-@dynamic altitude;
-@dynamic level;
+@dynamic speed;
+@dynamic verticalAccuracy;
+@dynamic horizontalAccuracy;
+@dynamic course;
 
 @end

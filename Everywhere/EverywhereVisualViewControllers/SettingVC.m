@@ -84,20 +84,18 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 
     }];
 
-#pragma mark 每周第一天
-    NSArray *firstDayOfWeekArray = @[NSLocalizedString(@"Sunday",@"星期日"),NSLocalizedString(@"Monday",@"星期一")];
-    NSString *currentFirstDayOfWeek = firstDayOfWeekArray[self.settingManager.firstDayOfWeek < firstDayOfWeekArray.count ? self.settingManager.firstDayOfWeek : firstDayOfWeekArray.count - 1];
-    REPickerItem *firstDayOfWeekPickerItem = [REPickerItem itemWithTitle:NSLocalizedString(@"🌓 First Day Of Week",@"🌓 每周第一天")
-                                                                   value:@[currentFirstDayOfWeek]
-                                                             placeholder:nil
-                                                                 options:@[firstDayOfWeekArray]];
-    firstDayOfWeekPickerItem.onChange = ^(REPickerItem *item){
-        FirstDayOfWeek newCS = [firstDayOfWeekArray indexOfObject:item.value.firstObject];
-        self.settingManager.firstDayOfWeek = newCS;
-    };
-    
-    firstDayOfWeekPickerItem.inlinePicker = YES;
+#pragma mark 路线颜色
+    RESegmentedItem *routeColorIsMonochromeSegmentedItem = [RESegmentedItem itemWithTitle:NSLocalizedString(@"🛣 Route Color",@"🛣 路线颜色") segmentedControlTitles:@[NSLocalizedString(@"Multi",@"彩色"),NSLocalizedString(@"Solid",@"单色")] value:self.settingManager.routeColorIsMonochrome switchValueChangeHandler:^(RESegmentedItem *item) {
+        self.settingManager.routeColorIsMonochrome = item.value;
+    }];
+    routeColorIsMonochromeSegmentedItem.tintColor = [UIColor grayColor];
 
+#pragma mark 每周第一天
+    RESegmentedItem *firstDayOfWeekSegmentedItem = [RESegmentedItem itemWithTitle:NSLocalizedString(@"🌓 First Day Of Week",@"🌓 每周第一天") segmentedControlTitles:@[NSLocalizedString(@"Sunday",@"星期日"),NSLocalizedString(@"Monday",@"星期一")] value:self.settingManager.firstDayOfWeek switchValueChangeHandler:^(RESegmentedItem *item) {
+        self.settingManager.firstDayOfWeek = item.value;
+    }];
+    firstDayOfWeekSegmentedItem.tintColor = [UIColor grayColor];
+    
 #pragma mark 播放时间间隔
     
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.playTimeInterval];
@@ -107,8 +105,6 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         if(DEBUGMODE) NSLog(@"%@",item.value);
         self.settingManager.playTimeInterval = [item.value doubleValue];
     };
-
-    
     
 #pragma mark 地图缩放比例
     
@@ -134,7 +130,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     }];
 */
     
-    [globleSection addItemsFromArray:@[systemSettingItem,firstDayOfWeekPickerItem,playTimeIntervalItem,mapViewScaleRateItem]];
+    [globleSection addItemsFromArray:@[systemSettingItem,routeColorIsMonochromeSegmentedItem,firstDayOfWeekSegmentedItem,playTimeIntervalItem,mapViewScaleRateItem]];
     
 #pragma mark - 基础模式设置
     
@@ -156,26 +152,26 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     baseColorSchemePickerItem.inlinePicker = YES;
 
     
-#pragma mark 时刻模式合并距离
+#pragma mark 时刻模式分组距离
     //时刻模式
     //RETableViewSection *momentModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"MomentMode", @"时刻模式")];
     //[optionSection setHeaderHeight:30];
     
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.mergeDistanceForMoment];
-    RETextItem *mergeDistanceForMomentItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Moment Merge Distance",@"📏 时刻模式合并距离") value:tempString placeholder:@""];
+    RETextItem *mergeDistanceForMomentItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Moment Grouping Distance",@"📏 时刻模式分组距离") value:tempString placeholder:@""];
     mergeDistanceForMomentItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     mergeDistanceForMomentItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
         self.settingManager.mergeDistanceForMoment = [item.value doubleValue];
     };
 
-#pragma mark 地点模式合并距离
+#pragma mark 地点模式分组距离
     //地点模式
     //RETableViewSection *locationModeSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"LocationMode", @"地点模式")];
     //[optionSection setHeaderHeight:30];
     
     tempString = [NSString stringWithFormat:@"%.1f",self.settingManager.mergeDistanceForLocation];
-    RETextItem *mergeDistanceForLocationItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Location Merge Distance",@"📏 地点模式合并距离") value:tempString placeholder:@""];
+    RETextItem *mergeDistanceForLocationItem = [RETextItem itemWithTitle:NSLocalizedString(@"📏 Location Grouping Distance",@"📏 地点模式分组距离") value:tempString placeholder:@""];
     mergeDistanceForLocationItem.onChangeCharacterInRange = [self createLimitInputBlockWithAllowedString:NumberAndDecimal];
     mergeDistanceForLocationItem.onEndEditing = ^(RETextItem *item){
         if(DEBUGMODE) NSLog(@"%@",item.value);
@@ -251,11 +247,16 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     };
 
 #pragma mark 是否自动以第一张图片作为分享缩略图
-    REBoolItem *autoUseFirstAssetAsThumbnailItem = [REBoolItem itemWithTitle:NSLocalizedString(@"Auto Use First Asset As Thumbnail", @"自动以第一张图片作为分享缩略图") value:self.settingManager.autoUseFirstAssetAsThumbnail switchValueChangeHandler:^(REBoolItem *item) {
+    REBoolItem *autoUseFirstAssetAsThumbnailItem = [REBoolItem itemWithTitle:NSLocalizedString(@"Auto Use First Photo As Thumbnail", @"自动以第一张照片作为分享缩略图") value:self.settingManager.autoUseFirstAssetAsThumbnail switchValueChangeHandler:^(REBoolItem *item) {
         self.settingManager.autoUseFirstAssetAsThumbnail = item.value;
     }];
-    
-    [extendedModeShareSection addItemsFromArray:@[thumbnailScaleRateItem,thumbnailCompressionQualityItem,autoUseFirstAssetAsThumbnailItem]];
+
+#pragma mark 是否自动以全部图片作为分享缩略图
+    REBoolItem *autoUseAllAssetsAsThumbnailItem = [REBoolItem itemWithTitle:NSLocalizedString(@"Auto Use All Photos As Thumbnail", @"自动以全部照片作为分享缩略图") value:self.settingManager.autoUseAllAssetsAsThumbnail switchValueChangeHandler:^(REBoolItem *item) {
+        self.settingManager.autoUseAllAssetsAsThumbnail = item.value;
+    }];
+
+    [extendedModeShareSection addItemsFromArray:@[thumbnailScaleRateItem,thumbnailCompressionQualityItem,autoUseFirstAssetAsThumbnailItem,autoUseAllAssetsAsThumbnailItem]];
 
 #pragma mark - 扩展模式 记录
     RETableViewSection *extendedModeRecordSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Extended Mode - Record", @"扩展模式 - 记录")];

@@ -37,9 +37,9 @@
     settingManager.hasPurchasedShareAndBrowse = NO;
     settingManager.hasPurchasedImportAndExport = NO;
 
-    settingManager.hasPurchasedRecordAndEdit = YES;
-    settingManager.hasPurchasedShareAndBrowse = YES;
-    settingManager.hasPurchasedImportAndExport = YES;
+//    settingManager.hasPurchasedRecordAndEdit = YES;
+//    settingManager.hasPurchasedShareAndBrowse = YES;
+//    settingManager.hasPurchasedImportAndExport = YES;
     
     // 首次启动
     if(!settingManager.everLaunched){

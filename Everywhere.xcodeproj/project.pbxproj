@@ -21,7 +21,7 @@
 		1E8723A41D42D82E00652757 /* RecordModeSettingBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E8723A31D42D82E00652757 /* RecordModeSettingBar.m */; };
 		1E8723AC1D43603800652757 /* UIAlertController+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E8723AB1D43603800652757 /* UIAlertController+Assistant.m */; };
 		1ECE892D1D4ACF55004B5875 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1ECE892F1D4ACF55004B5875 /* Localizable.strings */; };
-		1ED1EE451D47A6D80068F0C6 /* LocationInfoWithCoordinateInfoBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ED1EE441D47A6D80068F0C6 /* LocationInfoWithCoordinateInfoBar.m */; };
+		1ED1EE451D47A6D80068F0C6 /* LocationInfoBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ED1EE441D47A6D80068F0C6 /* LocationInfoBar.m */; };
 		1EEA79511D2791A0002B6291 /* EverywhereAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEA79501D2791A0002B6291 /* EverywhereAnnotation.m */; };
 		1EEE907D1D5F846E00B87064 /* AlbumMapsAppQRCodeImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEE907C1D5F846D00B87064 /* AlbumMapsAppQRCodeImage.png */; };
 		1EF5CB031D71D3D500D03D6F /* 地球_22_29.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EF5CB011D71D3D500D03D6F /* 地球_22_29.png */; };
@@ -182,8 +182,8 @@
 		1E9CF64AE7F289869F003D6F /* libPods-Everywhere.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Everywhere.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1ECE892E1D4ACF55004B5875 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1ECE89301D4ACF5E004B5875 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		1ED1EE431D47A6D80068F0C6 /* LocationInfoWithCoordinateInfoBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationInfoWithCoordinateInfoBar.h; path = EverywhereVisualViewControllers/LocationInfoWithCoordinateInfoBar.h; sourceTree = "<group>"; };
-		1ED1EE441D47A6D80068F0C6 /* LocationInfoWithCoordinateInfoBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationInfoWithCoordinateInfoBar.m; path = EverywhereVisualViewControllers/LocationInfoWithCoordinateInfoBar.m; sourceTree = "<group>"; };
+		1ED1EE431D47A6D80068F0C6 /* LocationInfoBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationInfoBar.h; path = EverywhereVisualViewControllers/LocationInfoBar.h; sourceTree = "<group>"; };
+		1ED1EE441D47A6D80068F0C6 /* LocationInfoBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationInfoBar.m; path = EverywhereVisualViewControllers/LocationInfoBar.m; sourceTree = "<group>"; };
 		1EEA794F1D2791A0002B6291 /* EverywhereAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereAnnotation.h; path = EverywhereModels/EverywhereAnnotation.h; sourceTree = "<group>"; };
 		1EEA79501D2791A0002B6291 /* EverywhereAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereAnnotation.m; path = EverywhereModels/EverywhereAnnotation.m; sourceTree = "<group>"; };
 		1EEE907B1D5F381500B87064 /* GCFileBrowserConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCFileBrowserConfiguration.h; path = GCFileBrowser/GCFileBrowserConfiguration.h; sourceTree = "<group>"; };
@@ -517,8 +517,8 @@
 		1E8723A51D42D85C00652757 /* EverywhereBar */ = {
 			isa = PBXGroup;
 			children = (
-				1ED1EE431D47A6D80068F0C6 /* LocationInfoWithCoordinateInfoBar.h */,
-				1ED1EE441D47A6D80068F0C6 /* LocationInfoWithCoordinateInfoBar.m */,
+				1ED1EE431D47A6D80068F0C6 /* LocationInfoBar.h */,
+				1ED1EE441D47A6D80068F0C6 /* LocationInfoBar.m */,
 				1E63B77A1D2E9D90003E355B /* PlacemarkInfoBar.h */,
 				1E63B77B1D2E9D90003E355B /* PlacemarkInfoBar.m */,
 				4BE88AA01D333A46009501CE /* MapModeBar.h */,
@@ -1183,7 +1183,7 @@
 				4B079BA21D61B07800BC4115 /* NSArray+Chameleon.m in Sources */,
 				4BD51FC81D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m in Sources */,
 				4B079BA71D61B07800BC4115 /* UIImage+ChameleonPrivate.m in Sources */,
-				1ED1EE451D47A6D80068F0C6 /* LocationInfoWithCoordinateInfoBar.m in Sources */,
+				1ED1EE451D47A6D80068F0C6 /* LocationInfoBar.m in Sources */,
 				4B69F5021D614DA100575AC3 /* UILabel+Assistant.m in Sources */,
 				4B15B5D61D3F79CF0096EE89 /* FootprintAnnotationPickerVC.m in Sources */,
 				4B079BA91D61B07800BC4115 /* UINavigationController+Chameleon.m in Sources */,

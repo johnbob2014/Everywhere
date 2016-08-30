@@ -61,7 +61,7 @@
     [myTableView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:containerView withOffset:-10];
     
     UILabel *mergeDistanceLabel = [UILabel newAutoLayoutView];
-    mergeDistanceLabel.text = NSLocalizedString(@"MergeDistance :", @"合并距离：");
+    mergeDistanceLabel.text = NSLocalizedString(@"MergeDistance :", @"分组距离：");
     [containerView addSubview:mergeDistanceLabel];
     [mergeDistanceLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
     [mergeDistanceLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
@@ -175,7 +175,7 @@
     }];
     
     NSString *modeString = mergeInOrder ? NSLocalizedString(@"Merge By Moment", @"按时刻合并") : NSLocalizedString(@"Merge By Location", @"按位置合并");
-    NSString *distanceString = NSLocalizedString(@"Merge Distance", @"合并距离");
+    NSString *distanceString = NSLocalizedString(@"Grouping Distance", @"分组距离");
     NSString *reserveString = reserveManuallyAddedFootprint ? NSLocalizedString(@"ReserveManuallyAddedFootprint", @"保留手动添加足迹点") : NSLocalizedString(@"MergeManuallyAddedFootprint", @"合并手动添加足迹点");
     
     EverywhereFootprintsRepository *editedFootprintsRepository = [EverywhereFootprintsRepository new];
@@ -217,12 +217,12 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
     //cell.accessoryType = UITableViewCellAccessoryDetailButton;
     EverywhereFootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
-    NSString *headerString = footprintAnnotation.isUserManuallyAdded ? @"📍" : @"🔸";
+    NSString *headerString = footprintAnnotation.isUserManuallyAdded ? @"📍" : @"📌";
     cell.textLabel.text = [NSString stringWithFormat:@"%lu %@ %@",(unsigned long)(indexPath.row + 1),headerString,footprintAnnotation.customTitle];
     
     NSMutableString *ms = [NSMutableString new];
-    [ms appendFormat:@"%@:%.6f°,%.6f°",NSLocalizedString(@"Coord", @"座标"),footprintAnnotation.coordinateWGS84.latitude,footprintAnnotation.coordinateWGS84.longitude];
-    if (footprintAnnotation.altitude != 0) [ms appendFormat:@"  %@:%.2fm",NSLocalizedString(@"Altitude", @"高度"),footprintAnnotation.altitude];
+    [ms appendFormat:@"%@:%.4f°,%.4f°",NSLocalizedString(@"Coord", @"座标"),footprintAnnotation.coordinateWGS84.latitude,footprintAnnotation.coordinateWGS84.longitude];
+    if (footprintAnnotation.altitude > 0) [ms appendFormat:@"  %@:%.2fm",NSLocalizedString(@"Altitude", @"高度"),footprintAnnotation.altitude];
     //if (footprintAnnotation.speed > 0) [ms appendFormat:@"  %@:%.2fkm/h",NSLocalizedString(@"Speed", @"速度"),footprintAnnotation.speed * 3.6];
     cell.detailTextLabel.text = ms;
     
@@ -244,7 +244,7 @@
                                                            style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * _Nonnull action) {
                                                              __block UITextField *tf;
-                                                             UIAlertController *renameAC = [UIAlertController renameAlertControllerWithActionHandler:^(UIAlertAction *action) {
+                                                             UIAlertController *renameAC = [UIAlertController renameAlertControllerWithOKActionHandler:^(UIAlertAction *action) {
                                                                  
                                                                  footprintAnnotation.customTitle = tf.text;
                                                                  [self updateData];

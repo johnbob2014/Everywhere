@@ -5,6 +5,8 @@
         <attribute name="altitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="ccISOcountryCode_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="country_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="course" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="horizontalAccuracy" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="inlandWater_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="level" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -15,10 +17,12 @@
         <attribute name="ocean_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="postalCode_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="reverseGeocodeSucceed" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="speed" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="subAdministrativeArea_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="subLocality_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="subThoroughfare_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="thoroughfare_Placemark" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="verticalAccuracy" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
     </entity>
     <entity name="EWFRInfo" representedClassName="EWFRInfo" syncable="YES">
         <attribute name="averageSpeed" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
@@ -75,7 +79,7 @@
         <attribute name="verticalAccuracy_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
     </entity>
     <elements>
-        <element name="CoordinateInfo" positionX="-63" positionY="135" width="128" height="315"/>
+        <element name="CoordinateInfo" positionX="-63" positionY="135" width="128" height="375"/>
         <element name="EWFRInfo" positionX="-63" positionY="135" width="128" height="240"/>
         <element name="PHAssetInfo" positionX="-63" positionY="-18" width="128" height="600"/>
     </elements>

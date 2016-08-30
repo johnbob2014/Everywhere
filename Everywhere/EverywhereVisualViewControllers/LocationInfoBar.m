@@ -1,28 +1,31 @@
 //
-//  LocationInfoWithCoordinateInfoBar.m
+//  LocationInfoBar.m
 //  Everywhere
 //
 //  Created by 张保国 on 16/7/26.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#import "LocationInfoWithCoordinateInfoBar.h"
+#import "LocationInfoBar.h"
 #import "GCMaps.h"
 
-@interface LocationInfoWithCoordinateInfoBar ()
+@interface LocationInfoBar ()
 @property (assign,nonatomic) CLLocationCoordinate2D currentShowCoordinateWGS84;
 @property (assign,nonatomic) CLLocationCoordinate2D originCoordinateWGS84;
 @property (assign,nonatomic) CLLocationCoordinate2D destinationCoordinateWGS84;
 
 @property (strong,nonatomic) UILabel *coordinateLabel;
-@property (strong,nonatomic) UILabel *altitudeLabel;
-@property (strong,nonatomic) UILabel *addressLabel;
+@property (strong,nonatomic) UILabel *altitude_speed_Label;
+@property (strong,nonatomic) UITextView *addressTextView;
 
 @property (assign,nonatomic) NSInteger userPreferredMap;
 
 @end
 
-@implementation LocationInfoWithCoordinateInfoBar{
+@implementation LocationInfoBar{
+    UIView *bottomButtonContainer;
+    UIView *topButtonContainer;
+    
     UIButton *bottomFirstButton;
     UIButton *bottomSecodnButton;
     UIButton *bottomThirdButton;
@@ -78,44 +81,55 @@
 
 - (void)setCurrentShowCoordinateInfo:(CoordinateInfo *)currentShowCoordinateInfo{
     _currentShowCoordinateInfo = currentShowCoordinateInfo;
-    [self updateCoordinateLabel];
-    [self updateAltitudeLabel];
-    [self updateAddressLabel];
-}
-
--(void)updateCoordinateLabel{
+    
+    // updateCoordinateLabel
     NSMutableString *ma = [NSMutableString new];
     [ma appendString:[self.currentShowCoordinateInfo.latitude doubleValue] > 0 ? NSLocalizedString(@"N. ", @"北纬 "):NSLocalizedString(@"S. ", @"南纬 ")];
-    [ma appendString:[LocationInfoWithCoordinateInfoBar dmsStringWithDegrees:[self.currentShowCoordinateInfo.latitude doubleValue]]];
-    [ma appendFormat:@" (%.6f°)",fabs([self.currentShowCoordinateInfo.latitude doubleValue])];
+    [ma appendString:[LocationInfoBar dmsStringWithDegrees:[self.currentShowCoordinateInfo.latitude doubleValue]]];
+    [ma appendFormat:@" - %.4f°",fabs([self.currentShowCoordinateInfo.latitude doubleValue])];
     [ma appendFormat:@"\n"];
     [ma appendString:[self.currentShowCoordinateInfo.longitude doubleValue] > 0 ? NSLocalizedString(@"E. ", @"东经 "):NSLocalizedString(@"W. ", @"西经 ")];
-    [ma appendString:[LocationInfoWithCoordinateInfoBar dmsStringWithDegrees:[self.currentShowCoordinateInfo.longitude doubleValue]]];
-    [ma appendFormat:@" (%.6f°)",fabs([self.currentShowCoordinateInfo.longitude doubleValue])];
+    [ma appendString:[LocationInfoBar dmsStringWithDegrees:[self.currentShowCoordinateInfo.longitude doubleValue]]];
+    [ma appendFormat:@" - %.4f°",fabs([self.currentShowCoordinateInfo.longitude doubleValue])];
     self.coordinateLabel.text = ma;
+    
+    // updateAltitudeLabel
+    ma = [NSMutableString new];
+    if ([self.currentShowCoordinateInfo.altitude doubleValue] > 0) {
+        //[ma appendString:NSLocalizedString(@"Altitude", @"高度")];
+        [ma appendFormat:@"%.2fm",[self.currentShowCoordinateInfo.altitude doubleValue]];
+    }
+    if ([self.currentShowCoordinateInfo.speed doubleValue] > 0){
+        [ma appendFormat:@"\n%.2fkm/h",[self.currentShowCoordinateInfo.altitude doubleValue] * 3.6];
+    }
+    
+    self.altitude_speed_Label.text = ma;
+    
+    // updateAddressLabel
+    self.addressTextView.text = self.currentShowCoordinateInfo.localizedPlaceString_Placemark;
 }
+
+/*
+-(void)updateCoordinateLabel{
+    }
 
 - (void)updateAltitudeLabel{
     NSMutableString *ma = [NSMutableString new];
     
-    if ([self.currentShowCoordinateInfo.altitude doubleValue] != 0) {
-        [ma appendString:NSLocalizedString(@"Altitude", @"高度")];
-        [ma appendFormat:@"\n%.2f",[self.currentShowCoordinateInfo.altitude doubleValue]];
-    }
-    /*
+ 
      if (self.currentShowCoordinateInfo.level != 0) {
      [ma appendFormat:@"\n"];
      [ma appendString:NSLocalizedString(@"Floor : ", @"")];
      [ma appendFormat:@"%ld",(long)self.currentShowCoordinateInfo.level];
      }
-     */
+ 
     self.altitudeLabel.text = ma;
 }
 
 - (void)updateAddressLabel{
-    self.addressLabel.text = self.currentShowCoordinateInfo.localizedPlaceString_Placemark;
+ 
 }
-
+*/
 #pragma mark - Init
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
@@ -141,17 +155,17 @@
         };
         
 #pragma mark 下排按键
-        UIView *bottomBtnBar = [UIView newAutoLayoutView];
-        [self addSubview:bottomBtnBar];
-        [bottomBtnBar autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 0, 5, 0) excludingEdge:ALEdgeTop];
-        [bottomBtnBar autoSetDimension:ALDimensionHeight toSize:buttonHeight];
+        bottomButtonContainer = [UIView newAutoLayoutView];
+        [self addSubview:bottomButtonContainer];
+        [bottomButtonContainer autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 0, 5, 0) excludingEdge:ALEdgeTop];
+        [bottomButtonContainer autoSetDimension:ALDimensionHeight toSize:buttonHeight];
 
         bottomFirstButton = [UIButton newAutoLayoutView];
         bottomFirstButton.tag = 1;
         //[bottomFirstButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Flag_WBG"] forState:UIControlStateNormal];
         [bottomFirstButton setTitle:titleArray[3] forState:UIControlStateNormal];
         [bottomFirstButton addTarget:self action:selectorArray[3] forControlEvents:UIControlEventTouchDown];
-        [bottomBtnBar addSubview:bottomFirstButton];
+        [bottomButtonContainer addSubview:bottomFirstButton];
         [bottomFirstButton autoSetDimensionsToSize:buttonSize];
         [bottomFirstButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
         [bottomFirstButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
@@ -160,7 +174,7 @@
         bottomSecodnButton.tag = 2;
         [bottomSecodnButton setTitle:titleArray[4] forState:UIControlStateNormal];
         [bottomSecodnButton addTarget:self action:selectorArray[4] forControlEvents:UIControlEventTouchDown];
-        [bottomBtnBar addSubview:bottomSecodnButton];
+        [bottomButtonContainer addSubview:bottomSecodnButton];
         [bottomSecodnButton autoSetDimensionsToSize:buttonSize];
         [bottomSecodnButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
         [bottomSecodnButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:bottomFirstButton withOffset:5];
@@ -169,24 +183,24 @@
         bottomThirdButton.tag = 2;
         [bottomThirdButton setTitle:titleArray[5] forState:UIControlStateNormal];
         [bottomThirdButton addTarget:self action:selectorArray[5] forControlEvents:UIControlEventTouchDown];
-        [bottomBtnBar addSubview:bottomThirdButton];
+        [bottomButtonContainer addSubview:bottomThirdButton];
         [bottomThirdButton autoSetDimensionsToSize:buttonSize];
         [bottomThirdButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
         [bottomThirdButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:bottomSecodnButton withOffset:5];
         
 #pragma mark 上排按键
-        UIView *topBtnBar = [UIView newAutoLayoutView];
-        [self addSubview:topBtnBar];
-        [topBtnBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:bottomBtnBar withOffset:-5];
-        [topBtnBar autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
-        [topBtnBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
-        [topBtnBar autoSetDimension:ALDimensionHeight toSize:buttonHeight];
+        topButtonContainer = [UIView newAutoLayoutView];
+        [self addSubview:topButtonContainer];
+        [topButtonContainer autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:bottomButtonContainer withOffset:-5];
+        [topButtonContainer autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+        [topButtonContainer autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+        [topButtonContainer autoSetDimension:ALDimensionHeight toSize:buttonHeight];
 
         topFirstButton = [UIButton newAutoLayoutView];
         topFirstButton.tag = 1;
         [topFirstButton setTitle:titleArray[0] forState:UIControlStateNormal];
         [topFirstButton addTarget:self action:selectorArray[0] forControlEvents:UIControlEventTouchDown];
-        [topBtnBar addSubview:topFirstButton];
+        [topButtonContainer addSubview:topFirstButton];
         [topFirstButton autoSetDimensionsToSize:buttonSize];
         [topFirstButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
         [topFirstButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
@@ -195,7 +209,7 @@
         topSecondButton.tag = 2;
         [topSecondButton setTitle:titleArray[1] forState:UIControlStateNormal];
         [topSecondButton addTarget:self action:selectorArray[1] forControlEvents:UIControlEventTouchDown];
-        [topBtnBar addSubview:topSecondButton];
+        [topButtonContainer addSubview:topSecondButton];
         [topSecondButton autoSetDimensionsToSize:buttonSize];
         [topSecondButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
         [topSecondButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:topFirstButton withOffset:5];
@@ -204,7 +218,7 @@
         topThirdButton.tag = 2;
         [topThirdButton setTitle:titleArray[2] forState:UIControlStateNormal];
         [topThirdButton addTarget:self action:selectorArray[2] forControlEvents:UIControlEventTouchDown];
-        [topBtnBar addSubview:topThirdButton];
+        [topButtonContainer addSubview:topThirdButton];
         [topThirdButton autoSetDimensionsToSize:buttonSize];
         [topThirdButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
         [topThirdButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:topSecondButton withOffset:5];
@@ -227,21 +241,25 @@
         
         UILabel *altLabel = [UILabel newAutoLayoutView];
         altLabel.numberOfLines = 0;
-        altLabel.textAlignment = NSTextAlignmentCenter;
+        altLabel.textAlignment = NSTextAlignmentRight;
         [self addSubview:altLabel];
         [altLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
         [altLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
         [altLabel autoAlignAxis:ALAxisHorizontal toSameAxisOfView:coordlabel];
-        self.altitudeLabel = altLabel;
+        self.altitude_speed_Label = altLabel;
         
-        UILabel *addlabel = [UILabel newAutoLayoutView];
-        addlabel.numberOfLines = 0;
-        addlabel.textAlignment = NSTextAlignmentLeft;
-        [self addSubview:addlabel];
-        [addlabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coordinateLabel withOffset:5];
-        [addlabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
-        [addlabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
-        self.addressLabel = addlabel;
+        UITextView *addTV = [UITextView newAutoLayoutView];
+        addTV.font = [UIFont bodyFontWithSizeMultiplier:1.0];
+        addTV.editable = NO;
+        addTV.backgroundColor = [UIColor clearColor];
+        addTV.textAlignment = NSTextAlignmentLeft;
+        [self addSubview:addTV];
+        [addTV autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.coordinateLabel withOffset:5];
+        [addTV autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:topButtonContainer withOffset:-5];
+        [addTV autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+        [addTV autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+        
+        self.addressTextView = addTV;
         
         self.userPreferredMap = self.userPreferredMap;
     }

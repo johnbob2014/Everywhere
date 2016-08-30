@@ -590,7 +590,7 @@
             }
         };
         
-        UIAlertController *renameAC = [UIAlertController renameAlertControllerWithActionHandler:renameActionHandler
+        UIAlertController *renameAC = [UIAlertController renameAlertControllerWithOKActionHandler:renameActionHandler
                                                                   textFieldConfigurationHandler:^(UITextField *textField) {
                                                                     textField.text = selectedContentAttributeMutableDictionary[kContentName];
                                                                     tf = textField;

@@ -11,7 +11,7 @@
 @implementation EverywhereFootprintAnnotation
 
 - (CLLocation *)location{
-    return [[CLLocation alloc] initWithLatitude:self.coordinateWGS84.latitude longitude:self.coordinateWGS84.longitude];
+    return [[CLLocation alloc] initWithCoordinate:self.coordinateWGS84 altitude:self.altitude horizontalAccuracy:0 verticalAccuracy:0 course:0 speed:self.speed timestamp:[NSDate date]];
 }
 
 - (CLLocationCoordinate2D)coordinate{

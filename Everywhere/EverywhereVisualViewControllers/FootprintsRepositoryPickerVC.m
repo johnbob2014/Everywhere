@@ -293,7 +293,7 @@
     [myTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
     [self.view addSubview:myTableView];
     [myTableView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:groupSeg withOffset:10];
-    [myTableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 0, 50, 0) excludingEdge:ALEdgeTop];
+    [myTableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 0, 50, 10) excludingEdge:ALEdgeTop];
     //[myTableView autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
     //[myTableView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:clearAllButton withOffset:-10];
 }
@@ -412,7 +412,7 @@
                                                           style:UIAlertActionStyleDefault
                                                         handler:^(UIAlertAction * _Nonnull action) {
                                                             __block UITextField *tf;
-                                                            UIAlertController *renameAC = [UIAlertController renameAlertControllerWithActionHandler:^(UIAlertAction *action) {
+                                                            UIAlertController *renameAC = [UIAlertController renameAlertControllerWithOKActionHandler:^(UIAlertAction *action) {
                                                                 
                                                                 ewfrInfo.title = tf.text;
                                                                 [ewfrInfo.managedObjectContext save:NULL];

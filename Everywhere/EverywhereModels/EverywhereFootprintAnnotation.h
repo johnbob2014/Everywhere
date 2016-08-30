@@ -49,7 +49,7 @@
 @property (assign,nonatomic) BOOL isUserManuallyAdded;
 
 /**
- *  只读，仅用于GCLocationAnalyser进行分组
+ *  只读，根据座标信息生成的CLLocation
  */
 @property (strong,nonatomic,readonly) CLLocation *location;
 

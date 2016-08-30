@@ -31,15 +31,15 @@
 - (instancetype)init{
     self = [super init];
     if (self) {
-        if (!self.appInfoLastUpdateDate || [[NSDate date] timeIntervalSinceDate:self.appInfoLastUpdateDate] > 60 * 60){
-            [self updateAppInfoAndAppQRCodeImage];
+        if (!self.appInfoLastUpdateDate || [[NSDate date] timeIntervalSinceDate:self.appInfoLastUpdateDate] > 24 * 60 * 60){
+            [EverywhereSettingManager updateAppInfoWithCompletionBlock:nil];
         }
     }
     return self;
 }
 
 #pragma mark - App Info
-- (void)updateAppInfoAndAppQRCodeImage{
++ (void)updateAppInfoWithCompletionBlock:(void(^)())completionBlock{
     if(DEBUGMODE) NSLog(@"正在更新AppInfo...\n");
     // 更新下载链接
     NSString *appInfoURLString = @"http://www.7xpt9o.com1.z0.glb.clouddn.com/AppInfo.json";
@@ -123,13 +123,22 @@
         if(DEBUGMODE) NSLog(@"wxAppID : %@",wxAppID);
         [[NSUserDefaults standardUserDefaults] setValue:wxAppID forKey:@"wxAppID"];
     }
-
+    
+    // 更新DebugCode 更新之前先清空！！！
+    [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"debugCode"];
+    if ([appInfoDictionary.allKeys containsObject:@"DebugCode"]){
+        NSString *debugCode = appInfoDictionary[@"DebugCode"];
+        if(DEBUGMODE) NSLog(@"debugCode : %@",debugCode);
+        [[NSUserDefaults standardUserDefaults] setValue:debugCode forKey:@"debugCode"];
+    }
+    
     // 保存数据！！！
     [[NSUserDefaults standardUserDefaults] synchronize];
     
+    if (completionBlock) completionBlock();
 }
 
-// 以下4个属性只有获取方法，更新在上面方法中完成
+// 以下属性只有获取方法，更新在上面方法中完成
 - (NSDate *)appInfoLastUpdateDate{
     return [[NSUserDefaults standardUserDefaults] valueForKey:@"appInfoLastUpdateDate"];
 }
@@ -162,7 +171,25 @@
     else return WXAppID;
 }
 
++ (NSString *)debugCode{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:@"debugCode"];
+}
+
++ (void)setDebugCode:(NSString *)debugCode{
+    [[NSUserDefaults standardUserDefaults] setValue:debugCode forKey:@"debugCode"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 #pragma mark - Items
+
+- (NSInteger)routeColorIsMonochrome{
+    return [[NSUserDefaults standardUserDefaults] integerForKey:@"routeColorIsMonochrome"];
+}
+
+- (void)setRouteColorIsMonochrome:(NSInteger)routeColorIsMonochrome{
+    [[NSUserDefaults standardUserDefaults] setInteger:routeColorIsMonochrome forKey:@"routeColorIsMonochrome"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
 
 - (UIColor *)backgroundColor{
     return [UIColor groupTableViewBackgroundColor];
@@ -455,6 +482,15 @@
 
 - (void)setAutoUseFirstAssetAsThumbnail:(BOOL)autoUseFirstAssetAsThumbnail{
     [[NSUserDefaults standardUserDefaults] setBool:autoUseFirstAssetAsThumbnail forKey:@"autoUseFirstAssetAsThumbnail"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (BOOL)autoUseAllAssetsAsThumbnail{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"autoUseAllAssetsAsThumbnail"];
+}
+
+- (void)setAutoUseAllAssetsAsThumbnail:(BOOL)autoUseAllAssetsAsThumbnail{
+    [[NSUserDefaults standardUserDefaults] setBool:autoUseAllAssetsAsThumbnail forKey:@"autoUseAllAssetsAsThumbnail"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

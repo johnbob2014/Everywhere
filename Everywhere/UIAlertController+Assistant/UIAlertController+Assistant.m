@@ -34,11 +34,38 @@
 }
 
 
-+ (UIAlertController *)renameAlertControllerWithActionHandler:(void (^)(UIAlertAction *action))handler
++ (UIAlertController *)renameAlertControllerWithOKActionHandler:(void (^)(UIAlertAction *action))handler
                                 textFieldConfigurationHandler:(void (^)(UITextField *textField))configurationHandler{
     
     NSString *alertTitle = NSLocalizedString(@"Rename", @"重命名");
     NSString *alertMessage = NSLocalizedString(@"Enter a new name", @"输入新名称");
+    
+    return [UIAlertController singleTextFieldAlertControllerWithTitle:alertTitle
+                                                              message:alertMessage
+                                                      okActionHandler:handler
+                                        textFieldConfigurationHandler:configurationHandler];
+    /*
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK",@"确定")
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:handler];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
+    [alertController addAction:okAction];
+    [alertController addAction:cancelAction];
+    
+    if (iOS9) alertController.preferredAction = okAction;
+    
+    [alertController addTextFieldWithConfigurationHandler:configurationHandler];
+    return alertController;
+    */
+}
+
++ (UIAlertController *)singleTextFieldAlertControllerWithTitle:(NSString *)alertTitle
+                                                       message:(NSString *)alertMessage
+                                               okActionHandler:(void (^)(UIAlertAction *action))handler
+                                 textFieldConfigurationHandler:(void (^)(UITextField *textField))configurationHandler{
     
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
     

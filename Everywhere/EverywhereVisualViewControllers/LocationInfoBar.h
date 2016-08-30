@@ -1,5 +1,5 @@
 //
-//  LocationInfoWithCoordinateInfoBar.h
+//  LocationInfoBar.h
 //  Everywhere
 //
 //  Created by 张保国 on 16/7/26.
@@ -14,7 +14,7 @@
 
 typedef void(^DidGetMKDirectionsResponseHandler)(MKDirectionsResponse *response);
 
-@interface LocationInfoWithCoordinateInfoBar : UIView
+@interface LocationInfoBar : UIView
 
 @property (copy,nonatomic) DidGetMKDirectionsResponseHandler didGetMKDirectionsResponseHandler;
 
