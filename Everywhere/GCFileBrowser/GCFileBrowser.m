@@ -482,10 +482,10 @@
                 successString = [NSString stringWithFormat:@"%@ : %@",NSLocalizedString(@"Failed", @"失败"),error.localizedFailureReason];
             }
             
-            self.infoStringToAdd = [NSString stringWithFormat:@"%@ %lu/%lu : %@",NSLocalizedString(@"Now copying", @"正在复制"),idx + 1,(unsigned long)self.waitToCopyCADMA.count,successString];
+            self.infoStringToAdd = [NSString stringWithFormat:@"%@ %lu/%lu : %@",NSLocalizedString(@"Now copying", @"正在复制"),(unsigned long)(idx + 1),(unsigned long)self.waitToCopyCADMA.count,successString];
         }];
         
-        self.infoStringToAdd = [NSString stringWithFormat:@"%@ %@ : %lu,%@ : %lu",NSLocalizedString(@"Finish copying.", @"复制完成。"),NSLocalizedString(@"Succeeded", @"成功"),(unsigned long)successCount,NSLocalizedString(@"Failed", @"失败"),self.waitToCopyCADMA.count - successCount];
+        self.infoStringToAdd = [NSString stringWithFormat:@"%@ %@ : %lu,%@ : %lu",NSLocalizedString(@"Finish copying.", @"复制完成。"),NSLocalizedString(@"Succeeded", @"成功"),(unsigned long)successCount,NSLocalizedString(@"Failed", @"失败"),(unsigned long)(self.waitToCopyCADMA.count - successCount)];
         
         self.waitToCopyCADMA = nil;
         [self updateDataWithNewDirectoryPath:self.directoryPath];
@@ -513,10 +513,10 @@
                 successString = [NSString stringWithFormat:@"%@ : %@",NSLocalizedString(@"Failed", @"失败"),error.localizedFailureReason];
             }
             
-            self.infoStringToAdd = [NSString stringWithFormat:@"%@ %lu/%lu : %@",NSLocalizedString(@"Now moving", @"正在移动"),idx + 1,(unsigned long)self.waitToMoveCADMA.count,successString];
+            self.infoStringToAdd = [NSString stringWithFormat:@"%@ %lu/%lu : %@",NSLocalizedString(@"Now moving", @"正在移动"),(unsigned long)(idx + 1),(unsigned long)self.waitToMoveCADMA.count,successString];
         }];
         
-        self.infoStringToAdd = [NSString stringWithFormat:@"%@ %@ : %lu,%@ : %lu",NSLocalizedString(@"Finish moving.", @"移动完成。"),NSLocalizedString(@"Succeeded", @"成功"),(unsigned long)successCount,NSLocalizedString(@"Failed", @"失败"),self.waitToMoveCADMA.count - successCount];
+        self.infoStringToAdd = [NSString stringWithFormat:@"%@ %@ : %lu,%@ : %lu",NSLocalizedString(@"Finish moving.", @"移动完成。"),NSLocalizedString(@"Succeeded", @"成功"),(unsigned long)successCount,NSLocalizedString(@"Failed", @"失败"),(unsigned long)(self.waitToMoveCADMA.count - successCount)];
         
         self.waitToMoveCADMA = nil;
         [self updateDataWithNewDirectoryPath:self.directoryPath];
@@ -543,10 +543,10 @@
                     successString = [NSString stringWithFormat:@"%@ : %@",NSLocalizedString(@"Failed", @"失败"),error.localizedFailureReason];
                 }
                 
-                self.infoStringToAdd = [NSString stringWithFormat:@"%@ %lu/%lu : %@",NSLocalizedString(@"Now deleting", @"正在删除"),idx + 1,(unsigned long)self.waitToMoveCADMA.count,successString];
+                self.infoStringToAdd = [NSString stringWithFormat:@"%@ %lu/%lu : %@",NSLocalizedString(@"Now deleting", @"正在删除"),(unsigned long)(idx + 1),(unsigned long)self.waitToMoveCADMA.count,successString];
             }];
             
-            self.infoStringToAdd = [NSString stringWithFormat:@"%@ %@ : %lu,%@ : %lu",NSLocalizedString(@"Finish deleting.", @"删除完成。"),NSLocalizedString(@"Succeeded", @"成功"),(unsigned long)successCount,NSLocalizedString(@"Failed", @"失败"),self.selectedCADMA.count - successCount];
+            self.infoStringToAdd = [NSString stringWithFormat:@"%@ %@ : %lu,%@ : %lu",NSLocalizedString(@"Finish deleting.", @"删除完成。"),NSLocalizedString(@"Succeeded", @"成功"),(unsigned long)successCount,NSLocalizedString(@"Failed", @"失败"),(unsigned long)(self.selectedCADMA.count - successCount)];
             
             self.selectedCADMA = nil;
 

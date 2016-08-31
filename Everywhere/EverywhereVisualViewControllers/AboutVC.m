@@ -24,7 +24,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
     
     self.title=NSLocalizedString(@"About", @"关于");
     
@@ -33,13 +33,13 @@
 }
 
 -(void)initAboutUI{
-    UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGR:)];
-    tapGR.numberOfTapsRequired = 3;
-    tapGR.numberOfTouchesRequired = 1;
     
+    UITapGestureRecognizer *threeTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(threeTapGR:)];
+    threeTapGR.numberOfTapsRequired = 3;
+    threeTapGR.numberOfTouchesRequired = 1;
     self.imageView=[[UIImageView alloc]initForAutoLayout];
     self.imageView.userInteractionEnabled = YES;
-    [self.imageView addGestureRecognizer:tapGR];
+    [self.imageView addGestureRecognizer:threeTapGR];
     [self.imageView setImage:[UIImage imageNamed:@"地球_300_300"]];
     [self.view addSubview:self.imageView];
     [self.imageView autoSetDimensionsToSize:CGSizeMake(80, 80)];
@@ -69,7 +69,12 @@
     [self.bottomLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
     [self.bottomLabel autoSetDimension:ALDimensionHeight toSize:100];
     
+    UITapGestureRecognizer *threeTouch_OneTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(threeTouch_OneTapGR:)];
+    threeTouch_OneTapGR.numberOfTapsRequired = 1;
+    threeTouch_OneTapGR.numberOfTouchesRequired = 3;
+    
     self.detailTextView=[[UITextView alloc]initForAutoLayout];
+    [self.detailTextView addGestureRecognizer:threeTouch_OneTapGR];
     self.detailTextView.editable=NO;
     self.detailTextView.font=[UIFont bodyFontWithSizeMultiplier:1.0];
     self.detailTextView.text=NSLocalizedString(@"Your Album and Footprints Management Expert.", @"您的相册和足迹管理专家。");
@@ -80,32 +85,51 @@
     [self.detailTextView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:self.bottomLabel withOffset:-20];
 }
 
-- (void)tapGR:(UITapGestureRecognizer *)sender{
-    __block UITextField *tf;
-    UIAlertController *alertController = [UIAlertController singleTextFieldAlertControllerWithTitle:NSLocalizedString(@"AlbumMaps", @"相册地图")
-                                                                                            message:NSLocalizedString(@"Enter debug code", @"请输入调试码")
-                                                                                    okActionHandler:^(UIAlertAction *action) {
-                                                                                        [self checkDebugCode:tf.text];
-                                                                                    }
-                                                                      textFieldConfigurationHandler:^(UITextField *textField) {
-                                                                          tf = textField;
-                                                                      }];
+- (void)threeTouch_OneTapGR:(UITapGestureRecognizer *)sender{
+    if (DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
+    [EverywhereSettingManager defaultManager].debugMode = ![EverywhereSettingManager defaultManager].debugMode;
     
-    [self presentViewController:alertController animated:YES completion:^{
+    if ([EverywhereSettingManager defaultManager].debugMode){
+        [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Enter debug mode", @"进入调试模式")];
+    }else{
+        [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Quite debug mode", @"退出调试模式")];
+    }
+    
+    //[SVProgressHUD dismissWithDelay:3.0];
+
+}
+
+- (void)threeTapGR:(UITapGestureRecognizer *)sender{
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Wait a moment...", @"请稍后...")];
+    [EverywhereSettingManager updateAppInfoWithCompletionBlock:^{
+        [SVProgressHUD dismiss];
         
+        __block UITextField *tf;
+        UIAlertController *alertController = [UIAlertController singleTextFieldAlertControllerWithTitle:NSLocalizedString(@"AlbumMaps", @"相册地图")
+                                                                                                message:NSLocalizedString(@"Enter debug code", @"请输入调试码")
+                                                                                        okActionHandler:^(UIAlertAction *action) {
+                                                                                            [self checkAppDebugCode:tf.text];
+                                                                                        }
+                                                                          textFieldConfigurationHandler:^(UITextField *textField) {
+                                                                              tf = textField;
+                                                                          }];
+        
+        [self presentViewController:alertController animated:YES completion:nil];
     }];
 }
 
-- (void)checkDebugCode:(NSString *)debugCode{
-    [EverywhereSettingManager updateAppInfoWithCompletionBlock:^{
-        //EverywhereSettingManager.debugCode = @"haha";
-        if (DEBUGMODE) NSLog(@"debugCode : %@",EverywhereSettingManager.debugCode);
-        if([debugCode isEqualToString:EverywhereSettingManager.debugCode]){
-            [EverywhereSettingManager defaultManager].hasPurchasedShareAndBrowse = YES;
-            [EverywhereSettingManager defaultManager].hasPurchasedRecordAndEdit = YES;
-            [EverywhereSettingManager defaultManager].hasPurchasedImportAndExport = YES;
-        }
-    }];
+- (void)checkAppDebugCode:(NSString *)inputString{
+    
+    if([[inputString SHA256] isEqualToString:[EverywhereSettingManager defaultManager].appDebugCode]){
+        [EverywhereSettingManager defaultManager].hasPurchasedShareAndBrowse = YES;
+        [EverywhereSettingManager defaultManager].hasPurchasedRecordAndEdit = YES;
+        [EverywhereSettingManager defaultManager].hasPurchasedImportAndExport = YES;
+        
+        [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"^_^ Verify Succeeded", @"^_^ 验证成功")];
+    }else{
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@">_< Verify Failed", @">_< 验证失败")];
+    }
+    
 }
 
 @end

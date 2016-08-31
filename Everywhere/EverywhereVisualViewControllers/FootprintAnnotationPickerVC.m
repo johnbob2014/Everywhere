@@ -25,7 +25,7 @@
     UISegmentedControl *groupSeg;
     UITableView *myTableView;
     UISwitch *reserveManuallyAddedFootprintSwitch;
-    UIButton *mergeButton;
+    UIButton *bottomLeftButton,*bottomRightButton;
     
     BOOL mergeInOrder;
     BOOL reserveManuallyAddedFootprint;
@@ -47,10 +47,10 @@
     
     self.title = self.ewfrInfo.title;
     
-    UIView *containerView = [UIView newAutoLayoutView];
-    [self.view addSubview:containerView];
-    [containerView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
-    [containerView autoSetDimension:ALDimensionHeight toSize:165];
+    UIView *bottomControlContainerView = [UIView newAutoLayoutView];
+    [self.view addSubview:bottomControlContainerView];
+    [bottomControlContainerView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero excludingEdge:ALEdgeTop];
+    [bottomControlContainerView autoSetDimension:ALDimensionHeight toSize:165];
 
     myTableView = [UITableView newAutoLayoutView];
     myTableView.delegate = self;
@@ -58,11 +58,11 @@
     [myTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
     [self.view addSubview:myTableView];
     [myTableView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(10, 10, 10, 10) excludingEdge:ALEdgeBottom];
-    [myTableView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:containerView withOffset:-10];
+    [myTableView autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:bottomControlContainerView withOffset:-10];
     
     UILabel *mergeDistanceLabel = [UILabel newAutoLayoutView];
     mergeDistanceLabel.text = NSLocalizedString(@"MergeDistance :", @"分组距离：");
-    [containerView addSubview:mergeDistanceLabel];
+    [bottomControlContainerView addSubview:mergeDistanceLabel];
     [mergeDistanceLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
     [mergeDistanceLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
     [mergeDistanceLabel autoSetDimension:ALDimensionHeight toSize:30];
@@ -75,7 +75,7 @@
     mergeDistanceTF.layer.borderWidth = 1;
     mergeDistanceTF.layer.cornerRadius = 3;
     mergeDistanceTF.layer.borderColor = [[EverywhereSettingManager defaultManager].extendedTintColor CGColor];
-    [containerView addSubview: mergeDistanceTF];
+    [bottomControlContainerView addSubview: mergeDistanceTF];
     [mergeDistanceTF autoAlignAxis:ALAxisHorizontal toSameAxisOfView:mergeDistanceLabel];
     [mergeDistanceTF autoSetDimension:ALDimensionWidth toSize:120];
     [mergeDistanceTF autoSetDimension:ALDimensionHeight toSize:30];
@@ -83,10 +83,12 @@
 
     groupNameArray = @[NSLocalizedString(@"Merge By Moment", @"按时刻合并"),
                        NSLocalizedString(@"Merge By Location", @"按位置合并")];
+    
     groupSeg = [[UISegmentedControl alloc] initWithItems:groupNameArray];
+    groupSeg.tintColor = [EverywhereSettingManager defaultManager].extendedTintColor;
     groupSeg.selectedSegmentIndex = 0;
     [groupSeg addTarget:self action:@selector(segValueChanged:) forControlEvents:UIControlEventValueChanged];
-    [containerView addSubview:groupSeg];
+    [bottomControlContainerView addSubview:groupSeg];
     groupSeg.translatesAutoresizingMaskIntoConstraints = NO;
     [groupSeg autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:mergeDistanceLabel withOffset:10];
     [groupSeg autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
@@ -94,7 +96,7 @@
     
     UILabel *reserveManuallyAddedFootprintLabel = [UILabel newAutoLayoutView];
     reserveManuallyAddedFootprintLabel.text = NSLocalizedString(@"Reserve Manually Added :", @"保留手动添加足迹点 :");
-    [containerView addSubview:reserveManuallyAddedFootprintLabel];
+    [bottomControlContainerView addSubview:reserveManuallyAddedFootprintLabel];
     [reserveManuallyAddedFootprintLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:groupSeg withOffset:10];
     [reserveManuallyAddedFootprintLabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:10];
     [reserveManuallyAddedFootprintLabel autoSetDimension:ALDimensionHeight toSize:30];
@@ -102,18 +104,37 @@
     reserveManuallyAddedFootprintSwitch = [UISwitch newAutoLayoutView];
     reserveManuallyAddedFootprintSwitch.on = YES;
     [reserveManuallyAddedFootprintSwitch addTarget:self action:@selector(switchValueChanged:) forControlEvents:UIControlEventValueChanged];
-    [containerView addSubview:reserveManuallyAddedFootprintSwitch];
+    [bottomControlContainerView addSubview:reserveManuallyAddedFootprintSwitch];
     [reserveManuallyAddedFootprintSwitch autoAlignAxis:ALAxisHorizontal toSameAxisOfView:reserveManuallyAddedFootprintLabel];
     [reserveManuallyAddedFootprintSwitch autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
     
-    mergeButton = [UIButton newAutoLayoutView];
-    [mergeButton setStyle:UIButtonStylePrimary];
-    [mergeButton addTarget:self action:@selector(startMerge) forControlEvents:UIControlEventTouchDown];
-    [mergeButton setTitle:NSLocalizedString(@"Start Merge", @"开始合并") forState:UIControlStateNormal];
-    [containerView addSubview:mergeButton];
-    [mergeButton autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(10, 10, 5, 10) excludingEdge:ALEdgeTop];
-    [mergeButton autoSetDimension:ALDimensionHeight toSize:40];
+    UIView *buttonContainerView = [UIView newAutoLayoutView];
+    buttonContainerView.backgroundColor = DEBUGMODE ? [[UIColor randomFlatColor] colorWithAlphaComponent:0.6] : ClearColor;
+    [bottomControlContainerView addSubview:buttonContainerView];
+    [buttonContainerView autoSetDimension:ALDimensionHeight toSize:40];
+    [buttonContainerView autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:buttonContainerView.superview withOffset:-20];
+    [buttonContainerView autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:buttonContainerView.superview withOffset:-5];
+    [buttonContainerView autoAlignAxis:ALAxisVertical toSameAxisOfView:buttonContainerView.superview];
     
+    bottomLeftButton = [UIButton newAutoLayoutView];
+    [bottomLeftButton setTitle:NSLocalizedString(@"Save Only", @"仅保存") forState:UIControlStateNormal];
+    [bottomLeftButton setStyle:UIButtonStylePrimary];
+    [bottomLeftButton addTarget:self action:@selector(saveOnly) forControlEvents:UIControlEventTouchDown];
+    [buttonContainerView addSubview:bottomLeftButton];
+    [bottomLeftButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+    [bottomLeftButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
+    [bottomLeftButton autoSetDimension:ALDimensionHeight toSize:40];
+    
+    bottomRightButton = [UIButton newAutoLayoutView];
+    [bottomRightButton setStyle:UIButtonStylePrimary];
+    [bottomRightButton addTarget:self action:@selector(startMerge) forControlEvents:UIControlEventTouchDown];
+    [bottomRightButton setTitle:NSLocalizedString(@"Merge & Save", @"合并保存") forState:UIControlStateNormal];
+    [buttonContainerView addSubview:bottomRightButton];
+    [bottomRightButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+    [bottomRightButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
+    [bottomRightButton autoSetDimension:ALDimensionHeight toSize:40];
+    [bottomRightButton autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:bottomLeftButton];
+    [bottomRightButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:bottomLeftButton withOffset:10];
 }
 
 - (void)segValueChanged:(UISegmentedControl *)sender{
@@ -127,6 +148,28 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)saveOnly{
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving...", @"正在保存...")];
+    
+    EverywhereFootprintsRepository *editedFootprintsRepository = [EverywhereFootprintsRepository new];
+    editedFootprintsRepository.footprintAnnotations = self.footprintAnnotationMA;
+    editedFootprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Edit", @"编辑"),self.ewfrInfo.title];
+    editedFootprintsRepository.creationDate = NOW;
+    editedFootprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeEdited;
+    
+    BOOL succeeded = [EverywhereCoreDataManager addEWFR:editedFootprintsRepository];
+    NSString *succeededString = succeeded ? NSLocalizedString(@"Save Succeeded", @"保存成功") : NSLocalizedString(@"Save Failed", @"保存失败");
+    [SVProgressHUD showInfoWithStatus:succeededString];
+    [SVProgressHUD dismiss];
+    
+    NSMutableString *alertMessage =[NSMutableString new];
+    [alertMessage appendFormat:@"%@",succeededString];
+    if (succeeded) [alertMessage appendFormat:@"\n%@ :\n%@",NSLocalizedString(@"Saved As", @"存储为"),editedFootprintsRepository.title];
+    
+    [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:alertMessage]
+                       animated:YES completion:nil];
 }
 
 - (void)startMerge{
@@ -192,7 +235,7 @@
     
     BOOL succeeded = [EverywhereCoreDataManager addEWFR:editedFootprintsRepository];
     NSString *succeededString = succeeded ? NSLocalizedString(@"Succeeded", @"成功") : NSLocalizedString(@"Failed", @"失败");
-    [SVProgressHUD showSuccessWithStatus:[NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Merge ", @"合并"),succeededString]];
+    [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Merge ", @"合并"),succeededString]];
     [SVProgressHUD dismiss];
     
     NSString *alertMessage = [NSString stringWithFormat:@"%@\n%@ : %.1f\n%@\n%@ :\n%@",modeString,distanceString,mergeDistance,reserveString,NSLocalizedString(@"Saved As", @"存储为"),editedFootprintsRepository.title];
@@ -215,7 +258,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
-    //cell.accessoryType = UITableViewCellAccessoryDetailButton;
+    cell.accessoryType = UITableViewCellAccessoryDetailButton;
     EverywhereFootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
     NSString *headerString = footprintAnnotation.isUserManuallyAdded ? @"📍" : @"📌";
     cell.textLabel.text = [NSString stringWithFormat:@"%lu %@ %@",(unsigned long)(indexPath.row + 1),headerString,footprintAnnotation.customTitle];
@@ -223,7 +266,7 @@
     NSMutableString *ms = [NSMutableString new];
     [ms appendFormat:@"%@:%.4f°,%.4f°",NSLocalizedString(@"Coord", @"座标"),footprintAnnotation.coordinateWGS84.latitude,footprintAnnotation.coordinateWGS84.longitude];
     if (footprintAnnotation.altitude > 0) [ms appendFormat:@"  %@:%.2fm",NSLocalizedString(@"Altitude", @"高度"),footprintAnnotation.altitude];
-    //if (footprintAnnotation.speed > 0) [ms appendFormat:@"  %@:%.2fkm/h",NSLocalizedString(@"Speed", @"速度"),footprintAnnotation.speed * 3.6];
+    if (footprintAnnotation.speed > 0) [ms appendFormat:@"  %@:%.2fkm/h",NSLocalizedString(@"Speed", @"速度"),footprintAnnotation.speed * 3.6];
     cell.detailTextLabel.text = ms;
     
     return cell;
@@ -275,6 +318,23 @@
     
 }
 
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
+    EverywhereFootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
+    
+    __block UITextField *tf;
+    UIAlertController *renameAC = [UIAlertController renameAlertControllerWithOKActionHandler:^(UIAlertAction *action) {
+        
+        footprintAnnotation.customTitle = tf.text;
+        [self updateData];
+        
+    } textFieldConfigurationHandler:^(UITextField *textField) {
+        textField.text = footprintAnnotation.customTitle;
+        tf = textField;
+    }];
+    
+    [self presentViewController:renameAC animated:YES completion:nil];
+}
+
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{
     return YES;
 }
@@ -282,7 +342,7 @@
 /*
 - (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath{
     EverywhereFootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
-    
+ 
     UITableViewRowAction *renameRA = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault
                                                                          title:NSLocalizedString(@"Rename", @"重命名")
                                                                        handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {

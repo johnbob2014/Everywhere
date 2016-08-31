@@ -57,7 +57,6 @@
         
         groupSeg = [[UISegmentedControl alloc] initWithItems:groupNameArray];
         groupSeg.tintColor = [UIColor whiteColor];
-        groupSeg.selectedSegmentIndex = settingManager.defaultTransport;
         [groupSeg addTarget:self action:@selector(segValueChanged:) forControlEvents:UIControlEventValueChanged];
         [self addSubview:groupSeg];
         groupSeg.translatesAutoresizingMaskIntoConstraints = NO;
@@ -118,14 +117,13 @@
         
         self.customMinDistance = settingManager.minDistanceForRecord;
         self.customMinTimeInterval = settingManager.minTimeIntervalForRecord;
-        
-        [self updateData:groupSeg.selectedSegmentIndex];
-
     }
     return self;
 }
 
 - (void)layoutSubviews{
+    groupSeg.selectedSegmentIndex = settingManager.defaultTransportType;
+    [self updateData:groupSeg.selectedSegmentIndex];
     //[sDLabel autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:self withMultiplier:0.5];
     [sTILabel autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:self.bounds.size.width / 2.0];
 }
@@ -136,8 +134,8 @@
 }
 
 - (void)updateData:(NSInteger)index{
-    settingManager.defaultTransport = index;
-    if (DEBUGMODE) NSLog(@"defaultTransport : %lu",settingManager.defaultTransport);
+    settingManager.defaultTransportType = index;
+    if (DEBUGMODE) NSLog(@"defaultTransportType : %lu",(long)settingManager.defaultTransportType);
     
     switch (index) {
         case 0:

@@ -35,7 +35,9 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
 
 @end
 
-@implementation SettingVC
+@implementation SettingVC{
+    REBoolItem *autoUseFirstAssetAsThumbnailItem,*autoUseAllAssetsAsThumbnailItem;
+}
 
 #pragma mark - Getter & Setter
 
@@ -85,13 +87,13 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     }];
 
 #pragma mark 路线颜色
-    RESegmentedItem *routeColorIsMonochromeSegmentedItem = [RESegmentedItem itemWithTitle:NSLocalizedString(@"🛣 Route Color",@"🛣 路线颜色") segmentedControlTitles:@[NSLocalizedString(@"Multi",@"彩色"),NSLocalizedString(@"Solid",@"单色")] value:self.settingManager.routeColorIsMonochrome switchValueChangeHandler:^(RESegmentedItem *item) {
+    RESegmentedItem *routeColorIsMonochromeSegmentedItem = [RESegmentedItem itemWithTitle:NSLocalizedString(@"🛣 Route Color",@"🛣 路线颜色") segmentedControlTitles:@[NSLocalizedString(@"Color",@"彩色"),NSLocalizedString(@"Solid",@"单色")] value:self.settingManager.routeColorIsMonochrome switchValueChangeHandler:^(RESegmentedItem *item) {
         self.settingManager.routeColorIsMonochrome = item.value;
     }];
     routeColorIsMonochromeSegmentedItem.tintColor = [UIColor grayColor];
 
 #pragma mark 每周第一天
-    RESegmentedItem *firstDayOfWeekSegmentedItem = [RESegmentedItem itemWithTitle:NSLocalizedString(@"🌓 First Day Of Week",@"🌓 每周第一天") segmentedControlTitles:@[NSLocalizedString(@"Sunday",@"星期日"),NSLocalizedString(@"Monday",@"星期一")] value:self.settingManager.firstDayOfWeek switchValueChangeHandler:^(RESegmentedItem *item) {
+    RESegmentedItem *firstDayOfWeekSegmentedItem = [RESegmentedItem itemWithTitle:NSLocalizedString(@"🌓 First Day Of Week",@"🌓 每周第一天") segmentedControlTitles:@[NSLocalizedString(@"Monday",@"星期一"),NSLocalizedString(@"Sunday",@"星期日")] value:self.settingManager.firstDayOfWeek switchValueChangeHandler:^(RESegmentedItem *item) {
         self.settingManager.firstDayOfWeek = item.value;
     }];
     firstDayOfWeekSegmentedItem.tintColor = [UIColor grayColor];
@@ -247,13 +249,26 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     };
 
 #pragma mark 是否自动以第一张图片作为分享缩略图
-    REBoolItem *autoUseFirstAssetAsThumbnailItem = [REBoolItem itemWithTitle:NSLocalizedString(@"Auto Use First Photo As Thumbnail", @"自动以第一张照片作为分享缩略图") value:self.settingManager.autoUseFirstAssetAsThumbnail switchValueChangeHandler:^(REBoolItem *item) {
+    
+    autoUseFirstAssetAsThumbnailItem = [REBoolItem itemWithTitle:NSLocalizedString(@"Auto Use First Photo As Thumbnail", @"自动以第一张照片作为分享缩略图") value:self.settingManager.autoUseFirstAssetAsThumbnail switchValueChangeHandler:^(REBoolItem *item) {
         self.settingManager.autoUseFirstAssetAsThumbnail = item.value;
+        
+        if (item.value){
+            self.settingManager.autoUseAllAssetsAsThumbnail = NO;
+            autoUseAllAssetsAsThumbnailItem.value = NO;
+            [weakSelf.settingTableView reloadData];
+        }
     }];
 
 #pragma mark 是否自动以全部图片作为分享缩略图
-    REBoolItem *autoUseAllAssetsAsThumbnailItem = [REBoolItem itemWithTitle:NSLocalizedString(@"Auto Use All Photos As Thumbnail", @"自动以全部照片作为分享缩略图") value:self.settingManager.autoUseAllAssetsAsThumbnail switchValueChangeHandler:^(REBoolItem *item) {
+    autoUseAllAssetsAsThumbnailItem = [REBoolItem itemWithTitle:NSLocalizedString(@"Auto Use All Photos As Thumbnail", @"自动以全部照片作为分享缩略图") value:self.settingManager.autoUseAllAssetsAsThumbnail switchValueChangeHandler:^(REBoolItem *item) {
         self.settingManager.autoUseAllAssetsAsThumbnail = item.value;
+        
+        if (item.value){
+            self.settingManager.autoUseFirstAssetAsThumbnail = NO;
+            autoUseFirstAssetAsThumbnailItem.value = NO;
+            [weakSelf.settingTableView reloadData];
+        }
     }];
 
     [extendedModeShareSection addItemsFromArray:@[thumbnailScaleRateItem,thumbnailCompressionQualityItem,autoUseFirstAssetAsThumbnailItem,autoUseAllAssetsAsThumbnailItem]];
@@ -623,7 +638,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
                     break;
             }
         }
-        if(DEBUGMODE) NSLog(@"%@ %@",self.settingManager.appProductIDArray[productIndex],succeeded? @"成功！" : @"用失败！");
+        if(DEBUGMODE) NSLog(@"%@ %@",self.settingManager.appProductIDArray[productIndex],succeeded? @"成功！" : @"失败！");
     };
     
     [self.navigationController pushViewController:inAppPurchaseVC animated:YES];

@@ -32,22 +32,13 @@
     
     settingManager = [EverywhereSettingManager defaultManager];
     
-#warning Fix Before Submit
-    settingManager.hasPurchasedRecordAndEdit = NO;
-    settingManager.hasPurchasedShareAndBrowse = NO;
-    settingManager.hasPurchasedImportAndExport = NO;
-
-//    settingManager.hasPurchasedRecordAndEdit = YES;
-//    settingManager.hasPurchasedShareAndBrowse = YES;
-//    settingManager.hasPurchasedImportAndExport = YES;
-    
     // 首次启动
     if(!settingManager.everLaunched){
         NSLog(@"首次启动!!!");
         settingManager.everLaunched = YES;
         
-        settingManager.trialCountForMFR = 10;
-        settingManager.trialCountForGPX = 10;
+        settingManager.trialCountForShareAndBrowse = 10;
+        settingManager.trialCountForRecordAndEdit = 10;
     }
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -59,14 +50,9 @@
     // 需要访问网络，在后台进行
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         //向微信注册id
-        BOOL wx=[WXApi registerApp:settingManager.wxAppID];
+        BOOL wx=[WXApi registerApp:settingManager.appWXID];
         if(DEBUGMODE) NSLog(@"WeChat Rigister：%@",wx? @"Succeeded" : @"Failed");
-        
-        //从网络更新应用数据
-        //[EverywhereSettingManager updateAppInfoAndAppQRCodeImageData];
     });
-    
-    //[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:NO];
     
     if (settingManager.praiseCount != 0) {
         if ([UIApplication instancesRespondToSelector:@selector(registerUserNotificationSettings:)])
@@ -233,7 +219,7 @@
     NSString *footprintsRepositoryString = nil;
     //CLLocationDistance sharedRadius = 0;
     
-    NSString *headerString = [NSString stringWithFormat:@"%@://AlbumMaps/",settingManager.wxAppID];
+    NSString *headerString = [NSString stringWithFormat:@"%@://AlbumMaps/",settingManager.appWXID];
     
     if (![receivedString containsString:headerString]){
         //if(DEBUGMODE) NSLog(@"接收到的字符串无法解析！");

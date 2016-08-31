@@ -15,4 +15,6 @@ typedef NS_ENUM(NSUInteger, UIButtonStyle) {
 - (void)setStyle:(enum UIButtonStyle)aStyle;
 - (void)addAwesomeIcon:(FAIcon)icon beforeTitle:(BOOL)before;
 
+- (void)performZoomAnimationWithXScale:(CGFloat)xScale yScale:(CGFloat)yScale zoomInDuration:(NSTimeInterval)zoomInduration zoomOutDuration:(NSTimeInterval)zoomOutduration;
+
 @end

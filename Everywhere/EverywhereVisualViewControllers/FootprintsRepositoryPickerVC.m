@@ -157,22 +157,30 @@
 #pragma mark - Buttons
 
 - (void)initButtons{
+    UIView *buttonContainerView = [UIView newAutoLayoutView];
+    buttonContainerView.backgroundColor = DEBUGMODE ? [[UIColor randomFlatColor] colorWithAlphaComponent:0.6] : ClearColor;
+    [self.view addSubview:buttonContainerView];
+    [buttonContainerView autoSetDimension:ALDimensionHeight toSize:40];
+    [buttonContainerView autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:buttonContainerView.superview withOffset:-20];
+    [buttonContainerView autoPinEdge:ALEdgeBottom toEdge:ALEdgeBottom ofView:buttonContainerView.superview withOffset:-5];
+    [buttonContainerView autoAlignAxis:ALAxisVertical toSameAxisOfView:buttonContainerView.superview];
+    
     leftButton = [UIButton newAutoLayoutView];
     [leftButton setStyle:UIButtonStylePrimary];
-    [leftButton setTitle:NSLocalizedString(@"Multi", @"多选") forState:UIControlStateNormal];
+    [leftButton setTitle:NSLocalizedString(@"Multiselect", @"多选") forState:UIControlStateNormal];
     [leftButton addTarget:self action:@selector(leftButtonTouchDown) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:leftButton];
+    [buttonContainerView addSubview:leftButton];
+    [leftButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+    [leftButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
     [leftButton autoSetDimension:ALDimensionHeight toSize:40];
-    [leftButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
-    [leftButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
     
     rightButton = [UIButton newAutoLayoutView];
     [rightButton setStyle:UIButtonStylePrimary];
     [rightButton setTitle:NSLocalizedString(@"Merge", @"合并") forState:UIControlStateNormal];
     [rightButton addTarget:self action:@selector(rightButtonTouchDown) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:rightButton];
-    [rightButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:5];
-    [rightButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
+    [buttonContainerView addSubview:rightButton];
+    [rightButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+    [rightButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
     [rightButton autoSetDimension:ALDimensionHeight toSize:40];
     [rightButton autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:leftButton];
     [rightButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:leftButton withOffset:10];
@@ -220,7 +228,7 @@
     cellEditingStyle = UITableViewCellEditingStyleDelete;
     myTableView.editing = NO;
     selectedEWFRInfoArray = nil;
-    [leftButton setTitle:NSLocalizedString(@"Multi", @"多选") forState:UIControlStateNormal];
+    [leftButton setTitle:NSLocalizedString(@"Multiselect", @"多选") forState:UIControlStateNormal];
     rightButton.enabled = NO;
 }
 
@@ -258,11 +266,11 @@
     footprintsRepository.footprintAnnotations = footprintAnnotationMA;
     footprintsRepository.creationDate = NOW;
     footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeEdited;
-    footprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Mearged", @"合并"),[NOW stringWithDefaultFormat]];
+    footprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Mearge", @"合并"),[NOW stringWithDefaultFormat]];
     
     BOOL succeeded = [EverywhereCoreDataManager addEWFR:footprintsRepository];
     NSString *succeededString = succeeded ? NSLocalizedString(@"Succeeded", @"成功") : NSLocalizedString(@"Failed", @"失败");
-    [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Merge ", @"合并"),succeededString]];
+    [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Merge", @"合并"),succeededString]];
     [SVProgressHUD dismiss];
     
     if (succeeded){
@@ -276,7 +284,7 @@
 }
 
 - (BOOL)checkHasPurchasedRecordAndEdit{
-    if ([EverywhereSettingManager defaultManager].hasPurchasedRecordAndEdit) return YES;
+    if ([EverywhereSettingManager defaultManager].hasPurchasedRecordAndEdit || [EverywhereSettingManager defaultManager].trialCountForRecordAndEdit > 0) return YES;
     else{
         UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note",@"提示") message:NSLocalizedString(@"You haven't puchased RecordAndEdit fucntion so you can not edit it.",@"您没有购买 记录和编辑 功能，无法编辑。")];
         [self presentViewController:alertController animated:YES completion:nil];

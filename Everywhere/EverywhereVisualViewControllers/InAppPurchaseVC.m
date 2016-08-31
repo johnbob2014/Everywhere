@@ -129,7 +129,7 @@
     
     NSArray <SKProduct *> *products = response.products;
     
-    if(DEBUGMODE) NSLog(@"请求查询的产品个数: %lu\n",(unsigned long)[products count]);
+    NSLog(@"请求查询的产品个数: %lu\n",(unsigned long)[products count]);
                  
     if ([products count]>0) {
         //SKProduct *product = products.firstObject;
@@ -189,30 +189,30 @@
     
     for (SKPaymentTransaction *transaction in transactions) {
         
-        if(DEBUGMODE) NSLog(@"transaction.payment.productIdentifier :\n%@",transaction.payment.productIdentifier);
+        NSLog(@"transaction.payment.productIdentifier :\n%@",transaction.payment.productIdentifier);
         
         if (![addedPaymentMA containsObject:transaction.payment]) return;
         
         switch (transaction.transactionState) {
             case SKPaymentTransactionStatePurchased:
                 //交易完成,调用自定义方法，提供相应内容、记录交易记录等
-                if(DEBUGMODE) NSLog(@"SKPaymentTransactionStatePurchased");
+                NSLog(@"SKPaymentTransactionStatePurchased");
                 [self completeTransaction:transaction succeeded:YES transactionType:TransactionTypePurchase];
                 break;
             case SKPaymentTransactionStateRestored:
-                if(DEBUGMODE) NSLog(@"SKPaymentTransactionStateRestored");
+                NSLog(@"SKPaymentTransactionStateRestored");
                 [self completeTransaction:transaction succeeded:YES transactionType:TransactionTypeRestore];
                 break;
             case SKPaymentTransactionStateFailed:
                 [self completeTransaction:transaction succeeded:NO transactionType:self.transactionType];
-                if(DEBUGMODE) NSLog(@"SKPaymentTransactionStateFailed");
+                NSLog(@"SKPaymentTransactionStateFailed");
                 break;
             case SKPaymentTransactionStateDeferred:
-                if(DEBUGMODE) NSLog(@"SKPaymentTransactionStateDeferred");
+                NSLog(@"SKPaymentTransactionStateDeferred");
                 continue;
                 break;
             case SKPaymentTransactionStatePurchasing:
-                if(DEBUGMODE) NSLog(@"SKPaymentTransactionStatePurchasing");
+                NSLog(@"SKPaymentTransactionStatePurchasing");
                 continue;
                 break;
             default:

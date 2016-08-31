@@ -7,6 +7,8 @@
 //
 
 #import "ShareImageVC.h"
+
+#import "EverywhereSettingManager.h"
 #import "WXApi.h"
 
 

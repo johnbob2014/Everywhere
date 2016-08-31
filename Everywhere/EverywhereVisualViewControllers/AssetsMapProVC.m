@@ -366,7 +366,7 @@
         noti.soundName = UILocalNotificationDefaultSoundName;
         //noti.applicationIconBadgeNumber = count;
         [[UIApplication sharedApplication] presentLocalNotificationNow:noti];
-#warning AlertController
+
         [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"AlbumMaps Notes", @"相册地图提示") message:messageMS]
                            animated:YES
                          completion:nil];
@@ -706,13 +706,13 @@
     
     msExtenedModeBar.leftButtonTouchDownHandler = ^(UIButton *sender) {
         if (weakSelf.settingManager.hasPurchasedShareAndBrowse && weakSelf.settingManager.hasPurchasedRecordAndEdit) [weakSelf showFootprintsRepositoryPickerAllType];
-        else if (weakSelf.settingManager.hasPurchasedShareAndBrowse) [weakSelf showFootprintsRepositoryPickerSentReceived];
+        else if (weakSelf.settingManager.hasPurchasedShareAndBrowse || weakSelf.settingManager.trialCountForShareAndBrowse > 0 || weakSelf.settingManager.trialCountForRecordAndEdit > 0) [weakSelf showFootprintsRepositoryPickerSentReceived];
         else [weakSelf showPurchaseShareFunctionAlertController];
     };
     
     msExtenedModeBar.rightButtonTouchDownHandler = ^(UIButton *sender){
         if (weakSelf.settingManager.hasPurchasedShareAndBrowse && weakSelf.settingManager.hasPurchasedRecordAndEdit) [weakSelf showFootprintsRepositoryPickerAllType];
-        else if (weakSelf.settingManager.hasPurchasedRecordAndEdit) [weakSelf showFootprintsRepositoryPickerRecordedEdited];
+        else if (weakSelf.settingManager.hasPurchasedRecordAndEdit || weakSelf.settingManager.trialCountForRecordAndEdit > 0) [weakSelf showFootprintsRepositoryPickerRecordedEdited];
         else [weakSelf showPurchaseRecordFunctionAlertController];
     };
     
@@ -957,13 +957,18 @@
     isPlaying = NO;
 }
 
-- (void)firstButtonPressed:(id)sender{
+- (void)firstButtonPressed:(UIButton *)sender{
+    
+    [sender performZoomAnimationWithXScale:1.2 yScale:1.2 zoomInDuration:0.3 zoomOutDuration:0.1];
+    
     id<MKAnnotation> idAnno = self.addedIDAnnos.firstObject;
     [self.myMapView setCenterCoordinate:idAnno.coordinate animated:NO];
     [self.myMapView selectAnnotation:idAnno animated:YES];
 }
 
-- (void)previousButtonPressed:(id)sender{
+- (void)previousButtonPressed:(UIButton *)sender{
+    [sender performZoomAnimationWithXScale:1.2 yScale:1.2 zoomInDuration:0.3 zoomOutDuration:0.1];
+    
     id<MKAnnotation> idAnno = self.myMapView.selectedAnnotations.firstObject;
     if (!idAnno && self.currentAnnotationIndex) {
         idAnno = self.addedIDAnnos[self.currentAnnotationIndex];
@@ -979,7 +984,7 @@
     }
 }
 
-- (void)playButtonPressed:(id)sender{
+- (void)playButtonPressed:(UIButton *)sender{
     if (isPlaying) {
         // 暂停播放
         playButton.transform = CGAffineTransformIdentity;
@@ -993,9 +998,9 @@
     isPlaying = !isPlaying;
 }
 
-- (void)nextButtonPressed:(id)sender{
-    //if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
-    //if(DEBUGMODE) NSLog(@"%@",self.addedIDAnnos);
+- (void)nextButtonPressed:(UIButton *)sender{
+    if([sender isKindOfClass:[UIButton class]]) [sender performZoomAnimationWithXScale:1.2 yScale:1.2 zoomInDuration:0.3 zoomOutDuration:0.1];
+    
     id<MKAnnotation> idAnno = self.myMapView.selectedAnnotations.firstObject;
     
     if (!idAnno && self.currentAnnotationIndex) {
@@ -1021,7 +1026,8 @@
     }
 }
 
-- (void)lastButtonPressed:(id)sender{
+- (void)lastButtonPressed:(UIButton *)sender{
+    [sender performZoomAnimationWithXScale:1.2 yScale:1.2 zoomInDuration:0.3 zoomOutDuration:0.1];
     id<MKAnnotation> idAnno = self.addedIDAnnos.lastObject;
     [self.myMapView setCenterCoordinate:idAnno.coordinate animated:NO];
     [self.myMapView selectAnnotation:idAnno animated:YES];
@@ -1301,7 +1307,7 @@
     [rightSwipeVerticalBar autoSetDimensionsToSize:CGSizeMake(ButtonEdgeLength, ButtonEdgeLength * 3 + ButtonOffset * 2 - 20)];
     
     UIImageView *swipeImageView = [UIImageView newAutoLayoutView];
-    swipeImageView.alpha = 0.6;
+    swipeImageView.alpha = 0.4;
     swipeImageView.image = [UIImage imageNamed:@"IcoMoon_SlideBar_Long"];
     swipeImageView.contentMode = UIViewContentModeScaleAspectFit;
     swipeImageView.layer.cornerRadius = 10.0;
@@ -1595,7 +1601,7 @@
 
 - (void)manullyAddFootprint{
     //[self.locationManagerForRecording requestLocation];
-    if (!self.settingManager.hasPurchasedRecordAndEdit){
+    if (!(self.settingManager.hasPurchasedRecordAndEdit || self.settingManager.trialCountForRecordAndEdit > 0)){
         [self showPurchaseRecordFunctionAlertController];
         return;
     }
@@ -1919,6 +1925,7 @@
     [ms appendString:NSLocalizedString(@"Total ", @"总")];
     [ms appendFormat:@"%@ %@",placemarkInfoBar.totalTitle,placemarkInfoBar.totalString];
     
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"Creating footprints repository for share...", @"正在创建分享足迹包...")];
     // 更新缩略图信息，比较耗时！！
     [self updateThumbnailForAddedEWFootprintAnnotations];
     
@@ -2227,7 +2234,7 @@
 }
 
 - (void)startPauseRecord{
-    if (!self.settingManager.hasPurchasedRecordAndEdit){
+    if (!(self.settingManager.hasPurchasedRecordAndEdit || self.settingManager.trialCountForRecordAndEdit > 0)){
         [self showPurchaseRecordFunctionAlertController];
         return;
     }
@@ -2300,7 +2307,7 @@
 */
 
 - (void)saveRecordedFootprintAnnotationsBtnTD{
-    if (!self.settingManager.hasPurchasedRecordAndEdit){
+    if (!(self.settingManager.hasPurchasedRecordAndEdit || self.settingManager.trialCountForRecordAndEdit > 0)){
         [self showPurchaseRecordFunctionAlertController];
         return;
     }
@@ -2363,6 +2370,8 @@
 - (void)intelligentlySaveRecordedFootprintAnnotationsAndClearCatche{
     if (!recordedFootprintAnnotations || recordedFootprintAnnotations.count == 0) return;
     
+    
+    
     // 保存前先暂停
     self.isRecording = NO;
 
@@ -2370,7 +2379,7 @@
     EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
     footprintsRepository.footprintAnnotations = recordedFootprintAnnotations;
     footprintsRepository.creationDate = NOW;
-    footprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Recorded", @"记录"),[footprintsRepository.creationDate stringWithDefaultFormat]];
+    footprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Record", @"记录"),[footprintsRepository.creationDate stringWithDefaultFormat]];
     footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeRecorded;
     [EverywhereCoreDataManager  addEWFR:footprintsRepository];
     if(DEBUGMODE) NSLog(@"记录已经保存");
@@ -2379,7 +2388,7 @@
     UILocalNotification *noti = [UILocalNotification new];
     
     NSMutableString *messageMS = [NSMutableString new];
-    [messageMS appendFormat:@"%@\n%@\n%@ %lu",NSLocalizedString(@"Recorded footprints has been sucessfully saved :", @"记录保存成功 :"),footprintsRepository.title,NSLocalizedString(@"Footprints Count: ", @"足迹点数量 : "),(long)recordedFootprintAnnotations.count];
+    [messageMS appendFormat:@"%@ : %@\n%@ : %lu",NSLocalizedString(@"Recorded footprints has been sucessfully saved", @"记录保存成功"),footprintsRepository.title,NSLocalizedString(@"Footprints Count", @"足迹点数"),(long)recordedFootprintAnnotations.count];
     
     noti.alertBody = messageMS;
     noti.alertAction = NSLocalizedString(@"Action", @"操作");
@@ -2387,6 +2396,25 @@
     //noti.applicationIconBadgeNumber = count;
     [[UIApplication sharedApplication] presentLocalNotificationNow:noti];
     
+    if (!self.settingManager.hasPurchasedRecordAndEdit && self.settingManager.trialCountForRecordAndEdit > 0){
+        NSInteger trialCount = self.settingManager.trialCountForRecordAndEdit;
+        trialCount--;
+        
+        NSString *leftTrialCountString;
+        if(trialCount > 0) leftTrialCountString = [NSString stringWithFormat:@"%@ : %ld",NSLocalizedString(@"Left trial count for RecordAndEdit function", @"记录和编辑功能剩余试用次数"),trialCount];
+        else leftTrialCountString = NSLocalizedString(@"RecordAndEdit function trial has finished.", @"记录和编辑功能试用结束！");
+        
+        NSString *purchaseString = NSLocalizedString(@"Purchase now?", @"是否购买？");
+        
+        UIAlertController *alertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
+                                                                                         message:[NSString stringWithFormat:@"%@\n%@\n%@",messageMS,leftTrialCountString,purchaseString]
+                                                                                 okActionHandler:^(UIAlertAction *action) {
+                                                                                     [self showPurchaseVC:TransactionTypePurchase productIndexArray:@[@(1)]];
+                                                                                 }];
+        
+        [self presentViewController:alertController animated:YES completion:nil];
+        
+    }
     
     // 清理地图
     [self.myMapView removeAnnotations:self.myMapView.annotations];
@@ -2456,7 +2484,7 @@
     [self.myMapView removeAnnotations:self.myMapView.annotations];
     
     [self.assetsArray enumerateObjectsUsingBlock:^(NSArray<PHAsset *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        NSString *status = [NSString stringWithFormat:@"%@\n%u/%lu",NSLocalizedString(@"Adding footprints...", @"正在添加足迹点..."),(idx + 1),(unsigned long)self.assetsArray.count];
+        NSString *status = [NSString stringWithFormat:@"%@\n%lu/%lu",NSLocalizedString(@"Adding footprints...", @"正在添加足迹点..."),(unsigned long)(idx + 1),(unsigned long)self.assetsArray.count];
         [SVProgressHUD showInfoWithStatus:status];
         
         EverywhereAnnotation *anno = [EverywhereAnnotation new];
@@ -2465,9 +2493,9 @@
         anno.location = firstAsset.location;
         
         if (self.settingManager.mapBaseMode == MapBaseModeMoment) {
-            anno.annotationTitle = [firstAsset.creationDate stringWithDefaultFormat];
+            anno.annotationTitle = [NSString stringWithFormat:@"%lu %@",(unsigned long)(idx + 1),[firstAsset.creationDate stringWithDefaultFormat]];
         }else{
-            anno.annotationTitle = [NSString stringWithFormat:@"%@ ~ %@",[firstAsset.creationDate stringWithFormat:@"yyyy-MM-dd"],[lastAsset.creationDate stringWithFormat:@"yyyy-MM-dd"]];
+            anno.annotationTitle = [NSString stringWithFormat:@"%lu %@ ~ %@",(unsigned long)(idx + 1),[firstAsset.creationDate stringWithFormat:@"yyyy-MM-dd"],[lastAsset.creationDate stringWithFormat:@"yyyy-MM-dd"]];
         }
         
         EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation new];
@@ -2490,7 +2518,7 @@
         [self.myMapView addAnnotation:anno];
     }];
     
-    [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Finish adding footprints", @"足迹点添加完成")];
+    //[SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Finish adding footprints", @"足迹点添加完成")];
     [SVProgressHUD dismissWithDelay:1.0];
     
     self.addedIDAnnos = annotationsToAdd;
@@ -2513,7 +2541,6 @@
             footprintAnnotation.thumbnailArray = @[[[UIImage alloc] initWithData:imageDate]];
             continue;
         }
-        
         
         // 否则，开始第2层循环，添加actAsThumbnail属性为真的PHAssetInfo对应的缩略图
         NSMutableArray <UIImage *> *ma = [NSMutableArray new];
@@ -2538,7 +2565,7 @@
 - (NSData *)thumbnailDataWithLocalIdentifier:(NSString *)localIdentifier{
     PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[localIdentifier] options:nil].firstObject;
     UIImage *image = [asset synchronousFetchUIImageAtTargetSize:CGSizeMake(asset.pixelWidth * self.settingManager.thumbnailScaleRate, asset.pixelHeight * self.settingManager.thumbnailScaleRate)];
-    NSData *imageDate = UIImageJPEGRepresentation(image,self.settingManager.thumbnailCompressionQuality);
+    NSData *imageDate = self.settingManager.thumbnailCompressionQuality == 1.0 ? UIImagePNGRepresentation(image) : UIImageJPEGRepresentation(image,self.settingManager.thumbnailCompressionQuality);
     return imageDate;
 }
 
@@ -2564,7 +2591,7 @@
             if (idx >= 1) {
                 
                 //float progress = (float)(idx+1)/(float)annotationArray.count;
-                NSString *status = [NSString stringWithFormat:@"%@\n%lu/%lu",NSLocalizedString(@"Adding line route", @"正在添加箭头路线"),(idx + 1),annotationArray.count];
+                NSString *status = [NSString stringWithFormat:@"%@\n%lu/%lu",NSLocalizedString(@"Adding line route", @"正在添加箭头路线"),(unsigned long)(idx + 1),(unsigned long)annotationArray.count];
                 [SVProgressHUD showInfoWithStatus:status];
                 
                 MKPolyline *polyline = [AssetsMapProVC createLineMKPolylineBetweenStartCoordinate:lastCoordinate endCoordinate:obj.coordinate];
@@ -2588,7 +2615,7 @@
             }
         }];
         
-        [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Finish adding line route", @"箭头路线添加完成")];
+        //[SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Finish adding line route", @"箭头路线添加完成")];
         [SVProgressHUD dismissWithDelay:1.0];
         //if(DEBUGMODE) NSLog(@"%@",overlaysToAdd);
         //[self.myMapView addOverlays:polylinesToAdd];
@@ -2646,14 +2673,15 @@
             */
             
             //float progress = (float)(idx+1)/(float)annotationArray.count;
-            NSString *status = [NSString stringWithFormat:@"%@\n%lu/%lu",NSLocalizedString(@"Adding range circle", @"正在添加范围圆圈"),(idx + 1),annotationArray.count];
+            NSString *status = [NSString stringWithFormat:@"%@\n%lu/%lu",NSLocalizedString(@"Adding range circle", @"正在添加范围圆圈"),(unsigned long)(idx + 1),(unsigned long)annotationArray.count];
             [SVProgressHUD showInfoWithStatus:status];
             
             MKCircle *circle = [MKCircle circleWithCenterCoordinate:obj.coordinate radius:circleRadius];
+            circle.title = self.settingManager.routeColorIsMonochrome? MKOverlayTitleForMapModeColor : MKOverlayTitleForRandomColor;
             if (circle) [self.myMapView addOverlay:circle];//[circlesToAdd addObject:circle];
         }];
         
-        [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Finish adding range circle", @"范围圆圈添加完成")];
+        //[SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Finish adding range circle", @"范围圆圈添加完成")];
         [SVProgressHUD dismissWithDelay:1.0];
         //[self.myMapView addOverlays:circlesToAdd];
     }
@@ -2688,29 +2716,35 @@
         [annotationArray enumerateObjectsUsingBlock:^(id<MKAnnotation> _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if (idx > 0){
                 float progress = (float)(idx+1)/(float)annotationArray.count;
-                NSString *status = [NSString stringWithFormat:@"%@\n%lu/%lu",NSLocalizedString(@"Adding simulation route", @"正在添加模拟路线"),(idx + 1),annotationArray.count];
+                NSString *status = [NSString stringWithFormat:@"%@\n%lu/%lu",NSLocalizedString(@"Adding simulation route", @"正在添加模拟路线"),(unsigned long)(idx + 1),(unsigned long)annotationArray.count];
                 [SVProgressHUD showProgress:progress status:status];
                 [AssetsMapProVC asyncCreateRouteMKPolylineBetweenStartCoordinate:lastCoordinate
                                                                    endCoordinate:obj.coordinate
                                                                  completionBlock:^(BOOL succeeded, MKPolyline *routePolyline, CLLocationDistance routeDistance) {
+                    MKPolyline *newPolyline;
                     if (succeeded){
                         routePolylineCount++;
-                        //if (maxDistance < routeDistance) maxDistance = routeDistance;
                         routeTotalDistance += routeDistance;
-
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self.myMapView addOverlay:routePolyline];
-                        });
-                        
+                        newPolyline = routePolyline;
+                    }else{
+                        newPolyline = [AssetsMapProVC createLineMKPolylineBetweenStartCoordinate:lastCoordinate endCoordinate:obj.coordinate];
+                        routeTotalDistance += MKMetersBetweenMapPoints(MKMapPointForCoordinate(lastCoordinate), MKMapPointForCoordinate(obj.coordinate));
                     }
+                     
+                    newPolyline.title = self.settingManager.routeColorIsMonochrome? MKOverlayTitleForMapModeColor : MKOverlayTitleForRandomColor;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.myMapView addOverlay:newPolyline];
+                    });
                 }];
                 
                 [NSThread sleepForTimeInterval:0.2];
                 
-                if (idx % 100 == 0){
+                if (idx % 50 == 0){
                     [NSThread sleepForTimeInterval:1.0];
                 }
                 
+                lastCoordinate = obj.coordinate;
+            }else{
                 lastCoordinate = obj.coordinate;
             }
             
@@ -2719,7 +2753,7 @@
         if (completionBlock){
             dispatch_async(dispatch_get_main_queue(), ^{
                 completionBlock(routePolylineCount,routeTotalDistance);
-                [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Finish adding simulation route", @"模拟路线添加完成")];
+                //[SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Finish adding simulation route", @"模拟路线添加完成")];
                 [SVProgressHUD dismissWithDelay:1.0];
             });
         }
@@ -2735,16 +2769,25 @@
     [directionsRequest setDestination:endCoordMapItem];
     
     MKDirections *directions = [[MKDirections alloc] initWithRequest:directionsRequest];
-    [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse * _Nullable response, NSError * _Nullable error) {
-        MKRoute *route = response.routes.firstObject;
-        if (route){
-            MKPolyline *randomColorPolyline = route.polyline;
-            randomColorPolyline.title = MKOverlayTitleForRandomColor;
-            completionBlock(YES,randomColorPolyline,route.distance);
-        }else{
-            completionBlock(NO,nil,0);
-        }
-    }];
+    
+    // 解析路线有可能崩溃！
+    @try {
+        [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse * _Nullable response, NSError * _Nullable error) {
+            MKRoute *route = response.routes.firstObject;
+            if (route){
+                MKPolyline *randomColorPolyline = route.polyline;
+                randomColorPolyline.title = MKOverlayTitleForRandomColor;
+                completionBlock(YES,randomColorPolyline,route.distance);
+            }else{
+                completionBlock(NO,nil,0);
+            }
+        }];
+    } @catch (NSException *exception) {
+        
+    } @finally {
+        
+    }
+    
 }
 
 /*
@@ -3003,17 +3046,16 @@
     
     if ([overlay isKindOfClass:[MKPolyline class]]) {
         MKPolylineRenderer *polylineRenderer = [[MKPolylineRenderer alloc] initWithPolyline:overlay];
-        MKPolyline *polyline = (MKPolyline *)overlay;
         polylineRenderer.lineWidth = 2;
         
-        if ([polyline.title isEqualToString:MKOverlayTitleForMapModeColor]) {
+        if ([overlay.title isEqualToString:MKOverlayTitleForMapModeColor]) {
             // 与地图主题颜色相同
             polylineRenderer.strokeColor = [self.currentTintColor colorWithAlphaComponent:0.8];
-        }else if ([polyline.title isEqualToString:MKOverlayTitleForRandomColor]) {
+        }else if ([overlay.title isEqualToString:MKOverlayTitleForRandomColor]) {
             // 随机颜色
             lastRandomColor = [RandomFlatColorInArray([AssetsMapProVC preferredOverlayColors]) colorWithAlphaComponent:0.8];
             polylineRenderer.strokeColor = lastRandomColor;
-        }else if ([polyline.title isEqualToString:MKOverlayTitleForRedColor]) {
+        }else if ([overlay.title isEqualToString:MKOverlayTitleForRedColor]) {
             // 红色
             polylineRenderer.strokeColor = [FlatRed colorWithAlphaComponent:0.8];
         }
@@ -3024,18 +3066,37 @@
         MKPolygonRenderer *polygonRenderer = [[MKPolygonRenderer alloc] initWithPolygon:overlay];
         polygonRenderer.lineWidth = 2;
         
-        polygonRenderer.strokeColor = lastRandomColor;// self.currentTintColor;//[[UIColor brownColor] colorWithAlphaComponent:0.6];
+        if ([overlay.title isEqualToString:MKOverlayTitleForMapModeColor]) {
+            // 与地图主题颜色相同
+            polygonRenderer.strokeColor = [self.currentTintColor colorWithAlphaComponent:0.8];
+        }else if ([overlay.title isEqualToString:MKOverlayTitleForRandomColor]) {
+            // 随机颜色
+            polygonRenderer.strokeColor = lastRandomColor;
+        }else if ([overlay.title isEqualToString:MKOverlayTitleForRedColor]) {
+            // 红色
+        }
+        
         return polygonRenderer;
     }else if ([overlay isKindOfClass:[MKCircle class]]){
         // 范围圆圈
         MKCircleRenderer *circleRenderer = [[MKCircleRenderer alloc] initWithCircle:overlay];
         circleRenderer.lineWidth = 1;
         
-        UIColor *circleFillColor = self.settingManager.routeColorIsMonochrome ? self.currentTintColor : RandomFlatColorInArray([AssetsMapProVC preferredOverlayColors]);
+        UIColor *circleColor;
         
-        circleRenderer.fillColor = [circleFillColor colorWithAlphaComponent:0.3];
+        if ([overlay.title isEqualToString:MKOverlayTitleForMapModeColor]) {
+            // 与地图主题颜色相同
+            circleColor = [self.currentTintColor colorWithAlphaComponent:0.8];
+        }else if ([overlay.title isEqualToString:MKOverlayTitleForRandomColor]) {
+            // 随机颜色
+            circleColor = RandomFlatColorInArray([AssetsMapProVC preferredOverlayColors]);
+        }else if ([overlay.title isEqualToString:MKOverlayTitleForRedColor]) {
+            // 红色
+        }
         
-        circleRenderer.strokeColor = [circleFillColor colorWithAlphaComponent:0.4];
+        circleRenderer.fillColor = [circleColor colorWithAlphaComponent:0.3];
+        
+        circleRenderer.strokeColor = [circleColor colorWithAlphaComponent:0.4];
         
         return circleRenderer;
     }

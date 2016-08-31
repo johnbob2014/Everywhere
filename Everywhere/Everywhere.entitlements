@@ -4,7 +4,5 @@
 <dict>
 	<key>com.apple.developer.icloud-container-identifiers</key>
 	<array/>
-	<key>inter-app-audio</key>
-	<true/>
 </dict>
 </plist>

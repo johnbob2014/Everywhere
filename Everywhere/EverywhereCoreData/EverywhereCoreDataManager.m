@@ -10,6 +10,8 @@
 #import "EverywhereCoreDataHeader.h"
 #import "EverywhereAppDelegate.h"
 
+#import "EverywhereSettingManager.h"
+
 #import "EverywhereFootprintsRepository.h"
 
 #import "GCPhotoManager.h"

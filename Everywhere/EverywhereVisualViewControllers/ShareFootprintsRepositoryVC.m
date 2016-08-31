@@ -111,18 +111,22 @@
     [thumbnailSV autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight * 4 + 5];
     
     CGFloat thumbnailOffset = 5;
-    CGFloat thumbnailWidth = (ScreenWidth - 20 - 2 * thumbnailOffset)/3.0;
+    CGFloat thumbnailWidth = ShareButtonHeight * 3;//(ScreenWidth - 20 - 2 * thumbnailOffset)/3.0;
     
     thumbnailSV.contentSize = CGSizeMake((thumbnailWidth + thumbnailOffset) * self.footprintsRepository.thumbnailCount, ShareButtonHeight * 4);
+    
     // 第1层循环
+    __block NSUInteger addedCount = 0;
     [self.footprintsRepository.footprintAnnotations enumerateObjectsUsingBlock:^(EverywhereFootprintAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         // 第2层循环
-        [obj.thumbnailArray enumerateObjectsUsingBlock:^(UIImage * _Nonnull image, NSUInteger idx, BOOL * _Nonnull stop) {
+        [obj.thumbnailArray enumerateObjectsUsingBlock:^(UIImage * _Nonnull image, NSUInteger imageIndex, BOOL * _Nonnull stop) {
             UIImageView *iv = [[UIImageView alloc] initWithImage:image];
             iv.backgroundColor = ClearColor;
             iv.contentMode = UIViewContentModeScaleAspectFit;
-            iv.frame = CGRectMake((thumbnailWidth + thumbnailOffset) * idx, 0, thumbnailWidth, ShareButtonHeight * 4);
+            iv.frame = CGRectMake((thumbnailWidth + thumbnailOffset) * addedCount, 0, thumbnailWidth, ShareButtonHeight * 4);
+            //if(DEBUGMODE) NSLog(@"%u %@",addedCount,NSStringFromCGRect(iv.frame));
             [thumbnailSV addSubview:iv];
+            addedCount++;
         }];
     }];
     
@@ -142,7 +146,7 @@
     
     topLeftButton = [UIButton newAutoLayoutView];
     if (!settingManager.hasPurchasedShareAndBrowse){
-        tempString = [tempString stringByAppendingFormat:@"(%lu)",(long)settingManager.trialCountForMFR];
+        tempString = [tempString stringByAppendingFormat:@"(%lu)",(long)settingManager.trialCountForShareAndBrowse];
     }
     [topLeftButton setTitle:tempString forState:UIControlStateNormal];
     [topLeftButton setStyle:UIButtonStylePrimary];
@@ -156,7 +160,7 @@
     tempString = gpxString;
     topRightButton = [UIButton newAutoLayoutView];
     if (!settingManager.hasPurchasedShareAndBrowse){
-        tempString = [tempString stringByAppendingFormat:@"(%lu)",(long)settingManager.trialCountForGPX];
+        tempString = [tempString stringByAppendingFormat:@"(%lu)",(long)settingManager.trialCountForShareAndBrowse];
     }
     [topRightButton setTitle:tempString forState:UIControlStateNormal];
     [topRightButton setStyle:UIButtonStylePrimary];
@@ -196,12 +200,10 @@
 - (void)fileShare:(UIButton *)sender{
     
     if (![EverywhereSettingManager defaultManager].hasPurchasedShareAndBrowse){
-        if (sender.tag == 0 && settingManager.trialCountForMFR > 0){
-            settingManager.trialCountForMFR--;
-            [sender setTitle:[NSString stringWithFormat:@"%@(%lu)",mfrString,(long)settingManager.trialCountForMFR] forState:UIControlStateNormal];
-        }else if (sender.tag == 1 && settingManager.trialCountForGPX > 0){
-            settingManager.trialCountForGPX--;
-            [sender setTitle:[NSString stringWithFormat:@"%@(%lu)",gpxString,(long)settingManager.trialCountForGPX] forState:UIControlStateNormal];
+        if (settingManager.trialCountForShareAndBrowse > 0){
+            settingManager.trialCountForShareAndBrowse--;
+            [topLeftButton setTitle:[NSString stringWithFormat:@"%@(%lu)",mfrString,(long)settingManager.trialCountForShareAndBrowse] forState:UIControlStateNormal];
+            [topRightButton setTitle:[NSString stringWithFormat:@"%@(%lu)",gpxString,(long)settingManager.trialCountForShareAndBrowse] forState:UIControlStateNormal];
         }else{
             if(self.userDidSelectedPurchaseShareFunctionHandler) self.userDidSelectedPurchaseShareFunctionHandler();
             return;
@@ -305,7 +307,7 @@
         [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"FootprintsRepository is too big!",@"足迹包数据量太大，无法用微信分享！")];
         return nil;
     }
-    NSString *headerString = [NSString stringWithFormat:@"%@://AlbumMaps/",[EverywhereSettingManager defaultManager].wxAppID];
+    NSString *headerString = [NSString stringWithFormat:@"%@://AlbumMaps/",[EverywhereSettingManager defaultManager].appWXID];
     
     footprintsRepositoryString = [headerString stringByAppendingString:footprintsRepositoryString];
     return footprintsRepositoryString;

@@ -16,16 +16,16 @@
 + (instancetype)defaultManager;
 + (void)updateAppInfoWithCompletionBlock:(void(^)())completionBlock;
 
-+ (NSString *)debugCode;
-+ (void)setDebugCode:(NSString *)debugCode;
-
 @property (strong,nonatomic) NSDate *appInfoLastUpdateDate;
 @property (strong,nonatomic) NSDictionary *appInfoDictionary;
 @property (strong,nonatomic) NSString *appURLString;
 @property (strong,nonatomic) UIImage *appQRCodeImage;
 @property (strong,nonatomic) NSArray <NSString *> *appProductIDArray;
-@property (strong,nonatomic) NSString *wxAppID;
+@property (strong,nonatomic) NSString *appWXID;
+@property (strong,nonatomic) NSString *appDebugCode;
 
+
+@property (assign,nonatomic) BOOL debugMode;
 
 /**
  *  路线颜色，0为彩色（默认），1为单色
@@ -94,7 +94,7 @@
 
 @property (assign,nonatomic) NSInteger praiseCount;
 
-@property (assign,nonatomic) DefaultTransport defaultTransport;
+@property (assign,nonatomic) DefaultTransportType defaultTransportType;
 
 /**
  *  是否自动以第一张图片作为分享缩略图
@@ -127,13 +127,14 @@
 @property (assign,nonatomic) BOOL everLaunched;
 
 /**
- *  MFR分享试用次数
+ *  分享和浏览试用次数
  */
-@property (assign,nonatomic) NSInteger trialCountForMFR;
+@property (assign,nonatomic) NSInteger trialCountForShareAndBrowse;
 
 /**
- *  GPX分享试用次数
+ *  记录和编辑试用次数
  */
-@property (assign,nonatomic) NSInteger trialCountForGPX;
+@property (assign,nonatomic) NSInteger trialCountForRecordAndEdit;
+
 
 @end

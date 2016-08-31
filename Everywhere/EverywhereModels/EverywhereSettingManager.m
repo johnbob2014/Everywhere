@@ -8,7 +8,7 @@
 
 #define AppID @"1136142337"
 
-#define WXAppID @"wxa1b9c5632d24039a"
+#define AppWXID @"wxa1b9c5632d24039a"
 #define AppURLString @"https://itunes.apple.com/app/id1136142337"
 #define AppProductIDArray @[@"com.ZhangBaoGuo.AlbumMaps.ShareAndBrowse",@"com.ZhangBaoGuo.AlbumMaps.RecordAndEdit",@"com.ZhangBaoGuo.AlbumMaps.ImportAndExport",@"com.ZhangBaoGuo.AlbumMaps.AllFunctionsSuit"]
 #define AppQRCodeImage @"AlbumMapsAppQRCodeImage.png"
@@ -31,8 +31,11 @@
 - (instancetype)init{
     self = [super init];
     if (self) {
+        // 如果没有更新过 或者 距离上次更新时间超过1天，则进行更新
         if (!self.appInfoLastUpdateDate || [[NSDate date] timeIntervalSinceDate:self.appInfoLastUpdateDate] > 24 * 60 * 60){
-            [EverywhereSettingManager updateAppInfoWithCompletionBlock:nil];
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [EverywhereSettingManager updateAppInfoWithCompletionBlock:nil];
+            });
         }
     }
     return self;
@@ -118,18 +121,18 @@
     }
     
     // 更新微信ID
-    if ([appInfoDictionary.allKeys containsObject:@"WXAppID"]){
-        NSString *wxAppID = appInfoDictionary[@"WXAppID"];
-        if(DEBUGMODE) NSLog(@"wxAppID : %@",wxAppID);
-        [[NSUserDefaults standardUserDefaults] setValue:wxAppID forKey:@"wxAppID"];
+    if ([appInfoDictionary.allKeys containsObject:@"AppWXID"]){
+        NSString *appWXID = appInfoDictionary[@"AppWXID"];
+        if(DEBUGMODE) NSLog(@"appWXID : %@",appWXID);
+        [[NSUserDefaults standardUserDefaults] setValue:appWXID forKey:@"appWXID"];
     }
     
-    // 更新DebugCode 更新之前先清空！！！
-    [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"debugCode"];
-    if ([appInfoDictionary.allKeys containsObject:@"DebugCode"]){
-        NSString *debugCode = appInfoDictionary[@"DebugCode"];
-        if(DEBUGMODE) NSLog(@"debugCode : %@",debugCode);
-        [[NSUserDefaults standardUserDefaults] setValue:debugCode forKey:@"debugCode"];
+    // 更新AppDebugCode 更新之前先清空！！！
+    [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"appDebugCode"];
+    if ([appInfoDictionary.allKeys containsObject:@"AppDebugCode"]){
+        NSString *appDebugCode = appInfoDictionary[@"AppDebugCode"];
+        if(DEBUGMODE) NSLog(@"appDebugCode : %@",appDebugCode);
+        [[NSUserDefaults standardUserDefaults] setValue:appDebugCode forKey:@"appDebugCode"];
     }
     
     // 保存数据！！！
@@ -165,22 +168,26 @@
     else return AppProductIDArray;
 }
 
-- (NSString *)wxAppID{
-    NSString *wxAppID = [[NSUserDefaults standardUserDefaults] objectForKey:@"wxAppID"];
-    if (wxAppID) return wxAppID;
-    else return WXAppID;
+- (NSString *)appWXID{
+    NSString *appWXID = [[NSUserDefaults standardUserDefaults] objectForKey:@"appWXID"];
+    if (appWXID) return appWXID;
+    else return AppWXID;
 }
 
-+ (NSString *)debugCode{
-    return [[NSUserDefaults standardUserDefaults] objectForKey:@"debugCode"];
-}
-
-+ (void)setDebugCode:(NSString *)debugCode{
-    [[NSUserDefaults standardUserDefaults] setValue:debugCode forKey:@"debugCode"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+- (NSString *)appDebugCode{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:@"appDebugCode"];
 }
 
 #pragma mark - Items
+
+- (BOOL)debugMode{
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"debugMode"];
+}
+
+- (void)setDebugMode:(BOOL)debugMode{
+    [[NSUserDefaults standardUserDefaults] setBool:debugMode forKey:@"debugMode"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
 
 - (NSInteger)routeColorIsMonochrome{
     return [[NSUserDefaults standardUserDefaults] integerForKey:@"routeColorIsMonochrome"];
@@ -394,7 +401,7 @@
 
 - (NSTimeInterval)minTimeIntervalForRecord{
     NSTimeInterval minTI = [[NSUserDefaults standardUserDefaults] doubleForKey:@"minTimeIntervalForRecord"];
-    if (!minTI || minTI == 0) minTI = 2;
+    if (!minTI || minTI == 0) minTI = 4;
     return minTI;
 }
 
@@ -467,12 +474,12 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (DefaultTransport)defaultTransport{
-    return [[NSUserDefaults standardUserDefaults] integerForKey:@"defaultTransport"];
+- (DefaultTransportType)defaultTransportType{
+    return [[NSUserDefaults standardUserDefaults] integerForKey:@"defaultTransportType"];
 }
 
-- (void)setDefaultTransport:(DefaultTransport)defaultTransport{
-    [[NSUserDefaults standardUserDefaults] setInteger:defaultTransport forKey:@"defaultTransport"];
+- (void)setDefaultTransportType:(DefaultTransportType)defaultTransportType{
+    [[NSUserDefaults standardUserDefaults] setInteger:defaultTransportType forKey:@"defaultTransportType"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -501,17 +508,19 @@
 }
 
 - (void)setThumbnailScaleRate:(float)thumbnailScaleRate{
+    if (thumbnailScaleRate <= 0 || thumbnailScaleRate > 1) return;
     [[NSUserDefaults standardUserDefaults] setFloat:thumbnailScaleRate forKey:@"thumbnailScaleRate"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (float)thumbnailCompressionQuality{
     float thumbnailCompressionQuality = [[NSUserDefaults standardUserDefaults] floatForKey:@"thumbnailCompressionQuality"];
-    if (thumbnailCompressionQuality == 0) thumbnailCompressionQuality = 0.5;
+    if (thumbnailCompressionQuality == 0) thumbnailCompressionQuality = 1.0;
     return thumbnailCompressionQuality;
 }
 
 - (void)setThumbnailCompressionQuality:(float)thumbnailCompressionQuality{
+    if (thumbnailCompressionQuality <= 0 || thumbnailCompressionQuality > 1) return;
     [[NSUserDefaults standardUserDefaults] setFloat:thumbnailCompressionQuality forKey:@"thumbnailCompressionQuality"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
@@ -534,21 +543,21 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (NSInteger)trialCountForMFR{
-    return [[NSUserDefaults standardUserDefaults] integerForKey:@"trialCountForMFR"];
+- (NSInteger)trialCountForShareAndBrowse{
+    return [[NSUserDefaults standardUserDefaults] integerForKey:@"trialCountForShareAndBrowse"];
 }
 
-- (void)setTrialCountForMFR:(NSInteger)trialCountForMFR{
-    [[NSUserDefaults standardUserDefaults] setInteger:trialCountForMFR forKey:@"trialCountForMFR"];
+- (void)setTrialCountForShareAndBrowse:(NSInteger)trialCountForShareAndBrowse{
+    [[NSUserDefaults standardUserDefaults] setInteger:trialCountForShareAndBrowse forKey:@"trialCountForShareAndBrowse"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (NSInteger)trialCountForGPX{
-    return [[NSUserDefaults standardUserDefaults] integerForKey:@"trialCountForGPX"];
+- (NSInteger)trialCountForRecordAndEdit{
+    return [[NSUserDefaults standardUserDefaults] integerForKey:@"trialCountForRecordAndEdit"];
 }
 
-- (void)setTrialCountForGPX:(NSInteger)trialCountForGPX{
-    [[NSUserDefaults standardUserDefaults] setInteger:trialCountForGPX forKey:@"trialCountForGPX"];
+- (void)setTrialCountForRecordAndEdit:(NSInteger)trialCountForRecordAndEdit{
+    [[NSUserDefaults standardUserDefaults] setInteger:trialCountForRecordAndEdit forKey:@"trialCountForRecordAndEdit"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

@@ -6,6 +6,7 @@
         <attribute name="ccISOcountryCode_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="country_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="course" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="favorite" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="horizontalAccuracy" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="inlandWater_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
@@ -79,7 +80,7 @@
         <attribute name="verticalAccuracy_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
     </entity>
     <elements>
-        <element name="CoordinateInfo" positionX="-63" positionY="135" width="128" height="375"/>
+        <element name="CoordinateInfo" positionX="-63" positionY="135" width="128" height="390"/>
         <element name="EWFRInfo" positionX="-63" positionY="135" width="128" height="240"/>
         <element name="PHAssetInfo" positionX="-63" positionY="-18" width="128" height="600"/>
     </elements>

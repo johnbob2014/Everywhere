@@ -24,9 +24,9 @@
     if(matches.count == 1){
         info = matches.firstObject;
     }else if (!matches || fetchError || [matches count]>1) {
-        if(!matches) if(DEBUGMODE) NSLog(@"Fetch Result : Not Found.");
-        if(fetchError) if(DEBUGMODE) NSLog(@"Fetch Result : %@",fetchError.localizedDescription);
-        if(matches.count > 1) if(DEBUGMODE) NSLog(@"Fetch Result : More than 1 result.");
+        if(!matches) NSLog(@"Fetch Result : Not Found.");
+        if(fetchError) NSLog(@"Fetch Result : %@",fetchError.localizedDescription);
+        if(matches.count > 1) NSLog(@"Fetch Result : More than 1 result.");
     }
     
     return info;
@@ -146,7 +146,7 @@
                                                 coordinateInfo.reverseGeocodeSucceed = @(NO);
                                             }
                                             
-                                            if(DEBUGMODE) NSLog(@"CoordinateInfo : %@",coordinateInfo.localizedPlaceString_Placemark);
+                                            NSLog(@"CoordinateInfo : %@",coordinateInfo.localizedPlaceString_Placemark);
                                             
                                             // 保存修改后的信息
                                             [coordinateInfo.managedObjectContext save:NULL];

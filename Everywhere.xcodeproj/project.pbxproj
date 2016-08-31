@@ -130,7 +130,6 @@
 		4B69F5091D6156A800575AC3 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4B69F5041D6156A800575AC3 /* FontAwesome.ttf */; };
 		4B69F50A1D6156A800575AC3 /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B69F5061D6156A800575AC3 /* NSString+FontAwesome.m */; };
 		4B69F50B1D6156A800575AC3 /* UIButton+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B69F5081D6156A800575AC3 /* UIButton+Assistant.m */; };
-		4B8B4E4B1D40A7D2006D4AEB /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B8B4E4A1D40A7D2006D4AEB /* AudioToolbox.framework */; };
 		4B90DDFA1D38C5A200332945 /* EverywhereFootprintAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B90DDF91D38C5A200332945 /* EverywhereFootprintAnnotation.m */; };
 		4BD51FC81D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FC51D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m */; };
 		4BD51FC91D2B47B900F18244 /* PHAssetInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FC71D2B47B900F18244 /* PHAssetInfo.m */; };
@@ -351,7 +350,6 @@
 		4B69F5061D6156A800575AC3 /* NSString+FontAwesome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+FontAwesome.m"; sourceTree = "<group>"; };
 		4B69F5071D6156A800575AC3 /* UIButton+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+Assistant.h"; sourceTree = "<group>"; };
 		4B69F5081D6156A800575AC3 /* UIButton+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+Assistant.m"; sourceTree = "<group>"; };
-		4B8B4E4A1D40A7D2006D4AEB /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		4B90DDF81D38C5A200332945 /* EverywhereFootprintAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereFootprintAnnotation.h; path = EverywhereModels/EverywhereFootprintAnnotation.h; sourceTree = "<group>"; };
 		4B90DDF91D38C5A200332945 /* EverywhereFootprintAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereFootprintAnnotation.m; path = EverywhereModels/EverywhereFootprintAnnotation.m; sourceTree = "<group>"; };
 		4BD51FC41D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PHAssetInfo+CoreDataProperties.h"; path = "EverywhereCoreData/PHAssetInfo+CoreDataProperties.h"; sourceTree = "<group>"; };
@@ -411,7 +409,6 @@
 				4B0866331D373987000300AD /* CoreTelephony.framework in Frameworks */,
 				4B0866311D3738B3000300AD /* libsqlite3.0.tbd in Frameworks */,
 				4B08662F1D3738A4000300AD /* libz.tbd in Frameworks */,
-				4B8B4E4B1D40A7D2006D4AEB /* AudioToolbox.framework in Frameworks */,
 				4B1B4BDC1D3879FE00CCD842 /* libWeChatSDK.a in Frameworks */,
 				4B08662D1D37388E000300AD /* SystemConfiguration.framework in Frameworks */,
 				1E2848191D1AE00000189A83 /* Photos.framework in Frameworks */,
@@ -472,7 +469,6 @@
 			children = (
 				4B079BAE1D61B0DA00BC4115 /* CoreGraphics.framework */,
 				4B079BAC1D61B0BE00BC4115 /* QuartzCore.framework */,
-				4B8B4E4A1D40A7D2006D4AEB /* AudioToolbox.framework */,
 				4B1B4BE31D387C6800CCD842 /* libc++.tbd */,
 				4B0866341D373993000300AD /* Security.framework */,
 				4B0866321D373987000300AD /* CoreTelephony.framework */,
@@ -1024,7 +1020,7 @@
 								enabled = 1;
 							};
 							com.apple.InterAppAudio = {
-								enabled = 1;
+								enabled = 0;
 							};
 							com.apple.Maps.iOS = {
 								enabled = 0;

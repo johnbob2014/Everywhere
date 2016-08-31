@@ -9,8 +9,8 @@
 #import <Foundation/Foundation.h>
 
 typedef NS_ENUM(NSUInteger, FirstDayOfWeek) {
-    FirstDayOfWeekIsSunday = 0,
-    FirstDayOfWeekIsMonday = 1
+    FirstDayOfWeekIsMonday = 0,
+    FirstDayOfWeekIsSunday = 1
 };
 
 static const NSTimeInterval TI_MINUTE;

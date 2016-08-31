@@ -86,23 +86,24 @@
     NSMutableString *ma = [NSMutableString new];
     [ma appendString:[self.currentShowCoordinateInfo.latitude doubleValue] > 0 ? NSLocalizedString(@"N. ", @"北纬 "):NSLocalizedString(@"S. ", @"南纬 ")];
     [ma appendString:[LocationInfoBar dmsStringWithDegrees:[self.currentShowCoordinateInfo.latitude doubleValue]]];
-    [ma appendFormat:@" - %.4f°",fabs([self.currentShowCoordinateInfo.latitude doubleValue])];
+    [ma appendFormat:@" , %.4f°",fabs([self.currentShowCoordinateInfo.latitude doubleValue])];
     [ma appendFormat:@"\n"];
     [ma appendString:[self.currentShowCoordinateInfo.longitude doubleValue] > 0 ? NSLocalizedString(@"E. ", @"东经 "):NSLocalizedString(@"W. ", @"西经 ")];
     [ma appendString:[LocationInfoBar dmsStringWithDegrees:[self.currentShowCoordinateInfo.longitude doubleValue]]];
-    [ma appendFormat:@" - %.4f°",fabs([self.currentShowCoordinateInfo.longitude doubleValue])];
+    [ma appendFormat:@" , %.4f°",fabs([self.currentShowCoordinateInfo.longitude doubleValue])];
     self.coordinateLabel.text = ma;
     
     // updateAltitudeLabel
     ma = [NSMutableString new];
     if ([self.currentShowCoordinateInfo.altitude doubleValue] > 0) {
-        //[ma appendString:NSLocalizedString(@"Altitude", @"高度")];
-        [ma appendFormat:@"%.2fm",[self.currentShowCoordinateInfo.altitude doubleValue]];
+        [ma appendString:NSLocalizedString(@"Altitude", @"高度")];
+        [ma appendFormat:@"\n%.2fm",[self.currentShowCoordinateInfo.altitude doubleValue]];
     }
+    /*
     if ([self.currentShowCoordinateInfo.speed doubleValue] > 0){
         [ma appendFormat:@"\n%.2fkm/h",[self.currentShowCoordinateInfo.altitude doubleValue] * 3.6];
     }
-    
+    */
     self.altitude_speed_Label.text = ma;
     
     // updateAddressLabel

@@ -95,4 +95,18 @@
     return img;
 }
 */
+
+- (void)performZoomAnimationWithXScale:(CGFloat)xScale yScale:(CGFloat)yScale zoomInDuration:(NSTimeInterval)zoomInduration zoomOutDuration:(NSTimeInterval)zoomOutduration{
+    [UIView animateWithDuration:zoomInduration
+                     animations:^{
+                         self.transform = CGAffineTransformMakeScale(xScale, yScale);
+                     }
+                     completion:^(BOOL finished) {
+                         [UIView animateWithDuration:zoomOutduration
+                                          animations:^{
+                                              self.transform = CGAffineTransformIdentity;
+                                          }];
+                     }];
+
+}
 @end
