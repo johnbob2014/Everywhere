@@ -12,22 +12,27 @@
 @interface EverywhereAnnotation : NSObject <MKAnnotation>
 
 /**
- 必需，location，座标为WGS84编码格式 - EverywhereAnnotation
+ 必需，location，座标为WGS84编码格式
  */
 @property (strong,nonatomic) CLLocation *location;
 
 /**
- 该Annotation包含的照片的localIdentifier数组 - EverywhereAnnotation
+ 包含的照片的localIdentifier数组
  */
 @property (strong,nonatomic) NSArray <NSString *> *assetLocalIdentifiers;
 
 /**
- 该Annotation的标题 - EverywhereAnnotation
+ 标题
  */
 @property (strong,nonatomic) NSString *annotationTitle;
 
 /**
- 只读，该Annotation包含的照片数量 - EverywhereAnnotation
+ 子标题
+ */
+@property (strong,nonatomic) NSString *annotationSubtitle;
+
+/**
+ 只读，包含的照片数量
  */
 @property (assign,nonatomic,readonly) NSInteger assetCount;
 

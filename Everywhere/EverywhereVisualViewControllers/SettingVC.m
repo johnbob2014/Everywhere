@@ -93,7 +93,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     routeColorIsMonochromeSegmentedItem.tintColor = [UIColor grayColor];
 
 #pragma mark 每周第一天
-    RESegmentedItem *firstDayOfWeekSegmentedItem = [RESegmentedItem itemWithTitle:NSLocalizedString(@"🌓 First Day Of Week",@"🌓 每周第一天") segmentedControlTitles:@[NSLocalizedString(@"Monday",@"星期一"),NSLocalizedString(@"Sunday",@"星期日")] value:self.settingManager.firstDayOfWeek switchValueChangeHandler:^(RESegmentedItem *item) {
+    RESegmentedItem *firstDayOfWeekSegmentedItem = [RESegmentedItem itemWithTitle:NSLocalizedString(@"🌓 First Day Of Week",@"🌓 每周第一天") segmentedControlTitles:@[NSLocalizedString(@"Sunday",@"星期日"),NSLocalizedString(@"Monday",@"星期一")] value:self.settingManager.firstDayOfWeek switchValueChangeHandler:^(RESegmentedItem *item) {
         self.settingManager.firstDayOfWeek = item.value;
     }];
     firstDayOfWeekSegmentedItem.tintColor = [UIColor grayColor];
@@ -193,6 +193,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
             }];
             AssetDetailVC *showVC = [AssetDetailVC new];
             showVC.assetLocalIdentifiers = assetLocalIdentifiers;
+            showVC.edgesForExtendedLayout = UIRectEdgeNone;
             [self.navigationController pushViewController:showVC animated:YES];
         }else{
             [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"No Eliminated Photos!", @"没有已排除的照片！")];
@@ -271,7 +272,26 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         }
     }];
 
-    [extendedModeShareSection addItemsFromArray:@[thumbnailScaleRateItem,thumbnailCompressionQualityItem,autoUseFirstAssetAsThumbnailItem,autoUseAllAssetsAsThumbnailItem]];
+#pragma mark 缩略图照片管理
+    RETableViewItem *actAsThumbailAssetsItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"🏞 Thumbnail Photos",@"🏞 缩略图照片") accessoryType:UITableViewCellAccessoryDisclosureIndicator  selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        NSArray<PHAssetInfo *> *thumbnailArray = [PHAssetInfo fetchThumbnailAssetInfosInManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
+        
+        if (thumbnailArray.count > 0){
+            __block NSMutableArray <NSString *> *assetLocalIdentifiers = [NSMutableArray new];
+            [thumbnailArray enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                [assetLocalIdentifiers addObject:obj.localIdentifier];
+            }];
+            AssetDetailVC *showVC = [AssetDetailVC new];
+            showVC.assetLocalIdentifiers = assetLocalIdentifiers;
+            showVC.edgesForExtendedLayout = UIRectEdgeNone;
+            [self.navigationController pushViewController:showVC animated:YES];
+        }else{
+            [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"No photos marked to share!", @"没有标记为分享的照片！")];
+        }
+    }];
+
+    [extendedModeShareSection addItemsFromArray:@[thumbnailScaleRateItem,thumbnailCompressionQualityItem,autoUseFirstAssetAsThumbnailItem,autoUseAllAssetsAsThumbnailItem,actAsThumbailAssetsItem]];
 
 #pragma mark - 扩展模式 记录
     RETableViewSection *extendedModeRecordSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Extended Mode - Record", @"扩展模式 - 记录")];

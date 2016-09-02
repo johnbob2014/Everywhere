@@ -133,6 +133,15 @@
     return matches;
 }
 
++ (NSArray <PHAssetInfo *> *)fetchThumbnailAssetInfosInManagedObjectContext:(NSManagedObjectContext *)context{
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:EntityName_PHAssetInfo];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"actAsThumbnail = %@",[NSNumber numberWithBool:YES]];
+    NSError *fetchError;
+    NSArray <PHAssetInfo *> *matches = [context executeFetchRequest:fetchRequest error:&fetchError];
+    if (fetchError) NSLog(@"Fetch Thumbnail PHAssetInfos Error : %@",fetchError.localizedDescription);
+    return matches;
+}
+
 + (BOOL)deleteAllAssetInfosInManagedObjectContext:(NSManagedObjectContext *)context{
     NSArray <PHAssetInfo *> *allAssets = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:context];
     [allAssets enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {

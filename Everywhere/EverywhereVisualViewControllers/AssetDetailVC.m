@@ -34,15 +34,6 @@
     AVPlayerItem *playerItem;
 }
 
-/*
-- (NSArray<NSString *> *)assetLocalIdentifiers{
-    if(!_assetLocalIdentifiers){
-        _assetLocalIdentifiers = self.ewAnnotation.assetLocalIdentifiers;
-    }
-    return _assetLocalIdentifiers;
-}
-*/
-
 - (void)setCurrentIndex:(NSInteger)currentIndex{
     if (currentIndex >= 0 && currentIndex <= assetArray.count - 1) {
         _currentIndex = currentIndex;
@@ -107,9 +98,12 @@
     UISwipeGestureRecognizer *swipeLeftGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft:)];
     swipeLeftGR.direction = UISwipeGestureRecognizerDirectionLeft;
     [imageView addGestureRecognizer:swipeLeftGR];
-    UISwipeGestureRecognizer *swipeUpGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeUp:)];
-    swipeUpGR.direction = UISwipeGestureRecognizerDirectionUp;
-    [imageView addGestureRecognizer:swipeUpGR];
+    
+    if (self.swipeUpToQuit){
+        UISwipeGestureRecognizer *swipeUpGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeUp:)];
+        swipeUpGR.direction = UISwipeGestureRecognizerDirectionUp;
+        [imageView addGestureRecognizer:swipeUpGR];
+    }
     
     playButton = [UIButton newAutoLayoutView];
     [playButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Video_WBG"] forState:UIControlStateNormal];
@@ -120,13 +114,15 @@
     [playButton autoSetDimensionsToSize:CGSizeMake(50, 50)];
     playButton.hidden = YES;
     
-    noteLabel = [UILabel newAutoLayoutView];
-    noteLabel.textColor = [UIColor whiteColor];
-    noteLabel.textAlignment = NSTextAlignmentCenter;
-    noteLabel.font = [UIFont bodyFontWithSizeMultiplier:1.2];
-    noteLabel.numberOfLines = 0;
-    [self.view addSubview:noteLabel];
-    [noteLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 0, 0, 0) excludingEdge:ALEdgeBottom];
+    if (self.showIndexLabel){
+        noteLabel = [UILabel newAutoLayoutView];
+        noteLabel.textColor = [UIColor whiteColor];
+        noteLabel.textAlignment = NSTextAlignmentCenter;
+        noteLabel.font = [UIFont bodyFontWithSizeMultiplier:1.2];
+        noteLabel.numberOfLines = 0;
+        [self.view addSubview:noteLabel];
+        [noteLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(20, 0, 0, 0) excludingEdge:ALEdgeBottom];
+    }
     
     UIView *bottomView = [UIView newAutoLayoutView];
     [self.view addSubview:bottomView];

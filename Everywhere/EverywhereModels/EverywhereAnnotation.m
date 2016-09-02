@@ -18,6 +18,10 @@
     return self.annotationTitle;
 }
 
+- (NSString *)subtitle{
+    return self.annotationSubtitle;
+}
+
 - (NSInteger)assetCount{
     return self.assetLocalIdentifiers.count;
 }

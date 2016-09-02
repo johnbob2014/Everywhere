@@ -113,6 +113,9 @@
             resultString = [resultString stringByAppendingFormat:@" ocean : %@",self.ocean];
     }
     
+    // 排除,,
+    resultString = [resultString stringByReplacingOccurrencesOfString:@",," withString:@","];
+    
     return resultString;
 }
 
@@ -131,6 +134,30 @@
     }else{
         return nil;
     }
+}
+
+@end
+
+@implementation NSString (CLPlacemark_Assistant)
+
+- (NSString *)placemarkBriefName{
+    NSString *briefName;
+    
+    NSArray <NSString *> *stringArray = [self componentsSeparatedByString:@","];
+    
+    if (stringArray.count == 0){
+        briefName = @"";
+    }else if (stringArray.count == 1){
+        briefName = stringArray.lastObject;
+    }else if (stringArray.count > 1){
+        if ([stringArray.lastObject length] >= 5){
+            briefName = stringArray.lastObject;
+        }else{
+            briefName = [stringArray[stringArray.count - 2] stringByAppendingString:stringArray.lastObject];
+        }
+    }
+    
+    return briefName;
 }
 
 @end

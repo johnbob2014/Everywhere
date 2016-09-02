@@ -30,3 +30,9 @@
 - (NSString *)areasOfInterestStringWithIndex:(BOOL)withIndex;
 
 @end
+
+@interface NSString (CLPlacemark_Assistant)
+
+- (NSString *)placemarkBriefName;
+
+@end

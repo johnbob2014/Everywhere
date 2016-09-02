@@ -13,9 +13,9 @@
 #define ContentSizeInPopup_Big CGSizeMake(ScreenWidth - 10, ScreenHeight - 10 - 80)
 #define LandscapeContentSizeInPopup_Big CGSizeMake(ScreenHeight - 10 - 80, ScreenWidth - 10)
 
-#define NaviBarButtonSize CGSizeMake(30, 30)
+#define NaviBarButtonSize CGSizeMake(44, 44)
 //#define NaviBarButtonOffset ScreenWidth > 375 ? 30 : 15
-#define NaviBarButtonOffset (ScreenWidth - 30 * 5 - 10 - 20)/4.0
+#define NaviBarButtonOffset (ScreenWidth - 44 * 5 - 10 - 20)/4.0
 
 #define ButtionSize (ScreenHeight > 568 ? CGSizeMake(44, 44) : CGSizeMake(36, 36))
 #define ButtonEdgeLength (ScreenHeight > 568 ? 44 : 36)
@@ -91,8 +91,8 @@
 @property (strong,nonatomic) NSDictionary <NSString *,NSArray<NSString *> *> *placemarkDictionary;
 
 #pragma mark 添加的各种Annos
-@property (strong,nonatomic) NSArray <id<MKAnnotation>> *addedIDAnnos;
-@property (strong,nonatomic) NSArray <EverywhereAnnotation *> *addedEWAnnos;
+@property (strong,nonatomic) NSArray <id<MKAnnotation>> *addedIDAnnotations;
+@property (strong,nonatomic) NSArray <EverywhereAnnotation *> *addedEWAnnotations;
 @property (strong,nonatomic) NSArray <EverywhereFootprintAnnotation *> *addedEWFootprintAnnotations;
 @property (assign,nonatomic) NSInteger currentAnnotationIndex;
 
@@ -105,7 +105,9 @@
 #pragma mark 用于Record模式的用户设置
 @property (assign,nonatomic) CLLocationDistance minDistanceForRecord;
 @property (assign,nonatomic) NSTimeInterval minTimeIntervalForRecord;
-
+/**
+ *  当前显示的足迹包
+ */
 @property (strong,nonatomic) EverywhereFootprintsRepository *currentShowEWFR;
 @end
 
@@ -113,6 +115,9 @@
     
     CLLocationManager *locationManagerForUserLocation;
     NSTimer *checkAuthorizationStatusTimer;
+    /**
+     *  最后一次接收的足迹包
+     */
     EverywhereFootprintsRepository *lastReceivedEWFR;
     
 #pragma mark 用于模式转换时恢复数据
@@ -469,7 +474,7 @@
     //locationInfoBar.userCoordinateWGS84 = userLocationWGS84.coordinate;
     CLLocationSpeed speedmPerSecond = userLocationWGS84.speed;
     CLLocationSpeed speedkmPerhour = speedmPerSecond * 3600.0 / 1000.0;
-    speedLabelInRMB.text = [NSString stringWithFormat:@"%.2fkm/h %.2fm/s",speedkmPerhour,speedmPerSecond];
+    //speedLabelInRMB.text = [NSString stringWithFormat:@"%.2fkm/h %.2fm/s",speedkmPerhour,speedmPerSecond];
     speedLabelInRMB.text = [NSString stringWithFormat:@"%.2fkm/h",speedkmPerhour];
 }
 
@@ -521,7 +526,7 @@
         if (assetIDArry.count > 0){
             noAsset = NO;
             
-            [SVProgressHUD showWithStatus:NSLocalizedString(@"Reading Photo Album...", @"正在读取相册...")];
+            [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Reading Photo Album...", @"正在读取相册...")];
             PHFetchOptions *options = [PHFetchOptions new];
             options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
             PHFetchResult <PHAsset *> *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:assetIDArry options:options];
@@ -530,20 +535,18 @@
             self.endDate = fetchResult.lastObject.creationDate;
             
             self.assetArray = (NSArray <PHAsset *> *)fetchResult;
-            [SVProgressHUD dismissWithDelay:1.0];
         }
     }
     
     if (noAsset){
         [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"No photos in selected date range or location", @"所选日期或地点没有照片")];
-        [SVProgressHUD dismissWithDelay:2.0];
     }
 }
 
 - (void)setAssetArray:(NSArray<PHAsset *> *)assetArray{
     if (!assetArray) return;
     
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Dividing into groups...", @"正在分组...")];
+    [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Dividing into groups...", @"正在分组...")];
     _assetArray = assetArray;
     switch (self.settingManager.mapBaseMode) {
         case MapBaseModeMoment:
@@ -555,8 +558,6 @@
         default:
             break;
     }
-    [SVProgressHUD dismissWithDelay:1.0];
-    
 }
 
 - (void)setAssetsArray:(NSArray<NSArray<PHAsset *> *> *)assetsArray{
@@ -564,24 +565,27 @@
     
     _assetsArray = assetsArray;
     
-    self.addedEWAnnos = nil;
+    self.addedEWAnnotations = nil;
     self.addedEWFootprintAnnotations = nil;
     [self addAnnotations];
     
     if (self.settingManager.mapBaseMode == MapBaseModeMoment){
-        [self addLineOverlaysPro:self.addedEWAnnos];
+        [self addLineOverlaysPro:self.addedEWAnnotations];
     }else{
-        [self addCircleOverlaysPro:self.addedEWAnnos radius:self.settingManager.mergeDistanceForLocation / 2.0];
+        [self addCircleOverlaysPro:self.addedEWAnnotations radius:self.settingManager.mergeDistanceForLocation / 2.0];
     }
     
     [self updatePlacemarkInfoBarTotolInfo];
 }
 
-- (void)setAddedIDAnnos:(NSArray<id<MKAnnotation>> *)addedIDAnnos{
-    _addedIDAnnos = addedIDAnnos;
-    // 设置导航序号
+- (void)setAddedIDAnnotations:(NSArray<id<MKAnnotation>> *)addedIDAnnotations{
+    _addedIDAnnotations = addedIDAnnotations;
     self.currentAnnotationIndex = 0;
-    if(addedIDAnnos) [self moveMapViewToFirstAnnotationWithDistance:0];
+    
+    if (addedIDAnnotations){
+        [self.myMapView showAnnotations:addedIDAnnotations animated:NO];
+        [self.myMapView selectAnnotation:addedIDAnnotations.firstObject animated:YES];
+    }//[self moveMapViewToFirstAnnotationWithDistance:0];
 }
 
 - (void)setIsInBaseMode:(BOOL)isInBaseMode{
@@ -597,13 +601,18 @@
 - (void)initMapView{
     self.myMapView = [MKMapView newAutoLayoutView];
     self.myMapView.delegate = self;
+    
+    // 禁止旋转
     self.myMapView.rotateEnabled = NO;
+    // 禁止倾斜
+    self.myMapView.pitchEnabled = NO;
+    
+    if(iOS9) self.myMapView.showsScale = YES;
     
     [self.view addSubview:self.myMapView];
     [self.myMapView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
     
     UITapGestureRecognizer *mapViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mapViewTapGR:)];
-    mapViewTapGR.delegate = self;
     mapViewTapGR.numberOfTapsRequired = 1;
     [self.myMapView addGestureRecognizer:mapViewTapGR];
     
@@ -617,7 +626,12 @@
 }
 
 - (void)mapViewTapGR:(id)sender{
-    [self alphaShowHideVerticalBar];
+    
+    if (self.myMapView.selectedAnnotations.count == 0){
+        [self alphaShowHideVerticalBar];
+    }
+    
+    
     self.settingManager.praiseCount++;
     if(DEBUGMODE) NSLog(@"praiseCount : %lu",(long)self.settingManager.praiseCount);
     if (self.settingManager.praiseCount == 50) {
@@ -774,9 +788,9 @@
     self.assetArray = nil;
     self.assetsArray = nil;
     
-    self.addedEWAnnos = nil;
+    self.addedEWAnnotations = nil;
     self.addedEWFootprintAnnotations = nil;
-    self.addedIDAnnos = nil;
+    self.addedIDAnnotations = nil;
     
     self.endDate = nil;
     self.startDate = nil;
@@ -822,7 +836,7 @@
         weakSelf.startDate = choosedStartDate;
         weakSelf.endDate = choosedEndDate;
         
-        [SVProgressHUD showWithStatus:NSLocalizedString(@"Reading data...", @"正在解析数据...")];
+        [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Reading data...", @"正在解析数据...")];
         weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:weakSelf.startDate toEndDate:weakSelf.endDate inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
     };
     
@@ -847,7 +861,7 @@
         weakSelf.settingManager.lastPlacemark = choosedLocation;
         weakSelf.lastPlacemark = choosedLocation;
         
-        [SVProgressHUD showWithStatus:NSLocalizedString(@"Reading data...", @"正在解析数据...")];
+        [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Reading data...", @"正在解析数据...")];
         weakSelf.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:choosedLocation inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
     };
     
@@ -959,25 +973,25 @@
 
 - (void)firstButtonPressed:(UIButton *)sender{
     
-    [sender performZoomAnimationWithXScale:1.2 yScale:1.2 zoomInDuration:0.3 zoomOutDuration:0.1];
+    [sender performZoomAnimationWithXScale:1.2 yScale:1.2 zoomInDuration:0.15 zoomOutDuration:0.1];
     
-    id<MKAnnotation> idAnno = self.addedIDAnnos.firstObject;
+    id<MKAnnotation> idAnno = self.addedIDAnnotations.firstObject;
     [self.myMapView setCenterCoordinate:idAnno.coordinate animated:NO];
     [self.myMapView selectAnnotation:idAnno animated:YES];
 }
 
 - (void)previousButtonPressed:(UIButton *)sender{
-    [sender performZoomAnimationWithXScale:1.2 yScale:1.2 zoomInDuration:0.3 zoomOutDuration:0.1];
+    [sender performZoomAnimationWithXScale:1.2 yScale:1.2 zoomInDuration:0.15 zoomOutDuration:0.1];
     
     id<MKAnnotation> idAnno = self.myMapView.selectedAnnotations.firstObject;
     if (!idAnno && self.currentAnnotationIndex) {
-        idAnno = self.addedIDAnnos[self.currentAnnotationIndex];
+        idAnno = self.addedIDAnnotations[self.currentAnnotationIndex];
     }
     if (idAnno) {
-        NSInteger index = [self.addedIDAnnos indexOfObject:idAnno];
+        NSInteger index = [self.addedIDAnnotations indexOfObject:idAnno];
         if (--index >= 0) {
             [self.myMapView deselectAnnotation:idAnno animated:YES];
-            idAnno = self.addedIDAnnos[index];
+            idAnno = self.addedIDAnnotations[index];
             [self.myMapView setCenterCoordinate:idAnno.coordinate animated:NO];
             [self.myMapView selectAnnotation:idAnno animated:YES];
         }
@@ -999,36 +1013,31 @@
 }
 
 - (void)nextButtonPressed:(UIButton *)sender{
-    if([sender isKindOfClass:[UIButton class]]) [sender performZoomAnimationWithXScale:1.2 yScale:1.2 zoomInDuration:0.3 zoomOutDuration:0.1];
+    if([sender isKindOfClass:[UIButton class]]) [sender performZoomAnimationWithXScale:1.2 yScale:1.2 zoomInDuration:0.15 zoomOutDuration:0.1];
     
     id<MKAnnotation> idAnno = self.myMapView.selectedAnnotations.firstObject;
     
     if (!idAnno && self.currentAnnotationIndex) {
-        idAnno = self.addedIDAnnos[self.currentAnnotationIndex];
+        idAnno = self.addedIDAnnotations[self.currentAnnotationIndex];
     }
     
-    if (!idAnno) idAnno = self.addedIDAnnos.firstObject;
+    if (!idAnno) idAnno = self.addedIDAnnotations.firstObject;
     
     if (idAnno) {
-        NSInteger index = [self.addedIDAnnos indexOfObject:idAnno];
-        if (++index < self.addedIDAnnos.count) {
+        NSInteger index = [self.addedIDAnnotations indexOfObject:idAnno];
+        if (++index < self.addedIDAnnotations.count) {
             [self.myMapView deselectAnnotation:idAnno animated:YES];
-            idAnno = self.addedIDAnnos[index];
+            idAnno = self.addedIDAnnotations[index];
             
             [self.myMapView setCenterCoordinate:idAnno.coordinate animated:NO];
             [self.myMapView selectAnnotation:idAnno animated:YES];
         }
-        /*
-        if (index == self.addedIDAnnos.count) {
-            [self playButtonPressed:playButton];
-        }
-        */
     }
 }
 
 - (void)lastButtonPressed:(UIButton *)sender{
-    [sender performZoomAnimationWithXScale:1.2 yScale:1.2 zoomInDuration:0.3 zoomOutDuration:0.1];
-    id<MKAnnotation> idAnno = self.addedIDAnnos.lastObject;
+    [sender performZoomAnimationWithXScale:1.2 yScale:1.2 zoomInDuration:0.15 zoomOutDuration:0.1];
+    id<MKAnnotation> idAnno = self.addedIDAnnotations.lastObject;
     [self.myMapView setCenterCoordinate:idAnno.coordinate animated:NO];
     [self.myMapView selectAnnotation:idAnno animated:YES];
 }
@@ -1194,7 +1203,7 @@
             break;
         case 1:{
             placemarkInfoBar.totalTitle = NSLocalizedString(@"Area", @"面积");
-            totalArea = self.addedEWAnnos.count * M_PI * pow(self.settingManager.mergeDistanceForLocation,2);
+            totalArea = self.addedEWAnnotations.count * M_PI * pow(self.settingManager.mergeDistanceForLocation,2);
             placemarkInfoBar.totalArea = totalArea;
         }
             break;
@@ -1456,7 +1465,7 @@
         sender.enabled = NO;
         
         // 直线路线转化为模拟路线
-        [self asyncAddRouteOverlays:self.addedIDAnnos completionBlock:^(NSInteger routePolylineCount, CLLocationDistance routeTotalDistance) {
+        [self asyncAddRouteOverlays:self.addedIDAnnotations completionBlock:^(NSInteger routePolylineCount, CLLocationDistance routeTotalDistance) {
             totalDistance = routeTotalDistance;
             [self updatePlacemarkInfoBarTotolInfo];
             sender.enabled = YES;
@@ -1466,7 +1475,7 @@
         sender.enabled = NO;
         
         // 模拟路线转化为直线路线
-        [self addLineOverlaysPro:self.addedIDAnnos];
+        [self addLineOverlaysPro:self.addedIDAnnotations];
         [self updatePlacemarkInfoBarTotolInfo];
         
         sender.enabled = YES;
@@ -1736,7 +1745,9 @@
         case MapBaseModeLocation:{
             // 位置模式初始化
             self.lastPlacemark = self.settingManager.lastPlacemark;
-            self.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:self.settingManager.lastPlacemark inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
+            if(self.lastPlacemark){
+                self.assetInfoArray = [PHAssetInfo fetchAssetInfosContainsPlacemark:self.settingManager.lastPlacemark inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
+            }
         }
             break;
         default:
@@ -1915,7 +1926,7 @@
         
         return;
     }
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Creating footprints repository for share...", @"正在创建分享足迹包...")];
+    [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Creating footprints repository for share...", @"正在创建分享足迹包...")];
     
     // placemarkInfo信息
     NSMutableString *ms = [NSMutableString new];
@@ -1925,7 +1936,6 @@
     [ms appendString:NSLocalizedString(@"Total ", @"总")];
     [ms appendFormat:@"%@ %@",placemarkInfoBar.totalTitle,placemarkInfoBar.totalString];
     
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"Creating footprints repository for share...", @"正在创建分享足迹包...")];
     // 更新缩略图信息，比较耗时！！
     [self updateThumbnailForAddedEWFootprintAnnotations];
     
@@ -1962,6 +1972,7 @@
 - (void)didReceiveFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository{
     if (!footprintsRepository) return;
     // 成功获取分享的数据
+    lastReceivedEWFR = footprintsRepository;
     
     // 修改属性
     footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeReceived;
@@ -1981,29 +1992,34 @@
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Receive",@"接收")
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction * action) {
-                                                         [self enterExtendedMode];
-                                                         // 注意这里
-                                                         // 不要使用[self enterBrowserMode];
-                                                         // msExtenedModeBar是扩展模式转换控制器，它来调用enterBrowserMode 和 enterRecordMode 方法
-                                                         msExtenedModeBar.selectedSegmentIndex = 0;
-                                                         [self enterBrowserMode];
-                                                         [self checkBeforeShowFootprintsRepository:footprintsRepository];
                                                          
-                                                         if (self.settingManager.hasPurchasedShareAndBrowse){
-                                                             [self asyncSaveLastReceivedEWFR];
+                                                         if (self.settingManager.hasPurchasedShareAndBrowse || self.settingManager.trialCountForShareAndBrowse > 0){
+                                                             // 用户选择接收，则保存footprintsRepository
+                                                             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+                                                                 [EverywhereCoreDataManager addEWFR:lastReceivedEWFR];
+                                                                 // 保存完成，置空
+                                                                 lastReceivedEWFR = nil;
+                                                             });
                                                          }
+                                                         
+                                                         if (self.isInBaseMode){
+                                                             [self enterExtendedMode];
+                                                             [self enterBrowserMode];
+                                                             msExtenedModeBar.selectedSegmentIndex = 0;
+                                                         }
+                                                         
+                                                         [self checkBeforeShowFootprintsRepository:footprintsRepository];
+
                                                      }];
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消")
                                                            style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {
-                                                               lastReceivedEWFR = nil;
+                                                               //lastReceivedEWFR = nil;
     }];
     [alertController addAction:okAction];
     [alertController addAction:cancelAction];
     
     [self presentViewController:alertController animated:YES completion:nil];
-    
-    lastReceivedEWFR = footprintsRepository;
 }
 
 #pragma mark Enter And Quite Mode
@@ -2024,7 +2040,7 @@
     
     // 保存BaseMode数据
     savedTitleForBaseMode = msBaseModeBar.info;
-    savedAnnotationsForBaseMode = self.addedEWAnnos;
+    savedAnnotationsForBaseMode = self.addedEWAnnotations;
     savedFootprintAnnotationsForBaseMode = self.addedEWFootprintAnnotations;
     savedOverlaysForBaseMode = self.myMapView.overlays;
     savedStartDateForBaseMode = self.startDate;
@@ -2035,7 +2051,7 @@
     [self.myMapView removeOverlays:self.myMapView.overlays];
     
     self.addedEWFootprintAnnotations = nil;
-    self.addedIDAnnos = nil;
+    self.addedIDAnnotations = nil;
 
     msBaseModeBar.hidden = YES;
     placemarkInfoBar.hidden = YES;
@@ -2047,11 +2063,14 @@
     naviBar.backgroundColor = self.settingManager.extendedTintColor;
     currentAnnotationIndexLabel.backgroundColor = self.settingManager.extendedTintColor;
     locationInfoBar.backgroundColor = self.settingManager.extendedTintColor;
+    
+    /*
     recordModeSettingBar.backgroundColor = self.settingManager.extendedTintColor;
     speedLabelInRMB.layer.backgroundColor = self.settingManager.extendedTintColor.CGColor;
     speedLabelInRMB.layer.borderColor = self.settingManager.extendedTintColor.CGColor;
     distanceAndFPCountLabelInRMB.layer.backgroundColor = self.settingManager.extendedTintColor.CGColor;
     distanceAndFPCountLabelInRMB.layer.borderColor = self.settingManager.extendedTintColor.CGColor;
+     */
 }
 
 - (void)quiteExtendedMode{
@@ -2079,11 +2098,10 @@
     [self.myMapView addAnnotations:savedAnnotationsForBaseMode];
     self.addedEWFootprintAnnotations = (NSArray <EverywhereFootprintAnnotation*> *)savedFootprintAnnotationsForBaseMode;
     [self.myMapView addOverlays:savedOverlaysForBaseMode];
-    self.addedIDAnnos = savedAnnotationsForBaseMode;
+    self.addedIDAnnotations = savedAnnotationsForBaseMode;
     self.startDate = savedStartDateForBaseMode;
     self.endDate = savedEndDateForBaseMode;
     
-    //[self updateVisualViewForEWAnnos];
     if(DEBUGMODE) NSLog(@"退出扩展模式");
 }
 
@@ -2106,12 +2124,13 @@
         return;
     }else if (self.isRecording) {
         /*
+ 
         UIAlertController *okCancelAlertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Attention", @"警告")  message:NSLocalizedString(@"There are recorded footprints now and they will be cleared if show selected footprints.Show or not?", @"当前处于记录模式并且有记录的足迹点，如需显示所选足迹，记录的足迹点将被清空，是否显示？") okActionHandler:^(UIAlertAction *action) {
             [self showFootprintsRepository:footprintsRepository];
         }];
         
         [self presentViewController:okCancelAlertController animated:YES completion:nil];
-        */
+ */
         
         UIAlertController *okCancelAlertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")  message:NSLocalizedString(@"There are recorded footprints now and can not show footprints repository.", @"当前处于记录模式并且有记录的足迹点，无法显示足迹包。")];
         
@@ -2120,9 +2139,10 @@
     
 }
 
+
 - (void)showFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository{
     // 清理地图
-    self.addedEWAnnos = nil;
+    self.addedEWAnnotations = nil;
     [self.myMapView removeAnnotations:self.myMapView.annotations];
     
     self.currentShowEWFR = footprintsRepository;
@@ -2133,7 +2153,7 @@
     msExtenedModeBar.info = footprintsRepository.title;
     
     // 设置addedIDAnnos，用于导航
-    self.addedIDAnnos = footprintsRepository.footprintAnnotations;
+    self.addedIDAnnotations = footprintsRepository.footprintAnnotations;
     self.addedEWFootprintAnnotations = footprintsRepository.footprintAnnotations;
     
     // 添加Overlays
@@ -2145,14 +2165,11 @@
         [self addCircleOverlaysPro:footprintsRepository.footprintAnnotations radius:footprintsRepository.radius];
     }
     
-    //[self updateVisualViewForEWFootprintAnnotations];
-    
 }
 
 - (void)showQuiteBrowserModeAlertController{
     
-    //if (!self.addedEWFootprintAnnotations || self.addedEWFootprintAnnotations.count == 0){
-    if (!lastReceivedEWFR || self.settingManager.hasPurchasedShareAndBrowse){
+    if (!lastReceivedEWFR || self.settingManager.hasPurchasedShareAndBrowse || self.settingManager.trialCountForShareAndBrowse > 0){
         // 如果没有接收的足迹包 或者 已经购买了分享功能，直接退出（用户有分享功能，则选择接收时已经进行了保存），不再询问
         [self quiteBrowserMode];
         [self quiteExtendedMode];
@@ -2190,20 +2207,10 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-- (void)asyncSaveLastReceivedEWFR{
-    // 新接收到，先保存footprintsRepository，如果用户选择丢弃，再删除掉
-    //[SVProgressHUD showWithStatus:NSLocalizedString(@"Storing Footprints Repository...", @"存储足迹包...")];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        [EverywhereCoreDataManager addEWFR:lastReceivedEWFR];
-        lastReceivedEWFR = nil;
-    });
-    
-    //[SVProgressHUD dismiss];
-}
+
 - (void)quiteBrowserMode{
     if(DEBUGMODE) NSLog(@"退出浏览模式");
     quiteBrowserModeButton.hidden = YES;
-    
 }
 
 - (void)enterRecordMode{
@@ -2290,21 +2297,6 @@
         lastRecordDate = NOW;
     }
 }
-
-/*
-- (void)setAllowBrowserMode:(BOOL)allowBrowserMode{
-    _allowBrowserMode = allowBrowserMode;
-    if (allowBrowserMode) {
-        if(DEBUGMODE) NSLog(@"允许BrowserMode");
-        msExtenedModeBar.modeSegEnabled = YES;
-        msExtenedModeBar.leftButtonEnabled = YES;
-    }else{
-        if(DEBUGMODE) NSLog(@"禁止BrowserMode");
-        msExtenedModeBar.modeSegEnabled = NO;
-        msExtenedModeBar.leftButtonEnabled = NO;
-    }
-}
-*/
 
 - (void)saveRecordedFootprintAnnotationsBtnTD{
     if (!(self.settingManager.hasPurchasedRecordAndEdit || self.settingManager.trialCountForRecordAndEdit > 0)){
@@ -2418,15 +2410,6 @@
     
     // 清理地图
     [self.myMapView removeAnnotations:self.myMapView.annotations];
-    /*
-    for (id<MKOverlay> overlay in self.myMapView.overlays) {
-        if ([overlay isKindOfClass:[MKPolyline class]]){
-            MKPolyline *polyline = (MKPolyline *)overlay;
-            if(![polyline.title isEqualToString:MKOverlayTitleForRandomColor])
-               [self.myMapView removeOverlay:overlay];
-        }
-    }
-    */
     [self.myMapView removeOverlays:self.myMapView.overlays];
     
     // 把刚刚保存的轨迹显示到地图上
@@ -2476,7 +2459,7 @@
 
 - (void)addAnnotations{
     // 清理数组
-    self.addedEWAnnos = nil;
+    self.addedEWAnnotations = nil;
     self.addedEWFootprintAnnotations = nil;
     NSMutableArray <EverywhereAnnotation *> *annotationsToAdd = [NSMutableArray new];
     NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationsToAdd = [NSMutableArray new];
@@ -2492,10 +2475,16 @@
         PHAsset *lastAsset = obj.lastObject;
         anno.location = firstAsset.location;
         
+        PHAssetInfo *firstAssetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:firstAsset.localIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
+        NSString *placeName = [firstAssetInfo.localizedPlaceString_Placemark placemarkBriefName];
+        anno.annotationTitle = [NSString stringWithFormat:@"%lu/%lu %@",(unsigned long)(idx + 1),(unsigned long)(self.assetsArray.count),placeName];
+        
         if (self.settingManager.mapBaseMode == MapBaseModeMoment) {
-            anno.annotationTitle = [NSString stringWithFormat:@"%lu %@",(unsigned long)(idx + 1),[firstAsset.creationDate stringWithDefaultFormat]];
+            //anno.annotationTitle = [NSString stringWithFormat:@"%lu %@",(unsigned long)(idx + 1),[firstAsset.creationDate stringWithDefaultFormat]];
+            
+            anno.annotationSubtitle = [NSString stringWithFormat:@"%@",[firstAsset.creationDate stringWithDefaultFormat]];
         }else{
-            anno.annotationTitle = [NSString stringWithFormat:@"%lu %@ ~ %@",(unsigned long)(idx + 1),[firstAsset.creationDate stringWithFormat:@"yyyy-MM-dd"],[lastAsset.creationDate stringWithFormat:@"yyyy-MM-dd"]];
+            anno.annotationSubtitle = [NSString stringWithFormat:@"%@ ~ %@",[firstAsset.creationDate stringWithFormat:@"yyyy-MM-dd"],[lastAsset.creationDate stringWithFormat:@"yyyy-MM-dd"]];
         }
         
         EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation new];
@@ -2521,8 +2510,8 @@
     //[SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Finish adding footprints", @"足迹点添加完成")];
     [SVProgressHUD dismissWithDelay:1.0];
     
-    self.addedIDAnnos = annotationsToAdd;
-    self.addedEWAnnos = annotationsToAdd;
+    self.addedIDAnnotations = annotationsToAdd;
+    self.addedEWAnnotations = annotationsToAdd;
     self.addedEWFootprintAnnotations = footprintAnnotationsToAdd;
 }
 
@@ -2531,7 +2520,7 @@
     //NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationsToAdd = [NSMutableArray new];
     NSInteger faIndex = 0;
     // 第1层循环
-    for (EverywhereAnnotation *everywhereAnnotation in self.addedEWAnnos) {
+    for (EverywhereAnnotation *everywhereAnnotation in self.addedEWAnnotations) {
         EverywhereFootprintAnnotation *footprintAnnotation = self.addedEWFootprintAnnotations[faIndex++];
         
         // 如果用户选择自动添加第一张照片作为缩略图
@@ -2658,20 +2647,7 @@
     [self.myMapView removeOverlays:self.myMapView.overlays];
     
     if (annotationArray.count >= 1) {
-        
-        //__block CLLocationDistance radius = circleRadius;
-        
-        // 添加 MKOverlays
-        
-        //NSMutableArray <MKCircle *> *circlesToAdd = [NSMutableArray new];
-        
         [annotationArray enumerateObjectsUsingBlock:^(id<MKAnnotation> _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            
-            /*
-            MKCoordinateRegion currentRegion = MKCoordinateRegionMakeWithDistance(obj.coordinate, circleRadius * 3, circleRadius * 3);
-            [self.myMapView setRegion:currentRegion animated:YES];
-            */
-            
             //float progress = (float)(idx+1)/(float)annotationArray.count;
             NSString *status = [NSString stringWithFormat:@"%@\n%lu/%lu",NSLocalizedString(@"Adding range circle", @"正在添加范围圆圈"),(unsigned long)(idx + 1),(unsigned long)annotationArray.count];
             [SVProgressHUD showInfoWithStatus:status];
@@ -2683,7 +2659,7 @@
         
         //[SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Finish adding range circle", @"范围圆圈添加完成")];
         [SVProgressHUD dismissWithDelay:1.0];
-        //[self.myMapView addOverlays:circlesToAdd];
+        
     }
 
 }
@@ -2791,69 +2767,18 @@
 }
 
 /*
-- (void)updateVisualViewForEWAnnos{
-    if (!self.myMapView) return;
-    
-    // 自己的
-    if (self.addedEWAnnos.count > 0) {
-        
-        //[self updateMapModeBar];
-        
-        [self updatePlacemarkInfoBarTotolInfo];
-        
-        if (self.settingManager.mapBaseMode == MapBaseModeLocation){
-            //maxDistance = self.settingManager.mergeDistanceForLocation * 8.0;
-        }
-    
-        // 移动地图到第一个点
-        //if(DEBUGMODE) NSLog(@"self.addedEWAnnos.count : %lu",(unsigned long)self.addedEWAnnos.count);
-    
-        EverywhereAnnotation *firstAnnotation = self.addedEWAnnos.firstObject;
-        MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(firstAnnotation.coordinate, maxDistance, maxDistance);
-        [self.myMapView setRegion:showRegion animated:NO];
-        [self.myMapView selectAnnotation:firstAnnotation animated:YES];
-    }
-    
-}
-
-- (void)updateVisualViewForEWFootprintAnnotations{
-    // 分享的
-    if (self.addedEWFootprintAnnotations.count > 0) {
-        if(DEBUGMODE) NSLog(@"self.addedEWFootprintAnnotations.count : %lu",(unsigned long)self.addedEWFootprintAnnotations.count);
-        //NSDictionary <NSString *,NSArray<NSString *> *> *placemarkDictionary = [PHAssetInfo placemarkInfoFromAssetInfos:self.assetInfoArray];
-        //[self updatePlacemarkInfoBarWithPlacemarkDictionary:placemarkDictionary mapBaseMode:self.settingManager.mapBaseMode];
-        
-        EverywhereFootprintAnnotation *firstFootprintAnnotation = self.addedEWFootprintAnnotations.firstObject;
-        
-        if (self.addedEWFootprintAnnotations.count > 1) {
-            EverywhereFootprintAnnotation *secondFootprintAnnotation = self.addedEWFootprintAnnotations[1];
-            maxDistance = fabs(MKMetersBetweenMapPoints(MKMapPointForCoordinate(firstFootprintAnnotation.coordinate), MKMapPointForCoordinate(secondFootprintAnnotation.coordinate))) * 8.0;
-        }
-        
-        MKCoordinateRegion showRegion = MKCoordinateRegionMakeWithDistance(firstFootprintAnnotation.coordinate, maxDistance, maxDistance);
-        [self.myMapView setRegion:showRegion animated:NO];
-        [self.myMapView selectAnnotation:firstFootprintAnnotation animated:YES];
-    }
-
-}
-*/
-
 - (void)moveMapViewToFirstAnnotationWithDistance:(CLLocationDistance)regionDistance{
     
-    id<MKAnnotation> firstAnnotation = self.addedIDAnnos.firstObject;
+    id<MKAnnotation> firstAnnotation = self.addedIDAnnotations.firstObject;
     
     if (regionDistance == 0){
-        if (self.addedIDAnnos.count <= 1){
+        if (self.addedIDAnnotations.count <= 1){
             regionDistance = 1000;
-        }else if (self.addedIDAnnos.count > 1){
-            /*
-            id<MKAnnotation> secondAnnotation = self.addedIDAnnos[2];
-            regionDistance = fabs(MKMetersBetweenMapPoints(MKMapPointForCoordinate(firstAnnotation.coordinate), MKMapPointForCoordinate(secondAnnotation.coordinate))) * 4.0;
-            */
+        }else if (self.addedIDAnnotations.count > 1){
             
             __block CLLocationDistance maxDistance = 0;
             __block CLLocationCoordinate2D lastCoordinate;
-            [self.addedIDAnnos enumerateObjectsUsingBlock:^(id<MKAnnotation>  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [self.addedIDAnnotations enumerateObjectsUsingBlock:^(id<MKAnnotation>  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 if (idx > 0){
                     CLLocationDistance currentDistance = MKMetersBetweenMapPoints(MKMapPointForCoordinate(obj.coordinate), MKMapPointForCoordinate(lastCoordinate));
                     if (maxDistance < currentDistance) maxDistance = currentDistance;
@@ -2870,10 +2795,15 @@
     [self.myMapView setRegion:showRegion animated:NO];
     [self.myMapView selectAnnotation:firstAnnotation animated:YES];
 }
+*/
 
 #pragma mark - MKMapViewDelegate
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation{
+    MKAnnotationView *annotationView = [MKAnnotationView new];
+    //UITapGestureRecognizer *annotationViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(annotationViewTapGR:)];
+    //[annotationView addGestureRecognizer:annotationViewTapGR];
+    
     if ([annotation isKindOfClass:[EverywhereAnnotation class]]) {
         //MKPinAnnotationView *pinAV = (MKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"pinAV"];
         //if (!pinAV) pinAV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pinAV"];
@@ -2885,33 +2815,23 @@
         
         pinAV.canShowCallout = YES;
         
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-        imageView.contentMode = UIViewContentModeScaleAspectFill;
-        imageView.userInteractionEnabled = YES;
-        UITapGestureRecognizer *imageViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapGR:)];
-        [imageView addGestureRecognizer:imageViewTapGR];
-        
-        
         PHFetchOptions *options = [PHFetchOptions new];
         // 按日期排列
         options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
         PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:((EverywhereAnnotation *)annotation).assetLocalIdentifiers options:options].firstObject;
-        if (asset) imageView.image = [asset synchronousFetchUIImageAtTargetSize:CGSizeMake(80, 80)];
         
-        UIButton *badgeButton = [UIButton newAutoLayoutView];
-        badgeButton.userInteractionEnabled = NO;
-        [badgeButton setBackgroundImage:[UIImage imageNamed:@"badge"] forState:UIControlStateNormal];
-        [badgeButton setTitle:[NSString stringWithFormat:@"%ld",(long)((EverywhereAnnotation *)annotation).assetCount] forState:UIControlStateNormal];
-        badgeButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
-        [imageView addSubview:badgeButton];
-        [badgeButton autoSetDimensionsToSize:CGSizeMake(20, 20)];
-        [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
-        [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
         
+        UIImageView *imageView = [AssetsMapProVC badgeImageViewWithFrame:CGRectMake(0, 0, 40, 40)
+                                                                   image:[asset synchronousFetchUIImageAtTargetSize:CGSizeMake(40, 40)]
+                                                                   title:[NSString stringWithFormat:@"%ld",((EverywhereAnnotation *)annotation).assetCount]];
+        UITapGestureRecognizer *imageViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapGR:)];
+        [imageView addGestureRecognizer:imageViewTapGR];
+
         //pinAV.image = imageView.image;
         pinAV.leftCalloutAccessoryView = imageView;
         pinAV.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-        return pinAV;
+        
+        annotationView = pinAV;
     }else if ([annotation isKindOfClass:[EverywhereFootprintAnnotation class]]){
         
         //MKPinAnnotationView *pinAV = (MKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"pinShareAV"];
@@ -2928,23 +2848,11 @@
         pinAV.canShowCallout = YES;
         
         if (footprintAnnotation.thumbnailArray.count > 0){
-            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-            imageView.contentMode = UIViewContentModeScaleAspectFill;
-            imageView.userInteractionEnabled = YES;
-            UITapGestureRecognizer *imageViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapGR2:)];
+            UIImageView *imageView = [AssetsMapProVC badgeImageViewWithFrame:CGRectMake(0, 0, 40, 40)
+                                                                       image:footprintAnnotation.thumbnailArray.firstObject
+                                                                       title:[NSString stringWithFormat:@"%ld",(long)footprintAnnotation.thumbnailArray.count]];
+            UITapGestureRecognizer *imageViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapGR:)];
             [imageView addGestureRecognizer:imageViewTapGR];
-            imageView.image = footprintAnnotation.thumbnailArray.firstObject;
-            
-            UIButton *badgeButton = [UIButton newAutoLayoutView];
-            badgeButton.userInteractionEnabled = NO;
-            [badgeButton setBackgroundImage:[UIImage imageNamed:@"badge"] forState:UIControlStateNormal];
-            [badgeButton setTitle:[NSString stringWithFormat:@"%ld",(long)footprintAnnotation.thumbnailArray.count] forState:UIControlStateNormal];
-            badgeButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
-            [imageView addSubview:badgeButton];
-            [badgeButton autoSetDimensionsToSize:CGSizeMake(20, 20)];
-            [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
-            [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
-            
             pinAV.leftCalloutAccessoryView = imageView;
         }else{
             pinAV.leftCalloutAccessoryView = nil;
@@ -2952,42 +2860,69 @@
         
         pinAV.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
         
-        return pinAV;
+        annotationView = pinAV;
 
     }else if([annotation isKindOfClass:[MKUserLocation class]]){
         MKAnnotationView *view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"userLocation"];
         view.canShowCallout = NO;
-        return nil;
+        annotationView = nil;
     }else{
-        return nil;
+        annotationView = nil;
     }
+    return annotationView;
+}
+
++ (UIImageView *)badgeImageViewWithFrame:(CGRect)frame image:(UIImage *)image title:(NSString *)title{
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:frame];
+    imageView.contentMode = UIViewContentModeScaleAspectFill;
+    imageView.userInteractionEnabled = YES;
+    imageView.image = image;
+    
+    UIButton *badgeButton = [UIButton newAutoLayoutView];
+    badgeButton.userInteractionEnabled = NO;
+    [badgeButton setBackgroundImage:[UIImage imageNamed:@"badge"] forState:UIControlStateNormal];
+    [badgeButton setTitle:title forState:UIControlStateNormal];
+    badgeButton.titleLabel.font = [UIFont boldSystemFontOfSize:11];
+    [imageView addSubview:badgeButton];
+    [badgeButton autoSetDimensionsToSize:CGSizeMake(20, 20)];
+    [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
+    [badgeButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+    
+    return imageView;
 }
 
 - (void)imageViewTapGR:(UITapGestureRecognizer *)sender{
-    AssetDetailVC *showVC = [AssetDetailVC new];
-    showVC.edgesForExtendedLayout = UIRectEdgeNone;
-    showVC.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    EverywhereAnnotation *annotation = self.myMapView.selectedAnnotations.firstObject;
-    showVC.assetLocalIdentifiers = annotation.assetLocalIdentifiers;
-    
-    [self presentViewController:showVC animated:YES completion:nil];
-}
-
-- (void)imageViewTapGR2:(UITapGestureRecognizer *)sender{
-    EverywhereFootprintAnnotation *footprintAnnotation = (EverywhereFootprintAnnotation *)self.myMapView.selectedAnnotations.firstObject;
-    SimpleImageBrowser *imageVC = [[SimpleImageBrowser alloc] initWithImageArray:footprintAnnotation.thumbnailArray];
-    imageVC.title = footprintAnnotation.customTitle;
-    imageVC.contentSizeInPopup = ContentSizeInPopup_Big;
-    imageVC.landscapeContentSizeInPopup = LandscapeContentSizeInPopup_Big;
-    
-    popupController = [[STPopupController alloc] initWithRootViewController:imageVC];
-    popupController.containerView.layer.cornerRadius = 4;
-    [popupController presentInViewController:self];
+    id<MKAnnotation> firstSelectedAnnotation = self.myMapView.selectedAnnotations.firstObject;
+    if ([firstSelectedAnnotation isKindOfClass:[EverywhereAnnotation class]]){
+        AssetDetailVC *showVC = [AssetDetailVC new];
+        showVC.showIndexLabel = YES;
+        showVC.swipeUpToQuit = YES;
+        showVC.edgesForExtendedLayout = UIRectEdgeNone;
+        showVC.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+        EverywhereAnnotation *annotation = self.myMapView.selectedAnnotations.firstObject;
+        showVC.assetLocalIdentifiers = annotation.assetLocalIdentifiers;
+        
+        [self presentViewController:showVC animated:YES completion:nil];
+    }else if ([firstSelectedAnnotation isKindOfClass:[EverywhereFootprintAnnotation class]]){
+        EverywhereFootprintAnnotation *footprintAnnotation = (EverywhereFootprintAnnotation *)self.myMapView.selectedAnnotations.firstObject;
+        
+        if (footprintAnnotation.thumbnailArray.count <= 0) return;
+        
+        SimpleImageBrowser *imageVC = [[SimpleImageBrowser alloc] initWithImageArray:footprintAnnotation.thumbnailArray];
+        imageVC.title = footprintAnnotation.customTitle;
+        imageVC.contentSizeInPopup = ContentSizeInPopup_Big;
+        imageVC.landscapeContentSizeInPopup = LandscapeContentSizeInPopup_Big;
+        
+        popupController = [[STPopupController alloc] initWithRootViewController:imageVC];
+        popupController.containerView.layer.cornerRadius = 4;
+        [popupController presentInViewController:self];
+    }
 }
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
     [self updateLocationInfoBarWithAnnotationView:view];
     [self showHideLocationInfoBar];
+    if(DEBUGMODE) NSLog(@"calloutAccessoryControlTapped: %@",control);
 }
 
 - (void)updateLocationInfoBarWithAnnotationView:(MKAnnotationView *)view{
@@ -3015,33 +2950,6 @@
     locationInfoBar.currentShowCoordinateInfo = coordinateInfo;
 }
 
-/*
-- (void)updateLocationInfoBarWithPHAssetInfo:(PHAssetInfo *)assetInfo{
-    if (![assetInfo.reverseGeocodeSucceed boolValue]) {
-        [PHAssetInfo updatePlacemarkForAssetInfo:assetInfo];
-        [NSThread sleepForTimeInterval:0.3];
-    }
-    
-    CoordinateInfo *coordinateInfo = [CoordinateInfo coordinateInfoWithPHAssetInfo:assetInfo inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
-    
-    locationInfoBar.currentShowCoordinateInfo = coordinateInfo;
-}
-
-
-- (void)updateLocationInfoBarWithCLLocation:(CLLocation *)location{
-    CoordinateInfo *coordinateInfo = [CoordinateInfo coordinateInfoWithCLLocation:location inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
-    
-    //NSLog(@"CoordinateInfo : %@",coordinateInfo);
-    if (![coordinateInfo.reverseGeocodeSucceed boolValue]) {
-        [CoordinateInfo updatePlacemarkForCoordinateInfo:coordinateInfo completionBlock:^(NSString *localizedPlaceString) {
-            locationInfoBar.currentShowCoordinateInfo = coordinateInfo;
-        }];
-        [NSThread sleepForTimeInterval:0.3];
-    }
-    
-    locationInfoBar.currentShowCoordinateInfo = coordinateInfo;
-}
-*/
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay{
     
     if ([overlay isKindOfClass:[MKPolyline class]]) {
@@ -3114,6 +3022,20 @@
     //@[FlatSand,]
 }
 
+- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view{
+    self.currentAnnotationIndex = [self.addedIDAnnotations indexOfObject:view.annotation];
+    [self updateLocationInfoBarWithAnnotationView:view];
+}
+
+- (void)setCurrentAnnotationIndex:(NSInteger)currentAnnotationIndex{
+    _currentAnnotationIndex = currentAnnotationIndex;
+    if (self.addedIDAnnotations.count > 0){
+        currentAnnotationIndexLabel.text = [NSString stringWithFormat:@"%ld / %ld",(unsigned long)(currentAnnotationIndex + 1),(unsigned long)self.addedIDAnnotations.count];
+    }else{
+        currentAnnotationIndexLabel.text = @"";
+    }
+}
+
 - (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation{
     CLLocation *checkedUserLocation = userLocation.location;
     
@@ -3133,27 +3055,25 @@
     }
 }
 
-- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view{
-    self.currentAnnotationIndex = [self.addedIDAnnos indexOfObject:view.annotation];
-    
-    [self updateLocationInfoBarWithAnnotationView:view];
-}
-
-- (void)setCurrentAnnotationIndex:(NSInteger)currentAnnotationIndex{
-    _currentAnnotationIndex = currentAnnotationIndex;
-    if (self.addedIDAnnos.count > 0){
-        currentAnnotationIndexLabel.text = [NSString stringWithFormat:@"%ld / %ld",(unsigned long)(currentAnnotationIndex + 1),(unsigned long)self.addedIDAnnos.count];
-    }else{
-        currentAnnotationIndexLabel.text = @"";
-    }
-}
-
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated{
-    //MKCoordinateSpan newSpan = mapView.region.span;
-    //if(DEBUGMODE) NSLog(@"%@",NSStringFromCGPoint(CGPointMake(newSpan.latitudeDelta, newSpan.longitudeDelta)));
+    CLLocationCoordinate2D center = mapView.region.center;
+    MKCoordinateSpan span = mapView.region.span;
+    
+    CLLocationCoordinate2D leftCoordinate = CLLocationCoordinate2DMake(center.latitude - span.latitudeDelta, center.longitude);
+    CLLocationCoordinate2D rightCoordinate = CLLocationCoordinate2DMake(center.latitude + span.latitudeDelta, center.longitude);
+    CLLocationDistance leftToRightDistance = MKMetersBetweenMapPoints(MKMapPointForCoordinate(leftCoordinate), MKMapPointForCoordinate(rightCoordinate));
+    
+    CLLocationCoordinate2D topCoordinate = CLLocationCoordinate2DMake(center.latitude, center.longitude + span.longitudeDelta);
+    CLLocationCoordinate2D bottomCoordinate = CLLocationCoordinate2DMake(center.latitude, center.longitude - span.longitudeDelta);
+    CLLocationDistance topToBottomDistance = MKMetersBetweenMapPoints(MKMapPointForCoordinate(topCoordinate), MKMapPointForCoordinate(bottomCoordinate));
+    
+    if(DEBUGMODE) NSLog(@"%@",NSStringFromCGPoint(CGPointMake(leftToRightDistance,topToBottomDistance)));
+    if(DEBUGMODE) NSLog(@"%@",NSStringFromCGPoint(CGPointMake(leftToRightDistance/span.latitudeDelta,topToBottomDistance/span.longitudeDelta)));
+
 }
 
 #pragma mark - CLLocationManagerDelegate
+
 - (BOOL)checkCoordinate:(CLLocationCoordinate2D)aCoord{
     
     if (aCoord.latitude > -90 && aCoord.latitude < 90) {

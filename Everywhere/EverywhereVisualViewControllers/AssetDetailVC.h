@@ -10,6 +10,20 @@
 #import "EverywhereAnnotation.h"
 
 @interface AssetDetailVC : UIViewController
-//@property (strong,nonatomic) EverywhereAnnotation *ewAnnotation;
+
+/**
+ *  要显示的 PHAsset localIndentifier 数组
+ */
 @property (strong,nonatomic) NSArray <NSString *> *assetLocalIdentifiers;
+
+/**
+ *  是否显示序号标签
+ */
+@property (assign,nonatomic) BOOL showIndexLabel;
+
+/**
+ *  是否上滑退出
+ */
+@property (assign,nonatomic) BOOL swipeUpToQuit;
+
 @end

@@ -49,6 +49,11 @@
 + (NSArray <PHAssetInfo *> *)fetchEliminatedAssetInfosInManagedObjectContext:(NSManagedObjectContext *)context;
 
 /**
+ *  获取 用于分享的 实例
+ */
++ (NSArray <PHAssetInfo *> *)fetchThumbnailAssetInfosInManagedObjectContext:(NSManagedObjectContext *)context;
+
+/**
  * 获取 包含指定Placemark信息的 全部实例- PHAssetInfo+Assistant
  */
 + (NSArray <PHAssetInfo *> *)fetchAssetInfosContainsPlacemark:(NSString *)subPlacemark inManagedObjectContext:(NSManagedObjectContext *)context;

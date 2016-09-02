@@ -51,6 +51,7 @@
     NSData *appInfoData = [NSData dataWithContentsOfURL:[NSURL URLWithString:appInfoURLString] options:NSDataReadingMapped error:&readDataError];
     if (!appInfoData){
         if(DEBUGMODE) NSLog(@"从网络获取AppInfo数据出错 : %@",readDataError.localizedDescription);
+        if (completionBlock) completionBlock();
         return;
     }
     
@@ -58,6 +59,7 @@
     NSArray *appInfoDictionaryArray = [NSJSONSerialization JSONObjectWithData:appInfoData options:NSJSONReadingMutableContainers error:&parseJSONError];
     if (!appInfoDictionaryArray){
         if(DEBUGMODE) NSLog(@"解析AppInfo数据出错 : %@",parseJSONError.localizedDescription);
+        if (completionBlock) completionBlock();
         return;
     }
     
@@ -75,6 +77,7 @@
     
     if (!appInfoDictionary){
         if(DEBUGMODE) NSLog(@"更新AppInfo失败！");
+        if (completionBlock) completionBlock();
         return;
     }
     
@@ -266,7 +269,6 @@
 
 - (NSString *)lastPlacemark{
     NSString *placemark = [[NSUserDefaults standardUserDefaults] stringForKey:@"lastPlacemark"];
-    if (!placemark) placemark = @",";
     return placemark;
 }
 
