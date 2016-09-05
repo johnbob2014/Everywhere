@@ -13,6 +13,7 @@
 #import "InAppPurchaseVC.h"
 #import "AboutVC.h"
 #import "GCFileBrowser.h"
+#import "CoordinateInfoPickerVC.h"
 
 #import "EverywhereSettingManager.h"
 #import "WXApi.h"
@@ -117,7 +118,13 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         if(DEBUGMODE) NSLog(@"%@",item.value);
         self.settingManager.mapViewScaleRate = [item.value doubleValue];
     };
- 
+
+#pragma mark 管理
+    RETableViewItem *favoriteCoordinateInfoItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"⭐️ Favorite",@"⭐️ 收藏夹") accessoryType:UITableViewCellAccessoryDisclosureIndicator  selectionHandler:^(RETableViewItem *item) {
+        CoordinateInfoPickerVC *showVC = [CoordinateInfoPickerVC new];
+        showVC.edgesForExtendedLayout = UIRectEdgeNone;
+        [self.navigationController pushViewController:showVC animated:YES];
+    }];
 
 /*
     REBoolItem *useCellularDataItem=[REBoolItem itemWithTitle:NSLocalizedString(@"🌐 使用蜂窝移动数据", @"") value:YES switchValueChangeHandler:^(REBoolItem *item) {
@@ -132,7 +139,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     }];
 */
     
-    [globleSection addItemsFromArray:@[systemSettingItem,routeColorIsMonochromeSegmentedItem,firstDayOfWeekSegmentedItem,playTimeIntervalItem,mapViewScaleRateItem]];
+    [globleSection addItemsFromArray:@[systemSettingItem,routeColorIsMonochromeSegmentedItem,firstDayOfWeekSegmentedItem,playTimeIntervalItem,mapViewScaleRateItem,favoriteCoordinateInfoItem]];
     
 #pragma mark - 基础模式设置
     

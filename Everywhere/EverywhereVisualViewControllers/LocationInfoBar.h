@@ -13,11 +13,13 @@
 @import MapKit;
 
 typedef void(^DidGetMKDirectionsResponseHandler)(MKDirectionsResponse *response);
+typedef void(^DidChangeFavoritePropertyHandler)(CoordinateInfo *coordinateInfo);
 
 @interface LocationInfoBar : UIView
 
 @property (copy,nonatomic) DidGetMKDirectionsResponseHandler didGetMKDirectionsResponseHandler;
 
+@property (copy,nonatomic) DidChangeFavoritePropertyHandler didChangeFavoritePropertyHandler;
 
 @property (strong,nonatomic) UIButton *naviToHereButton;
 

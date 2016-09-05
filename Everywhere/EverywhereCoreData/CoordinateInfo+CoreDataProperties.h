@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSNumber *verticalAccuracy;
 @property (nullable, nonatomic, retain) NSNumber *horizontalAccuracy;
 @property (nullable, nonatomic, retain) NSNumber *course;
-
+@property (nullable, nonatomic, retain) NSNumber *favorite;
 @end
 
 NS_ASSUME_NONNULL_END

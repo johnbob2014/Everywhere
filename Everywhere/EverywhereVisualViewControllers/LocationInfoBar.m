@@ -23,12 +23,13 @@
 @end
 
 @implementation LocationInfoBar{
-    UIView *bottomButtonContainer;
-    UIView *topButtonContainer;
+    UIView *bottomButtonContainer,*centerButtonContainer,*topButtonContainer;
     
     UIButton *bottomFirstButton;
-    UIButton *bottomSecodnButton;
-    UIButton *bottomThirdButton;
+    
+    UIButton *centerFirstButton;
+    UIButton *centerSecodnButton;
+    UIButton *centerThirdButton;
     
     UIButton *topFirstButton;
     UIButton *topSecondButton;
@@ -52,13 +53,13 @@
     
     switch (userPreferredMap) {
         case 0:
-            [bottomFirstButton setTitle:NSLocalizedString(@"iOS Maps ☞",@"iOS地图 ☞") forState:UIControlStateNormal];
+            [centerFirstButton setTitle:NSLocalizedString(@"iOS Maps ☞",@"iOS地图 ☞") forState:UIControlStateNormal];
             break;
         case 1:
-            [bottomFirstButton setTitle:NSLocalizedString(@"Baidu Map ☞",@"百度地图 ☞") forState:UIControlStateNormal];
+            [centerFirstButton setTitle:NSLocalizedString(@"Baidu Map ☞",@"百度地图 ☞") forState:UIControlStateNormal];
             break;
         case 2:
-            [bottomFirstButton setTitle:NSLocalizedString(@"AutoNavi Map ☞",@"高德地图 ☞") forState:UIControlStateNormal];
+            [centerFirstButton setTitle:NSLocalizedString(@"AutoNavi Map ☞",@"高德地图 ☞") forState:UIControlStateNormal];
             break;
             
         default:
@@ -108,6 +109,9 @@
     
     // updateAddressLabel
     self.addressTextView.text = self.currentShowCoordinateInfo.localizedPlaceString_Placemark;
+    
+    NSString *buttonTitle = [self.currentShowCoordinateInfo.favorite boolValue] ? @"⭐️" : @"☆";
+    [bottomFirstButton setTitle:buttonTitle forState:UIControlStateNormal];
 }
 
 /*
@@ -160,45 +164,54 @@
         [self addSubview:bottomButtonContainer];
         [bottomButtonContainer autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(0, 0, 5, 0) excludingEdge:ALEdgeTop];
         [bottomButtonContainer autoSetDimension:ALDimensionHeight toSize:buttonHeight];
-
+        
         bottomFirstButton = [UIButton newAutoLayoutView];
-        bottomFirstButton.tag = 1;
-        //[bottomFirstButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Flag_WBG"] forState:UIControlStateNormal];
-        [bottomFirstButton setTitle:titleArray[3] forState:UIControlStateNormal];
-        [bottomFirstButton addTarget:self action:selectorArray[3] forControlEvents:UIControlEventTouchDown];
+        [bottomFirstButton addTarget:self action:@selector(favouriteBtnTD) forControlEvents:UIControlEventTouchDown];
         [bottomButtonContainer addSubview:bottomFirstButton];
         [bottomFirstButton autoSetDimensionsToSize:buttonSize];
         [bottomFirstButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
         [bottomFirstButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+
+        centerButtonContainer = [UIView newAutoLayoutView];
+        [self addSubview:centerButtonContainer];
+        [centerButtonContainer autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:bottomButtonContainer withOffset:-5];
+        [centerButtonContainer autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+        [centerButtonContainer autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+        [centerButtonContainer autoSetDimension:ALDimensionHeight toSize:buttonHeight];
         
-        bottomSecodnButton = [UIButton newAutoLayoutView];
-        bottomSecodnButton.tag = 2;
-        [bottomSecodnButton setTitle:titleArray[4] forState:UIControlStateNormal];
-        [bottomSecodnButton addTarget:self action:selectorArray[4] forControlEvents:UIControlEventTouchDown];
-        [bottomButtonContainer addSubview:bottomSecodnButton];
-        [bottomSecodnButton autoSetDimensionsToSize:buttonSize];
-        [bottomSecodnButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-        [bottomSecodnButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:bottomFirstButton withOffset:5];
+        centerFirstButton = [UIButton newAutoLayoutView];
+        [centerFirstButton setTitle:titleArray[3] forState:UIControlStateNormal];
+        [centerFirstButton addTarget:self action:selectorArray[3] forControlEvents:UIControlEventTouchDown];
+        [centerButtonContainer addSubview:centerFirstButton];
+        [centerFirstButton autoSetDimensionsToSize:buttonSize];
+        [centerFirstButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+        [centerFirstButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
         
-        bottomThirdButton = [UIButton newAutoLayoutView];
-        bottomThirdButton.tag = 2;
-        [bottomThirdButton setTitle:titleArray[5] forState:UIControlStateNormal];
-        [bottomThirdButton addTarget:self action:selectorArray[5] forControlEvents:UIControlEventTouchDown];
-        [bottomButtonContainer addSubview:bottomThirdButton];
-        [bottomThirdButton autoSetDimensionsToSize:buttonSize];
-        [bottomThirdButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
-        [bottomThirdButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:bottomSecodnButton withOffset:5];
+        centerSecodnButton = [UIButton newAutoLayoutView];
+        [centerSecodnButton setTitle:titleArray[4] forState:UIControlStateNormal];
+        [centerSecodnButton addTarget:self action:selectorArray[4] forControlEvents:UIControlEventTouchDown];
+        [centerButtonContainer addSubview:centerSecodnButton];
+        [centerSecodnButton autoSetDimensionsToSize:buttonSize];
+        [centerSecodnButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+        [centerSecodnButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:centerFirstButton withOffset:5];
+        
+        centerThirdButton = [UIButton newAutoLayoutView];
+        [centerThirdButton setTitle:titleArray[5] forState:UIControlStateNormal];
+        [centerThirdButton addTarget:self action:selectorArray[5] forControlEvents:UIControlEventTouchDown];
+        [centerButtonContainer addSubview:centerThirdButton];
+        [centerThirdButton autoSetDimensionsToSize:buttonSize];
+        [centerThirdButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+        [centerThirdButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:centerSecodnButton withOffset:5];
         
 #pragma mark 上排按键
         topButtonContainer = [UIView newAutoLayoutView];
         [self addSubview:topButtonContainer];
-        [topButtonContainer autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:bottomButtonContainer withOffset:-5];
+        [topButtonContainer autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:centerButtonContainer withOffset:-5];
         [topButtonContainer autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
         [topButtonContainer autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
         [topButtonContainer autoSetDimension:ALDimensionHeight toSize:buttonHeight];
 
         topFirstButton = [UIButton newAutoLayoutView];
-        topFirstButton.tag = 1;
         [topFirstButton setTitle:titleArray[0] forState:UIControlStateNormal];
         [topFirstButton addTarget:self action:selectorArray[0] forControlEvents:UIControlEventTouchDown];
         [topButtonContainer addSubview:topFirstButton];
@@ -207,7 +220,6 @@
         [topFirstButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
         
         topSecondButton = [UIButton newAutoLayoutView];
-        topSecondButton.tag = 2;
         [topSecondButton setTitle:titleArray[1] forState:UIControlStateNormal];
         [topSecondButton addTarget:self action:selectorArray[1] forControlEvents:UIControlEventTouchDown];
         [topButtonContainer addSubview:topSecondButton];
@@ -216,7 +228,6 @@
         [topSecondButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:topFirstButton withOffset:5];
         
         topThirdButton = [UIButton newAutoLayoutView];
-        topThirdButton.tag = 2;
         [topThirdButton setTitle:titleArray[2] forState:UIControlStateNormal];
         [topThirdButton addTarget:self action:selectorArray[2] forControlEvents:UIControlEventTouchDown];
         [topButtonContainer addSubview:topThirdButton];
@@ -224,12 +235,12 @@
         [topThirdButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
         [topThirdButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:topSecondButton withOffset:5];
         
-        buttonArray = @[topFirstButton,topSecondButton,topThirdButton,bottomFirstButton,bottomSecodnButton,bottomThirdButton];
+        buttonArray = @[topFirstButton,topSecondButton,topThirdButton,centerFirstButton,centerSecodnButton,centerThirdButton,bottomFirstButton];
         [self setupButtonsStyle];
 
-        self.naviToHereButton = bottomSecodnButton;
+        self.naviToHereButton = centerSecodnButton;
         topThirdButton.enabled = NO;
-        bottomThirdButton.enabled = NO;
+        centerThirdButton.enabled = NO;
         
 #pragma mark 标签
         UILabel *coordlabel = [UILabel newAutoLayoutView];
@@ -284,6 +295,16 @@
 
 #pragma mark - 按钮动作
 
+- (void)favouriteBtnTD{
+    self.currentShowCoordinateInfo.favorite = @(![self.currentShowCoordinateInfo.favorite boolValue]);
+    [self.currentShowCoordinateInfo.managedObjectContext save:NULL];
+    
+    NSString *buttonTitle = [self.currentShowCoordinateInfo.favorite boolValue] ? @"⭐️" : @"☆";
+    [bottomFirstButton setTitle:buttonTitle forState:UIControlStateNormal];
+    
+    if (self.didChangeFavoritePropertyHandler) self.didChangeFavoritePropertyHandler(self.currentShowCoordinateInfo);
+}
+
 - (void)setOriginBtnTD{
     self.originCoordinateWGS84 = self.currentShowCoordinateWGS84;
     topFirstButton.enabled = NO;
@@ -293,11 +314,11 @@
     self.destinationCoordinateWGS84 = self.currentShowCoordinateWGS84;
     topSecondButton.enabled = NO;
     topThirdButton.enabled = YES;
-    bottomThirdButton.enabled = YES;
+    centerThirdButton.enabled = YES;
 }
 
 - (void)getRouteBtnTD{
-    bottomSecodnButton.enabled = NO;
+    centerSecodnButton.enabled = NO;
     
     MKMapItem *lastMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:[GCCoordinateTransformer transformToMarsFromEarth:self.originCoordinateWGS84] addressDictionary:nil]];
     MKMapItem *currentMapItem = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc]initWithCoordinate:[GCCoordinateTransformer transformToMarsFromEarth:self.destinationCoordinateWGS84] addressDictionary:nil]];

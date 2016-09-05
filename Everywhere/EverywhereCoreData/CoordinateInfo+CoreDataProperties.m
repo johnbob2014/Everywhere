@@ -35,5 +35,6 @@
 @dynamic verticalAccuracy;
 @dynamic horizontalAccuracy;
 @dynamic course;
+@dynamic favorite;
 
 @end

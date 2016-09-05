@@ -9,8 +9,21 @@
 #import "CoordinateInfo+Assistant.h"
 #import "EverywhereCoreDataHeader.h"
 #import "CLPlacemark+Assistant.h"
+#import "GCCoordinateTransformer.h"
 
 @implementation CoordinateInfo (Assistant)
+
+#pragma mark - MKAnnotation Protocol
+
+- (CLLocationCoordinate2D)coordinate{
+    return [GCCoordinateTransformer transformToMarsFromEarth:CLLocationCoordinate2DMake([self.latitude doubleValue], [self.longitude doubleValue])];
+}
+
+- (NSString *)title{
+    return [self.localizedPlaceString_Placemark placemarkBriefName];
+}
+
+#pragma mark - Core Data
 
 + (CoordinateInfo *)fetchCoordinateInfoWithLatitude:(double)latitude longitude:(double)longitude inManagedObjectContext:(NSManagedObjectContext *)context{
     CoordinateInfo *info = nil;
@@ -100,6 +113,14 @@
     }
 
     return info;
+}
+
++ (NSArray <CoordinateInfo *> *)fetchFavoriteCoordinateInfosInManagedObjectContext:(NSManagedObjectContext *)context{
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:EntityName_CoordinateInfo];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"favorite = %@",@(YES)];
+    NSError *fetchError;
+    NSArray *matches = [context executeFetchRequest:fetchRequest error:&fetchError];
+    return matches;
 }
 
 + (double)truncatedValue:(double)aValue{

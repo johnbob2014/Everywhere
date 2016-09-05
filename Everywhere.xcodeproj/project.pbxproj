@@ -100,6 +100,7 @@
 		4B0866311D3738B3000300AD /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B0866301D3738B3000300AD /* libsqlite3.0.tbd */; };
 		4B0866331D373987000300AD /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B0866321D373987000300AD /* CoreTelephony.framework */; };
 		4B0866351D373993000300AD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B0866341D373993000300AD /* Security.framework */; };
+		4B0891831D7D6EC100A4068C /* CoordinateInfoPickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0891821D7D6EC100A4068C /* CoordinateInfoPickerVC.m */; };
 		4B098ED01D6FD0090071EAC2 /* NSURL+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B098ECF1D6FD0090071EAC2 /* NSURL+Assistant.m */; };
 		4B0BFDE91D6B069100F8CAA5 /* SVIndefiniteAnimatedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0BFDE01D6B069100F8CAA5 /* SVIndefiniteAnimatedView.m */; };
 		4B0BFDEA1D6B069100F8CAA5 /* SVProgressAnimatedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0BFDE21D6B069100F8CAA5 /* SVProgressAnimatedView.m */; };
@@ -108,6 +109,7 @@
 		4B0BFDED1D6B069100F8CAA5 /* SVRadialGradientLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0BFDE81D6B069100F8CAA5 /* SVRadialGradientLayer.m */; };
 		4B0D09281D23C94D0047D7E0 /* PHAsset+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */; };
 		4B0EA9C91D6DA72100A33E01 /* NSFileManager+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0EA9C81D6DA72100A33E01 /* NSFileManager+Assistant.m */; };
+		4B12D3441D7D0D6A00F5E3B9 /* GCStarAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B12D3431D7D0D6A00F5E3B9 /* GCStarAnnotationView.m */; };
 		4B12E6FD1D5AC8400035D16D /* XMLDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B12E6FC1D5AC8400035D16D /* XMLDictionary.m */; };
 		4B15B5D31D3F5E5E0096EE89 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B15B5D21D3F5E5E0096EE89 /* Assets.xcassets */; };
 		4B15B5D61D3F79CF0096EE89 /* FootprintAnnotationPickerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B15B5D51D3F79CF0096EE89 /* FootprintAnnotationPickerVC.m */; };
@@ -292,6 +294,8 @@
 		4B0866301D3738B3000300AD /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 		4B0866321D373987000300AD /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		4B0866341D373993000300AD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		4B0891811D7D6EC100A4068C /* CoordinateInfoPickerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoordinateInfoPickerVC.h; path = EverywhereVisualViewControllers/CoordinateInfoPickerVC.h; sourceTree = "<group>"; };
+		4B0891821D7D6EC100A4068C /* CoordinateInfoPickerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CoordinateInfoPickerVC.m; path = EverywhereVisualViewControllers/CoordinateInfoPickerVC.m; sourceTree = "<group>"; };
 		4B098ECE1D6FD0090071EAC2 /* NSURL+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURL+Assistant.h"; path = "NSURL+Assistant/NSURL+Assistant.h"; sourceTree = "<group>"; };
 		4B098ECF1D6FD0090071EAC2 /* NSURL+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURL+Assistant.m"; path = "NSURL+Assistant/NSURL+Assistant.m"; sourceTree = "<group>"; };
 		4B0BFDDD1D6AE51800F8CAA5 /* Everywhere Version300.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Everywhere Version300.xcdatamodel"; sourceTree = "<group>"; };
@@ -309,6 +313,8 @@
 		4B0D09271D23C94D0047D7E0 /* PHAsset+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PHAsset+Assistant.m"; path = "PHAsset+Assistant/PHAsset+Assistant.m"; sourceTree = "<group>"; };
 		4B0EA9C71D6DA72100A33E01 /* NSFileManager+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSFileManager+Assistant.h"; path = "NSFileManager+Assistant/NSFileManager+Assistant.h"; sourceTree = "<group>"; };
 		4B0EA9C81D6DA72100A33E01 /* NSFileManager+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSFileManager+Assistant.m"; path = "NSFileManager+Assistant/NSFileManager+Assistant.m"; sourceTree = "<group>"; };
+		4B12D3421D7D0D6A00F5E3B9 /* GCStarAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCStarAnnotationView.h; path = GCStarAnnotationView/GCStarAnnotationView.h; sourceTree = "<group>"; };
+		4B12D3431D7D0D6A00F5E3B9 /* GCStarAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCStarAnnotationView.m; path = GCStarAnnotationView/GCStarAnnotationView.m; sourceTree = "<group>"; };
 		4B12E6FB1D5AC8400035D16D /* XMLDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLDictionary.h; sourceTree = "<group>"; };
 		4B12E6FC1D5AC8400035D16D /* XMLDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLDictionary.m; sourceTree = "<group>"; };
 		4B15B5D21D3F5E5E0096EE89 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -538,6 +544,8 @@
 				4B31B4371D3C5EE20072044F /* FootprintsRepositoryPickerVC.m */,
 				4B15B5D41D3F79CF0096EE89 /* FootprintAnnotationPickerVC.h */,
 				4B15B5D51D3F79CF0096EE89 /* FootprintAnnotationPickerVC.m */,
+				4B0891811D7D6EC100A4068C /* CoordinateInfoPickerVC.h */,
+				4B0891821D7D6EC100A4068C /* CoordinateInfoPickerVC.m */,
 			);
 			name = EverywherePicker;
 			sourceTree = "<group>";
@@ -782,6 +790,15 @@
 			name = "NSFileManager+Assistant";
 			sourceTree = "<group>";
 		};
+		4B12D3411D7D0D3600F5E3B9 /* GCStarAnnotationView */ = {
+			isa = PBXGroup;
+			children = (
+				4B12D3421D7D0D6A00F5E3B9 /* GCStarAnnotationView.h */,
+				4B12D3431D7D0D6A00F5E3B9 /* GCStarAnnotationView.m */,
+			);
+			name = GCStarAnnotationView;
+			sourceTree = "<group>";
+		};
 		4B12E6FA1D5AC8400035D16D /* XMLDictionary */ = {
 			isa = PBXGroup;
 			children = (
@@ -854,6 +871,7 @@
 		4B3AF9CF1D2F3ECE009BD545 /* GeneralClass */ = {
 			isa = PBXGroup;
 			children = (
+				4B12D3411D7D0D3600F5E3B9 /* GCStarAnnotationView */,
 				4B0BFDDE1D6B069100F8CAA5 /* SVProgressHUD */,
 				1E8189171D65B18200F57714 /* GCCoordinateTransformer */,
 				1E81890F1D659A6000F57714 /* GCMaps */,
@@ -1189,6 +1207,7 @@
 				4B12E6FD1D5AC8400035D16D /* XMLDictionary.m in Sources */,
 				4BE1C8451D6D21FC008F6B51 /* NSData+NSHash.m in Sources */,
 				4B098ED01D6FD0090071EAC2 /* NSURL+Assistant.m in Sources */,
+				4B12D3441D7D0D6A00F5E3B9 /* GCStarAnnotationView.m in Sources */,
 				4B69F50A1D6156A800575AC3 /* NSString+FontAwesome.m in Sources */,
 				4B079BA31D61B07800BC4115 /* UIAppearance+Swift.m in Sources */,
 				1EF62A5A1D3BB90F0084AF66 /* EverywhereFootprintsRepository.m in Sources */,
@@ -1216,6 +1235,7 @@
 				1E81891A1D65B1C300F57714 /* GCCoordinateTransformer.m in Sources */,
 				4BFA06411D4B30CD00AE8000 /* GTM_Base64.m in Sources */,
 				4BFA063E1D4B306900AE8000 /* Qiniu.m in Sources */,
+				4B0891831D7D6EC100A4068C /* CoordinateInfoPickerVC.m in Sources */,
 				4B0EA9C91D6DA72100A33E01 /* NSFileManager+Assistant.m in Sources */,
 				4BD51FCF1D2B4B8400F18244 /* EverywhereCoreDataManager.m in Sources */,
 				4B0BFDE91D6B069100F8CAA5 /* SVIndefiniteAnimatedView.m in Sources */,

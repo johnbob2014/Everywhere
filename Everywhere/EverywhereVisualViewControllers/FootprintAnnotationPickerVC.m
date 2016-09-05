@@ -13,7 +13,6 @@
 #import "GCLocationAnalyser.h"
 
 @interface FootprintAnnotationPickerVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
-//@property (copy,nonatomic) EverywhereFootprintsRepository *footprintsRepository;
 @property (strong,nonatomic) NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationMA;
 @end
 

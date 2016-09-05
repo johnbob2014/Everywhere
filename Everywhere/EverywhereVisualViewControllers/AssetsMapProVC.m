@@ -35,7 +35,7 @@
 
 #import "SimpleImageBrowser.h"
 
-#import "UIFont+Assistant.h"
+#import "GCStarAnnotationView.h"
 #import "GCLocationAnalyser.h"
 #import <STPopup.h>
 #import "GCLocationAnalyser.h"
@@ -607,7 +607,7 @@
     // 禁止倾斜
     self.myMapView.pitchEnabled = NO;
     
-    if(iOS9) self.myMapView.showsScale = YES;
+    //if(iOS9) self.myMapView.showsScale = YES;
     
     [self.view addSubview:self.myMapView];
     [self.myMapView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
@@ -623,6 +623,9 @@
     mapViewThreeTapGR.numberOfTapsRequired = 1;
     [self.myMapView addGestureRecognizer:mapViewThreeTapGR];
      */
+    
+    NSArray <CoordinateInfo *> *coordinateInfoArray = [CoordinateInfo fetchFavoriteCoordinateInfosInManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
+    [self.myMapView addAnnotations:coordinateInfoArray];
 }
 
 - (void)mapViewTapGR:(id)sender{
@@ -799,7 +802,7 @@
     
     self.placemarkDictionary = nil;
     
-    [self.myMapView removeAnnotations:self.myMapView.annotations];
+    [self.myMapView removeAnnotations:self.addedIDAnnotations];
     [self.myMapView removeOverlays:self.myMapView.overlays];
 }
 
@@ -1067,7 +1070,7 @@
 #pragma mark Location Info Bar
 
 - (void)initLocationInfoBar{
-    locationInfoBarHeight = 170;
+    locationInfoBarHeight = 200;
     locationInfoBar = [[LocationInfoBar alloc] initWithFrame:CGRectMake(5, -locationInfoBarHeight - 40, ScreenWidth - 10, locationInfoBarHeight)];
     [self.view addSubview:locationInfoBar];
     locationInfoBarIsOutOfVisualView = YES;
@@ -1085,6 +1088,17 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             if(routePolyline) [weakSelf.myMapView addOverlay:routePolyline];
         });
+    };
+    
+    locationInfoBar.didChangeFavoritePropertyHandler = ^(CoordinateInfo *coordinateInfo){
+        NSArray *annotations = weakSelf.myMapView.annotations;
+        if ([coordinateInfo.favorite boolValue] && ![annotations containsObject:coordinateInfo]){
+            [weakSelf.myMapView addAnnotation:coordinateInfo];
+        }
+        
+        if (![coordinateInfo.favorite boolValue] && [annotations containsObject:coordinateInfo]){
+            [weakSelf.myMapView removeAnnotation:coordinateInfo];
+        }
     };
     
     locationInfoBar.naviToHereButton.enabled = NO;
@@ -2047,7 +2061,7 @@
     savedEndDateForBaseMode = self.endDate;
     
     // 清理BaseMode地图
-    [self.myMapView removeAnnotations:self.myMapView.annotations];
+    [self.myMapView removeAnnotations:self.addedIDAnnotations];
     [self.myMapView removeOverlays:self.myMapView.overlays];
     
     self.addedEWFootprintAnnotations = nil;
@@ -2089,7 +2103,7 @@
     locationInfoBar.backgroundColor = self.settingManager.baseTintColor;
     
     // 清理Extended Mode地图
-    [self.myMapView removeAnnotations:self.myMapView.annotations];
+    [self.myMapView removeAnnotations:self.addedIDAnnotations];
     [self.myMapView removeOverlays:self.myMapView.overlays];
     self.addedEWFootprintAnnotations = nil;
     
@@ -2143,7 +2157,7 @@
 - (void)showFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository{
     // 清理地图
     self.addedEWAnnotations = nil;
-    [self.myMapView removeAnnotations:self.myMapView.annotations];
+    [self.myMapView removeAnnotations:self.addedIDAnnotations];
     
     self.currentShowEWFR = footprintsRepository;
     
@@ -2223,7 +2237,7 @@
     msExtenedModeBar.selectedSegmentIndex = 1;
     msExtenedModeBar.leftButtonEnabled = NO;
     
-    [self.myMapView removeAnnotations:self.myMapView.annotations];
+    [self.myMapView removeAnnotations:self.addedIDAnnotations];
     [self.myMapView removeOverlays:self.myMapView.overlays];
 
     naviBar.hidden = YES;
@@ -2393,7 +2407,7 @@
         trialCount--;
         
         NSString *leftTrialCountString;
-        if(trialCount > 0) leftTrialCountString = [NSString stringWithFormat:@"%@ : %ld",NSLocalizedString(@"Left trial count for RecordAndEdit function", @"记录和编辑功能剩余试用次数"),trialCount];
+        if(trialCount > 0) leftTrialCountString = [NSString stringWithFormat:@"%@ : %ld",NSLocalizedString(@"Left trial count for RecordAndEdit function", @"记录和编辑功能剩余试用次数"),(long)trialCount];
         else leftTrialCountString = NSLocalizedString(@"RecordAndEdit function trial has finished.", @"记录和编辑功能试用结束！");
         
         NSString *purchaseString = NSLocalizedString(@"Purchase now?", @"是否购买？");
@@ -2409,7 +2423,7 @@
     }
     
     // 清理地图
-    [self.myMapView removeAnnotations:self.myMapView.annotations];
+    [self.myMapView removeAnnotations:self.addedIDAnnotations];
     [self.myMapView removeOverlays:self.myMapView.overlays];
     
     // 把刚刚保存的轨迹显示到地图上
@@ -2464,7 +2478,7 @@
     NSMutableArray <EverywhereAnnotation *> *annotationsToAdd = [NSMutableArray new];
     NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationsToAdd = [NSMutableArray new];
     // 添加 MKAnnotations
-    [self.myMapView removeAnnotations:self.myMapView.annotations];
+    [self.myMapView removeAnnotations:self.addedIDAnnotations];
     
     [self.assetsArray enumerateObjectsUsingBlock:^(NSArray<PHAsset *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *status = [NSString stringWithFormat:@"%@\n%lu/%lu",NSLocalizedString(@"Adding footprints...", @"正在添加足迹点..."),(unsigned long)(idx + 1),(unsigned long)self.assetsArray.count];
@@ -2513,6 +2527,7 @@
     self.addedIDAnnotations = annotationsToAdd;
     self.addedEWAnnotations = annotationsToAdd;
     self.addedEWFootprintAnnotations = footprintAnnotationsToAdd;
+    
 }
 
 
@@ -2823,7 +2838,7 @@
         
         UIImageView *imageView = [AssetsMapProVC badgeImageViewWithFrame:CGRectMake(0, 0, 40, 40)
                                                                    image:[asset synchronousFetchUIImageAtTargetSize:CGSizeMake(40, 40)]
-                                                                   title:[NSString stringWithFormat:@"%ld",((EverywhereAnnotation *)annotation).assetCount]];
+                                                                   title:[NSString stringWithFormat:@"%ld",(long)((EverywhereAnnotation *)annotation).assetCount]];
         UITapGestureRecognizer *imageViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapGR:)];
         [imageView addGestureRecognizer:imageViewTapGR];
 
@@ -2862,9 +2877,12 @@
         
         annotationView = pinAV;
 
+    }else if ([annotation isKindOfClass:[CoordinateInfo class]]){
+        GCStarAnnotationView *starView = [[GCStarAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"GCStarAnnotationView"];
+        starView.canShowCallout = YES;
+        starView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+        return starView;
     }else if([annotation isKindOfClass:[MKUserLocation class]]){
-        MKAnnotationView *view = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"userLocation"];
-        view.canShowCallout = NO;
         annotationView = nil;
     }else{
         annotationView = nil;
@@ -2926,7 +2944,7 @@
 }
 
 - (void)updateLocationInfoBarWithAnnotationView:(MKAnnotationView *)view{
-    if (![view isKindOfClass:[MKPinAnnotationView class]]) return;
+    if ([view.annotation isKindOfClass:[MKUserLocation class]]) return;
 
     CoordinateInfo *coordinateInfo;
     if ([view.annotation isKindOfClass:[EverywhereAnnotation class]]) {
@@ -2939,6 +2957,8 @@
         EverywhereFootprintAnnotation *footprintAnnotation = (EverywhereFootprintAnnotation *)view.annotation;
         coordinateInfo = [CoordinateInfo coordinateInfoWithCLLocation:footprintAnnotation.location
                                                                inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
+    }else if ([view isKindOfClass:[GCStarAnnotationView class]]){
+        coordinateInfo = view.annotation;
     }
     
     if (![coordinateInfo.reverseGeocodeSucceed boolValue]) {
@@ -3023,7 +3043,13 @@
 }
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view{
-    self.currentAnnotationIndex = [self.addedIDAnnotations indexOfObject:view.annotation];
+    if ([view isKindOfClass:[MKPinAnnotationView class]]){
+        self.currentAnnotationIndex = [self.addedIDAnnotations indexOfObject:view.annotation];
+        
+    }else if ([view isKindOfClass:[GCStarAnnotationView class]]){
+        
+    }
+    
     [self updateLocationInfoBarWithAnnotationView:view];
 }
 
