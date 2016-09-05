@@ -7,8 +7,6 @@
 //
 
 #import "CoordinateInfoPickerVC.h"
-#import "CoordinateInfo.h"
-
 #import "EverywhereCoreDataManager.h"
 
 @interface CoordinateInfoPickerVC ()<UITableViewDelegate,UITableViewDataSource>
@@ -41,10 +39,12 @@
 #pragma mark - TableView
 
 - (void)updateData{
+    [[EverywhereCoreDataManager appDelegateMOC] save:NULL];
+    
     self.coordinateInfoArray = [CoordinateInfo fetchFavoriteCoordinateInfosInManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
     currentGroupArray = self.coordinateInfoArray;
     if (currentGroupArray.count > 0)
-        self.title = [NSString stringWithFormat:@"%@ - %lu",self.title,currentGroupArray.count];
+        self.title = [NSString stringWithFormat:@"%@ - %lu",self.title,(unsigned long)currentGroupArray.count];
     [myTableView reloadData];
 }
 
@@ -79,13 +79,22 @@
     
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
     
+    UIAlertAction *showAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Show",@"查看")
+                                                         style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * _Nonnull action) {
+                                                           [self dismissViewControllerAnimated:YES completion:nil];
+                                                           if (self.didSelectCoordinateInfo) {
+                                                               self.didSelectCoordinateInfo(coordinateInfo);
+                                                           }
+                                                       }];
+    
     UIAlertAction *renameAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Rename",@"重命名")
                                                            style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * _Nonnull action) {
                                                              __block UITextField *tf;
                                                              UIAlertController *renameAC = [UIAlertController renameAlertControllerWithOKActionHandler:^(UIAlertAction *action) {
                                                                  
-                                                                 //coordinateInfo.title = tf.text;
+                                                                 coordinateInfo.customTitle = tf.text;
                                                                  [self updateData];
                                                                  
                                                              } textFieldConfigurationHandler:^(UITextField *textField) {
@@ -99,17 +108,19 @@
     UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Delete",@"删除")
                                                            style:UIAlertActionStyleDefault
                                                          handler:^(UIAlertAction * _Nonnull action) {
+                                                             
                                                              coordinateInfo.favorite = @(NO);
-                                                             [[EverywhereCoreDataManager appDelegateMOC] save:NULL];
                                                              [self updateData];
                                                          }];
     
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
+    
+    [alertController addAction:showAction];
     [alertController addAction:renameAction];
     [alertController addAction:deleteAction];
     [alertController addAction:cancelAction];
-    if (iOS9) alertController.preferredAction = renameAction;
+    if (iOS9) alertController.preferredAction = showAction;
     
     [self presentViewController:alertController animated:YES completion:nil];
     
@@ -121,7 +132,7 @@
     __block UITextField *tf;
     UIAlertController *renameAC = [UIAlertController renameAlertControllerWithOKActionHandler:^(UIAlertAction *action) {
         
-        //coordinateInfo.customTitle = tf.text;
+        coordinateInfo.customTitle = tf.text;
         [self updateData];
         
     } textFieldConfigurationHandler:^(UITextField *textField) {
@@ -144,8 +155,8 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         CoordinateInfo *coordinateInfo = currentGroupArray[indexPath.row];
+        
         coordinateInfo.favorite = @(NO);
-        [[EverywhereCoreDataManager appDelegateMOC] save:NULL];
         [self updateData];
     }
 }

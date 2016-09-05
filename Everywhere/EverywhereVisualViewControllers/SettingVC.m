@@ -13,7 +13,7 @@
 #import "InAppPurchaseVC.h"
 #import "AboutVC.h"
 #import "GCFileBrowser.h"
-#import "CoordinateInfoPickerVC.h"
+
 
 #import "EverywhereSettingManager.h"
 #import "WXApi.h"
@@ -123,6 +123,11 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     RETableViewItem *favoriteCoordinateInfoItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"⭐️ Favorite",@"⭐️ 收藏夹") accessoryType:UITableViewCellAccessoryDisclosureIndicator  selectionHandler:^(RETableViewItem *item) {
         CoordinateInfoPickerVC *showVC = [CoordinateInfoPickerVC new];
         showVC.edgesForExtendedLayout = UIRectEdgeNone;
+        
+        showVC.didSelectCoordinateInfo = ^(CoordinateInfo *selectedCoordinateInfo){
+            self.didSelectCoordinateInfo(selectedCoordinateInfo);
+        };
+        
         [self.navigationController pushViewController:showVC animated:YES];
     }];
 

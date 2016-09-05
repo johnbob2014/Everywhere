@@ -20,7 +20,13 @@
 }
 
 - (NSString *)title{
-    return [self.localizedPlaceString_Placemark placemarkBriefName];
+    if (self.customTitle && ![self.customTitle isEqualToString:@""]) return self.customTitle;
+    else return [self.localizedPlaceString_Placemark placemarkBriefName];
+}
+
+- (NSString *)subtitle{
+    if (self.modificationDate) return [NSString stringWithFormat:@"%@: %@",NSLocalizedString(@"Collected", @"收藏于"),[self.modificationDate stringWithDefaultFormat]];
+    else return nil;
 }
 
 #pragma mark - Core Data

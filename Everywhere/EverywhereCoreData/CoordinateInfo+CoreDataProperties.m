@@ -36,5 +36,8 @@
 @dynamic horizontalAccuracy;
 @dynamic course;
 @dynamic favorite;
-
+@dynamic customTitle;
+@dynamic creationDate;
+@dynamic modificationDate;
+@dynamic hidden;
 @end

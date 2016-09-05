@@ -787,6 +787,9 @@
 }
 
 - (void)clearMapData{
+    [self.myMapView removeAnnotations:self.addedIDAnnotations];
+    [self.myMapView removeOverlays:self.myMapView.overlays];
+
     self.assetInfoArray = nil;
     self.assetArray = nil;
     self.assetsArray = nil;
@@ -801,9 +804,6 @@
     self.lastPlacemark = @"";
     
     self.placemarkDictionary = nil;
-    
-    [self.myMapView removeAnnotations:self.addedIDAnnotations];
-    [self.myMapView removeOverlays:self.myMapView.overlays];
 }
 
 
@@ -1099,6 +1099,10 @@
         if (![coordinateInfo.favorite boolValue] && [annotations containsObject:coordinateInfo]){
             [weakSelf.myMapView removeAnnotation:coordinateInfo];
         }
+    };
+    
+    locationInfoBar.didTouchDownRetractButtonHandler = ^(){
+        [weakSelf showHideLocationInfoBar];
     };
     
     locationInfoBar.naviToHereButton.enabled = NO;
@@ -1776,6 +1780,13 @@
     SettingVC *settingVC = [SettingVC new];
     settingVC.view.backgroundColor = self.settingManager.backgroundColor;
     settingVC.edgesForExtendedLayout = UIRectEdgeNone;
+    
+    WEAKSELF(weakSelf);
+    settingVC.didSelectCoordinateInfo = ^(CoordinateInfo *selectedCoordinateInfo){
+        [weakSelf.myMapView setCenterCoordinate:selectedCoordinateInfo.coordinate];
+        [weakSelf.myMapView selectAnnotation:selectedCoordinateInfo animated:YES];
+    };
+    
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:settingVC];
     nav.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
     [self presentViewController:nav animated:YES completion:nil];
@@ -2156,8 +2167,8 @@
 
 - (void)showFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository{
     // 清理地图
-    self.addedEWAnnotations = nil;
     [self.myMapView removeAnnotations:self.addedIDAnnotations];
+    self.addedEWAnnotations = nil;
     
     self.currentShowEWFR = footprintsRepository;
     
@@ -2473,12 +2484,13 @@
 
 - (void)addAnnotations{
     // 清理数组
+    [self.myMapView removeAnnotations:self.addedIDAnnotations];
     self.addedEWAnnotations = nil;
     self.addedEWFootprintAnnotations = nil;
+    
+    // 添加 MKAnnotations
     NSMutableArray <EverywhereAnnotation *> *annotationsToAdd = [NSMutableArray new];
     NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationsToAdd = [NSMutableArray new];
-    // 添加 MKAnnotations
-    [self.myMapView removeAnnotations:self.addedIDAnnotations];
     
     [self.assetsArray enumerateObjectsUsingBlock:^(NSArray<PHAsset *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *status = [NSString stringWithFormat:@"%@\n%lu/%lu",NSLocalizedString(@"Adding footprints...", @"正在添加足迹点..."),(unsigned long)(idx + 1),(unsigned long)self.assetsArray.count];
@@ -3045,15 +3057,16 @@
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view{
     if ([view isKindOfClass:[MKPinAnnotationView class]]){
         self.currentAnnotationIndex = [self.addedIDAnnotations indexOfObject:view.annotation];
-        
     }else if ([view isKindOfClass:[GCStarAnnotationView class]]){
-        
+        currentAnnotationIndexLabel.text = NSLocalizedString(@"Favorite Location", @"收藏的地点");
     }
     
     [self updateLocationInfoBarWithAnnotationView:view];
 }
 
 - (void)setCurrentAnnotationIndex:(NSInteger)currentAnnotationIndex{
+    if (currentAnnotationIndex < 0) return;
+    
     _currentAnnotationIndex = currentAnnotationIndex;
     if (self.addedIDAnnotations.count > 0){
         currentAnnotationIndexLabel.text = [NSString stringWithFormat:@"%ld / %ld",(unsigned long)(currentAnnotationIndex + 1),(unsigned long)self.addedIDAnnotations.count];

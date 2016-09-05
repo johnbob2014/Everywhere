@@ -14,12 +14,15 @@
 
 typedef void(^DidGetMKDirectionsResponseHandler)(MKDirectionsResponse *response);
 typedef void(^DidChangeFavoritePropertyHandler)(CoordinateInfo *coordinateInfo);
+typedef void(^DidTouchDownRetractButtonHandler)();
 
 @interface LocationInfoBar : UIView
 
 @property (copy,nonatomic) DidGetMKDirectionsResponseHandler didGetMKDirectionsResponseHandler;
 
 @property (copy,nonatomic) DidChangeFavoritePropertyHandler didChangeFavoritePropertyHandler;
+
+@property (copy,nonatomic) DidTouchDownRetractButtonHandler didTouchDownRetractButtonHandler;
 
 @property (strong,nonatomic) UIButton *naviToHereButton;
 

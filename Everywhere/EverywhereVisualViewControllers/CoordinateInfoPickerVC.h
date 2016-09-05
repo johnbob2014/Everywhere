@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CoordinateInfo.h"
+
+typedef void(^DidSelectCoordinateInfo)(CoordinateInfo *selectedCoordinateInfo);
 
 @interface CoordinateInfoPickerVC : UIViewController
+
+@property (copy,nonatomic) DidSelectCoordinateInfo didSelectCoordinateInfo;
 
 @end

@@ -38,6 +38,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSNumber *horizontalAccuracy;
 @property (nullable, nonatomic, retain) NSNumber *course;
 @property (nullable, nonatomic, retain) NSNumber *favorite;
+@property (nullable, nonatomic, retain) NSString *customTitle;
+@property (nullable, nonatomic, retain) NSDate *creationDate;
+@property (nullable, nonatomic, retain) NSDate *modificationDate;
+@property (nullable, nonatomic, retain) NSNumber *hidden;
 @end
 
 NS_ASSUME_NONNULL_END

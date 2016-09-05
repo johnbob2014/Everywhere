@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CoordinateInfoPickerVC.h"
 
 @interface SettingVC : UIViewController
+
+//@property (strong,nonatomic) UIViewController *presentVC;
+@property (copy,nonatomic) DidSelectCoordinateInfo didSelectCoordinateInfo;
 
 @end

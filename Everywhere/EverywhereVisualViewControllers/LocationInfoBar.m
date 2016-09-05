@@ -25,15 +25,9 @@
 @implementation LocationInfoBar{
     UIView *bottomButtonContainer,*centerButtonContainer,*topButtonContainer;
     
-    UIButton *bottomFirstButton;
-    
-    UIButton *centerFirstButton;
-    UIButton *centerSecodnButton;
-    UIButton *centerThirdButton;
-    
-    UIButton *topFirstButton;
-    UIButton *topSecondButton;
-    UIButton *topThirdButton;
+    UIButton *bottomFirstButton,*bottomThirdButton;
+    UIButton *centerFirstButton,*centerSecodnButton,*centerThirdButton;
+    UIButton *topFirstButton,*topSecondButton,*topThirdButton;
     
     NSArray <UIButton *> *buttonArray;
 }
@@ -114,27 +108,7 @@
     [bottomFirstButton setTitle:buttonTitle forState:UIControlStateNormal];
 }
 
-/*
--(void)updateCoordinateLabel{
-    }
 
-- (void)updateAltitudeLabel{
-    NSMutableString *ma = [NSMutableString new];
-    
- 
-     if (self.currentShowCoordinateInfo.level != 0) {
-     [ma appendFormat:@"\n"];
-     [ma appendString:NSLocalizedString(@"Floor : ", @"")];
-     [ma appendFormat:@"%ld",(long)self.currentShowCoordinateInfo.level];
-     }
- 
-    self.altitudeLabel.text = ma;
-}
-
-- (void)updateAddressLabel{
- 
-}
-*/
 #pragma mark - Init
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
@@ -171,6 +145,14 @@
         [bottomFirstButton autoSetDimensionsToSize:buttonSize];
         [bottomFirstButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
         [bottomFirstButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:5];
+        
+        bottomThirdButton = [UIButton newAutoLayoutView];
+        [bottomThirdButton setTitle:@"⏏" forState:UIControlStateNormal];
+        [bottomThirdButton addTarget:self action:@selector(retractBtnTD) forControlEvents:UIControlEventTouchDown];
+        [bottomButtonContainer addSubview:bottomThirdButton];
+        [bottomThirdButton autoSetDimensionsToSize:buttonSize];
+        [bottomThirdButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
+        [bottomThirdButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
 
         centerButtonContainer = [UIView newAutoLayoutView];
         [self addSubview:centerButtonContainer];
@@ -235,7 +217,7 @@
         [topThirdButton autoAlignAxisToSuperviewAxis:ALAxisHorizontal];
         [topThirdButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:topSecondButton withOffset:5];
         
-        buttonArray = @[topFirstButton,topSecondButton,topThirdButton,centerFirstButton,centerSecodnButton,centerThirdButton,bottomFirstButton];
+        buttonArray = @[topFirstButton,topSecondButton,topThirdButton,centerFirstButton,centerSecodnButton,centerThirdButton,bottomFirstButton,bottomThirdButton];
         [self setupButtonsStyle];
 
         self.naviToHereButton = centerSecodnButton;
@@ -253,7 +235,7 @@
         
         UILabel *altLabel = [UILabel newAutoLayoutView];
         altLabel.numberOfLines = 0;
-        altLabel.textAlignment = NSTextAlignmentRight;
+        altLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:altLabel];
         [altLabel autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:5];
         [altLabel autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
@@ -295,8 +277,13 @@
 
 #pragma mark - 按钮动作
 
+- (void)retractBtnTD{
+    if (self.didTouchDownRetractButtonHandler) self.didTouchDownRetractButtonHandler();
+}
+
 - (void)favouriteBtnTD{
     self.currentShowCoordinateInfo.favorite = @(![self.currentShowCoordinateInfo.favorite boolValue]);
+    self.currentShowCoordinateInfo.modificationDate = [NSDate date];
     [self.currentShowCoordinateInfo.managedObjectContext save:NULL];
     
     NSString *buttonTitle = [self.currentShowCoordinateInfo.favorite boolValue] ? @"⭐️" : @"☆";
