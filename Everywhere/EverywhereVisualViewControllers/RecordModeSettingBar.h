@@ -12,11 +12,18 @@ typedef void(^MinDistanceOrTimeIntervalDidChangeHanlder)(CLLocationDistance sele
 
 @interface RecordModeSettingBar : UIView
 
+/**
+ *  最短距离
+ */
 @property (assign,nonatomic) CLLocationDistance customMinDistance;
+
+/**
+ *  最小时间间隔
+ */
 @property (assign,nonatomic) NSTimeInterval customMinTimeInterval;
 
 /**
- 返回用户设置的最短距离和最小时间间隔，如果某一项的值为0，则该项没有更新
+ * 传输用户设置的最短距离和最小时间间隔，如果某一项的值为0，则该项没有更新
  */
 @property (copy,nonatomic) MinDistanceOrTimeIntervalDidChangeHanlder minDistanceOrTimeIntervalDidChangeHanlder;
 

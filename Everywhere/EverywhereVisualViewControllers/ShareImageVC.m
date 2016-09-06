@@ -101,22 +101,8 @@
         return;
     }
     
-    /*
-    WXWebpageObject *webpageObject=[WXWebpageObject new];
-    webpageObject.webpageUrl=self.shareWebpageUrl;
-    if(DEBUGMODE) NSLog(@"shareWebpageUrl:\n%@",self.shareWebpageUrl);
-    */
-    
-    
     WXImageObject *imageObject = [WXImageObject new];
     imageObject.imageData = UIImagePNGRepresentation(self.shareImage);
-    //UIImage *thumbImage = [GM thumbImageFromImage:sourceImage limitSize:CGSizeMake(150, 150)];
-    
-    /*
-    id mediaObject;
-    if (self.shareImage) mediaObject = imageObject;
-    else mediaObject = webpageObject;
-    */
     
     WXMediaMessage *mediaMessage=[WXMediaMessage alloc];
     // WXWebpageObject : 会话显示title、description、thumbData（图标较小)，朋友圈显示title、thumbData（图标较小),两者都发送webpageUrl

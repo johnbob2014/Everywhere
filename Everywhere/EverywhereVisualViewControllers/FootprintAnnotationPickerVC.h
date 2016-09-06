@@ -9,10 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "EWFRInfo.h"
 
-
-//typedef void(^FootprintsRepositoryDidChangeHandler)(EverywhereFootprintsRepository *changedFootprintsRepository);
-
 @interface FootprintAnnotationPickerVC : UIViewController
+
+/**
+ *  要显示的EWFRInfo
+ */
 @property (strong,nonatomic) EWFRInfo *ewfrInfo;
-//@property (copy,nonatomic) FootprintsRepositoryDidChangeHandler footprintsRepositoryDidChangeHandler;
+
 @end

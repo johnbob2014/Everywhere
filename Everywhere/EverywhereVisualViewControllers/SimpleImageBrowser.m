@@ -24,7 +24,7 @@
 
 #pragma mark - Getter & Setter
 - (void)setCurrentIndex:(NSInteger)currentIndex{
-    if (currentIndex < 0 || currentIndex > self.imageArray.count -1 || _currentIndex == currentIndex) return;
+    if (currentIndex < 0 || currentIndex > self.imageArray.count -1) return;
     
     _currentIndex = currentIndex;
     indexLabel.text = [NSString stringWithFormat:@"%lu/%lu",(unsigned long)(currentIndex + 1),(unsigned long)self.imageArray.count];
@@ -108,7 +108,7 @@
         [myScrollView addSubview:imageView];
     }];
     
-    self.currentIndex = 1;
+    self.currentIndex = 0;
 }
 
 - (void)saveCurrentImage{

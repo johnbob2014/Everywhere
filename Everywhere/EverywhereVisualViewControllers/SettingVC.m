@@ -119,8 +119,10 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
         self.settingManager.mapViewScaleRate = [item.value doubleValue];
     };
 
-#pragma mark 管理
+#pragma mark 收藏夹管理
     RETableViewItem *favoriteCoordinateInfoItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"⭐️ Favorite",@"⭐️ 收藏夹") accessoryType:UITableViewCellAccessoryDisclosureIndicator  selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        
         CoordinateInfoPickerVC *showVC = [CoordinateInfoPickerVC new];
         showVC.edgesForExtendedLayout = UIRectEdgeNone;
         

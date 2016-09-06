@@ -363,7 +363,7 @@
     
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
     
-    UIAlertAction *showAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Show",@"查看")
+    UIAlertAction *showAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Show on map",@"在地图上查看")
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction * _Nonnull action) {
                                                          [self dismissViewControllerAnimated:YES completion:nil];

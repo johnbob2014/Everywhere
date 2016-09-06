@@ -13,8 +13,14 @@ typedef void(^FootprintsRepositoryDidChangeHandler)(EverywhereFootprintsReposito
 
 @interface FootprintsRepositoryPickerVC : UIViewController
 
+/**
+ *  要显示的足迹包类型
+ */
 @property (assign,nonatomic) NSUInteger showFootprintsRepositoryType;
 
+/**
+ *  传输用户选择的足迹包
+ */
 @property (copy,nonatomic) FootprintsRepositoryDidChangeHandler footprintsRepositoryDidChangeHandler;
 
 @end

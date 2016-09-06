@@ -44,7 +44,7 @@
     self.coordinateInfoArray = [CoordinateInfo fetchFavoriteCoordinateInfosInManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
     currentGroupArray = self.coordinateInfoArray;
     if (currentGroupArray.count > 0)
-        self.title = [NSString stringWithFormat:@"%@ - %lu",self.title,(unsigned long)currentGroupArray.count];
+        self.title = [NSString stringWithFormat:@"%@ - %lu",NSLocalizedString(@"Favorite", @"收藏夹"),(unsigned long)currentGroupArray.count];
     [myTableView reloadData];
 }
 
@@ -79,7 +79,7 @@
     
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle message:alertMessage preferredStyle:UIAlertControllerStyleAlert];
     
-    UIAlertAction *showAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Show",@"查看")
+    UIAlertAction *showAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Show on map",@"在地图上查看")
                                                          style:UIAlertActionStyleDefault
                                                        handler:^(UIAlertAction * _Nonnull action) {
                                                            [self dismissViewControllerAnimated:YES completion:nil];

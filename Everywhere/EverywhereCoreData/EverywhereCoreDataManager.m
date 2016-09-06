@@ -16,33 +16,11 @@
 
 #import "GCPhotoManager.h"
 
-@interface EverywhereCoreDataManager()
-/*
-@property (strong,nonatomic,readwrite) NSManagedObjectContext *appDelegateMOC;
-@property (strong,nonatomic,readwrite) NSDate *lastUpdateDate;
-@property (strong,nonatomic,readwrite) NSDate *secondLastUpdateDate;
- */
-@end
 
 @implementation EverywhereCoreDataManager
 
-/*
-+ (instancetype)defaultManager{
-    static id instance;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        instance = [[self alloc]init];
-    });
-    return instance;
-}
-*/
-
 + (NSManagedObjectContext *)appDelegateMOC{
-    //if (!_appDelegateMOC){
-        EverywhereAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-        //_appDelegateMOC = appDelegate.managedObjectContext;
-    //}
-    //return _appDelegateMOC;
+    EverywhereAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     return appDelegate.managedObjectContext;
 }
 

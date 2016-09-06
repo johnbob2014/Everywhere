@@ -93,11 +93,20 @@
     [titleLabel autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsMake(3, 0, 0, 0) excludingEdge:ALEdgeBottom];
 }
 
-- (void)setSideViewShrinkRate:(float)sideViewShrinkRate{
-    if (sideViewShrinkRate < 1 && sideViewShrinkRate > 0) {
-        _sideViewShrinkRate = sideViewShrinkRate;
-        leftLabel.font = [UIFont bodyFontWithSizeMultiplier:sideViewShrinkRate];
-        rightLabel.font = [UIFont bodyFontWithSizeMultiplier:sideViewShrinkRate];
+
+@synthesize sideViewShrinkRate;
+
+- (float)sideViewShrinkRate{
+    if (sideViewShrinkRate == 0) sideViewShrinkRate = 1.0;
+    return sideViewShrinkRate;
+}
+
+
+- (void)setSideViewShrinkRate:(float)newRate{
+    if (newRate <= 1 && newRate > 0) {
+        sideViewShrinkRate = newRate;
+        leftLabel.font = [UIFont bodyFontWithSizeMultiplier:newRate];
+        rightLabel.font = [UIFont bodyFontWithSizeMultiplier:newRate];
         [self setNeedsLayout];
     }
 }

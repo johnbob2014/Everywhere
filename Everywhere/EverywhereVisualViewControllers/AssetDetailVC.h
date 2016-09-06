@@ -12,6 +12,11 @@
 @interface AssetDetailVC : UIViewController
 
 /**
+ *  要显示的 PHAsset 数组
+ */
+@property (strong,nonatomic) NSArray <PHAsset *> *assetArray;
+
+/**
  *  要显示的 PHAsset localIndentifier 数组
  */
 @property (strong,nonatomic) NSArray <NSString *> *assetLocalIdentifiers;

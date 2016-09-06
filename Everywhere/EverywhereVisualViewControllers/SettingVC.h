@@ -11,7 +11,9 @@
 
 @interface SettingVC : UIViewController
 
-//@property (strong,nonatomic) UIViewController *presentVC;
+/**
+ *  《相册地图》专用Block，用于传送要显示的CoordinateInfo
+ */
 @property (copy,nonatomic) DidSelectCoordinateInfo didSelectCoordinateInfo;
 
 @end

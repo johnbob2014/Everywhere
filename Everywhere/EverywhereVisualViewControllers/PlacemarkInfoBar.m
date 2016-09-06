@@ -221,21 +221,21 @@
 - (void)setTotalDistance:(double)totalDistance{
     _totalDistance = totalDistance;
     if (totalDistance >=1000) {
-        self.totalString = [NSString stringWithFormat:@"%.2f km",totalDistance/1000.0];
+        self.totalContent = [NSString stringWithFormat:@"%.2f km",totalDistance/1000.0];
     }else{
-        self.totalString = [NSString stringWithFormat:@"%.0f m",totalDistance];
+        self.totalContent = [NSString stringWithFormat:@"%.0f m",totalDistance];
     }
-    totalCell.cellInfo = self.totalString;
+    totalCell.cellInfo = self.totalContent;
 }
 
 - (void)setTotalArea:(double)totalArea{
     _totalArea = totalArea;
     if (totalArea >=1000*1000) {
-        self.totalString = [NSString stringWithFormat:@"%.2f k㎡",totalArea/(1000.0*1000.0)];
+        self.totalContent = [NSString stringWithFormat:@"%.2f k㎡",totalArea/(1000.0*1000.0)];
     }else{
-        self.totalString = [NSString stringWithFormat:@"%.0f ㎡",totalArea];
+        self.totalContent = [NSString stringWithFormat:@"%.0f ㎡",totalArea];
     }
-    totalCell.cellInfo = self.totalString;
+    totalCell.cellInfo = self.totalContent;
 }
 
 @end

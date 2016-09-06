@@ -19,20 +19,19 @@ typedef void(^UpdatePlacemarkForPHAssetInfoCompletionBlock)(NSInteger reverseGeo
 
 @interface EverywhereCoreDataManager : NSObject
 
-/*
-@property (strong,nonatomic,readonly) NSManagedObjectContext *appDelegateMOC;
-
-@property (strong,nonatomic,readonly) NSDate *lastUpdateDate;
-
-@property (strong,nonatomic,readonly) NSDate *secondLastUpdateDate;
-
-+ (instancetype)defaultManager;
-*/
-
+/**
+ *  CoreData全局上下文
+ */
 + (NSManagedObjectContext *)appDelegateMOC;
 
+/**
+ *  上次更新日期
+ */
 + (NSDate *)lastUpdateDate;
 
+/**
+ *  倒数第二次更新日期
+ */
 + (NSDate *)secondLastUpdateDate;
 
 /**
@@ -50,15 +49,39 @@ typedef void(^UpdatePlacemarkForPHAssetInfoCompletionBlock)(NSInteger reverseGeo
  */
 + (NSString *)placemarkInfoStringForPlacemarkDictionary:(NSDictionary <NSString *,NSArray<NSString *> *> *)placemarkDictionary;
 
+/**
+ *  添加足迹包并存储
+ */
 + (BOOL)addEWFR:(EverywhereFootprintsRepository *)ewfr;
+
+/**
+ *  移除足迹包
+ */
 + (BOOL)removeEWFRInfo:(EWFRInfo *)ewfrInfo;
 
+/**
+ *  获取所有EWFRInfo实例
+ */
 + (NSArray <EWFRInfo *> *)allEWFRs;
+
+/**
+ *  移除所有EWFRInfo实例
+ */
 + (NSInteger)removeAllEWFRInfos;
 
+/**
+ *  将 所有足迹包 导出为MFR文件，返回导出成功的数量
+ */
 + (NSUInteger)exportFootprintsRepositoryToMFRFilesAtPath:(NSString *)directoryPath;
+
+/**
+ *  将 所有足迹包 导出为GPX文件，返回导出成功的数量
+ */
 + (NSUInteger)exportFootprintsRepositoryToGPXFilesAtPath:(NSString *)directoryPath;
 
+/**
+ *  从指定文件夹导入足迹包，并将导入成功的文件移入指定文件夹（如果为空，则删除），返回导入成功的数量
+ */
 + (NSUInteger)importFootprintsRepositoryFromFilesAtPath:(NSString *)directoryPath moveAddedFilesToPath:(NSString *)moveDirectoryPath;
 
 @end

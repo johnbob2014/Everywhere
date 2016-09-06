@@ -96,6 +96,11 @@
 @property (strong,nonatomic) NSArray <EverywhereFootprintAnnotation *> *addedEWFootprintAnnotations;
 @property (assign,nonatomic) NSInteger currentAnnotationIndex;
 
+/**
+ *  收藏的地点数组
+ */
+@property (strong,nonatomic) NSArray <CoordinateInfo *> *favoriteCoordinateInfoArray;
+
 #pragma mark 用于模式转换
 @property (assign,nonatomic) BOOL isInBaseMode;
 @property (assign,nonatomic) BOOL isInRecordMode;
@@ -259,7 +264,7 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    //if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
+    if(DEBUGMODE) NSLog(@"AssetsMapProVC: %@",NSStringFromSelector(_cmd));
     
     EverywhereAppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
     
@@ -282,6 +287,9 @@
         appDelegate.window.tintColor = self.settingManager.extendedTintColor;
     }
     
+    [[CoordinateInfo fetchAllCoordinateInfosInManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]] enumerateObjectsUsingBlock:^(CoordinateInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [self addRemoveCoordinateInfoAnnotation:obj];
+    }];
 }
 
 - (void)updateBarColor:(UIColor *)newColor{
@@ -539,7 +547,8 @@
     }
     
     if (noAsset){
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"No photos in selected date range or location", @"所选日期或地点没有照片")];
+        [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"No photos in selected date range or location", @"所选日期或地点没有照片")];
+        [SVProgressHUD dismissWithDelay:2.0];
     }
 }
 
@@ -594,6 +603,10 @@
     else self.currentTintColor = self.settingManager.extendedTintColor;
 }
 
+- (NSArray<CoordinateInfo *> *)favoriteCoordinateInfoArray{
+    return [CoordinateInfo fetchFavoriteCoordinateInfosInManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
+}
+
 #pragma mark - Init Interface
 
 #pragma mark MapView
@@ -624,8 +637,7 @@
     [self.myMapView addGestureRecognizer:mapViewThreeTapGR];
      */
     
-    NSArray <CoordinateInfo *> *coordinateInfoArray = [CoordinateInfo fetchFavoriteCoordinateInfosInManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
-    [self.myMapView addAnnotations:coordinateInfoArray];
+    [self.myMapView addAnnotations:self.favoriteCoordinateInfoArray];
 }
 
 - (void)mapViewTapGR:(id)sender{
@@ -987,6 +999,10 @@
     [sender performZoomAnimationWithXScale:1.2 yScale:1.2 zoomInDuration:0.15 zoomOutDuration:0.1];
     
     id<MKAnnotation> idAnno = self.myMapView.selectedAnnotations.firstObject;
+    
+    // 导航不适用于GCStarAnnotationView
+    if ([idAnno isKindOfClass:[CoordinateInfo class]]) return;
+    
     if (!idAnno && self.currentAnnotationIndex) {
         idAnno = self.addedIDAnnotations[self.currentAnnotationIndex];
     }
@@ -1019,6 +1035,9 @@
     if([sender isKindOfClass:[UIButton class]]) [sender performZoomAnimationWithXScale:1.2 yScale:1.2 zoomInDuration:0.15 zoomOutDuration:0.1];
     
     id<MKAnnotation> idAnno = self.myMapView.selectedAnnotations.firstObject;
+    
+    // 导航不适用于GCStarAnnotationView
+    if ([idAnno isKindOfClass:[CoordinateInfo class]]) return;
     
     if (!idAnno && self.currentAnnotationIndex) {
         idAnno = self.addedIDAnnotations[self.currentAnnotationIndex];
@@ -1091,14 +1110,7 @@
     };
     
     locationInfoBar.didChangeFavoritePropertyHandler = ^(CoordinateInfo *coordinateInfo){
-        NSArray *annotations = weakSelf.myMapView.annotations;
-        if ([coordinateInfo.favorite boolValue] && ![annotations containsObject:coordinateInfo]){
-            [weakSelf.myMapView addAnnotation:coordinateInfo];
-        }
-        
-        if (![coordinateInfo.favorite boolValue] && [annotations containsObject:coordinateInfo]){
-            [weakSelf.myMapView removeAnnotation:coordinateInfo];
-        }
+        [weakSelf addRemoveCoordinateInfoAnnotation:coordinateInfo];
     };
     
     locationInfoBar.didTouchDownRetractButtonHandler = ^(){
@@ -1106,6 +1118,20 @@
     };
     
     locationInfoBar.naviToHereButton.enabled = NO;
+}
+
+/**
+ *  从地图上添加或删除指定的CoordinateInfo
+ */
+- (void)addRemoveCoordinateInfoAnnotation:(CoordinateInfo *)coordinateInfo{
+    NSArray *annotations = self.myMapView.annotations;
+    if ([coordinateInfo.favorite boolValue] && ![annotations containsObject:coordinateInfo]){
+        [self.myMapView addAnnotation:coordinateInfo];
+    }
+    
+    if (![coordinateInfo.favorite boolValue] && [annotations containsObject:coordinateInfo]){
+        [self.myMapView removeAnnotation:coordinateInfo];
+    }
 }
 
 - (void)locationInfoBarSwipeUp:(UISwipeGestureRecognizer *)sender{
@@ -1823,7 +1849,7 @@
     [ms appendString:[EverywhereCoreDataManager placemarkInfoStringForPlacemarkDictionary:self.placemarkDictionary]];
     if (placemarkInfoBar.totalTitle){
         [ms appendString:NSLocalizedString(@"\nTotal ", @"\n总")];
-        [ms appendFormat:@"%@ %@",placemarkInfoBar.totalTitle,placemarkInfoBar.totalString];
+        [ms appendFormat:@"%@ %@",placemarkInfoBar.totalTitle,placemarkInfoBar.totalContent];
     }
     
     shareBar.middleText = ms;
@@ -1959,14 +1985,14 @@
     if (placemarkInfoString && ![placemarkInfoString isEqualToString:@""])
         [ms appendFormat:@"%@,",placemarkInfoString];
     [ms appendString:NSLocalizedString(@"Total ", @"总")];
-    [ms appendFormat:@"%@ %@",placemarkInfoBar.totalTitle,placemarkInfoBar.totalString];
+    [ms appendFormat:@"%@ %@",placemarkInfoBar.totalTitle,placemarkInfoBar.totalContent];
     
     // 更新缩略图信息，比较耗时！！
     [self updateThumbnailForAddedEWFootprintAnnotations];
     
     // 生成分享对象
     EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
-    footprintsRepository.footprintAnnotations = self.addedEWFootprintAnnotations;
+    footprintsRepository.footprintAnnotations = [NSMutableArray arrayWithArray:self.addedEWFootprintAnnotations];
     if (self.settingManager.mapBaseMode == MapBaseModeMoment) footprintsRepository.radius = 0;
     else footprintsRepository.radius = self.settingManager.mergeDistanceForLocation / 2.0;
     footprintsRepository.creationDate = NOW;
@@ -2514,6 +2540,7 @@
         }
         
         EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation new];
+        footprintAnnotation.customTitle = anno.annotationTitle;
         footprintAnnotation.coordinateWGS84 = firstAsset.location.coordinate;
         footprintAnnotation.altitude = firstAsset.location.altitude;
         footprintAnnotation.speed = firstAsset.location.speed;
@@ -2554,7 +2581,7 @@
         if (self.settingManager.autoUseFirstAssetAsThumbnail){
             NSString *firstID = everywhereAnnotation.assetLocalIdentifiers.firstObject;
             NSData *imageDate = [self thumbnailDataWithLocalIdentifier:firstID];
-            footprintAnnotation.thumbnailArray = @[[[UIImage alloc] initWithData:imageDate]];
+            footprintAnnotation.thumbnailArray = [NSMutableArray arrayWithObject:[[UIImage alloc] initWithData:imageDate]];
             continue;
         }
         
@@ -2893,6 +2920,7 @@
         GCStarAnnotationView *starView = [[GCStarAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"GCStarAnnotationView"];
         starView.canShowCallout = YES;
         starView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+        starView.starBackColor = self.currentTintColor;
         return starView;
     }else if([annotation isKindOfClass:[MKUserLocation class]]){
         annotationView = nil;
@@ -2990,7 +3018,7 @@
         
         if ([overlay.title isEqualToString:MKOverlayTitleForMapModeColor]) {
             // 与地图主题颜色相同
-            polylineRenderer.strokeColor = [self.currentTintColor colorWithAlphaComponent:0.8];
+            polylineRenderer.strokeColor = self.currentTintColor;
         }else if ([overlay.title isEqualToString:MKOverlayTitleForRandomColor]) {
             // 随机颜色
             lastRandomColor = [RandomFlatColorInArray([AssetsMapProVC preferredOverlayColors]) colorWithAlphaComponent:0.8];
@@ -3008,7 +3036,7 @@
         
         if ([overlay.title isEqualToString:MKOverlayTitleForMapModeColor]) {
             // 与地图主题颜色相同
-            polygonRenderer.strokeColor = [self.currentTintColor colorWithAlphaComponent:0.8];
+            polygonRenderer.strokeColor = self.currentTintColor;
         }else if ([overlay.title isEqualToString:MKOverlayTitleForRandomColor]) {
             // 随机颜色
             polygonRenderer.strokeColor = lastRandomColor;
@@ -3026,7 +3054,7 @@
         
         if ([overlay.title isEqualToString:MKOverlayTitleForMapModeColor]) {
             // 与地图主题颜色相同
-            circleColor = [self.currentTintColor colorWithAlphaComponent:0.8];
+            circleColor = self.currentTintColor;
         }else if ([overlay.title isEqualToString:MKOverlayTitleForRandomColor]) {
             // 随机颜色
             circleColor = RandomFlatColorInArray([AssetsMapProVC preferredOverlayColors]);
@@ -3058,10 +3086,17 @@
     if ([view isKindOfClass:[MKPinAnnotationView class]]){
         self.currentAnnotationIndex = [self.addedIDAnnotations indexOfObject:view.annotation];
     }else if ([view isKindOfClass:[GCStarAnnotationView class]]){
+        [view setNeedsDisplay];
         currentAnnotationIndexLabel.text = NSLocalizedString(@"Favorite Location", @"收藏的地点");
     }
     
     [self updateLocationInfoBarWithAnnotationView:view];
+}
+
+- (void)mapView:(MKMapView *)mapView didDeselectAnnotationView:(MKAnnotationView *)view{
+    if ([view isKindOfClass:[GCStarAnnotationView class]]){
+        [view setNeedsDisplay];
+    }
 }
 
 - (void)setCurrentAnnotationIndex:(NSInteger)currentAnnotationIndex{

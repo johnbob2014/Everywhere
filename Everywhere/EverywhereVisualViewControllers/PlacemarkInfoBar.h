@@ -18,8 +18,24 @@
 @property (assign,nonatomic) NSUInteger thoroughfareCount;
 @property (assign,nonatomic) NSUInteger subThoroughfareCount;
 
+/**
+ *  统计标题
+ */
 @property (strong,nonatomic) NSString *totalTitle;
+
+/**
+ *  总距离
+ */
 @property (assign,nonatomic) double totalDistance;
+
+/**
+ *  总面积
+ */
 @property (assign,nonatomic) double totalArea;
-@property (strong,nonatomic) NSString *totalString;
+
+/**
+ *  统计内容
+ */
+@property (strong,nonatomic) NSString *totalContent;
+
 @end

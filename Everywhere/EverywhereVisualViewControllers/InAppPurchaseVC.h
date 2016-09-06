@@ -8,8 +8,8 @@
 
 @import UIKit;
 
-/*! @brief 交易类型:购买 或 恢复
- *
+/**
+ 交易类型:购买 或 恢复
  */
 enum TransactionType {
     TransactionTypePurchase  = 0,        /**< 购买    */
@@ -20,16 +20,24 @@ typedef void(^InAppPurchaseCompletionHandler)(enum TransactionType transactionTy
 
 @interface InAppPurchaseVC : UIViewController
 
+/**
+ *  交易类型
+ */
 @property (assign,nonatomic) enum TransactionType transactionType;
 
+/**
+ *  全部产品ID数组
+ */
 @property (strong,nonatomic) NSArray <NSString *> *productIDArray;
+
+/**
+ *  要购买或恢复的 产品序号数组
+ */
 @property (strong,nonatomic) NSArray <NSNumber *> *productIndexArray;
 
-//@property (assign,nonatomic) NSInteger productIndex;
-//@property (assign,nonatomic) NSInteger productCount;
-
-
-
+/**
+ *  购买完成后调用的block，每个产品调用一次
+ */
 @property (copy,nonatomic) InAppPurchaseCompletionHandler inAppPurchaseCompletionHandler;
 
 @end

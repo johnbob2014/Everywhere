@@ -34,6 +34,9 @@
     
     EverywhereSettingManager *settingManager;
     EverywhereFootprintsRepository *wxShareFR;
+    
+    CGFloat thumbnailOffset;
+    CGFloat thumbnailWidth;
 }
 
 - (void)viewDidLoad {
@@ -110,8 +113,18 @@
     [thumbnailSV autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:10];
     [thumbnailSV autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight * 4 + 5];
     
-    CGFloat thumbnailOffset = 5;
-    CGFloat thumbnailWidth = ShareButtonHeight * 3;//(ScreenWidth - 20 - 2 * thumbnailOffset)/3.0;
+    thumbnailOffset = 5;
+    thumbnailWidth = ShareButtonHeight * 3;//(ScreenWidth - 20 - 2 * thumbnailOffset)/3.0;
+    [self updateThumbnailSV];
+    
+    [self initButtons];
+}
+
+- (void)updateThumbnailSV{
+    
+    for(UIView *view in thumbnailSV.subviews){
+        [view removeFromSuperview];
+    }
     
     thumbnailSV.contentSize = CGSizeMake((thumbnailWidth + thumbnailOffset) * self.footprintsRepository.thumbnailCount, ShareButtonHeight * 4);
     
@@ -123,14 +136,27 @@
             UIImageView *iv = [[UIImageView alloc] initWithImage:image];
             iv.backgroundColor = ClearColor;
             iv.contentMode = UIViewContentModeScaleAspectFit;
+            
+            iv.tag = idx;
+            iv.userInteractionEnabled = YES;
+            
             iv.frame = CGRectMake((thumbnailWidth + thumbnailOffset) * addedCount, 0, thumbnailWidth, ShareButtonHeight * 4);
             //if(DEBUGMODE) NSLog(@"%u %@",addedCount,NSStringFromCGRect(iv.frame));
+            
+            UIButton *crossButton = [UIButton newAutoLayoutView];
+            crossButton.tag = imageIndex;
+            [crossButton setBackgroundImage:[UIImage imageNamed:@"cross"] forState:UIControlStateNormal];
+            [crossButton addTarget:self action:@selector(crossButtonTD:) forControlEvents:UIControlEventTouchDown];
+            [iv addSubview:crossButton];
+            [crossButton autoSetDimensionsToSize:CGSizeMake(25, 25)];
+            [crossButton autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
+            [crossButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+            
             [thumbnailSV addSubview:iv];
             addedCount++;
         }];
     }];
-    
-    [self initButtons];
+
 }
 
 - (void)initButtons{
@@ -193,6 +219,19 @@
     [bottomRightButton autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight];
     [bottomRightButton autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:bottomLeftButton];
     [bottomRightButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:bottomLeftButton withOffset:10];
+}
+
+#pragma mark - Thumnail Images
+
+- (void)crossButtonTD:(UIButton *)sender{
+    NSLog(@"%@",NSStringFromCGPoint(CGPointMake(sender.superview.tag, sender.tag)));
+    
+    EverywhereFootprintAnnotation *modifiedFA = self.footprintsRepository.footprintAnnotations[sender.superview.tag];
+    [modifiedFA.thumbnailArray removeObjectAtIndex:sender.tag];
+    
+    [self updateThumbnailSV];
+    
+    thumbnailLabel.text = [NSString stringWithFormat:@"%@ - %lu",NSLocalizedString(@"MFR Thumbnails", @"MFR缩略图"),(long)self.footprintsRepository.thumbnailCount];
 }
 
 #pragma mark - File Share

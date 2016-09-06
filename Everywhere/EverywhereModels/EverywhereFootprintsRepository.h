@@ -15,7 +15,7 @@
 /**
  *  必须，包含的足迹点数组
  */
-@property (strong,nonatomic) NSArray <EverywhereFootprintAnnotation *> *footprintAnnotations;
+@property (strong,nonatomic) NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotations;
 
 /**
  *  必须，创建日期

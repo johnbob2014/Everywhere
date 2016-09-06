@@ -19,13 +19,23 @@
 }
 
 - (NSString *)title{
-    if (self.endDate) return [NSString stringWithFormat:@"%@ ~ %@",[self.startDate stringWithFormat:@"yyyy-MM-dd"],[self.endDate stringWithFormat:@"yyyy-MM-dd"]];
-    else return [self.startDate stringWithDefaultFormat];
+    return self.customTitle;
+}
+
+- (NSString *)subtitle{
+    return [self dateString];
 }
 
 - (NSString *)customTitle{
-    if (_customTitle) return _customTitle;
-    else return self.title;
+    if (!_customTitle){
+        _customTitle = [self dateString];
+    }
+    return _customTitle;
+}
+
+- (NSString *)dateString{
+    if (self.endDate) return [NSString stringWithFormat:@"%@ ~ %@",[self.startDate stringWithFormat:@"yyyy-MM-dd"],[self.endDate stringWithFormat:@"yyyy-MM-dd"]];
+    else return [self.startDate stringWithDefaultFormat];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder{

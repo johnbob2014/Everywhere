@@ -21,7 +21,7 @@
 @end
 
 @implementation AssetDetailVC{
-    PHFetchResult <PHAsset *> *assetArray;
+    //PHFetchResult <PHAsset *> *assetArray;
     
     UIImageView *imageView;
     
@@ -34,11 +34,21 @@
     AVPlayerItem *playerItem;
 }
 
+- (NSArray<PHAsset *> *)assetArray{
+    if (!_assetArray){
+        PHFetchOptions *options = [PHFetchOptions new];
+        // 按日期排列
+        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+        _assetArray = (NSArray <PHAsset *> *)[PHAsset fetchAssetsWithLocalIdentifiers:self.assetLocalIdentifiers options:options];
+    }
+    return _assetArray;
+}
+
 - (void)setCurrentIndex:(NSInteger)currentIndex{
-    if (currentIndex >= 0 && currentIndex <= assetArray.count - 1) {
+    if (currentIndex >= 0 && currentIndex <= self.assetArray.count - 1) {
         _currentIndex = currentIndex;
         
-        PHAsset *currentAsset = assetArray[currentIndex];
+        PHAsset *currentAsset = self.assetArray[currentIndex];
         
         [UIView animateWithDuration:0.5
                               delay:0.0
@@ -47,7 +57,7 @@
                              imageView.image = [currentAsset synchronousFetchUIImageAtTargetSize:PHImageManagerMaximumSize];
                          }
                          completion:^(BOOL finished) {
-                             self.title = [NSString stringWithFormat:@"%lu / %lu",(unsigned long)(currentIndex + 1),(unsigned long)assetArray.count];
+                             self.title = [NSString stringWithFormat:@"%lu / %lu",(unsigned long)(currentIndex + 1),(unsigned long)self.assetArray.count];
                          }];
         
         
@@ -58,8 +68,8 @@
             playButton.hidden = YES;
         }
         
-        noteLabel.text = [NSString stringWithFormat:@"%lu/%lu",(unsigned long)(currentIndex + 1),(unsigned long)assetArray.count];
-        if (currentIndex == 0 || currentIndex == assetArray.count - 1){
+        noteLabel.text = [NSString stringWithFormat:@"%lu/%lu",(unsigned long)(currentIndex + 1),(unsigned long)self.assetArray.count];
+        if (currentIndex == 0 || currentIndex == self.assetArray.count - 1){
             noteLabel.text = [NSString stringWithFormat:@"%@\n%@",noteLabel.text,NSLocalizedString(@"Swipe up to quite", @"上滑退出")];
         }
         
@@ -80,14 +90,8 @@
     
     self.view.backgroundColor = [UIColor blackColor];
     
-    PHFetchOptions *options = [PHFetchOptions new];
-    // 按日期排列
-    options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
-    assetArray = [PHAsset fetchAssetsWithLocalIdentifiers:self.assetLocalIdentifiers options:options];
-    
     imageView = [UIImageView newAutoLayoutView];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
-    // imageView.image = [PHAsset synchronousFetchUIImageFromPHAsset:assetArray[self.currentIndex] targetSize:PHImageManagerMaximumSize];
     [self.view addSubview:imageView];
     [imageView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
     

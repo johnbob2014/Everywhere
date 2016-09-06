@@ -18,23 +18,34 @@ typedef void(^DidTouchDownRetractButtonHandler)();
 
 @interface LocationInfoBar : UIView
 
-@property (copy,nonatomic) DidGetMKDirectionsResponseHandler didGetMKDirectionsResponseHandler;
-
-@property (copy,nonatomic) DidChangeFavoritePropertyHandler didChangeFavoritePropertyHandler;
-
-@property (copy,nonatomic) DidTouchDownRetractButtonHandler didTouchDownRetractButtonHandler;
-
-@property (strong,nonatomic) UIButton *naviToHereButton;
-
 /*
- 必需，当前显示的CoordinateInfo
+ *  必需，当前显示的CoordinateInfo
  */
 @property (strong,nonatomic) CoordinateInfo *currentShowCoordinateInfo;
 
-
 /*
- 导航时需要，当前用户位置座标，GCJ02格式
+ *  导航时需要，当前用户位置座标，GCJ02格式
  */
 @property (assign,nonatomic) CLLocationCoordinate2D userCoordinateGCJ02;
+
+/**
+ *  导航至此按钮
+ */
+@property (strong,nonatomic) UIButton *naviToHereButton;
+
+/**
+ *  传送获取到的路线
+ */
+@property (copy,nonatomic) DidGetMKDirectionsResponseHandler didGetMKDirectionsResponseHandler;
+
+/**
+ *  传送改变favorite属性的CoordinateInfo
+ */
+@property (copy,nonatomic) DidChangeFavoritePropertyHandler didChangeFavoritePropertyHandler;
+
+/**
+ *  传送收回按钮按下的动作
+ */
+@property (copy,nonatomic) DidTouchDownRetractButtonHandler didTouchDownRetractButtonHandler;
 
 @end

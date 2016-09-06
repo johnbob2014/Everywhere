@@ -54,14 +54,25 @@
 @property (strong,nonatomic,readonly) CLLocation *location;
 
 /**
- *  缩略图
+ *  缩略图数组
  */
-@property (strong,nonatomic) NSArray <UIImage *> *thumbnailArray;
+@property (strong,nonatomic) NSMutableArray <UIImage *> *thumbnailArray;
 
+#pragma mark - 导入和导出为GPX方法
+
+/**
+ *  从 GPX文件 点字典 生成新实例
+ */
++ (EverywhereFootprintAnnotation *)footprintAnnotationFromGPXPointDictionary:(NSDictionary *)pointDictionary isUserManuallyAdded:(BOOL)isUserManuallyAdded;
+
+/**
+ *  生成 wpt 字符串
+ */
 - (NSString *)gpx_wpt_String;
 
+/**
+ *  生成 trkpt 字符串
+ */
 - (NSString *)gpx_trk_trkseg_trkpt_String;
-
-+ (EverywhereFootprintAnnotation *)footprintAnnotationFromGPXPointDictionary:(NSDictionary *)pointDictionary isUserManuallyAdded:(BOOL)isUserManuallyAdded;
 
 @end

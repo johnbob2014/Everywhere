@@ -13,6 +13,9 @@ typedef void(^DidSelectCoordinateInfo)(CoordinateInfo *selectedCoordinateInfo);
 
 @interface CoordinateInfoPickerVC : UIViewController
 
+/**
+ *  传输用户选择的CoordinateInfo
+ */
 @property (copy,nonatomic) DidSelectCoordinateInfo didSelectCoordinateInfo;
 
 @end
