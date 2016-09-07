@@ -18,12 +18,18 @@
 @interface AssetDetailVC ()
 @property (assign,nonatomic) NSInteger currentIndex;
 @property (assign,nonatomic) PHAssetInfo *currentAssetInfo;
+
 @end
 
 @implementation AssetDetailVC{
     //PHFetchResult <PHAsset *> *assetArray;
+    //__block NSMutableArray <UIImage *> *imageMA;
+    
+    PHAsset *currentAsset;
     
     UIImageView *imageView;
+    
+    UIImage *currentImage;
     
     UIButton *playButton;
     
@@ -32,6 +38,14 @@
     UISwitch *eliminateThisAssetSwitch,*actAsThumbnailSwitch;
     
     AVPlayerItem *playerItem;
+    
+    UIScrollView *assistantScrollView;
+    UIImageView *assistantImageView;
+    
+    CGFloat scaleFactor;
+    CGFloat rotationFactor;
+    CGFloat currentScaleDelta;
+    CGFloat currentRotationDelta;
 }
 
 - (NSArray<PHAsset *> *)assetArray{
@@ -48,24 +62,19 @@
     if (currentIndex >= 0 && currentIndex <= self.assetArray.count - 1) {
         _currentIndex = currentIndex;
         
-        PHAsset *currentAsset = self.assetArray[currentIndex];
+        //[self asyncFillImageMA];
         
-        [UIView animateWithDuration:0.5
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseInOut
-                         animations:^{
-                             imageView.image = [currentAsset synchronousFetchUIImageAtTargetSize:PHImageManagerMaximumSize];
-                         }
-                         completion:^(BOOL finished) {
-                             self.title = [NSString stringWithFormat:@"%lu / %lu",(unsigned long)(currentIndex + 1),(unsigned long)self.assetArray.count];
-                         }];
+        self.title = [NSString stringWithFormat:@"%lu / %lu",(unsigned long)(currentIndex + 1),(unsigned long)self.assetArray.count];
         
+        currentAsset = self.assetArray[currentIndex];
+        currentImage = [currentAsset synchronousFetchUIImageAtTargetSize:PHImageManagerMaximumSize];
+        imageView.image = currentImage;
         
         if (currentAsset.mediaType == PHAssetMediaTypeVideo) {
             playButton.hidden = NO;
-            playerItem = [currentAsset synchronousFetchAVPlayerItem];
         }else if (currentAsset.mediaType == PHAssetMediaTypeImage){
             playButton.hidden = YES;
+            playerItem = nil;
         }
         
         noteLabel.text = [NSString stringWithFormat:@"%lu/%lu",(unsigned long)(currentIndex + 1),(unsigned long)self.assetArray.count];
@@ -81,12 +90,29 @@
     }
 }
 
+/*
+- (void)asyncFillImageMA{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        [self.assetArray enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (idx >= self.currentIndex - 2 && idx <= self.currentIndex + 2){
+                UIImage *objImage = [obj synchronousFetchUIImageAtTargetSize:PHImageManagerMaximumSize];
+                imageMA[idx] = objImage;
+            }else{
+                imageMA[idx] = [UIImage new];
+            }
+        }];
+    });
+}
+*/
+
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations{
     return UIInterfaceOrientationMaskAllButUpsideDown;
 }
 
 - (void)viewDidLoad{
     [super viewDidLoad];
+    
+    //imageMA = [NSMutableArray arrayWithCapacity:self.assetArray.count];
     
     self.view.backgroundColor = [UIColor blackColor];
     
@@ -102,6 +128,11 @@
     UISwipeGestureRecognizer *swipeLeftGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft:)];
     swipeLeftGR.direction = UISwipeGestureRecognizerDirectionLeft;
     [imageView addGestureRecognizer:swipeLeftGR];
+    
+    UITapGestureRecognizer *doubleTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewDoubleTapGR:)];
+    doubleTapGR.numberOfTapsRequired = 2;
+    doubleTapGR.numberOfTouchesRequired = 1;
+    [imageView addGestureRecognizer:doubleTapGR];
     
     if (self.swipeUpToQuit){
         UISwipeGestureRecognizer *swipeUpGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeUp:)];
@@ -175,7 +206,100 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)imageViewDoubleTapGR:(UITapGestureRecognizer *)sender{
+    if (currentImage.size.width <= self.view.frame.size.width || currentImage.size.height <= self.view.frame.size.height) return;
+    
+    assistantScrollView = [UIScrollView newAutoLayoutView];
+    assistantScrollView.backgroundColor = [UIColor blackColor];
+    [self.view addSubview:assistantScrollView];
+    [assistantScrollView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+    
+    assistantImageView = [[UIImageView alloc] initWithImage:currentImage];
+    [assistantScrollView addSubview:assistantImageView];
+    assistantImageView.frame = CGRectMake(0, 0, currentImage.size.width, currentImage.size.height);
+    
+    assistantScrollView.contentSize = assistantImageView.frame.size;
+    assistantScrollView.contentOffset = CGPointMake((currentImage.size.width - self.view.frame.size.width) / 2.0, (currentImage.size.height - self.view.frame.size.height) / 2.0);
+    
+    assistantImageView.userInteractionEnabled = YES;
+    
+    UITapGestureRecognizer *doubleTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(assistantImageViewDoubleTapGR:)];
+    doubleTapGR.numberOfTapsRequired = 2;
+    doubleTapGR.numberOfTouchesRequired = 1;
+    [assistantImageView addGestureRecognizer:doubleTapGR];
+    
+    UIPinchGestureRecognizer *pinchGR = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchGRAction:)];
+    [assistantImageView addGestureRecognizer:pinchGR];
+    
+    UIRotationGestureRecognizer *rotationGR=[[UIRotationGestureRecognizer alloc]initWithTarget:self action:@selector(rotationGRAction:)];
+    [assistantImageView addGestureRecognizer:rotationGR];
+    
+    scaleFactor=1.0;
+    rotationFactor=0.0;
+}
+
+- (void)assistantImageViewDoubleTapGR:(UITapGestureRecognizer *)sender{
+    [assistantScrollView removeFromSuperview];
+}
+
+- (void)pinchGRAction:(UIPinchGestureRecognizer *)sender{
+    NSLog(@"scale: %.2f",sender.scale);
+    CGFloat newScaleDelta=sender.scale - 1;
+    
+    [self updateViewTransformWithScaleDelta:newScaleDelta andRotationDelta:0];
+    
+    if (sender.state==UIGestureRecognizerStateEnded) {
+        //self.scaleFactor=scaleAmount;
+        scaleFactor+=newScaleDelta;
+        currentScaleDelta=0;
+    }
+}
+
+- (void)rotationGRAction:(UIRotationGestureRecognizer *)sender{
+    NSLog(@"rotation: %.2f",sender.rotation);
+    CGFloat newRotationDelta=sender.rotation;
+    
+    [self updateViewTransformWithScaleDelta:0 andRotationDelta:newRotationDelta];
+    
+    if (sender.state==UIGestureRecognizerStateEnded) {
+        //self.rotationFactor=rotationAmount;
+        rotationFactor+=newRotationDelta;
+        currentRotationDelta=0;
+    }
+}
+
+- (void)updateViewTransformWithScaleDelta:(CGFloat)scaleDelta andRotationDelta:(CGFloat)rotationDelta{
+    if (scaleDelta != 0) {
+        currentScaleDelta = scaleDelta;
+    }
+    if (rotationDelta != 0) {
+        currentRotationDelta = rotationDelta;
+    }
+    
+    CGFloat scaleAmount=scaleFactor+currentScaleDelta;
+    
+    if (scaleAmount < 0.2) return;
+    
+    CGAffineTransform scaleTransform=CGAffineTransformMakeScale(scaleAmount, scaleAmount);
+    
+    CGFloat roatationAmount=rotationFactor+currentRotationDelta;
+    CGAffineTransform rotationTransform=CGAffineTransformMakeRotation(roatationAmount);
+    
+    CGAffineTransform combinedTransform=CGAffineTransformConcat(scaleTransform, rotationTransform);
+    
+    //assistantScrollView.contentSize = CGSizeApplyAffineTransform(assistantScrollView.contentSize, scaleTransform);
+    
+    [assistantImageView setTransform:combinedTransform];
+    
+}
+
+
 - (void)play:(UIButton *)sender{
+    
+    [SVProgressHUD show];
+    playerItem = [currentAsset synchronousFetchAVPlayerItem];
+    [SVProgressHUD dismiss];
+    
     if (playerItem) {
         AVPlayerViewController *playerVC = [AVPlayerViewController new];
         playerVC.player = [AVPlayer playerWithPlayerItem:playerItem];
@@ -187,6 +311,8 @@
         
         [playerVC.player play];
 
+    }else{
+        [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Failed to load video!", @"加载视频失败！")];
     }
 }
 

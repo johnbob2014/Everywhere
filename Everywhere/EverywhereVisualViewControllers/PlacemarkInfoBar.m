@@ -31,12 +31,14 @@
         
         self.cellInfoLabel = [UILabel newAutoLayoutView];
         self.cellInfoLabel.font = [UIFont bodyFontWithSizeMultiplier:1.2];
+        self.cellInfoLabel.textColor = [UIColor whiteColor];
         self.cellInfoLabel.textAlignment = NSTextAlignmentCenter;
         self.cellInfoLabel.text = @"0";
         [self addSubview:self.cellInfoLabel];
         
         self.cellTitleLabel = [UILabel newAutoLayoutView];
         self.cellTitleLabel.font = [UIFont bodyFontWithSizeMultiplier:0.8];
+        self.cellTitleLabel.textColor = [UIColor whiteColor];
         self.cellTitleLabel.textAlignment = NSTextAlignmentCenter;
         self.cellTitleLabel.text = @"/";
         [self addSubview:self.cellTitleLabel];

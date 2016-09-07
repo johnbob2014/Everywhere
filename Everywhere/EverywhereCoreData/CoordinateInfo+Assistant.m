@@ -132,6 +132,7 @@
 + (NSArray <CoordinateInfo *> *)fetchFavoriteCoordinateInfosInManagedObjectContext:(NSManagedObjectContext *)context{
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:EntityName_CoordinateInfo];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"favorite = %@",@(YES)];
+    fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"modificationDate" ascending:NO]];
     NSError *fetchError;
     NSArray *matches = [context executeFetchRequest:fetchRequest error:&fetchError];
     return matches;

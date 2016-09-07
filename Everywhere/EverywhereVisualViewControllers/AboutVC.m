@@ -54,7 +54,7 @@
     [self.nameLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:self.imageView withOffset:10];
     
     self.versonLabel=[[UILabel alloc]initForAutoLayout];
-    self.versonLabel.text=@"v1.0.0";
+    self.versonLabel.text=@"v3.1.0";
     self.versonLabel.font=[UIFont bodyFontWithSizeMultiplier:0.8];
     [self.view addSubview:self.versonLabel];
     [self.versonLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:self.nameLabel];

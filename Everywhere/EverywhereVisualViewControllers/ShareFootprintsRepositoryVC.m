@@ -43,8 +43,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     settingManager = [EverywhereSettingManager defaultManager];
-    mfrString = NSLocalizedString(@"MFR Share", @"MFR 分享");
-    gpxString = NSLocalizedString(@"GPX Share", @"GPX 分享");
+    mfrString = NSLocalizedString(@"MFR Share", @"MFR分享");
+    gpxString = NSLocalizedString(@"GPX Share", @"GPX分享");
     
     self.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.9, 480);
     self.landscapeContentSizeInPopup = CGSizeMake(480, ScreenWidth * 0.9);
@@ -200,7 +200,7 @@
     [topRightButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:topLeftButton withOffset:10];
     
     bottomLeftButton = [UIButton newAutoLayoutView];
-    [bottomLeftButton setTitle:NSLocalizedString(@"WeChat Share", @"微信分享") forState:UIControlStateNormal];
+    [bottomLeftButton setTitle:NSLocalizedString(@"Free Share", @"无图分享") forState:UIControlStateNormal];
     [bottomLeftButton setStyle:UIButtonStylePrimary];
     bottomLeftButton.tag = WXSceneSession;
     [bottomLeftButton addTarget:self action:@selector(wxShare:) forControlEvents:UIControlEventTouchDown];
@@ -356,8 +356,7 @@
     NSMutableString *ms = [NSMutableString new];
     [ms appendFormat:@"%@\n",NSLocalizedString(@"ShareAndBrowse function include MFR and GPX file share without footprints count restriction. MFR file support thumbnails. GPX file can be used on portable GPS.", @"分享和浏览功能可以MFR或GPX两种文件格式进行分享，均没有足迹点数量限制。MFR文件支持缩略图。GPX文件可以在手持GPS上使用。")];
     [ms appendFormat:@"%@\n",NSLocalizedString(@"You have 10 chances to try until you purchase ShareAndBrowse function.", @"如果未购买分享和浏览功能，您仍有10次试用机会。")];
-    [ms appendFormat:@"%@\n",NSLocalizedString(@"WeChat Share is free. But it doesn't support thumbnails and has footprints count restriction.",@"微信分享免费使用，但无法分享缩略图，且有足迹点数量限制。")];
-    [ms appendFormat:@"%@\n",NSLocalizedString(@"Because of the restriction of WeChat content, make sure your footprints count is less than 30, otherwise share may fail.", @"由于微信将分享内容限制为10K，所以请将分享的足迹点数量控制在30个以内，否则可能会分享失败。")];
+    [ms appendFormat:@"%@\n",NSLocalizedString(@"WeChat share without photos is free. But it doesn't support thumbnails and has footprints count restriction.Because of the restriction of WeChat content, make sure your footprints count is less than 30, otherwise share may fail.",@"微信无图分享免费使用，但无法分享缩略图，且有足迹点数量限制。由于微信将分享内容限制为10K，所以请将微信分享的足迹点数量控制在30个以内，否则可能会分享失败。")];
     
     UIAlertController *informationAlertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:ms];
     [self presentViewController:informationAlertController animated:YES completion:nil];

@@ -130,8 +130,8 @@
     NSArray<id<MKAnnotation>> *savedAnnotationsForBaseMode;
     NSArray<id<MKAnnotation>> *savedFootprintAnnotationsForBaseMode;
     NSArray<id<MKOverlay>> *savedOverlaysForBaseMode;
-    NSDate *savedStartDateForBaseMode;
-    NSDate *savedEndDateForBaseMode;
+    //NSDate *savedStartDateForBaseMode;
+    //NSDate *savedEndDateForBaseMode;
     
     /*
     NSString *savedTitleForMomentMode;
@@ -1753,6 +1753,10 @@
     switch (self.settingManager.mapBaseMode) {
         case MapBaseModeMoment:{
             // 时刻模式初始化
+            self.startDate = [[NSUserDefaults standardUserDefaults] valueForKey:DatePickerCustomStartDate];
+            self.endDate = [[NSUserDefaults standardUserDefaults] valueForKey:DatePickerCustomEndDate];
+            
+            /*
             switch (self.settingManager.dateMode) {
                 case DateModeDay:{
                     self.startDate = [NOW dateAtStartOfToday];
@@ -1782,10 +1786,12 @@
                 default:
                     break;
             }
+            */
             
             self.assetInfoArray = [PHAssetInfo fetchAssetInfosFormStartDate:self.startDate toEndDate:self.endDate inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
         }
             break;
+            
         case MapBaseModeLocation:{
             // 位置模式初始化
             self.lastPlacemark = self.settingManager.lastPlacemark;
@@ -1794,6 +1800,7 @@
             }
         }
             break;
+            
         default:
             break;
     }
@@ -2094,8 +2101,8 @@
     savedAnnotationsForBaseMode = self.addedEWAnnotations;
     savedFootprintAnnotationsForBaseMode = self.addedEWFootprintAnnotations;
     savedOverlaysForBaseMode = self.myMapView.overlays;
-    savedStartDateForBaseMode = self.startDate;
-    savedEndDateForBaseMode = self.endDate;
+    //savedStartDateForBaseMode = self.startDate;
+    //savedEndDateForBaseMode = self.endDate;
     
     // 清理BaseMode地图
     [self.myMapView removeAnnotations:self.addedIDAnnotations];
@@ -2150,8 +2157,8 @@
     self.addedEWFootprintAnnotations = (NSArray <EverywhereFootprintAnnotation*> *)savedFootprintAnnotationsForBaseMode;
     [self.myMapView addOverlays:savedOverlaysForBaseMode];
     self.addedIDAnnotations = savedAnnotationsForBaseMode;
-    self.startDate = savedStartDateForBaseMode;
-    self.endDate = savedEndDateForBaseMode;
+    //self.startDate = savedStartDateForBaseMode;
+    //self.endDate = savedEndDateForBaseMode;
     
     if(DEBUGMODE) NSLog(@"退出扩展模式");
 }
@@ -2413,12 +2420,9 @@
 - (void)intelligentlySaveRecordedFootprintAnnotationsAndClearCatche{
     if (!recordedFootprintAnnotations || recordedFootprintAnnotations.count == 0) return;
     
-    
-    
     // 保存前先暂停
     self.isRecording = NO;
-
-    //if (recordedFootprintAnnotations.count > 1){}
+    
     EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
     footprintsRepository.footprintAnnotations = recordedFootprintAnnotations;
     footprintsRepository.creationDate = NOW;
@@ -2436,7 +2440,7 @@
     noti.alertBody = messageMS;
     noti.alertAction = NSLocalizedString(@"Action", @"操作");
     noti.soundName = UILocalNotificationDefaultSoundName;
-    //noti.applicationIconBadgeNumber = count;
+    
     [[UIApplication sharedApplication] presentLocalNotificationNow:noti];
     
     if (!self.settingManager.hasPurchasedRecordAndEdit && self.settingManager.trialCountForRecordAndEdit > 0){
@@ -2460,7 +2464,7 @@
     }
     
     // 清理地图
-    [self.myMapView removeAnnotations:self.addedIDAnnotations];
+    [self.myMapView removeAnnotations:recordedFootprintAnnotations];
     [self.myMapView removeOverlays:self.myMapView.overlays];
     
     // 把刚刚保存的轨迹显示到地图上
@@ -2532,8 +2536,6 @@
         anno.annotationTitle = [NSString stringWithFormat:@"%lu/%lu %@",(unsigned long)(idx + 1),(unsigned long)(self.assetsArray.count),placeName];
         
         if (self.settingManager.mapBaseMode == MapBaseModeMoment) {
-            //anno.annotationTitle = [NSString stringWithFormat:@"%lu %@",(unsigned long)(idx + 1),[firstAsset.creationDate stringWithDefaultFormat]];
-            
             anno.annotationSubtitle = [NSString stringWithFormat:@"%@",[firstAsset.creationDate stringWithDefaultFormat]];
         }else{
             anno.annotationSubtitle = [NSString stringWithFormat:@"%@ ~ %@",[firstAsset.creationDate stringWithFormat:@"yyyy-MM-dd"],[lastAsset.creationDate stringWithFormat:@"yyyy-MM-dd"]];

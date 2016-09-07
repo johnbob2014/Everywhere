@@ -60,6 +60,7 @@
     cell.textLabel.text = [NSString stringWithFormat:@"%lu ⭐️ %@",(unsigned long)(indexPath.row + 1),coordinateInfo.title];
     
     NSMutableString *ms = [NSMutableString new];
+    if (coordinateInfo.subtitle) [ms appendFormat:@"%@  ",coordinateInfo.subtitle];
     [ms appendFormat:@"%@:%.4f°,%.4f°",NSLocalizedString(@"Coord", @"座标"),[coordinateInfo.latitude doubleValue],[coordinateInfo.longitude doubleValue]];
     if (coordinateInfo.altitude > 0) [ms appendFormat:@"  %@:%.2fm",NSLocalizedString(@"Altitude", @"高度"),[coordinateInfo.altitude doubleValue]];
     //if (coordinateInfo.speed > 0) [ms appendFormat:@"  %@:%.2fkm/h",NSLocalizedString(@"Speed", @"速度"),[coordinateInfo.speed doubleValue]* 3.6];
