@@ -10,6 +10,8 @@
 @import Photos;
 @import AVKit;
 
+//#import "GCZoomableImageScrollView.h"
+
 #import "PHAsset+Assistant.h"
 
 #import "PHAssetInfo.h"
@@ -210,9 +212,11 @@
     if (currentImage.size.width <= self.view.frame.size.width || currentImage.size.height <= self.view.frame.size.height) return;
     
     assistantScrollView = [UIScrollView newAutoLayoutView];
+    
     assistantScrollView.backgroundColor = [UIColor blackColor];
     [self.view addSubview:assistantScrollView];
     [assistantScrollView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+    
     
     assistantImageView = [[UIImageView alloc] initWithImage:currentImage];
     [assistantScrollView addSubview:assistantImageView];
@@ -228,6 +232,7 @@
     doubleTapGR.numberOfTouchesRequired = 1;
     [assistantImageView addGestureRecognizer:doubleTapGR];
     
+    /*
     UIPinchGestureRecognizer *pinchGR = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchGRAction:)];
     [assistantImageView addGestureRecognizer:pinchGR];
     
@@ -236,6 +241,7 @@
     
     scaleFactor=1.0;
     rotationFactor=0.0;
+    */
 }
 
 - (void)assistantImageViewDoubleTapGR:(UITapGestureRecognizer *)sender{
