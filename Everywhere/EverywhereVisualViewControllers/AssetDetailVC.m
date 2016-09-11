@@ -10,14 +10,17 @@
 @import Photos;
 @import AVKit;
 
-//#import "GCZoomableImageScrollView.h"
+#import "GCZoomableImageScrollView.h"
+#import "GCZoomableImageScrollViewCell.h"
+#import "GCLineFlowLayout.h"
 
 #import "PHAsset+Assistant.h"
 
 #import "PHAssetInfo.h"
 #import "EverywhereCoreDataManager.h"
 
-@interface AssetDetailVC ()
+@interface AssetDetailVC () <UICollectionViewDataSource,UICollectionViewDelegate>
+
 @property (assign,nonatomic) NSInteger currentIndex;
 @property (assign,nonatomic) PHAssetInfo *currentAssetInfo;
 
@@ -29,7 +32,9 @@
     
     PHAsset *currentAsset;
     
-    UIImageView *imageView;
+    UICollectionView *myCollectionView;
+    
+    // GCZoomableImageScrollView *imageScrollView;
     
     UIImage *currentImage;
     
@@ -41,8 +46,8 @@
     
     AVPlayerItem *playerItem;
     
-    UIScrollView *assistantScrollView;
-    UIImageView *assistantImageView;
+    //UIScrollView *assistantScrollView;
+    //UIImageView *assistantImageView;
     
     CGFloat scaleFactor;
     CGFloat rotationFactor;
@@ -69,8 +74,8 @@
         self.title = [NSString stringWithFormat:@"%lu / %lu",(unsigned long)(currentIndex + 1),(unsigned long)self.assetArray.count];
         
         currentAsset = self.assetArray[currentIndex];
-        currentImage = [currentAsset synchronousFetchUIImageAtTargetSize:PHImageManagerMaximumSize];
-        imageView.image = currentImage;
+        //currentImage = [currentAsset synchronousFetchUIImageAtTargetSize:PHImageManagerMaximumSize];
+        //imageScrollView.image = currentImage;
         
         if (currentAsset.mediaType == PHAssetMediaTypeVideo) {
             playButton.hidden = NO;
@@ -92,21 +97,6 @@
     }
 }
 
-/*
-- (void)asyncFillImageMA{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        [self.assetArray enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if (idx >= self.currentIndex - 2 && idx <= self.currentIndex + 2){
-                UIImage *objImage = [obj synchronousFetchUIImageAtTargetSize:PHImageManagerMaximumSize];
-                imageMA[idx] = objImage;
-            }else{
-                imageMA[idx] = [UIImage new];
-            }
-        }];
-    });
-}
-*/
-
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations{
     return UIInterfaceOrientationMaskAllButUpsideDown;
 }
@@ -118,35 +108,39 @@
     
     self.view.backgroundColor = [UIColor blackColor];
     
-    imageView = [UIImageView newAutoLayoutView];
-    imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [self.view addSubview:imageView];
-    [imageView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+    GCLineFlowLayout *lineFlowLayout = [[GCLineFlowLayout alloc] init];
+    lineFlowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    lineFlowLayout.itemSize = self.view.frame.size;
     
-    imageView.userInteractionEnabled = YES;
-    UISwipeGestureRecognizer *swipeRightGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight:)];
-    swipeRightGR.direction = UISwipeGestureRecognizerDirectionRight;
-    [imageView addGestureRecognizer:swipeRightGR];
-    UISwipeGestureRecognizer *swipeLeftGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft:)];
-    swipeLeftGR.direction = UISwipeGestureRecognizerDirectionLeft;
-    [imageView addGestureRecognizer:swipeLeftGR];
+    lineFlowLayout.minimumInteritemSpacing = 0.0f;
+    lineFlowLayout.minimumLineSpacing = 40.0;
     
-    UITapGestureRecognizer *doubleTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewDoubleTapGR:)];
-    doubleTapGR.numberOfTapsRequired = 2;
-    doubleTapGR.numberOfTouchesRequired = 1;
-    [imageView addGestureRecognizer:doubleTapGR];
+    lineFlowLayout.sectionInset = UIEdgeInsetsZero;
+    lineFlowLayout.footerReferenceSize = CGSizeZero;
+    lineFlowLayout.headerReferenceSize = CGSizeZero;
+
+    
+    myCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:lineFlowLayout];
+    myCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
+    myCollectionView.delegate = self;
+    myCollectionView.dataSource = self;
+    //myCollectionView.pagingEnabled = YES;
+    [myCollectionView registerClass:[GCZoomableImageScrollViewCell class] forCellWithReuseIdentifier:@"Cell"];
+    [self.view addSubview:myCollectionView];
+    [myCollectionView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
     
     if (self.swipeUpToQuit){
         UISwipeGestureRecognizer *swipeUpGR = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeUp:)];
         swipeUpGR.direction = UISwipeGestureRecognizerDirectionUp;
-        [imageView addGestureRecognizer:swipeUpGR];
+        [myCollectionView addGestureRecognizer:swipeUpGR];
     }
+    
     
     playButton = [UIButton newAutoLayoutView];
     [playButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Video_WBG"] forState:UIControlStateNormal];
     playButton.alpha = 0.6;
     [playButton addTarget:self action:@selector(play:) forControlEvents:UIControlEventTouchDown];
-    [imageView addSubview:playButton];
+    [myCollectionView addSubview:playButton];
     [playButton autoCenterInSuperview];
     [playButton autoSetDimensionsToSize:CGSizeMake(50, 50)];
     playButton.hidden = YES;
@@ -208,98 +202,6 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)imageViewDoubleTapGR:(UITapGestureRecognizer *)sender{
-    if (currentImage.size.width <= self.view.frame.size.width || currentImage.size.height <= self.view.frame.size.height) return;
-    
-    assistantScrollView = [UIScrollView newAutoLayoutView];
-    
-    assistantScrollView.backgroundColor = [UIColor blackColor];
-    [self.view addSubview:assistantScrollView];
-    [assistantScrollView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
-    
-    
-    assistantImageView = [[UIImageView alloc] initWithImage:currentImage];
-    [assistantScrollView addSubview:assistantImageView];
-    assistantImageView.frame = CGRectMake(0, 0, currentImage.size.width, currentImage.size.height);
-    
-    assistantScrollView.contentSize = assistantImageView.frame.size;
-    assistantScrollView.contentOffset = CGPointMake((currentImage.size.width - self.view.frame.size.width) / 2.0, (currentImage.size.height - self.view.frame.size.height) / 2.0);
-    
-    assistantImageView.userInteractionEnabled = YES;
-    
-    UITapGestureRecognizer *doubleTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(assistantImageViewDoubleTapGR:)];
-    doubleTapGR.numberOfTapsRequired = 2;
-    doubleTapGR.numberOfTouchesRequired = 1;
-    [assistantImageView addGestureRecognizer:doubleTapGR];
-    
-    /*
-    UIPinchGestureRecognizer *pinchGR = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchGRAction:)];
-    [assistantImageView addGestureRecognizer:pinchGR];
-    
-    UIRotationGestureRecognizer *rotationGR=[[UIRotationGestureRecognizer alloc]initWithTarget:self action:@selector(rotationGRAction:)];
-    [assistantImageView addGestureRecognizer:rotationGR];
-    
-    scaleFactor=1.0;
-    rotationFactor=0.0;
-    */
-}
-
-- (void)assistantImageViewDoubleTapGR:(UITapGestureRecognizer *)sender{
-    [assistantScrollView removeFromSuperview];
-}
-
-- (void)pinchGRAction:(UIPinchGestureRecognizer *)sender{
-    NSLog(@"scale: %.2f",sender.scale);
-    CGFloat newScaleDelta=sender.scale - 1;
-    
-    [self updateViewTransformWithScaleDelta:newScaleDelta andRotationDelta:0];
-    
-    if (sender.state==UIGestureRecognizerStateEnded) {
-        //self.scaleFactor=scaleAmount;
-        scaleFactor+=newScaleDelta;
-        currentScaleDelta=0;
-    }
-}
-
-- (void)rotationGRAction:(UIRotationGestureRecognizer *)sender{
-    NSLog(@"rotation: %.2f",sender.rotation);
-    CGFloat newRotationDelta=sender.rotation;
-    
-    [self updateViewTransformWithScaleDelta:0 andRotationDelta:newRotationDelta];
-    
-    if (sender.state==UIGestureRecognizerStateEnded) {
-        //self.rotationFactor=rotationAmount;
-        rotationFactor+=newRotationDelta;
-        currentRotationDelta=0;
-    }
-}
-
-- (void)updateViewTransformWithScaleDelta:(CGFloat)scaleDelta andRotationDelta:(CGFloat)rotationDelta{
-    if (scaleDelta != 0) {
-        currentScaleDelta = scaleDelta;
-    }
-    if (rotationDelta != 0) {
-        currentRotationDelta = rotationDelta;
-    }
-    
-    CGFloat scaleAmount=scaleFactor+currentScaleDelta;
-    
-    if (scaleAmount < 0.2) return;
-    
-    CGAffineTransform scaleTransform=CGAffineTransformMakeScale(scaleAmount, scaleAmount);
-    
-    CGFloat roatationAmount=rotationFactor+currentRotationDelta;
-    CGAffineTransform rotationTransform=CGAffineTransformMakeRotation(roatationAmount);
-    
-    CGAffineTransform combinedTransform=CGAffineTransformConcat(scaleTransform, rotationTransform);
-    
-    //assistantScrollView.contentSize = CGSizeApplyAffineTransform(assistantScrollView.contentSize, scaleTransform);
-    
-    [assistantImageView setTransform:combinedTransform];
-    
-}
-
-
 - (void)play:(UIButton *)sender{
     
     [SVProgressHUD show];
@@ -330,6 +232,27 @@
 - (void)actAsThumbnailSwitchValueChanged:(UISwitch *)sender{
     self.currentAssetInfo.actAsThumbnail = @(sender.on);
     [[EverywhereCoreDataManager appDelegateMOC] save:NULL];
+}
+
+#pragma mark - UICollectionView
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+    return self.assetArray.count;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+    GCZoomableImageScrollViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
+
+    currentAsset = self.assetArray[indexPath.item];
+    currentImage = [currentAsset synchronousFetchUIImageAtTargetSize:PHImageManagerMaximumSize];
+    cell.zoomableImageScrollView.image = currentImage;
+    
+    return cell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
+    //NSLog(@"indexPath.item: %ld",(long)indexPath.item);
+    self.currentIndex = indexPath.item;
 }
 
 @end

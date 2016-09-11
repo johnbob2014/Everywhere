@@ -2,262 +2,42 @@
 //  GCZoomableImageScrollView.m
 //  Everywhere
 //
-//  Created by BobZhang on 16/9/8.
+//  Created by 张保国 on 16/9/9.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#define k_ACIB_isNotFullscreen_BGColor                                              \
-[UIColor colorWithRed:255 / 255.0 green:255 / 255.0 blue:255 / 255.0 alpha:1.0]
-
-#define k_ACIB_isFullscreen_BGColor                                                 \
-[UIColor colorWithRed:  0 / 255.0 green:  0 / 255.f blue:  0 / 255.0 alpha:1.0]
-
-/** Gap between image */
-static CGFloat const ACIB_PageGap                                                   = 40.0;
-
-/** ZoomableImageScrollView can zoom to how much bigger than original image */
-static CGFloat const ACZISV_zoom_bigger                                             = 1.618;
-
-static CGFloat const ACIBU_BGColor_AnimationDuration        = 0.28;
-
-static NSString * const ACIBU_FullscreenNotificationName    = @"ACIBU_FullscreenNotificationName";
-//static NSString * const ACIBU_WantFullscreenYES             = @"ACIBU_WantFullscreenYES";
-//static NSString * const ACIBU_WantFullscreenNO              = @"ACIBU_WantFullscreenNO";
-
-static NSString * const ACIB_PathHead_FileString            = @"file";
-static NSString * const ACIB_PathHead_HTTPString            = @"http";
-
 #import "GCZoomableImageScrollView.h"
 
-@interface GCZoomableImageScrollView ()<UIScrollViewDelegate, UIGestureRecognizerDelegate>
+@interface GCZoomableImageScrollView () <UIScrollViewDelegate>
+
+@property (strong,nonatomic) UIImageView *imageView;
 
 @end
 
 @implementation GCZoomableImageScrollView
 
-#pragma mark - Init
-
-- (id)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-        
-        self.fullScreen = YES;
-        
-        [self addRotateNotificationObserver];
-        
-        self.zoomScale = 1.0;
-        self.bouncesZoom = YES;
-        
-        self.delegate = self;
-        
-        self.scrollEnabled = YES;
-        
-        self.showsHorizontalScrollIndicator = NO;
-        self.showsVerticalScrollIndicator = NO;
-        
-        //self.alwaysBounceVertical = YES;
-        
-        self.backgroundColor = k_ACIB_isNotFullscreen_BGColor;
-        
-        self.isLoaded = NO;
-        
-        [self createSubview];
-    }
-    return self;
-}
+#pragma mark - Life Cycle
 
 - (instancetype)init{
     self = [super init];
     if (self) {
-        // Initialization code
-        
-        self.fullScreen = YES;
-        
-        [self addRotateNotificationObserver];
-        
-        self.zoomScale = 1.0;
-        self.bouncesZoom = YES;
-        
         self.delegate = self;
         
         self.scrollEnabled = YES;
         
-        self.showsHorizontalScrollIndicator = NO;
-        self.showsVerticalScrollIndicator = NO;
+        self.zoomScale = 1.0;
+        self.maximumZoomScale = 1.0;
+        self.minimumZoomScale = 1.0;
+        self.bouncesZoom = YES;
         
-        //self.alwaysBounceVertical = YES;
-        
-        self.backgroundColor = k_ACIB_isNotFullscreen_BGColor;
-        
-        self.isLoaded = NO;
-        
-        [self createSubview];
+        self.backgroundColor = [UIColor blackColor];
+        [self initSubviews];
     }
     return self;
 }
 
-#pragma mark - dealloc
-
--(void)dealloc {
-    [self removeRotateNotificationObserver];
-}
-
-#pragma mark - Config Image
-
-- (void)configImage:(UIImage *)image{
-    self.imageView.image = image;
-    CGPoint centerPoint = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
-    [self fitImageViewFrameByImageSize:self.imageView.image.size centerPoint:centerPoint];
-}
-
-- (void)configImageByURL:(NSURL *)url {
-    //NSLog(@"%@", url);
-    
-    CGPoint centerPoint = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
-    
-    // check local or network
-    NSString *pathHead = [[url absoluteString] substringToIndex:4];
-    if ([pathHead isEqualToString:ACIB_PathHead_FileString]) {
-        NSData *data = [NSData dataWithContentsOfURL:url];
-        UIImage *image = [UIImage imageWithData:data];
-        if (image) {
-            self.imageView.image = image;
-        }
-        else {
-            UIImage *errorImage =
-            [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
-                                              pathForResource:@"error_x" ofType:@"png"]];
-            self.imageView.image = errorImage;
-        }
-        [self fitImageViewFrameByImageSize:self.imageView.image.size centerPoint:centerPoint];
-        
-    }
-    else if ([[pathHead lowercaseString] isEqualToString:ACIB_PathHead_HTTPString]) {
-        NSString *beginDownloadImageURLString = [url.absoluteString copy];
-        /*
-         __weak __typeof(self)weakSelf = self;
-         self.webImageOperation =
-         [[SDWebImageManager sharedManager]
-         downloadImageWithURL:url
-         options:SDWebImageRetryFailed | SDWebImageContinueInBackground
-         progress:^(NSInteger receivedSize, NSInteger expectedSize) {
-         __strong __typeof(weakSelf)strongSelf = weakSelf;
-         strongSelf.progressView.alpha = 1.0;
-         strongSelf.progressView.hidden = NO;
-         strongSelf.progressView.progress = 0.0;
-         if (strongSelf.imageURLString && [beginDownloadImageURLString isEqualToString:strongSelf.imageURLString]) {
-         strongSelf.progressView.progress = ((float)receivedSize / expectedSize);
-         }
-         }
-         completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-         __strong __typeof(weakSelf)strongSelf = weakSelf;
-         dispatch_async(dispatch_get_main_queue(), ^{
-         if (strongSelf.imageURLString && [beginDownloadImageURLString isEqualToString:strongSelf.imageURLString]) {
-         strongSelf.progressView.alpha = 0.0;
-         strongSelf.progressView.hidden = YES;
-         if (image && !error && finished) {
-         strongSelf.imageView.image = image;
-         } else {
-         UIImage *errorImage =
-         [UIImage imageWithContentsOfFile:[[NSBundle mainBundle]
-         pathForResource:@"error_x" ofType:@"png"]];
-         strongSelf.imageView.image = errorImage;
-         }
-         [strongSelf fitImageViewFrameByImageSize:weakSelf.imageView.image.size centerPoint:centerPoint];
-         strongSelf.isLoaded = YES;
-         }
-         });
-         }];
-         */
-    }
-}
-
-#pragma mark - Calculate ImageView frame
-
-- (void)fitImageViewFrameByImageSize:(CGSize)size centerPoint:(CGPoint)center {
-    CGFloat imageWidth = size.width;
-    CGFloat imageHeight = size.height;
-    
-    // zoom back first
-    if (self.zoomScale != 1.0) {
-        [self zoomBackWithCenterPoint:center animated:NO];
-    }
-    
-    CGFloat scale_max = 1.0 * ACZISV_zoom_bigger;
-    CGFloat scale_mini = 1.0;
-    
-    self.maximumZoomScale = 1.0 * ACZISV_zoom_bigger;
-    self.minimumZoomScale = 1.0;
-    
-    BOOL overWidth = imageWidth > self.bounds.size.width;
-    BOOL overHeight = imageHeight > self.bounds.size.height;
-    
-    CGSize fitSize = CGSizeMake(imageWidth, imageHeight);
-    
-    if (overWidth && overHeight) {
-        // fit by image width first if (height / times) still
-        // bigger than self.bound.size.width
-        // Then fit by height instead
-        CGFloat timesThanScreenWidth = (imageWidth / self.bounds.size.width);
-        
-        if (!((imageHeight / timesThanScreenWidth) > self.bounds.size.height)) {
-            scale_max =  timesThanScreenWidth * ACZISV_zoom_bigger;
-            fitSize.width = self.bounds.size.width;
-            fitSize.height = imageHeight / timesThanScreenWidth;
-        }
-        else {
-            CGFloat timesThanScreenHeight = (imageHeight / self.bounds.size.height);
-            scale_max =  timesThanScreenHeight * ACZISV_zoom_bigger;
-            fitSize.width = imageWidth / timesThanScreenHeight;
-            fitSize.height = self.bounds.size.height;
-        }
-    }
-    else if (overWidth && !overHeight) {
-        CGFloat timesThanFrameWidth = (imageWidth / self.bounds.size.width);
-        scale_max =  timesThanFrameWidth * ACZISV_zoom_bigger;
-        fitSize.width = self.bounds.size.width;
-        fitSize.height = imageHeight / timesThanFrameWidth;
-    }
-    else if (overHeight && !overWidth) {
-        fitSize.height = self.bounds.size.height;
-    }
-    
-    self.imageView.frame = CGRectMake((center.x - fitSize.width / 2),
-                                      (center.y - fitSize.height / 2),
-                                      fitSize.width,
-                                      fitSize.height);
-    
-    self.contentSize = CGSizeMake(fitSize.width, fitSize.height);
-    
-    self.maximumZoomScale = scale_max;
-    self.minimumZoomScale = scale_mini;
-}
-
-#pragma mark - Orientation func
-
-- (void)orientationChange:(NSNotification*)notification {
-    CGSize size = self.bounds.size;
-    CGPoint centerPoint = CGPointMake(size.width / 2, size.height / 2);
-    [self fitImageViewFrameByImageSize:self.imageView.image.size centerPoint:centerPoint];
-}
-
-#pragma mark - add orientation notification listener
-
-- (void)addRotateNotificationObserver {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(orientationChange:)
-                                                 name:UIDeviceOrientationDidChangeNotification
-                                               object:nil];
-}
-
-- (void)removeRotateNotificationObserver {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-#pragma mark - subview
-
-- (void)createSubview {
+- (void)initSubviews{
+    /*
     self.imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
     
     self.imageView.autoresizingMask =
@@ -265,75 +45,166 @@ static NSString * const ACIB_PathHead_HTTPString            = @"http";
     | UIViewAutoresizingFlexibleRightMargin
     | UIViewAutoresizingFlexibleBottomMargin
     | UIViewAutoresizingFlexibleLeftMargin;
-    
-    self.imageView.backgroundColor = k_ACIB_isNotFullscreen_BGColor;
-    self.imageView.userInteractionEnabled = YES;
+     */
+    self.imageView = [UIImageView newAutoLayoutView];
+
+    self.imageView.backgroundColor = [UIColor clearColor];
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    
-    UITapGestureRecognizer * doubleTapGesture =
-    [[UITapGestureRecognizer alloc] initWithTarget:self
-                                            action:@selector(handleTapGesture:)];
-    doubleTapGesture.numberOfTouchesRequired = 1;
-    doubleTapGesture.numberOfTapsRequired = 2;
-    doubleTapGesture.delegate = self;
-    [self.imageView addGestureRecognizer:doubleTapGesture];
-    
-    UITapGestureRecognizer * singleTapGesture =
-    [[UITapGestureRecognizer alloc] initWithTarget:self
-                                            action:@selector(handleTapGesture:)];
-    singleTapGesture.delegate= self;
-    singleTapGesture.numberOfTouchesRequired = 1;
-    singleTapGesture.numberOfTapsRequired = 1;
-    [singleTapGesture requireGestureRecognizerToFail:doubleTapGesture];
-    [self addGestureRecognizer:singleTapGesture];
-    
     [self addSubview:self.imageView];
+    //[self.imageView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+    [self.imageView autoCenterInSuperview];
     
-    //-- progress view
-    self.progressView = [[UIProgressView alloc] initWithFrame:CGRectZero];
+    self.imageView.userInteractionEnabled = YES;
     
-    self.progressView.autoresizingMask =
-    UIViewAutoresizingFlexibleTopMargin
-    | UIViewAutoresizingFlexibleRightMargin
-    | UIViewAutoresizingFlexibleBottomMargin
-    | UIViewAutoresizingFlexibleLeftMargin;
+    /*
+    UITapGestureRecognizer *singleTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewSingleTapGR:)];
+    singleTapGR.numberOfTapsRequired = 1;
+    singleTapGR.numberOfTouchesRequired = 1;
+    [self.imageView addGestureRecognizer:singleTapGR];
+    */
     
-    self.progressView.userInteractionEnabled = NO;
-    [self addSubview:self.progressView];
-    self.progressView.alpha = 0.0;
-    self.progressView.hidden = YES;
+    UITapGestureRecognizer *doubleTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewDoubleTapGR:)];
+    doubleTapGR.numberOfTapsRequired = 2;
+    doubleTapGR.numberOfTouchesRequired = 1;
+    [self.imageView addGestureRecognizer:doubleTapGR];
+    
+    
 }
 
-- (void)layoutSubviews {
+- (void)imageViewSingleTapGR:(UITapGestureRecognizer *)sender{
+    
+}
+
+- (void)imageViewDoubleTapGR:(UITapGestureRecognizer *)sender{
+    [self zoomToMinMax:[sender locationInView:sender.view]];
+}
+
+/*
+- (void)updateConstraints{
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    [super updateConstraints];
+}
+*/
+
+- (void)layoutSubviews{
     [super layoutSubviews];
     
-    // flag: image can't zoom by this
-    //NSLog(@"layout size%@", NSStringFromCGSize(self.bounds.size));
-    //CGPoint centerPoint = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
-    //[self fitImageViewFrameByImageSize:self.imageView.image.size centerPoint:centerPoint];
-    
-    CGFloat progressView_margin = 36.0;
-    CGFloat progressView_w = self.bounds.size.width - progressView_margin * 2;
-    CGFloat progressView_h = 2.0;
-    CGFloat progressView_x = progressView_margin;
-    CGFloat progressView_y = (self.bounds.size.height - progressView_h) / 2;
-    self.progressView.frame = CGRectMake(progressView_x,
-                                         progressView_y,
-                                         progressView_w,
-                                         progressView_h);
-    
-    
-    if (self.fullScreen) {
-        self.backgroundColor = k_ACIB_isFullscreen_BGColor;
-        self.imageView.backgroundColor = k_ACIB_isFullscreen_BGColor;
-    }
-    else {
-        self.backgroundColor = k_ACIB_isNotFullscreen_BGColor;
-        self.imageView.backgroundColor = k_ACIB_isNotFullscreen_BGColor;
-    }
+    //NSLog(@"%@",NSStringFromSelector(_cmd));
+    //NSLog(@"%@",NSStringFromCGRect(self.frame));
+    //NSLog(@"%@",NSStringFromCGSize(self.contentSize));
+    //NSLog(@"%@",NSStringFromCGRect(self.imageView.frame));
 }
 
-#pragma mark - Scale
+
+#pragma mark - Setter
+
+- (float)imageMaximumZoomScale{
+    if (_imageMaximumZoomScale == 0) _imageMaximumZoomScale = 1.0;
+    return _imageMaximumZoomScale;
+}
+
+- (void)setImage:(UIImage *)image{
+    _image = image;
+    self.imageView.image = image;
+    [self updateImageViewConstraints];
+}
+
+
+- (void)updateImageViewConstraints{
+   
+    //NSLog(@"self.frame: %@",NSStringFromCGRect(self.frame));
+    //NSLog(@"self.bounds: %@",NSStringFromCGRect(self.bounds));
+
+    //CGPoint centerPoint = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
+    //if (self.zoomScale != 1.0) [self zoomBackWithCenterPoint:centerPoint animated:NO];
+    
+    CGFloat imageWidth = self.image.size.width;
+    CGFloat imageHeight = self.image.size.height;
+    BOOL overWidth = imageWidth > self.bounds.size.width;
+    BOOL overHeight = imageHeight > self.bounds.size.height;
+    
+    CGSize fitSize = CGSizeMake(imageWidth, imageHeight);
+    if (overWidth && overHeight){
+        // 图片的宽、高均大于SV的宽、高
+        // fit by image width first if (height / times) still
+        // bigger than self.bound.size.width
+        // Then fit by height instead
+        CGFloat timesThanScreenWidth = (imageWidth / self.bounds.size.width);
+        if ((imageHeight / timesThanScreenWidth) < self.bounds.size.height){
+            self.maximumZoomScale = timesThanScreenWidth * self.imageMaximumZoomScale;
+            fitSize.width = self.bounds.size.width;
+            fitSize.height = imageHeight / timesThanScreenWidth;
+        }else{
+            CGFloat timesThanScreenHeight = (imageHeight / self.bounds.size.height);
+            self.maximumZoomScale = timesThanScreenHeight * self.imageMaximumZoomScale;
+            fitSize.width = imageWidth / timesThanScreenHeight;
+            fitSize.height = self.bounds.size.height;
+        }
+    }else if (overWidth && !overHeight){
+        CGFloat timesThanScreenWidth = (imageWidth / self.bounds.size.width);
+        self.maximumZoomScale = timesThanScreenWidth * self.imageMaximumZoomScale;
+        fitSize.width = self.bounds.size.width;
+        fitSize.height = imageHeight / timesThanScreenWidth;
+    }else if (!overWidth && overHeight){
+        fitSize.height = self.bounds.size.height;
+    }
+    
+    //NSLog(@"self.maximumZoomScale: %.2f",self.maximumZoomScale);
+    self.contentSize = fitSize;
+    [self.imageView autoSetDimensionsToSize:fitSize];
+    
+
+//    self.imageView.frame = CGRectMake((centerPoint.x - fitSize.width / 2),
+//                                      (centerPoint.y - fitSize.height / 2),
+//                                      fitSize.width,
+//                                      fitSize.height);
+    
+}
+
+
+#pragma mark - UIScrollViewDelegate
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView{
+    return self.imageView;
+}
+
+
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView{
+    //NSLog(@"self.zoomScale: %.2f",self.zoomScale);
+    /*
+    //NSLog(@"%@",NSStringFromSelector(_cmd));
+    CGFloat offsetX =
+    (self.bounds.size.width > self.contentSize.width) ?
+    (self.bounds.size.width - self.contentSize.width) * 0.5 : 0.0;
+    
+    CGFloat offsetY =
+    (self.bounds.size.height > self.contentSize.height)?
+    (self.bounds.size.height - self.contentSize.height) * 0.5 : 0.0;
+    
+    self.imageView.center = CGPointMake(self.contentSize.width * 0.5 + offsetX,
+                                        self.contentSize.height * 0.5 + offsetY);
+    
+    NSLog(@"self.imageView.center: %@",NSStringFromCGPoint(self.imageView.center));
+     */
+}
+
+
+#pragma mark - Zoom Action
+
+- (void)zoomToMinMax:(CGPoint)locationPoint{
+    BOOL rangeLeft = self.zoomScale > (self.maximumZoomScale * 0.9);
+    BOOL rangeRight = self.zoomScale <= self.maximumZoomScale;
+    
+    float destinationScale = rangeLeft && rangeRight ? self.minimumZoomScale : self.maximumZoomScale;
+    CGRect destinationRect = [self zoomRectForScale:destinationScale withCenter:locationPoint];
+    
+    [self zoomToRect:destinationRect animated:YES];
+}
+
+- (void)zoomBackWithCenterPoint:(CGPoint)center animated:(BOOL)animated {
+    CGRect rect = [self zoomRectForScale:1.0 withCenter:center];
+    [self zoomToRect:rect animated:animated];
+}
 
 - (CGRect)zoomRectForScale:(CGFloat)scale withCenter:(CGPoint)center {
     CGRect zoomRect;
@@ -353,90 +224,4 @@ static NSString * const ACIB_PathHead_HTTPString            = @"http";
     return zoomRect;
 }
 
-#pragma mark - UIScrollViewDelegate
-
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
-    return self.imageView;
-}
-
-- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
-    CGFloat offsetX =
-    (self.bounds.size.width > self.contentSize.width) ?
-    (self.bounds.size.width - self.contentSize.width) * 0.5 : 0.0;
-    
-    CGFloat offsetY =
-    (self.bounds.size.height > self.contentSize.height)?
-    (self.bounds.size.height - self.contentSize.height) * 0.5 : 0.0;
-    
-    self.imageView.center = CGPointMake(self.contentSize.width * 0.5 + offsetX,
-                                        self.contentSize.height * 0.5 + offsetY);
-}
-
-//- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
-//    //NSLog(@"%f", scale);
-//}
-
-#pragma mark - Zoom Action
-
-- (void)zoomBackWithCenterPoint:(CGPoint)center animated:(BOOL)animated {
-    CGRect rect = [self zoomRectForScale:1.0 withCenter:center];
-    [self zoomToRect:rect animated:animated];
-}
-
-- (void)handleTapGesture:(UITapGestureRecognizer *)tapGesture {
-    if (tapGesture.numberOfTapsRequired == 1) {
-        // don't know why some photo just can not zoom to maximumZoomScale
-        BOOL range_left = self.zoomScale > (self.maximumZoomScale * 0.9);
-        BOOL range_right = self.zoomScale <= self.maximumZoomScale;
-        
-        if (range_left && range_right) {
-            CGRect rect = [self zoomRectForScale:self.minimumZoomScale
-                                      withCenter:[tapGesture locationInView:tapGesture.view]];
-            [self zoomToRect:rect animated:YES];
-        }
-        else {
-            CGRect rect = [self zoomRectForScale:self.maximumZoomScale
-                                      withCenter:[tapGesture locationInView:tapGesture.view]];
-            [self zoomToRect:rect animated:YES];
-        }
-    }
-    else if (tapGesture.numberOfTapsRequired == 2) {
-        [self removeFromSuperview];
-        /*
-        //-- fullscreen mode switch ----------------------------------------------------------------
-        //if (!self.imageBrowser.isRoating) {
-            //if (self.imageBrowser.fullscreenEnable) {
-                if (self.fullScreen) {
-                    self.userInteractionEnabled = NO;
-                    
-                    //[[NSNotificationCenter defaultCenter] postNotificationName:ACIBU_FullscreenNotificationName object:ACIBU_WantFullscreenNO];
-                    
-                    [UIView animateWithDuration:ACIBU_BGColor_AnimationDuration animations:^{
-                        self.layer.backgroundColor = k_ACIB_isNotFullscreen_BGColor.CGColor;
-                        self.imageView.layer.backgroundColor = k_ACIB_isNotFullscreen_BGColor.CGColor;
-                    } completion:^(BOOL finished) {
-                        self.userInteractionEnabled = YES;
-                    }];
-                }
-                else {
-                    self.userInteractionEnabled = NO;
-                    
-                    //[[NSNotificationCenter defaultCenter] postNotificationName:ACIBU_FullscreenNotificationName object:ACIBU_WantFullscreenYES];
-                    
-                    [UIView animateWithDuration:ACIBU_BGColor_AnimationDuration animations:^{
-                        self.layer.backgroundColor = k_ACIB_isFullscreen_BGColor.CGColor;
-                        self.imageView.layer.backgroundColor = k_ACIB_isFullscreen_BGColor.CGColor;
-                    } completion:^(BOOL finished) {
-                        self.userInteractionEnabled = YES;
-                    }];
-                }
-        self.fullScreen = !self.fullScreen;
-            //}
-        //}
-        //----------------------------------------------------------------------------------------//
-        */
-    }
-}
-
 @end
-

@@ -2,29 +2,18 @@
 //  GCZoomableImageScrollView.h
 //  Everywhere
 //
-//  Created by BobZhang on 16/9/8.
+//  Created by 张保国 on 16/9/9.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-//#import "SDWebImageOperation.h"
 
 @interface GCZoomableImageScrollView : UIScrollView
 
-@property (nonatomic, strong) UIImageView                   *imageView;
+@property (strong,nonatomic) UIImage *image;
 
-@property (nonatomic, strong) NSString                      *imageURLString;
+@property (strong,nonatomic) NSURL *imageURL;
 
-//@property (nonatomic, weak) id <SDWebImageOperation>        webImageOperation;
-
-@property (nonatomic, strong) UIProgressView                *progressView;
-
-@property (nonatomic) BOOL                                  isLoaded;
-
-@property (nonatomic, assign) BOOL fullScreen;
-
-- (void)configImageByURL:(NSURL *)url;
-
-- (void)configImage:(UIImage *)image;
+@property (assign,nonatomic) float imageMaximumZoomScale;
 
 @end

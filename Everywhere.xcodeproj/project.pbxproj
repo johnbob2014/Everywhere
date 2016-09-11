@@ -20,10 +20,13 @@
 		1E81891A1D65B1C300F57714 /* GCCoordinateTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E8189191D65B1C300F57714 /* GCCoordinateTransformer.m */; };
 		1E8723A41D42D82E00652757 /* RecordModeSettingBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E8723A31D42D82E00652757 /* RecordModeSettingBar.m */; };
 		1E8723AC1D43603800652757 /* UIAlertController+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E8723AB1D43603800652757 /* UIAlertController+Assistant.m */; };
+		1EB22CC71D82E77300D71AC8 /* GCZoomableImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB22CC61D82E77300D71AC8 /* GCZoomableImageScrollView.m */; };
 		1ECE892D1D4ACF55004B5875 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1ECE892F1D4ACF55004B5875 /* Localizable.strings */; };
 		1ED1EE451D47A6D80068F0C6 /* LocationInfoBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ED1EE441D47A6D80068F0C6 /* LocationInfoBar.m */; };
 		1EEA79511D2791A0002B6291 /* EverywhereAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EEA79501D2791A0002B6291 /* EverywhereAnnotation.m */; };
 		1EEE907D1D5F846E00B87064 /* AlbumMapsAppQRCodeImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EEE907C1D5F846D00B87064 /* AlbumMapsAppQRCodeImage.png */; };
+		1EF48F871D859E2F007BAECD /* GCZoomableImageScrollViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF48F861D859E2F007BAECD /* GCZoomableImageScrollViewCell.m */; };
+		1EF48F8B1D85A740007BAECD /* GCLineFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF48F8A1D85A740007BAECD /* GCLineFlowLayout.m */; };
 		1EF5CB031D71D3D500D03D6F /* 地球_22_29.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EF5CB011D71D3D500D03D6F /* 地球_22_29.png */; };
 		1EF5CB041D71D3D500D03D6F /* 地球_44_58.png in Resources */ = {isa = PBXBuildFile; fileRef = 1EF5CB021D71D3D500D03D6F /* 地球_44_58.png */; };
 		1EF62A531D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A501D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m */; };
@@ -133,7 +136,6 @@
 		4B69F50A1D6156A800575AC3 /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B69F5061D6156A800575AC3 /* NSString+FontAwesome.m */; };
 		4B69F50B1D6156A800575AC3 /* UIButton+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B69F5081D6156A800575AC3 /* UIButton+Assistant.m */; };
 		4B90DDFA1D38C5A200332945 /* EverywhereFootprintAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B90DDF91D38C5A200332945 /* EverywhereFootprintAnnotation.m */; };
-		4BCB95CA1D810923008C2356 /* GCZoomableImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BCB95C91D810923008C2356 /* GCZoomableImageScrollView.m */; };
 		4BD51FC81D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FC51D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m */; };
 		4BD51FC91D2B47B900F18244 /* PHAssetInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FC71D2B47B900F18244 /* PHAssetInfo.m */; };
 		4BD51FCC1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FCB1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m */; };
@@ -182,6 +184,8 @@
 		1E8723AA1D43603800652757 /* UIAlertController+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIAlertController+Assistant.h"; path = "UIAlertController+Assistant/UIAlertController+Assistant.h"; sourceTree = "<group>"; };
 		1E8723AB1D43603800652757 /* UIAlertController+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIAlertController+Assistant.m"; path = "UIAlertController+Assistant/UIAlertController+Assistant.m"; sourceTree = "<group>"; };
 		1E9CF64AE7F289869F003D6F /* libPods-Everywhere.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Everywhere.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1EB22CC51D82E77300D71AC8 /* GCZoomableImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCZoomableImageScrollView.h; path = GCZoomableImageScrollView/GCZoomableImageScrollView.h; sourceTree = "<group>"; };
+		1EB22CC61D82E77300D71AC8 /* GCZoomableImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCZoomableImageScrollView.m; path = GCZoomableImageScrollView/GCZoomableImageScrollView.m; sourceTree = "<group>"; };
 		1ECE892E1D4ACF55004B5875 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1ECE89301D4ACF5E004B5875 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		1ED1EE431D47A6D80068F0C6 /* LocationInfoBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationInfoBar.h; path = EverywhereVisualViewControllers/LocationInfoBar.h; sourceTree = "<group>"; };
@@ -190,6 +194,10 @@
 		1EEA79501D2791A0002B6291 /* EverywhereAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereAnnotation.m; path = EverywhereModels/EverywhereAnnotation.m; sourceTree = "<group>"; };
 		1EEE907B1D5F381500B87064 /* GCFileBrowserConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCFileBrowserConfiguration.h; path = GCFileBrowser/GCFileBrowserConfiguration.h; sourceTree = "<group>"; };
 		1EEE907C1D5F846D00B87064 /* AlbumMapsAppQRCodeImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AlbumMapsAppQRCodeImage.png; sourceTree = "<group>"; };
+		1EF48F851D859E2F007BAECD /* GCZoomableImageScrollViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCZoomableImageScrollViewCell.h; path = GCZoomableImageScrollViewCell/GCZoomableImageScrollViewCell.h; sourceTree = "<group>"; };
+		1EF48F861D859E2F007BAECD /* GCZoomableImageScrollViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCZoomableImageScrollViewCell.m; path = GCZoomableImageScrollViewCell/GCZoomableImageScrollViewCell.m; sourceTree = "<group>"; };
+		1EF48F891D85A740007BAECD /* GCLineFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCLineFlowLayout.h; path = GCLineFlowLayout/GCLineFlowLayout.h; sourceTree = "<group>"; };
+		1EF48F8A1D85A740007BAECD /* GCLineFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCLineFlowLayout.m; path = GCLineFlowLayout/GCLineFlowLayout.m; sourceTree = "<group>"; };
 		1EF5CB011D71D3D500D03D6F /* 地球_22_29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "地球_22_29.png"; sourceTree = "<group>"; };
 		1EF5CB021D71D3D500D03D6F /* 地球_44_58.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "地球_44_58.png"; sourceTree = "<group>"; };
 		1EF62A4F1D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CoordinateInfo+CoreDataProperties.h"; path = "EverywhereCoreData/CoordinateInfo+CoreDataProperties.h"; sourceTree = "<group>"; };
@@ -359,8 +367,6 @@
 		4B69F5081D6156A800575AC3 /* UIButton+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+Assistant.m"; sourceTree = "<group>"; };
 		4B90DDF81D38C5A200332945 /* EverywhereFootprintAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereFootprintAnnotation.h; path = EverywhereModels/EverywhereFootprintAnnotation.h; sourceTree = "<group>"; };
 		4B90DDF91D38C5A200332945 /* EverywhereFootprintAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereFootprintAnnotation.m; path = EverywhereModels/EverywhereFootprintAnnotation.m; sourceTree = "<group>"; };
-		4BCB95C81D810923008C2356 /* GCZoomableImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCZoomableImageScrollView.h; path = GCZoomableImageScrollView/GCZoomableImageScrollView.h; sourceTree = "<group>"; };
-		4BCB95C91D810923008C2356 /* GCZoomableImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCZoomableImageScrollView.m; path = GCZoomableImageScrollView/GCZoomableImageScrollView.m; sourceTree = "<group>"; };
 		4BD51FC41D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PHAssetInfo+CoreDataProperties.h"; path = "EverywhereCoreData/PHAssetInfo+CoreDataProperties.h"; sourceTree = "<group>"; };
 		4BD51FC51D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PHAssetInfo+CoreDataProperties.m"; path = "EverywhereCoreData/PHAssetInfo+CoreDataProperties.m"; sourceTree = "<group>"; };
 		4BD51FC61D2B47B900F18244 /* PHAssetInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PHAssetInfo.h; path = EverywhereCoreData/PHAssetInfo.h; sourceTree = "<group>"; };
@@ -616,6 +622,24 @@
 				4BE88A9E1D332B38009501CE /* EverywhereSettingManager.m */,
 			);
 			name = EverywhereModels;
+			sourceTree = "<group>";
+		};
+		1EF48F841D859DFA007BAECD /* GCZoomableImageScrollViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				1EF48F851D859E2F007BAECD /* GCZoomableImageScrollViewCell.h */,
+				1EF48F861D859E2F007BAECD /* GCZoomableImageScrollViewCell.m */,
+			);
+			name = GCZoomableImageScrollViewCell;
+			sourceTree = "<group>";
+		};
+		1EF48F881D85A6ED007BAECD /* GCLineFlowLayout */ = {
+			isa = PBXGroup;
+			children = (
+				1EF48F891D85A740007BAECD /* GCLineFlowLayout.h */,
+				1EF48F8A1D85A740007BAECD /* GCLineFlowLayout.m */,
+			);
+			name = GCLineFlowLayout;
 			sourceTree = "<group>";
 		};
 		4B001CD81D21252400DF7287 /* CLPlacemark+Assistant */ = {
@@ -874,6 +898,8 @@
 		4B3AF9CF1D2F3ECE009BD545 /* GeneralClass */ = {
 			isa = PBXGroup;
 			children = (
+				1EF48F881D85A6ED007BAECD /* GCLineFlowLayout */,
+				1EF48F841D859DFA007BAECD /* GCZoomableImageScrollViewCell */,
 				4BCB95C71D81086E008C2356 /* GCZoomableImageScrollView */,
 				4B12D3411D7D0D3600F5E3B9 /* GCStarAnnotationView */,
 				4B0BFDDE1D6B069100F8CAA5 /* SVProgressHUD */,
@@ -923,8 +949,8 @@
 		4BCB95C71D81086E008C2356 /* GCZoomableImageScrollView */ = {
 			isa = PBXGroup;
 			children = (
-				4BCB95C81D810923008C2356 /* GCZoomableImageScrollView.h */,
-				4BCB95C91D810923008C2356 /* GCZoomableImageScrollView.m */,
+				1EB22CC51D82E77300D71AC8 /* GCZoomableImageScrollView.h */,
+				1EB22CC61D82E77300D71AC8 /* GCZoomableImageScrollView.m */,
 			);
 			name = GCZoomableImageScrollView;
 			sourceTree = "<group>";
@@ -1206,6 +1232,7 @@
 				4B30E2A81D24A999002C2DE7 /* NSDate+Assistant.m in Sources */,
 				4BE88A9F1D332B38009501CE /* EverywhereSettingManager.m in Sources */,
 				4BFA06451D4B56A600AE8000 /* UIImage+Assistant.m in Sources */,
+				1EF48F871D859E2F007BAECD /* GCZoomableImageScrollViewCell.m in Sources */,
 				4B3AF9C91D2F3E70009BD545 /* GCLocationAnalyser.m in Sources */,
 				4B079BA21D61B07800BC4115 /* NSArray+Chameleon.m in Sources */,
 				4BD51FC81D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m in Sources */,
@@ -1238,6 +1265,7 @@
 				4B0BFDEC1D6B069100F8CAA5 /* SVProgressHUD.m in Sources */,
 				4B079BA81D61B07800BC4115 /* UILabel+Chameleon.m in Sources */,
 				4BF277151D63F3DE009626B5 /* UITextField+Assistant.m in Sources */,
+				1EF48F8B1D85A740007BAECD /* GCLineFlowLayout.m in Sources */,
 				4B3AF9CC1D2F3E70009BD545 /* GCRoutePolyline.m in Sources */,
 				4B0BFDEA1D6B069100F8CAA5 /* SVProgressAnimatedView.m in Sources */,
 				1E8723A41D42D82E00652757 /* RecordModeSettingBar.m in Sources */,
@@ -1273,7 +1301,7 @@
 				4B058D8F1D62F23D00DBEE04 /* DatePickerProVC.m in Sources */,
 				1EEA79511D2791A0002B6291 /* EverywhereAnnotation.m in Sources */,
 				1E2847F71D1ADDB900189A83 /* main.m in Sources */,
-				4BCB95CA1D810923008C2356 /* GCZoomableImageScrollView.m in Sources */,
+				1EB22CC71D82E77300D71AC8 /* GCZoomableImageScrollView.m in Sources */,
 				4B3AF9CA1D2F3E70009BD545 /* GCPhotoManager.m in Sources */,
 				4B31B4381D3C5EE20072044F /* FootprintsRepositoryPickerVC.m in Sources */,
 				4B3AF9CD1D2F3E70009BD545 /* GCRoutePolylineManager.m in Sources */,

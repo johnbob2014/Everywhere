@@ -224,7 +224,7 @@
 #pragma mark - Thumnail Images
 
 - (void)crossButtonTD:(UIButton *)sender{
-    NSLog(@"%@",NSStringFromCGPoint(CGPointMake(sender.superview.tag, sender.tag)));
+    if(DEBUGMODE) NSLog(@"%@",NSStringFromCGPoint(CGPointMake(sender.superview.tag, sender.tag)));
     
     EverywhereFootprintAnnotation *modifiedFA = self.footprintsRepository.footprintAnnotations[sender.superview.tag];
     [modifiedFA.thumbnailArray removeObjectAtIndex:sender.tag];
