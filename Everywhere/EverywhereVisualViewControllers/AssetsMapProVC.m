@@ -2534,6 +2534,7 @@
         PHAssetInfo *firstAssetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:firstAsset.localIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
         NSString *placeName = [firstAssetInfo.localizedPlaceString_Placemark placemarkBriefName];
         anno.annotationTitle = [NSString stringWithFormat:@"%lu/%lu %@",(unsigned long)(idx + 1),(unsigned long)(self.assetsArray.count),placeName];
+        anno.annotationTitle = [NSString stringWithFormat:@"%@",placeName];
         
         if (self.settingManager.mapBaseMode == MapBaseModeMoment) {
             anno.annotationSubtitle = [NSString stringWithFormat:@"%@",[firstAsset.creationDate stringWithDefaultFormat]];
@@ -3080,8 +3081,8 @@
 }
 
 + (NSArray <UIColor *> *)preferredOverlayColors{
-    return @[FlatOrangeDark,FlatYellowDark,FlatSandDark,FlatMagentaDark,FlatTeal,FlatTealDark,FlatSkyBlueDark,FlatGreen,FlatGreenDark,FlatMint,FlatMintDark,FlatForestGreenDark,FlatPurple,FlatPurpleDark,FlatBrownDark,FlatPlumDark,FlatWatermelonDark,FlatLime,FlatLimeDark,FlatPinkDark,FlatMaroon,FlatMaroonDark,FlatCoffee,FlatCoffeeDark];
-    //@[FlatSand,]
+    //不适合显示的颜色 @[FlatSand,FlatSandDark]
+    return @[FlatOrangeDark,FlatYellowDark,FlatMagentaDark,FlatTeal,FlatTealDark,FlatSkyBlueDark,FlatGreen,FlatGreenDark,FlatMint,FlatMintDark,FlatForestGreenDark,FlatPurple,FlatPurpleDark,FlatBrownDark,FlatPlumDark,FlatWatermelonDark,FlatLime,FlatLimeDark,FlatPinkDark,FlatMaroon,FlatMaroonDark,FlatCoffee,FlatCoffeeDark];
 }
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view{

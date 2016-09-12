@@ -37,7 +37,7 @@
         NSLog(@"首次启动!!!");
         settingManager.everLaunched = YES;
         
-        settingManager.trialCountForShareAndBrowse = 10;
+        settingManager.trialCountForShareAndBrowse = 20;
         settingManager.trialCountForRecordAndEdit = 10;
     }
     

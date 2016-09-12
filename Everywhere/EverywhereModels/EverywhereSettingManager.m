@@ -138,6 +138,13 @@
         [[NSUserDefaults standardUserDefaults] setValue:appDebugCode forKey:@"appDebugCode"];
     }
     
+    // 更新AppVersion
+    if ([appInfoDictionary.allKeys containsObject:@"AppVersion"]){
+        NSString *appVersion = appInfoDictionary[@"AppVersion"];
+        if(DEBUGMODE) NSLog(@"appVersion : %@",appVersion);
+        [[NSUserDefaults standardUserDefaults] setValue:appVersion forKey:@"appVersion"];
+    }
+    
     // 保存数据！！！
     [[NSUserDefaults standardUserDefaults] synchronize];
     
@@ -179,6 +186,10 @@
 
 - (NSString *)appDebugCode{
     return [[NSUserDefaults standardUserDefaults] objectForKey:@"appDebugCode"];
+}
+
+- (NSString *)appVersion{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:@"appVersion"];
 }
 
 #pragma mark - Items

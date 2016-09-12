@@ -18,9 +18,14 @@
 
 #pragma mark - Life Cycle
 
-- (instancetype)init{
-    self = [super init];
+- (instancetype)initWithFrame:(CGRect)frame{
+    self = [super initWithFrame:frame];
     if (self) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(orientationDidChange:)
+                                                     name:UIDeviceOrientationDidChangeNotification
+                                                   object:nil];
+        
         self.delegate = self;
         
         self.scrollEnabled = YES;
@@ -37,7 +42,7 @@
 }
 
 - (void)initSubviews{
-    /*
+    
     self.imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
     
     self.imageView.autoresizingMask =
@@ -45,14 +50,14 @@
     | UIViewAutoresizingFlexibleRightMargin
     | UIViewAutoresizingFlexibleBottomMargin
     | UIViewAutoresizingFlexibleLeftMargin;
-     */
-    self.imageView = [UIImageView newAutoLayoutView];
+    
+    //self.imageView = [UIImageView newAutoLayoutView];
 
     self.imageView.backgroundColor = [UIColor clearColor];
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     [self addSubview:self.imageView];
     //[self.imageView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
-    [self.imageView autoCenterInSuperview];
+    //[self.imageView autoCenterInSuperview];
     
     self.imageView.userInteractionEnabled = YES;
     
@@ -79,22 +84,11 @@
     [self zoomToMinMax:[sender locationInView:sender.view]];
 }
 
-/*
-- (void)updateConstraints{
-    NSLog(@"%@",NSStringFromSelector(_cmd));
-    [super updateConstraints];
-}
-*/
+#pragma mark - Orientation
 
-- (void)layoutSubviews{
-    [super layoutSubviews];
-    
-    //NSLog(@"%@",NSStringFromSelector(_cmd));
-    //NSLog(@"%@",NSStringFromCGRect(self.frame));
-    //NSLog(@"%@",NSStringFromCGSize(self.contentSize));
-    //NSLog(@"%@",NSStringFromCGRect(self.imageView.frame));
+- (void)orientationDidChange:(NSNotification *)noti{
+    [self updateImageView];
 }
-
 
 #pragma mark - Setter
 
@@ -106,17 +100,18 @@
 - (void)setImage:(UIImage *)image{
     _image = image;
     self.imageView.image = image;
-    [self updateImageViewConstraints];
+    [self updateImageView];
 }
 
 
-- (void)updateImageViewConstraints{
+- (void)updateImageView{
+    CGPoint centerPoint = CGPointMake(CGRectGetMidX(self.bounds),CGRectGetMidY(self.bounds));
    
-    //NSLog(@"self.frame: %@",NSStringFromCGRect(self.frame));
+    
     //NSLog(@"self.bounds: %@",NSStringFromCGRect(self.bounds));
 
     //CGPoint centerPoint = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
-    //if (self.zoomScale != 1.0) [self zoomBackWithCenterPoint:centerPoint animated:NO];
+    if (self.zoomScale != 1.0) [self zoomBackWithCenterPoint:centerPoint animated:NO];
     
     CGFloat imageWidth = self.image.size.width;
     CGFloat imageHeight = self.image.size.height;
@@ -151,14 +146,14 @@
     
     //NSLog(@"self.maximumZoomScale: %.2f",self.maximumZoomScale);
     self.contentSize = fitSize;
-    [self.imageView autoSetDimensionsToSize:fitSize];
+    //[self.imageView autoSetDimensionsToSize:fitSize];
     
 
-//    self.imageView.frame = CGRectMake((centerPoint.x - fitSize.width / 2),
-//                                      (centerPoint.y - fitSize.height / 2),
-//                                      fitSize.width,
-//                                      fitSize.height);
-    
+    self.imageView.frame = CGRectMake((centerPoint.x - fitSize.width / 2),
+                                      (centerPoint.y - fitSize.height / 2),
+                                      fitSize.width,
+                                      fitSize.height);
+    //NSLog(@"self.imageView.frame: %@",NSStringFromCGRect(self.imageView.frame));
 }
 
 
@@ -171,7 +166,7 @@
 
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView{
     //NSLog(@"self.zoomScale: %.2f",self.zoomScale);
-    /*
+    
     //NSLog(@"%@",NSStringFromSelector(_cmd));
     CGFloat offsetX =
     (self.bounds.size.width > self.contentSize.width) ?
@@ -184,8 +179,8 @@
     self.imageView.center = CGPointMake(self.contentSize.width * 0.5 + offsetX,
                                         self.contentSize.height * 0.5 + offsetY);
     
-    NSLog(@"self.imageView.center: %@",NSStringFromCGPoint(self.imageView.center));
-     */
+    //NSLog(@"self.imageView.center: %@",NSStringFromCGPoint(self.imageView.center));
+    
 }
 
 

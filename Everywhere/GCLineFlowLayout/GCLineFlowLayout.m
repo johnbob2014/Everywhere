@@ -14,22 +14,27 @@
 
 @implementation GCLineFlowLayout
 
-/*
+
 -(instancetype)init{
     self=[super init];
     if (self) {
-        //self.itemSize=CGSizeMake(kItemSize, kItemSize);
+        //self.itemSize = self.collectionView.bounds.size;
+        //self.itemSize = CGSizeMake(kItemSize, kItemSize);
         self.scrollDirection=UICollectionViewScrollDirectionHorizontal;
         //CGFloat top_bottom_Inset=(self.collectionView.bounds.size.height - kItemSize) / 2;
         //CGFloat top_bottom_Inset=kItemSize;
         //self.sectionInset=UIEdgeInsetsMake(top_bottom_Inset, 0.0, top_bottom_Inset, 0.0);
-        self.minimumLineSpacing=40.0;
         
+        self.minimumInteritemSpacing = 0.0f;
+        self.minimumLineSpacing = 40.0;
         
+        self.sectionInset = UIEdgeInsetsZero;
+        self.footerReferenceSize = CGSizeZero;
+        self.headerReferenceSize = CGSizeZero;
     }
     return self;
 }
-*/
+
 
 //自动对齐到网格
 -(CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset withScrollingVelocity:(CGPoint)velocity{

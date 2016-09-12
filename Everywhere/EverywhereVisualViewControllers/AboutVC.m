@@ -54,7 +54,7 @@
     [self.nameLabel autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:self.imageView withOffset:10];
     
     self.versonLabel=[[UILabel alloc]initForAutoLayout];
-    self.versonLabel.text=@"v3.1.0";
+    self.versonLabel.text=[EverywhereSettingManager defaultManager].appVersion;
     self.versonLabel.font=[UIFont bodyFontWithSizeMultiplier:0.8];
     [self.view addSubview:self.versonLabel];
     [self.versonLabel autoAlignAxis:ALAxisVertical toSameAxisOfView:self.nameLabel];
@@ -78,6 +78,10 @@
     self.detailTextView.editable=NO;
     self.detailTextView.font=[UIFont bodyFontWithSizeMultiplier:1.0];
     self.detailTextView.text=NSLocalizedString(@"Your Album and Footprints Management Expert.", @"您的相册和足迹管理专家。");
+    
+    self.detailTextView.backgroundColor = RandomFlatColor;
+    self.detailTextView.textColor = [UIColor colorWithContrastingBlackOrWhiteColorOn:self.detailTextView.backgroundColor isFlat:YES];
+    
     [self.view addSubview:self.detailTextView];
     [self.detailTextView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:self.imageView withOffset:20];
     [self.detailTextView autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:20];

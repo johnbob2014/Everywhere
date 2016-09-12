@@ -64,6 +64,11 @@
  */
 @property (strong,nonatomic) NSString *appDebugCode;
 
+/**
+ * app版本号
+ */
+@property (strong,nonatomic) NSString *appVersion;
+
 #pragma mark - 各项设置
 
 /**

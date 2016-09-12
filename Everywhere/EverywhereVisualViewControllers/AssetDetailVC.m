@@ -27,16 +27,10 @@
 @end
 
 @implementation AssetDetailVC{
-    //PHFetchResult <PHAsset *> *assetArray;
-    //__block NSMutableArray <UIImage *> *imageMA;
-    
     PHAsset *currentAsset;
     
+    GCLineFlowLayout *lineFlowLayout;
     UICollectionView *myCollectionView;
-    
-    // GCZoomableImageScrollView *imageScrollView;
-    
-    UIImage *currentImage;
     
     UIButton *playButton;
     
@@ -45,14 +39,6 @@
     UISwitch *eliminateThisAssetSwitch,*actAsThumbnailSwitch;
     
     AVPlayerItem *playerItem;
-    
-    //UIScrollView *assistantScrollView;
-    //UIImageView *assistantImageView;
-    
-    CGFloat scaleFactor;
-    CGFloat rotationFactor;
-    CGFloat currentScaleDelta;
-    CGFloat currentRotationDelta;
 }
 
 - (NSArray<PHAsset *> *)assetArray{
@@ -69,31 +55,29 @@
     if (currentIndex >= 0 && currentIndex <= self.assetArray.count - 1) {
         _currentIndex = currentIndex;
         
-        //[self asyncFillImageMA];
-        
-        self.title = [NSString stringWithFormat:@"%lu / %lu",(unsigned long)(currentIndex + 1),(unsigned long)self.assetArray.count];
-        
-        currentAsset = self.assetArray[currentIndex];
-        //currentImage = [currentAsset synchronousFetchUIImageAtTargetSize:PHImageManagerMaximumSize];
-        //imageScrollView.image = currentImage;
-        
-        if (currentAsset.mediaType == PHAssetMediaTypeVideo) {
-            playButton.hidden = NO;
-        }else if (currentAsset.mediaType == PHAssetMediaTypeImage){
-            playButton.hidden = YES;
-            playerItem = nil;
-        }
-        
-        noteLabel.text = [NSString stringWithFormat:@"%lu/%lu",(unsigned long)(currentIndex + 1),(unsigned long)self.assetArray.count];
+        NSString *indexInfo = [NSString stringWithFormat:@"%lu / %lu",(unsigned long)(currentIndex + 1),(unsigned long)self.assetArray.count];
+        self.title = indexInfo;
+        noteLabel.text = indexInfo;
         if (currentIndex == 0 || currentIndex == self.assetArray.count - 1){
             noteLabel.text = [NSString stringWithFormat:@"%@\n%@",noteLabel.text,NSLocalizedString(@"Swipe up to quite", @"上滑退出")];
         }
         
-        self.currentAssetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:currentAsset.localIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
+        currentAsset = self.assetArray[currentIndex];
+        BOOL playButtonHidden;
+        if (currentAsset.mediaType == PHAssetMediaTypeVideo) {
+            playButtonHidden = NO;
+        }else if (currentAsset.mediaType == PHAssetMediaTypeImage){
+            playButtonHidden = YES;
+            playerItem = nil;
+        }
         
+        [UIView animateWithDuration:0.3 animations:^{
+            playButton.hidden = playButtonHidden;
+        }];
+        
+        self.currentAssetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:currentAsset.localIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
         eliminateThisAssetSwitch.on = [self.currentAssetInfo.eliminateThisAsset boolValue];
         actAsThumbnailSwitch.on = [self.currentAssetInfo.actAsThumbnail boolValue];
-        
     }
 }
 
@@ -101,24 +85,23 @@
     return UIInterfaceOrientationMaskAllButUpsideDown;
 }
 
+// Notifies the container that the size of its view is about to change.
+// UIKit calls this method before changing the size of a presented view controller’s view. You can override this method in your own objects and use it to perform additional tasks related to the size change. For example, a container view controller might use this method to override the traits of its embedded child view controllers. Use the provided coordinator object to animate any changes you make.
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    [myCollectionView.collectionViewLayout invalidateLayout];
+    lineFlowLayout.itemSize = size;
+    [myCollectionView setCollectionViewLayout:lineFlowLayout animated:NO];
+}
+
 - (void)viewDidLoad{
     [super viewDidLoad];
     
-    //imageMA = [NSMutableArray arrayWithCapacity:self.assetArray.count];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
     
     self.view.backgroundColor = [UIColor blackColor];
     
-    GCLineFlowLayout *lineFlowLayout = [[GCLineFlowLayout alloc] init];
-    lineFlowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    lineFlowLayout = [[GCLineFlowLayout alloc] init];
     lineFlowLayout.itemSize = self.view.frame.size;
-    
-    lineFlowLayout.minimumInteritemSpacing = 0.0f;
-    lineFlowLayout.minimumLineSpacing = 40.0;
-    
-    lineFlowLayout.sectionInset = UIEdgeInsetsZero;
-    lineFlowLayout.footerReferenceSize = CGSizeZero;
-    lineFlowLayout.headerReferenceSize = CGSizeZero;
-
     
     myCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:lineFlowLayout];
     myCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -135,12 +118,11 @@
         [myCollectionView addGestureRecognizer:swipeUpGR];
     }
     
-    
     playButton = [UIButton newAutoLayoutView];
     [playButton setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Video_WBG"] forState:UIControlStateNormal];
     playButton.alpha = 0.6;
     [playButton addTarget:self action:@selector(play:) forControlEvents:UIControlEventTouchDown];
-    [myCollectionView addSubview:playButton];
+    [self.view addSubview:playButton];
     [playButton autoCenterInSuperview];
     [playButton autoSetDimensionsToSize:CGSizeMake(50, 50)];
     playButton.hidden = YES;
@@ -244,8 +226,7 @@
     GCZoomableImageScrollViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell" forIndexPath:indexPath];
 
     currentAsset = self.assetArray[indexPath.item];
-    currentImage = [currentAsset synchronousFetchUIImageAtTargetSize:PHImageManagerMaximumSize];
-    cell.zoomableImageScrollView.image = currentImage;
+    cell.zoomableImageScrollView.image = [currentAsset synchronousFetchUIImageAtTargetSize:PHImageManagerMaximumSize];
     
     return cell;
 }

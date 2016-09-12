@@ -13,10 +13,14 @@
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
-        self.zoomableImageScrollView = [GCZoomableImageScrollView newAutoLayoutView];
+        self.zoomableImageScrollView = [[GCZoomableImageScrollView alloc] initWithFrame:self.bounds];
+        self.zoomableImageScrollView.autoresizingMask =
+        UIViewAutoresizingFlexibleWidth
+        |UIViewAutoresizingFlexibleHeight;
+        
         [self.contentView addSubview:self.zoomableImageScrollView];
-        [self.zoomableImageScrollView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
-        [self.contentView layoutIfNeeded];
+        //[self.zoomableImageScrollView autoPinEdgesToSuperviewEdgesWithInsets:UIEdgeInsetsZero];
+        //[self.contentView layoutIfNeeded];
     }
     return self;
 }
