@@ -1,0 +1,10 @@
+
+.DS_Store
+
+Everywhere.xcodeproj/project.pbxproj
+
+*.pbxproj
+
+*.xcuserstate
+
+Everywhere/.DS_Store
