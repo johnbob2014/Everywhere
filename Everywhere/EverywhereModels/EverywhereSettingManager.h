@@ -21,11 +21,16 @@
 + (instancetype)defaultManager;
 
 /**
+ * 从本地更新AppInfo信息
+ */
++ (void)updateAppInfoFromLocal;
+
+/**
  *  从网络更新AppInfo信息，完成后调用指定块
  *
  *  @param completionBlock 更新完成后调用的块
  */
-+ (void)updateAppInfoWithCompletionBlock:(void(^)())completionBlock;
++ (void)updateAppInfoFromInternetWithCompletionBlock:(void(^)())completionBlock;
 
 #pragma mark - AppInfo
 
@@ -68,6 +73,11 @@
  * app版本号
  */
 @property (strong,nonatomic) NSString *appVersion;
+
+/**
+ * app帮助链接
+ */
+@property (strong,nonatomic) NSString *appUserGuideURLString;
 
 #pragma mark - 各项设置
 

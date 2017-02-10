@@ -62,7 +62,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.1.0</string>
+	<string>3.2.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -93,15 +93,12 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>AlbumMaps needs continued use of GPS running in the background to keep on recording your footprints.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>AlbumMaps needs GPS data to show your current locaion.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>AlbumMaps needs to read your photo data to get location infomation.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>FontAwesome.ttf</string>

@@ -31,15 +31,16 @@
     if(DEBUGMODE) NSLog(@"%@",NSStringFromSelector(_cmd));
     
     settingManager = [EverywhereSettingManager defaultManager];
-    
-    // 首次启动
-    if(!settingManager.everLaunched){
-        NSLog(@"首次启动!!!");
-        settingManager.everLaunched = YES;
-        
-        settingManager.trialCountForShareAndBrowse = 20;
-        settingManager.trialCountForRecordAndEdit = 10;
+    // 如果没有更新过
+    if (!settingManager.appInfoLastUpdateDate){
+        [EverywhereSettingManager updateAppInfoFromLocal];
     }
+    
+    // 如果距离上次更新时间超过30天
+    if ([[NSDate date] timeIntervalSinceDate:settingManager.appInfoLastUpdateDate] > 24 * 60 * 60 * 30){
+        [EverywhereSettingManager updateAppInfoFromInternetWithCompletionBlock:nil];
+    }
+
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     assetsMapProVC = [AssetsMapProVC new];
@@ -129,10 +130,17 @@
     
     // 程序退出时保存记录的足迹
     [assetsMapProVC intelligentlySaveRecordedFootprintAnnotationsAndClearCatche];
+
+    // 删除无效的PHAssetInfo
+    // [PHAssetInfo deleteInvalidAssetInfosInManagedObjectContext:self.managedObjectContext];
     
     [self saveContext];
 }
 
+
+/**
+ 当应用变成活动窗口时，检查是否有其它应用发送过来的文件；如果有，尝试进行解析（每次检查只解析一个文件）
+ */
 - (void)checkInbox{
     NSString *Path_Inbox = [NSURL inboxURL].path;
     if (![[NSFileManager defaultManager] fileExistsAtPath:Path_Inbox]) return;

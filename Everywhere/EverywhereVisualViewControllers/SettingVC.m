@@ -13,7 +13,7 @@
 #import "InAppPurchaseVC.h"
 #import "AboutVC.h"
 #import "GCFileBrowser.h"
-
+#import "GCSimpleBrowser.h"
 
 #import "EverywhereSettingManager.h"
 #import "WXApi.h"
@@ -24,8 +24,8 @@
 
 typedef BOOL (^OnChangeCharacterInRange)(RETextItem *item, NSRange range, NSString *replacementString);
 
-const NSString *APP_DOWNLOAD_URL=@"https://itunes.apple.com/app/id1072387063";
-const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/ChinaSceneryIntroduction.html";
+//const NSString *APP_DOWNLOAD_URL=@"https://itunes.apple.com/app/id1072387063";
+//const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/ChinaSceneryIntroduction.html";
 
 @interface SettingVC ()<RETableViewManagerDelegate>
 
@@ -77,14 +77,51 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     
     RETableViewSection *globleSection=[RETableViewSection sectionWithHeaderTitle:NSLocalizedString(@"Globle", @"全局设置")];
 
+#pragma mark 帮助
+    
+    RETableViewItem *helpItem = [RETableViewItem itemWithTitle:NSLocalizedString(@"📜 User Guide",@"📜 使用指南") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        
+        NSURL *url=[NSURL URLWithString:self.settingManager.appUserGuideURLString];
+        [[UIApplication sharedApplication] openURL:url];
+        /*
+        GCSimpleBrowser *simpleBrower = [GCSimpleBrowser new];
+        simpleBrower.startURL = url;
+        simpleBrower.edgesForExtendedLayout = UIRectEdgeNone;
+        [self.navigationController pushViewController:simpleBrower animated:YES];
+         */
+    }];
+  
 #pragma mark 系统设置
     
     RETableViewItem *systemSettingItem = [RETableViewItem itemWithTitle:NSLocalizedString(@"⚙ App Authorization",@"⚙ 更改应用授权") accessoryType:UITableViewCellAccessoryDisclosureIndicator selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         
-        NSURL*url=[NSURL URLWithString:UIApplicationOpenSettingsURLString];
+        NSURL *url=[NSURL URLWithString:UIApplicationOpenSettingsURLString];
         [[UIApplication sharedApplication] openURL:url];
+        
+    }];
 
+#pragma mark  清空无效的PHAssetInfo
+    RETableViewItem *clearAllAssetInfosItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"🌀 Clear Invalid Photo Location Infos",@"🌀 清空已删除照片的地址信息") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        
+        UIAlertActionHandler okActionHandler = ^(UIAlertAction *action) {
+            
+            NSUInteger count = [PHAssetInfo deleteInvalidAssetInfosInManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
+            
+            NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Delete invalid location infos count", @"删除地址信息数量"),(unsigned long)count];
+            UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
+                                                                                                message:alertMessage];
+            [weakSelf presentViewController:alertController animated:YES completion:nil];
+            
+        };
+        
+        UIAlertController *alertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Note", @"")
+                                                                                         message:NSLocalizedString(@"All invalid photo location infos will be deleted. Go on?", @"所有已删除照片的地址信息都将被清除。是否继续？")
+                                                                                 okActionHandler:okActionHandler];
+        [weakSelf presentViewController:alertController animated:YES completion:nil];
+        
     }];
 
 #pragma mark 路线颜色
@@ -146,7 +183,7 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
     }];
 */
     
-    [globleSection addItemsFromArray:@[systemSettingItem,routeColorIsMonochromeSegmentedItem,firstDayOfWeekSegmentedItem,playTimeIntervalItem,mapViewScaleRateItem,favoriteCoordinateInfoItem]];
+    [globleSection addItemsFromArray:@[helpItem,systemSettingItem,clearAllAssetInfosItem,routeColorIsMonochromeSegmentedItem,firstDayOfWeekSegmentedItem,playTimeIntervalItem,mapViewScaleRateItem,favoriteCoordinateInfoItem]];
     
 #pragma mark - 基础模式设置
     
@@ -208,6 +245,10 @@ const NSString *APP_INTRODUCTION_URL=@"http://7xpt9o.com1.z0.glb.clouddn.com/Chi
             AssetDetailVC *showVC = [AssetDetailVC new];
             showVC.assetLocalIdentifiers = assetLocalIdentifiers;
             showVC.edgesForExtendedLayout = UIRectEdgeNone;
+            showVC.eliminateStateDidChangeHandler = ^{
+                
+            };
+            
             [self.navigationController pushViewController:showVC animated:YES];
         }else{
             [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"No Eliminated Photos!", @"没有已排除的照片！")];

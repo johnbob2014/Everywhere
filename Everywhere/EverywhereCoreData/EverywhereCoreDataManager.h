@@ -30,6 +30,11 @@ typedef void(^UpdatePlacemarkForPHAssetInfoCompletionBlock)(NSInteger reverseGeo
 + (NSDate *)lastUpdateDate;
 
 /**
+ *  设置上次更新日期
+ */
++ (void)setLastUpdateDate:(NSDate *)lastUpdateDate;
+
+/**
  *  倒数第二次更新日期
  */
 + (NSDate *)secondLastUpdateDate;

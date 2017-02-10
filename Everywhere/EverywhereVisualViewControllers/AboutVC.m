@@ -105,7 +105,7 @@
 
 - (void)threeTapGR:(UITapGestureRecognizer *)sender{
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Wait a moment...", @"请稍后...")];
-    [EverywhereSettingManager updateAppInfoWithCompletionBlock:^{
+    [EverywhereSettingManager updateAppInfoFromInternetWithCompletionBlock:^{
         [SVProgressHUD dismiss];
         
         __block UITextField *tf;

@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "EverywhereAnnotation.h"
 
+typedef void(^EliminateStateDidChangeHandler)();
+
 @interface AssetDetailVC : UIViewController
 
 /**
@@ -30,5 +32,10 @@
  *  是否上滑退出
  */
 @property (assign,nonatomic) BOOL swipeUpToQuit;
+
+/**
+ 用户改变了照片的排除状态
+ */
+@property (copy,nonatomic) EliminateStateDidChangeHandler eliminateStateDidChangeHandler;
 
 @end

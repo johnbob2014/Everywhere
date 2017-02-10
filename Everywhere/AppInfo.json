@@ -1,0 +1,31 @@
+[
+  {
+    "AppName": "AlbumMaps",
+    "AppID": "1136142337",
+    "AppURLString": "https://itunes.apple.com/app/id1136142337",
+    "AppQRCodeImageURLString": "https://oixoepy7l.qnssl.com/AlbumMapsAppQRCodeImage.png",
+    "AppProductIDArray": [
+      "com.ZhangBaoGuo.AlbumMaps.ShareAndBrowse",
+      "com.ZhangBaoGuo.AlbumMaps.RecordAndEdit",
+      "com.ZhangBaoGuo.AlbumMaps.ImportAndExport",
+      "com.ZhangBaoGuo.AlbumMaps.AllFunctionsSuit"
+    ],
+    "AppWXID": "wxa1b9c5632d24039a",
+    "AppDebugCode": "2170f9442e52aad52e3c3b1c3b5d6a8a143289797b6b1fdab6e67d0fc6979668",
+    "AppVersion": "3.2.0",
+    "AppUserGuideURLString": "http://mp.weixin.qq.com/s?__biz=MzI4NDYxNjEyOA==&mid=100000014&idx=1&sn=7b15cb32f300f2894bb49a3501bedab2&chksm=6bf9f5a15c8e7cb7d764b335fc7d9765804bdb420d15a88abb550d18af4a5af2a7927ebd2efd&mpshare=1&scene=1&srcid=0209nBovVtyr5pDVnlkwKGGt#rd"
+  },
+  {
+    "AppName": "FloatingRateLoanCalculator",
+    "AppID": "1190166507",
+    "AppURLString": "https://itunes.apple.com/app/id1190166507",
+    "AppQRCodeImageURLString": "https://oixoepy7l.qnssl.com/FRLCAppQRCodeImage.png",
+    "AppProductIDArray": [
+      "com.ZhangBaoGuo.FloatingRateLoanCalculator.RepayAlertAndExportData"
+    ],
+    "AppWXID": "wxd8095af0c6b13296",
+    "AppDebugCode": "2170f9442e52aad52e3c3b1c3b5d6a8a143289797b6b1fdab6e67d0fc6979668",
+    "AppVersion": "1.0.0",
+    "AppUserGuideURLString": "http://mp.weixin.qq.com/s?__biz=MzI4NDYxNjEyOA==&mid=100000103&idx=1&sn=8e2b4d71f4776410796db033caee72c6&chksm=6bf9f5c85c8e7cdef4509ae90a08ef56a19f63cfcf97faade3ab0696f333a0c9b5451b86cee8&mpshare=1&scene=1&srcid=0210yesDuTzbxLLLab4W6REE#rd"
+  }
+]

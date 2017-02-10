@@ -7,8 +7,9 @@
 //
 
 #define AppID @"1136142337"
-
 #define AppWXID @"wxa1b9c5632d24039a"
+
+
 #define AppURLString @"https://itunes.apple.com/app/id1136142337"
 #define AppProductIDArray @[@"com.ZhangBaoGuo.AlbumMaps.ShareAndBrowse",@"com.ZhangBaoGuo.AlbumMaps.RecordAndEdit",@"com.ZhangBaoGuo.AlbumMaps.ImportAndExport",@"com.ZhangBaoGuo.AlbumMaps.AllFunctionsSuit"]
 #define AppQRCodeImage @"AlbumMapsAppQRCodeImage.png"
@@ -28,38 +29,33 @@
     return instance;
 }
 
+/*
 - (instancetype)init{
     self = [super init];
     if (self) {
-        // 如果没有更新过 或者 距离上次更新时间超过1天，则进行更新
-        if (!self.appInfoLastUpdateDate || [[NSDate date] timeIntervalSinceDate:self.appInfoLastUpdateDate] > 24 * 60 * 60){
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [EverywhereSettingManager updateAppInfoWithCompletionBlock:nil];
-            });
+        
+        // 如果没有更新过
+        if (!self.appInfoLastUpdateDate){
+            [EverywhereSettingManager updateAppInfoFromLocal];
+        }
+        
+        // 如果距离上次更新时间超过30天
+        if ([[NSDate date] timeIntervalSinceDate:self.appInfoLastUpdateDate] > 24 * 60 * 60 * 30){
+            [EverywhereSettingManager updateAppInfoFromInternetWithCompletionBlock:nil];
         }
     }
     return self;
 }
-
+*/
+ 
 #pragma mark - App Info
-+ (void)updateAppInfoWithCompletionBlock:(void(^)())completionBlock{
-    if(DEBUGMODE) NSLog(@"正在更新AppInfo...\n");
-    // 更新下载链接
-    NSString *appInfoURLString = @"http://www.7xpt9o.com1.z0.glb.clouddn.com/AppInfo.json";
-    
-    NSError *readDataError;
-    NSData *appInfoData = [NSData dataWithContentsOfURL:[NSURL URLWithString:appInfoURLString] options:NSDataReadingMapped error:&readDataError];
-    if (!appInfoData){
-        if(DEBUGMODE) NSLog(@"从网络获取AppInfo数据出错 : %@",readDataError.localizedDescription);
-        if (completionBlock) completionBlock();
-        return;
-    }
-    
+
++ (void)updateAppInfoFromAppInfoData:(NSData *)appInfoData{
     NSError *parseJSONError;
     NSArray *appInfoDictionaryArray = [NSJSONSerialization JSONObjectWithData:appInfoData options:NSJSONReadingMutableContainers error:&parseJSONError];
     if (!appInfoDictionaryArray){
         if(DEBUGMODE) NSLog(@"解析AppInfo数据出错 : %@",parseJSONError.localizedDescription);
-        if (completionBlock) completionBlock();
+        //if (completionBlock) completionBlock();
         return;
     }
     
@@ -77,7 +73,7 @@
     
     if (!appInfoDictionary){
         if(DEBUGMODE) NSLog(@"更新AppInfo失败！");
-        if (completionBlock) completionBlock();
+        //if (completionBlock) completionBlock();
         return;
     }
     
@@ -145,8 +141,50 @@
         [[NSUserDefaults standardUserDefaults] setValue:appVersion forKey:@"appVersion"];
     }
     
+    // 更新AppUserGuideURLString
+    if ([appInfoDictionary.allKeys containsObject:@"AppUserGuideURLString"]){
+        NSString *appUserGuideURLString = appInfoDictionary[@"AppUserGuideURLString"];
+        if(DEBUGMODE) NSLog(@"appUserGuideURLString : %@",appUserGuideURLString);
+        [[NSUserDefaults standardUserDefaults] setValue:appUserGuideURLString forKey:@"appUserGuideURLString"];
+    }
+    
     // 保存数据！！！
     [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    //if (completionBlock) completionBlock();
+
+}
+
++ (void)updateAppInfoFromLocal{
+    NSURL *localFileURL = [[NSBundle mainBundle] URLForResource:@"AppInfo" withExtension:@"json"];
+    NSError *readDataError;
+    NSData *appInfoData = [NSData dataWithContentsOfURL:localFileURL options:NSDataReadingMapped error:&readDataError];
+    
+    if (!appInfoData){
+        if(DEBUGMODE) NSLog(@"\n从本地获取AppInfo数据出错 : %@",readDataError.localizedDescription);
+        //if (completionBlock) completionBlock();
+        return;
+    }
+    
+    [EverywhereSettingManager updateAppInfoFromAppInfoData:appInfoData];
+
+}
+
++ (void)updateAppInfoFromInternetWithCompletionBlock:(void(^)())completionBlock{
+    //if(DEBUGMODE) NSLog(@"正在更新AppInfo...\n");
+    // 更新下载链接
+    NSString *appInfoURLString = @"https://oixoepy7l.qnssl.com/AppInfo.json";//www.7xpt9o.com1.z0.glb.clouddn.com
+    
+    NSError *readDataError;
+    NSData *appInfoData = [NSData dataWithContentsOfURL:[NSURL URLWithString:appInfoURLString] options:NSDataReadingMapped error:&readDataError];
+    
+    if (!appInfoData){
+        if(DEBUGMODE) NSLog(@"从网络获取AppInfo数据出错 : %@",readDataError.localizedDescription);
+        if (completionBlock) completionBlock();
+        return;
+    }
+    
+    [EverywhereSettingManager updateAppInfoFromAppInfoData:appInfoData];
     
     if (completionBlock) completionBlock();
 }
@@ -190,6 +228,10 @@
 
 - (NSString *)appVersion{
     return [[NSUserDefaults standardUserDefaults] objectForKey:@"appVersion"];
+}
+
+- (NSString *)appUserGuideURLString{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:@"appUserGuideURLString"];
 }
 
 #pragma mark - Items

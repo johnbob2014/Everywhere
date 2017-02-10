@@ -52,7 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSNumber *verticalAccuracy_Location;
 @property (nullable, nonatomic, retain) NSNumber *eliminateThisAsset;
 @property (nullable, nonatomic, retain) NSNumber *actAsThumbnail;
-
+@property (nullable, nonatomic, retain) NSNumber *invalid;
 @end
 
 NS_ASSUME_NONNULL_END

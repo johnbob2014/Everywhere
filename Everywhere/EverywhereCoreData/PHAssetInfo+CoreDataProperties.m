@@ -50,5 +50,6 @@
 @dynamic verticalAccuracy_Location;
 @dynamic eliminateThisAsset;
 @dynamic actAsThumbnail;
+@dynamic invalid;
 
 @end

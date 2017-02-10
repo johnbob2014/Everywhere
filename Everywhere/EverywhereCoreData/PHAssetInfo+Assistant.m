@@ -142,10 +142,41 @@
     return matches;
 }
 
-+ (BOOL)deleteAllAssetInfosInManagedObjectContext:(NSManagedObjectContext *)context{
-    NSArray <PHAssetInfo *> *allAssets = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:context];
-    [allAssets enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
++ (NSArray <PHAssetInfo *> *)fetchInvalidAssetInfosInManagedObjectContext:(NSManagedObjectContext *)context{
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:EntityName_PHAssetInfo];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"invalid = %@",[NSNumber numberWithBool:YES]];
+    NSError *fetchError;
+    NSArray <PHAssetInfo *> *matches = [context executeFetchRequest:fetchRequest error:&fetchError];
+    if (fetchError) NSLog(@"Fetch Invalid PHAssetInfos Error : %@",fetchError.localizedDescription);
+    return matches;
+}
+
++ (NSInteger)deleteInvalidAssetInfosInManagedObjectContext:(NSManagedObjectContext *)context{
+    NSArray <PHAssetInfo *> *allAssetInfoArray = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:context];
+    __block NSInteger count = 0;
+    
+    [allAssetInfoArray enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[obj.localIdentifier] options:nil].firstObject;
+        if (!asset){
+            NSString *infoID = obj.localIdentifier;
+            obj.invalid = @(YES);
+            [context deleteObject:obj];
+            if ([context save:NULL]){
+                count++;
+                NSLog(@"Delete PHAssetInfo : %@",infoID);
+            }
+        }
+    }];
+    
+    return count;
+}
+
++ (NSInteger)deleteAllAssetInfosInManagedObjectContext:(NSManagedObjectContext *)context{
+    __block NSInteger count = 0;
+    NSArray <PHAssetInfo *> *allAssetInfos = [PHAssetInfo fetchAllAssetInfosInManagedObjectContext:context];
+    [allAssetInfos enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [context deleteObject:obj];
+        count++;
     }];
     
     BOOL success = [context save:NULL];
@@ -156,7 +187,7 @@
         NSLog(@"Delete All PHAssetInfos Failed!");
     }
     
-    return success;
+    return count;
 }
 
 + (CLGeocoder *)defaultGeocoder{
@@ -166,6 +197,14 @@
         instance = [CLGeocoder new];
     });
     return instance;
+}
+
+- (void)updateInvalidState{
+    PHAsset *asset = [PHAsset fetchAssetsWithLocalIdentifiers:@[self.localIdentifier] options:nil].firstObject;
+    if (!asset){
+        self.invalid = @(YES);
+        [self.managedObjectContext save:NULL];
+    }
 }
 
 + (void)updatePlacemarkForAssetInfo:(PHAssetInfo *)assetInfo{
@@ -221,8 +260,8 @@
     NSMutableArray <NSString *> *subThoroughfare_Placemark = [NSMutableArray new];
 
     [assetInfoArray enumerateObjectsUsingBlock:^(PHAssetInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        // 不排除的照片，才统计信息
-        if (![obj.eliminateThisAsset boolValue]){
+        // 不排除、且有效的照片，才统计信息
+        if (![obj.eliminateThisAsset boolValue] && ![obj.invalid boolValue]){
             if (obj.country_Placemark) {
                 if (![country_Placemark containsObject:obj.country_Placemark]) [country_Placemark addObject:obj.country_Placemark];
             }

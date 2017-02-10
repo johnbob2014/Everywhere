@@ -130,7 +130,7 @@
             NSInteger reverseGeocodeSucceedCountForThisTime = reverseGeocodeFailedCountBeforeUpdate - reverseGeocodeFailedCountAfterUpdate;
             NSInteger reverseGeocodeSucceedCountForTotal = totalPHAssetInfoCount - reverseGeocodeFailedCountAfterUpdate;
             
-            if(DEBUGMODE) NSLog(@"解析照片信息 :\n本次解析成功 : %lu\n总成功数 : %lu\n总照片数 : %lu",(long)reverseGeocodeSucceedCountForThisTime,(long)reverseGeocodeSucceedCountForTotal,(long)totalPHAssetInfoCount);
+            NSLog(@"解析照片信息 :\n本次解析成功 : %lu\n总成功数 : %lu\n总照片数 : %lu",(long)reverseGeocodeSucceedCountForThisTime,(long)reverseGeocodeSucceedCountForTotal,(long)totalPHAssetInfoCount);
             
             if(completionBlock) completionBlock(reverseGeocodeSucceedCountForThisTime,reverseGeocodeSucceedCountForTotal,totalPHAssetInfoCount);
         });

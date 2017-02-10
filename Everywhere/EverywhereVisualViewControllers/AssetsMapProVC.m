@@ -260,13 +260,34 @@
     
     [self initShareBar];
     
+    [self performSelector:@selector(checkFirstLaunch) withObject:nil afterDelay:20.0];
+    
+    //[self checkFirstLaunch];
+}
+
+- (void)checkFirstLaunch{
+    // 首次启动
+    if(!self.settingManager.everLaunched){
+        NSLog(@"首次启动!!!");
+        self.settingManager.everLaunched = YES;
+        
+        self.settingManager.trialCountForShareAndBrowse = 10;
+        self.settingManager.trialCountForRecordAndEdit = 10;
+        
+        UIAlertController *alert = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Welcome to Album Maps", @"欢迎使用《相册地图》") message:NSLocalizedString(@"Open User Guide?", @"是否需要查看使用指南？") okActionHandler:^(UIAlertAction *action) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.settingManager.appUserGuideURLString]];
+        }];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+    }
+
 }
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     if(DEBUGMODE) NSLog(@"AssetsMapProVC: %@",NSStringFromSelector(_cmd));
     
-    EverywhereAppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+    EverywhereAppDelegate *appDelegate = (EverywhereAppDelegate *)[UIApplication sharedApplication].delegate;
     
     if (self.isInBaseMode) {
         self.currentTintColor = self.settingManager.baseTintColor;
@@ -532,8 +553,6 @@
         }];
         
         if (assetIDArry.count > 0){
-            noAsset = NO;
-            
             [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Reading Photo Album...", @"正在读取相册...")];
             PHFetchOptions *options = [PHFetchOptions new];
             options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
@@ -543,6 +562,7 @@
             self.endDate = fetchResult.lastObject.creationDate;
             
             self.assetArray = (NSArray <PHAsset *> *)fetchResult;
+            if (self.assetArray.count > 0) noAsset = NO;
         }
     }
     
@@ -553,7 +573,7 @@
 }
 
 - (void)setAssetArray:(NSArray<PHAsset *> *)assetArray{
-    if (!assetArray) return;
+    if (!assetArray || assetArray.count == 0) return;
     
     [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Dividing into groups...", @"正在分组...")];
     _assetArray = assetArray;
@@ -570,7 +590,7 @@
 }
 
 - (void)setAssetsArray:(NSArray<NSArray<PHAsset *> *> *)assetsArray{
-    if (!assetsArray) return;
+    if (!assetsArray || assetsArray.count == 0) return;
     
     _assetsArray = assetsArray;
     
@@ -615,6 +635,7 @@
     self.myMapView = [MKMapView newAutoLayoutView];
     self.myMapView.delegate = self;
     
+    self.myMapView.mapType = MKMapTypeStandard;
     // 禁止旋转
     self.myMapView.rotateEnabled = NO;
     // 禁止倾斜
@@ -1388,7 +1409,17 @@
     [self.view addSubview:rightVerticalBar];
     [rightVerticalBar autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:5];
     [rightVerticalBar autoPinEdge:ALEdgeBottom toEdge:ALEdgeTop ofView:rightSwipeVerticalBar withOffset: - 20 - ButtonOffset];
-    [rightVerticalBar autoSetDimensionsToSize:CGSizeMake(ButtonEdgeLength, ButtonEdgeLength * 3 + ButtonOffset * 2)];
+    [rightVerticalBar autoSetDimensionsToSize:CGSizeMake(ButtonEdgeLength, ButtonEdgeLength * 4 + ButtonOffset * 3)];
+    
+    UIButton *rightBtn0 = [UIButton newAutoLayoutView];
+    rightBtn0.alpha = 0.6;
+    [rightBtn0 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Monitor_WBG"] forState:UIControlStateNormal];
+    rightBtn0.translatesAutoresizingMaskIntoConstraints = NO;
+    [rightBtn0 addTarget:self action:@selector(changeMapViewMapType) forControlEvents:UIControlEventTouchDown];
+    [rightVerticalBar addSubview:rightBtn0];
+    [rightBtn0 autoSetDimensionsToSize:ButtionSize];
+    [rightBtn0 autoAlignAxisToSuperviewAxis:ALAxisVertical];
+    [rightBtn0 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
     
     UIButton *rightBtn1 = [UIButton newAutoLayoutView];
     rightBtn1.alpha = 0.6;
@@ -1398,7 +1429,7 @@
     [rightVerticalBar addSubview:rightBtn1];
     [rightBtn1 autoSetDimensionsToSize:ButtionSize];
     [rightBtn1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
-    [rightBtn1 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
+    [rightBtn1 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:rightBtn0 withOffset:ButtonOffset];
     
     UIButton *rightBtn2 = [UIButton newAutoLayoutView];
     rightBtn2.alpha = 0.6;
@@ -1420,6 +1451,22 @@
     [rightBtn3 autoAlignAxisToSuperviewAxis:ALAxisVertical];
     [rightBtn3 autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:rightBtn2 withOffset:ButtonOffset];
 
+}
+
+- (void)changeMapViewMapType{
+    /* 5种类型相互转换
+    NSUInteger currentMapType = self.myMapView.mapType;
+    currentMapType++;
+    if (currentMapType == 5) currentMapType = 0;
+    
+    self.myMapView.mapType = currentMapType;
+    */
+    
+    if (self.myMapView.mapType == MKMapTypeStandard){
+        self.myMapView.mapType = MKMapTypeHybrid;
+    }else{
+        self.myMapView.mapType = MKMapTypeStandard;
+    }
 }
 
 - (void)alphaShowHideVerticalBar{
@@ -2533,7 +2580,9 @@
         
         PHAssetInfo *firstAssetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:firstAsset.localIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
         NSString *placeName = [firstAssetInfo.localizedPlaceString_Placemark placemarkBriefName];
-        anno.annotationTitle = [NSString stringWithFormat:@"%lu/%lu %@",(unsigned long)(idx + 1),(unsigned long)(self.assetsArray.count),placeName];
+        if (!placeName) placeName = NSLocalizedString(@"(Parsing location)",@"（正在解析位置）");
+        //下面注释的这一行同时显示序号和名称，后来发现不好用
+        //anno.annotationTitle = [NSString stringWithFormat:@"%lu/%lu %@",(unsigned long)(idx + 1),(unsigned long)(self.assetsArray.count),placeName];
         anno.annotationTitle = [NSString stringWithFormat:@"%@",placeName];
         
         if (self.settingManager.mapBaseMode == MapBaseModeMoment) {
@@ -2962,6 +3011,10 @@
         showVC.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         EverywhereAnnotation *annotation = self.myMapView.selectedAnnotations.firstObject;
         showVC.assetLocalIdentifiers = annotation.assetLocalIdentifiers;
+        showVC.eliminateStateDidChangeHandler = ^(){
+            self.assetInfoArray = self.assetInfoArray;
+        };
+        
         
         [self presentViewController:showVC animated:YES completion:nil];
     }else if ([firstSelectedAnnotation isKindOfClass:[EverywhereFootprintAnnotation class]]){

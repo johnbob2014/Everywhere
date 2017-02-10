@@ -1,91 +1,92 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="14F1713" minimumToolsVersion="Automatic">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11759" systemVersion="16C68" minimumToolsVersion="Xcode 7.3" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="">
     <entity name="CoordinateInfo" representedClassName="CoordinateInfo" syncable="YES">
         <attribute name="administrativeArea_Placemark" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="altitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="altitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="ccISOcountryCode_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="country_Placemark" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="course" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="creationDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="course" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="customTitle" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="favorite" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="hidden" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="horizontalAccuracy" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="favorite" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="hidden" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="horizontalAccuracy" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="inlandWater_Placemark" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="level" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="level" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="locality_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="localizedPlaceString_Placemark" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="modificationDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="modificationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="name_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="ocean_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="postalCode_Placemark" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="reverseGeocodeSucceed" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="speed" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="reverseGeocodeSucceed" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="speed" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="subAdministrativeArea_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="subLocality_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="subThoroughfare_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="thoroughfare_Placemark" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="verticalAccuracy" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="verticalAccuracy" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
     </entity>
     <entity name="EWFRInfo" representedClassName="EWFRInfo" syncable="YES">
-        <attribute name="averageSpeed" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="creationDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="distance" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="endDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="footprintsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="footprintsRepositoryType" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="averageSpeed" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="distance" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="footprintsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="footprintsRepositoryType" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="identifier" attributeType="String" syncable="YES"/>
-        <attribute name="modificatonDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="modificatonDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="placemarkStatisticalInfo" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="radius" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="startDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="radius" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="PHAssetInfo" representedClassName="PHAssetInfo" syncable="YES">
-        <attribute name="actAsThumbnail" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="actAsThumbnail" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="administrativeArea_Placemark" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="altitude_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="altitude_Location" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="burstIdentifier" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="burstSelectionTypes" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="burstSelectionTypes" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="ccISOcountryCode_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="country_Placemark" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="course_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="creationDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="eliminateThisAsset" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="favorite" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="hidden" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="horizontalAccuracy_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="course_Location" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="eliminateThisAsset" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="favorite" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="hidden" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="horizontalAccuracy_Location" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="inlandWater_Placemark" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="latitude_Coordinate_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="level_floor_Location" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="invalid" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="latitude_Coordinate_Location" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="level_floor_Location" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="localIdentifier" attributeType="String" syncable="YES"/>
         <attribute name="locality_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="localizedPlaceString_Placemark" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="longitude_Coordinate_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="mediaSubtypes" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="mediaType" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="modificationDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="longitude_Coordinate_Location" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="mediaSubtypes" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="mediaType" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="modificationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="name_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="ocean_Placemark" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="pixelHeight" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="pixelWidth" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="pixelHeight" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="pixelWidth" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="postalCode_Placemark" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="representsBurst" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="reverseGeocodeSucceed" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="speed_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="representsBurst" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="reverseGeocodeSucceed" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="speed_Location" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="subAdministrativeArea_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="subLocality_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="subThoroughfare_Placemark" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="thoroughfare_Placemark" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="verticalAccuracy_Location" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="verticalAccuracy_Location" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
     </entity>
     <elements>
         <element name="CoordinateInfo" positionX="-63" positionY="135" width="128" height="450"/>
         <element name="EWFRInfo" positionX="-63" positionY="135" width="128" height="240"/>
-        <element name="PHAssetInfo" positionX="-63" positionY="-18" width="128" height="600"/>
+        <element name="PHAssetInfo" positionX="-63" positionY="-18" width="128" height="615"/>
     </elements>
 </model>

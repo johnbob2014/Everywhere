@@ -61,11 +61,21 @@
 #pragma mark - 删除
 
 /**
+ * 删除无效的实例（即对应的照片已经被删除了的所有实例）
+ */
++ (NSInteger)deleteInvalidAssetInfosInManagedObjectContext:(NSManagedObjectContext *)context;
+
+/**
  * 删除全部实例
  */
-+ (BOOL)deleteAllAssetInfosInManagedObjectContext:(NSManagedObjectContext *)context;
++ (NSInteger)deleteAllAssetInfosInManagedObjectContext:(NSManagedObjectContext *)context;
 
 #pragma mark - 工具
+
+/**
+ * 更新Invalid状态
+ */
+- (void)updateInvalidState;
 
 /**
  * 为指定的实例 更新Placemark (注意：需要联网，所以在副线程进行更新，因而无法立即获取数据)

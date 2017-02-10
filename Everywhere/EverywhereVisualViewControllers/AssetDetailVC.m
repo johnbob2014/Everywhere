@@ -39,6 +39,8 @@
     UISwitch *eliminateThisAssetSwitch,*actAsThumbnailSwitch;
     
     AVPlayerItem *playerItem;
+    
+    BOOL eliminateStateDidChange;
 }
 
 - (NSArray<PHAsset *> *)assetArray{
@@ -95,6 +97,17 @@
 
 - (void)viewDidLoad{
     [super viewDidLoad];
+    
+    eliminateStateDidChange = NO;
+    
+    if(self.assetArray.count == 0){
+        UIAlertController *alertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Note", @"") message:NSLocalizedString(@"No photos!", @"没有照片！") okActionHandler:^(UIAlertAction *action) {
+            if(self.navigationController)
+                [self.navigationController popViewControllerAnimated:YES];
+        }];
+        [self presentViewController:alertController animated:YES completion:nil];
+        return;
+    }
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
     
@@ -172,6 +185,12 @@
     self.currentIndex = 0;
 }
 
+- (void)viewWillDisappear:(BOOL)animated{
+    if (eliminateStateDidChange){
+        if(self.eliminateStateDidChangeHandler) self.eliminateStateDidChangeHandler();
+    }
+}
+
 - (void)swipeRight:(UISwipeGestureRecognizer *)sender{
     self.currentIndex--;
 }
@@ -209,6 +228,7 @@
 - (void)eliminateThisAssetSwitchValueChanged:(UISwitch *)sender{
     self.currentAssetInfo.eliminateThisAsset = @(sender.on);
     [[EverywhereCoreDataManager appDelegateMOC] save:NULL];
+    eliminateStateDidChange = YES;
 }
 
 - (void)actAsThumbnailSwitchValueChanged:(UISwitch *)sender{
