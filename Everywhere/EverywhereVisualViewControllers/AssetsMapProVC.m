@@ -1425,7 +1425,7 @@
     rightBtn1.alpha = 0.6;
     [rightBtn1 setBackgroundImage:[UIImage imageNamed:@"IcoMoon_Share2_WBG"] forState:UIControlStateNormal];
     rightBtn1.translatesAutoresizingMaskIntoConstraints = NO;
-    [rightBtn1 addTarget:self action:@selector(showShareFootprintsRepositoryVC) forControlEvents:UIControlEventTouchDown];
+    [rightBtn1 addTarget:self action:@selector(checkBeforeShowShareFootprintsRepositoryVC) forControlEvents:UIControlEventTouchDown];
     [rightVerticalBar addSubview:rightBtn1];
     [rightBtn1 autoSetDimensionsToSize:ButtionSize];
     [rightBtn1 autoAlignAxisToSuperviewAxis:ALAxisVertical];
@@ -2023,7 +2023,7 @@
 
 #pragma mark Share and Receive
 
-- (void)showShareFootprintsRepositoryVC{
+- (void)checkBeforeShowShareFootprintsRepositoryVC{
     
     if (!self.addedEWFootprintAnnotations || self.addedEWFootprintAnnotations.count == 0) {
         [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"No footprints yet.Please choose a date or a location to add your album footprints.", @"您还没有添加足迹点，请选择日期或地址添加您的相册足迹。")]
@@ -2031,7 +2031,26 @@
         
         return;
     }
+    
+    NSUInteger thumbnailCount = [self calculateThumbnailCountForAddedEWFootprintAnnotations];
+    if (thumbnailCount > 100){
+        NSString *alertMessage = [NSString stringWithFormat:@"%@: %lu\n%@",NSLocalizedString(@"Thumbnail Count", @"缩略图数量"),(unsigned long)thumbnailCount,NSLocalizedString(@"Too many thumbnials. Due to memory stress, the footprint repository may cannot be created and tha app may crash. Continue anyway?", @"缩略图较多，容易因内存紧张而无法创建足迹包，甚至导致应用崩溃。是否继续？")];
+        
+        UIAlertController *alertController = [UIAlertController okCancelAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:alertMessage okActionHandler:^(UIAlertAction *action) {
+            [self showShareFootprintsRepositoryVC];
+        }];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }else{
+        [self showShareFootprintsRepositoryVC];
+    }
+    
+}
+
+- (void)showShareFootprintsRepositoryVC{
     [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"Creating footprints repository for share...", @"正在创建分享足迹包...")];
+    
+    // 更新缩略图信息，比较耗时！！
+    [self updateThumbnailForAddedEWFootprintAnnotations];
     
     // placemarkInfo信息
     NSMutableString *ms = [NSMutableString new];
@@ -2040,9 +2059,6 @@
         [ms appendFormat:@"%@,",placemarkInfoString];
     [ms appendString:NSLocalizedString(@"Total ", @"总")];
     [ms appendFormat:@"%@ %@",placemarkInfoBar.totalTitle,placemarkInfoBar.totalContent];
-    
-    // 更新缩略图信息，比较耗时！！
-    [self updateThumbnailForAddedEWFootprintAnnotations];
     
     // 生成分享对象
     EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
@@ -2065,7 +2081,7 @@
         [weakSelf dismissViewControllerAnimated:YES completion:nil];
         [weakSelf showPurchaseShareFunctionAlertController];
     };
-   
+    
     popupController = [[STPopupController alloc] initWithRootViewController:shareFRVC];
     popupController.containerView.layer.cornerRadius = 4;
     
@@ -2622,37 +2638,76 @@
 }
 
 
-- (void)updateThumbnailForAddedEWFootprintAnnotations{
-    //NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationsToAdd = [NSMutableArray new];
-    NSInteger faIndex = 0;
-    // 第1层循环
-    for (EverywhereAnnotation *everywhereAnnotation in self.addedEWAnnotations) {
-        EverywhereFootprintAnnotation *footprintAnnotation = self.addedEWFootprintAnnotations[faIndex++];
-        
+/**
+ 计算以当前足迹点生成足迹包时，将要产生的缩略图数量
+
+ @return 缩略图数量
+ */
+- (NSUInteger)calculateThumbnailCountForAddedEWFootprintAnnotations{
+    NSUInteger resultCount = 0;
+    
+    if (self.settingManager.autoUseFirstAssetAsThumbnail){
         // 如果用户选择自动添加第一张照片作为缩略图
-        if (self.settingManager.autoUseFirstAssetAsThumbnail){
-            NSString *firstID = everywhereAnnotation.assetLocalIdentifiers.firstObject;
-            NSData *imageDate = [self thumbnailDataWithLocalIdentifier:firstID];
-            footprintAnnotation.thumbnailArray = [NSMutableArray arrayWithObject:[[UIImage alloc] initWithData:imageDate]];
-            continue;
+        resultCount = self.addedEWAnnotations.count;
+    }else if(self.settingManager.autoUseAllAssetsAsThumbnail){
+        // 如果用户选择自动添加全部照片作为缩略图
+        for (EverywhereAnnotation *everywhereAnnotation in self.addedEWAnnotations) {
+            resultCount += everywhereAnnotation.assetLocalIdentifiers.count;
         }
-        
-        // 否则，开始第2层循环，添加actAsThumbnail属性为真的PHAssetInfo对应的缩略图
-        NSMutableArray <UIImage *> *ma = [NSMutableArray new];
-        for (NSString *assetLocalIdentifier in everywhereAnnotation.assetLocalIdentifiers) {
-            PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:assetLocalIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
-            
-            if (self.settingManager.autoUseAllAssetsAsThumbnail || [assetInfo.actAsThumbnail boolValue]){
-                // 如果用户选择自动添加全部照片作为缩略图
-                // 或者actAsThumbnail属性为真
-                // 均添加该PHAssetInfo对应的缩略图
-                NSData *imageDate = [self thumbnailDataWithLocalIdentifier:assetInfo.localIdentifier];
-                [ma addObject:[[UIImage alloc] initWithData:imageDate]];
+    }else{
+        // actAsThumbnail属性为真
+        // 均添加该PHAssetInfo对应的缩略图
+        for (EverywhereAnnotation *everywhereAnnotation in self.addedEWAnnotations) {
+            for (NSString *assetLocalIdentifier in everywhereAnnotation.assetLocalIdentifiers) {
+                PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:assetLocalIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
+                if ([assetInfo.actAsThumbnail boolValue]) resultCount++;
             }
-           
         }
+    }
+    
+    return resultCount;
+}
+
+
+- (void)updateThumbnailForAddedEWFootprintAnnotations{
+    
+    @try {
+        //NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationsToAdd = [NSMutableArray new];
+        NSInteger faIndex = 0;
+        // 第1层循环
+        for (EverywhereAnnotation *everywhereAnnotation in self.addedEWAnnotations) {
+            EverywhereFootprintAnnotation *footprintAnnotation = self.addedEWFootprintAnnotations[faIndex++];
+            
+            // 如果用户选择自动添加第一张照片作为缩略图
+            if (self.settingManager.autoUseFirstAssetAsThumbnail){
+                NSString *firstID = everywhereAnnotation.assetLocalIdentifiers.firstObject;
+                NSData *imageDate = [self thumbnailDataWithLocalIdentifier:firstID];
+                footprintAnnotation.thumbnailArray = [NSMutableArray arrayWithObject:[[UIImage alloc] initWithData:imageDate]];
+                continue;
+            }
+            
+            // 否则，开始第2层循环，添加actAsThumbnail属性为真的PHAssetInfo对应的缩略图
+            NSMutableArray <UIImage *> *ma = [NSMutableArray new];
+            for (NSString *assetLocalIdentifier in everywhereAnnotation.assetLocalIdentifiers) {
+                PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:assetLocalIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
+                
+                if (self.settingManager.autoUseAllAssetsAsThumbnail || [assetInfo.actAsThumbnail boolValue]){
+                    // 如果用户选择自动添加全部照片作为缩略图
+                    // 或者actAsThumbnail属性为真
+                    // 均添加该PHAssetInfo对应的缩略图
+                    NSData *imageDate = [self thumbnailDataWithLocalIdentifier:assetInfo.localIdentifier];
+                    [ma addObject:[[UIImage alloc] initWithData:imageDate]];
+                }
+                
+            }
+            
+            footprintAnnotation.thumbnailArray = ma;
+        }
+
+    } @catch (NSException *exception) {
         
-        footprintAnnotation.thumbnailArray = ma;
+    } @finally {
+        
     }
     
 }
@@ -2670,9 +2725,7 @@
     if (annotationArray.count >= 2) {
         // 将tag置为1，下次点击按钮时添加模拟路线
         changeOverlayStyleButton.tag = 1;
-        // 将tag置为1，下次点击按钮时添加模拟路线
-        changeOverlayStyleButton.tag = 1;
-
+        
         // 记录距离信息
         NSMutableArray *distanceArray = [NSMutableArray new];
         totalDistance = 0;
