@@ -13,10 +13,10 @@
 /**
  *  初始化方法
  *
- *  @param imageArray UIImage数组
+ *  @param imageArray 可以是NSData数组 或 UIImage数组
  *
  *  @return 实例
  */
-- (instancetype)initWithImageArray:(NSArray <UIImage *> *)imageArray;
+- (instancetype)initWithImageArray:(NSArray *)imageArray;
 
 @end

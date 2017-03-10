@@ -32,7 +32,7 @@
 		1EF62A531D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A501D3B8FD50084AF66 /* CoordinateInfo+CoreDataProperties.m */; };
 		1EF62A541D3B8FD50084AF66 /* CoordinateInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A521D3B8FD50084AF66 /* CoordinateInfo.m */; };
 		1EF62A571D3B902A0084AF66 /* CoordinateInfo+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A561D3B902A0084AF66 /* CoordinateInfo+Assistant.m */; };
-		1EF62A5A1D3BB90F0084AF66 /* EverywhereFootprintsRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A591D3BB90F0084AF66 /* EverywhereFootprintsRepository.m */; };
+		1EF62A5A1D3BB90F0084AF66 /* FootprintsRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF62A591D3BB90F0084AF66 /* FootprintsRepository.m */; };
 		2A6563BC8BBF2B5997748106 /* libPods-Everywhere.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E9CF64AE7F289869F003D6F /* libPods-Everywhere.a */; };
 		4B001CDE1D2125FC00DF7287 /* CLPlacemark+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B001CDD1D2125FC00DF7287 /* CLPlacemark+Assistant.m */; };
 		4B032FAF1D5C5DD800E83585 /* GCFileBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B032FAE1D5C5DD800E83585 /* GCFileBrowser.m */; };
@@ -135,7 +135,7 @@
 		4B69F5091D6156A800575AC3 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4B69F5041D6156A800575AC3 /* FontAwesome.ttf */; };
 		4B69F50A1D6156A800575AC3 /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B69F5061D6156A800575AC3 /* NSString+FontAwesome.m */; };
 		4B69F50B1D6156A800575AC3 /* UIButton+Assistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B69F5081D6156A800575AC3 /* UIButton+Assistant.m */; };
-		4B90DDFA1D38C5A200332945 /* EverywhereFootprintAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B90DDF91D38C5A200332945 /* EverywhereFootprintAnnotation.m */; };
+		4B90DDFA1D38C5A200332945 /* FootprintAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B90DDF91D38C5A200332945 /* FootprintAnnotation.m */; };
 		4BB49CEA1E4DAD57001F2CF7 /* AppInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 4BB49CE91E4DAD57001F2CF7 /* AppInfo.json */; };
 		4BD51FC81D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FC51D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m */; };
 		4BD51FC91D2B47B900F18244 /* PHAssetInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BD51FC71D2B47B900F18244 /* PHAssetInfo.m */; };
@@ -208,8 +208,8 @@
 		1EF62A521D3B8FD50084AF66 /* CoordinateInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CoordinateInfo.m; path = EverywhereCoreData/CoordinateInfo.m; sourceTree = "<group>"; };
 		1EF62A551D3B902A0084AF66 /* CoordinateInfo+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CoordinateInfo+Assistant.h"; path = "EverywhereCoreData/CoordinateInfo+Assistant.h"; sourceTree = "<group>"; };
 		1EF62A561D3B902A0084AF66 /* CoordinateInfo+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CoordinateInfo+Assistant.m"; path = "EverywhereCoreData/CoordinateInfo+Assistant.m"; sourceTree = "<group>"; };
-		1EF62A581D3BB90F0084AF66 /* EverywhereFootprintsRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereFootprintsRepository.h; path = EverywhereModels/EverywhereFootprintsRepository.h; sourceTree = "<group>"; };
-		1EF62A591D3BB90F0084AF66 /* EverywhereFootprintsRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereFootprintsRepository.m; path = EverywhereModels/EverywhereFootprintsRepository.m; sourceTree = "<group>"; };
+		1EF62A581D3BB90F0084AF66 /* FootprintsRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FootprintsRepository.h; path = EverywhereModels/FootprintsRepository.h; sourceTree = "<group>"; };
+		1EF62A591D3BB90F0084AF66 /* FootprintsRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FootprintsRepository.m; path = EverywhereModels/FootprintsRepository.m; sourceTree = "<group>"; };
 		4B001CDC1D2125FC00DF7287 /* CLPlacemark+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "CLPlacemark+Assistant.h"; path = "CLPlacemark+Assistant/CLPlacemark+Assistant.h"; sourceTree = "<group>"; };
 		4B001CDD1D2125FC00DF7287 /* CLPlacemark+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "CLPlacemark+Assistant.m"; path = "CLPlacemark+Assistant/CLPlacemark+Assistant.m"; sourceTree = "<group>"; };
 		4B032FAD1D5C5DD800E83585 /* GCFileBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCFileBrowser.h; path = GCFileBrowser/GCFileBrowser.h; sourceTree = "<group>"; };
@@ -367,8 +367,8 @@
 		4B69F5061D6156A800575AC3 /* NSString+FontAwesome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+FontAwesome.m"; sourceTree = "<group>"; };
 		4B69F5071D6156A800575AC3 /* UIButton+Assistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+Assistant.h"; sourceTree = "<group>"; };
 		4B69F5081D6156A800575AC3 /* UIButton+Assistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+Assistant.m"; sourceTree = "<group>"; };
-		4B90DDF81D38C5A200332945 /* EverywhereFootprintAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EverywhereFootprintAnnotation.h; path = EverywhereModels/EverywhereFootprintAnnotation.h; sourceTree = "<group>"; };
-		4B90DDF91D38C5A200332945 /* EverywhereFootprintAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EverywhereFootprintAnnotation.m; path = EverywhereModels/EverywhereFootprintAnnotation.m; sourceTree = "<group>"; };
+		4B90DDF81D38C5A200332945 /* FootprintAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FootprintAnnotation.h; path = EverywhereModels/FootprintAnnotation.h; sourceTree = "<group>"; };
+		4B90DDF91D38C5A200332945 /* FootprintAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FootprintAnnotation.m; path = EverywhereModels/FootprintAnnotation.m; sourceTree = "<group>"; };
 		4BB49CE91E4DAD57001F2CF7 /* AppInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = AppInfo.json; sourceTree = "<group>"; };
 		4BD51FC41D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "PHAssetInfo+CoreDataProperties.h"; path = "EverywhereCoreData/PHAssetInfo+CoreDataProperties.h"; sourceTree = "<group>"; };
 		4BD51FC51D2B47B900F18244 /* PHAssetInfo+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "PHAssetInfo+CoreDataProperties.m"; path = "EverywhereCoreData/PHAssetInfo+CoreDataProperties.m"; sourceTree = "<group>"; };
@@ -620,10 +620,10 @@
 			children = (
 				1EEA794F1D2791A0002B6291 /* EverywhereAnnotation.h */,
 				1EEA79501D2791A0002B6291 /* EverywhereAnnotation.m */,
-				4B90DDF81D38C5A200332945 /* EverywhereFootprintAnnotation.h */,
-				4B90DDF91D38C5A200332945 /* EverywhereFootprintAnnotation.m */,
-				1EF62A581D3BB90F0084AF66 /* EverywhereFootprintsRepository.h */,
-				1EF62A591D3BB90F0084AF66 /* EverywhereFootprintsRepository.m */,
+				4B90DDF81D38C5A200332945 /* FootprintAnnotation.h */,
+				4B90DDF91D38C5A200332945 /* FootprintAnnotation.m */,
+				1EF62A581D3BB90F0084AF66 /* FootprintsRepository.h */,
+				1EF62A591D3BB90F0084AF66 /* FootprintsRepository.m */,
 				4BE88A9D1D332B38009501CE /* EverywhereSettingManager.h */,
 				4BE88A9E1D332B38009501CE /* EverywhereSettingManager.m */,
 			);
@@ -1268,7 +1268,7 @@
 				4B12D3441D7D0D6A00F5E3B9 /* GCStarAnnotationView.m in Sources */,
 				4B69F50A1D6156A800575AC3 /* NSString+FontAwesome.m in Sources */,
 				4B079BA31D61B07800BC4115 /* UIAppearance+Swift.m in Sources */,
-				1EF62A5A1D3BB90F0084AF66 /* EverywhereFootprintsRepository.m in Sources */,
+				1EF62A5A1D3BB90F0084AF66 /* FootprintsRepository.m in Sources */,
 				4B0BFDED1D6B069100F8CAA5 /* SVRadialGradientLayer.m in Sources */,
 				4BFA4EB31D33791A007DDA87 /* LocationPickerVC.m in Sources */,
 				4BD51FC91D2B47B900F18244 /* PHAssetInfo.m in Sources */,
@@ -1313,7 +1313,7 @@
 				4B079BA41D61B07800BC4115 /* UIButton+Chameleon.m in Sources */,
 				1E8723AC1D43603800652757 /* UIAlertController+Assistant.m in Sources */,
 				4B079BA61D61B07800BC4115 /* UIColor+ChameleonPrivate.m in Sources */,
-				4B90DDFA1D38C5A200332945 /* EverywhereFootprintAnnotation.m in Sources */,
+				4B90DDFA1D38C5A200332945 /* FootprintAnnotation.m in Sources */,
 				1E8189121D659A9300F57714 /* GCMaps.m in Sources */,
 				4BD51FCC1D2B4B1B00F18244 /* PHAssetInfo+Assistant.m in Sources */,
 				4B058D8F1D62F23D00DBEE04 /* DatePickerProVC.m in Sources */,

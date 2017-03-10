@@ -1,14 +1,14 @@
 //
-//  EverywhereFootprintAnnotation.m
+//  FootprintAnnotation.m
 //  Everywhere
 //
 //  Created by BobZhang on 16/7/15.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#import "EverywhereFootprintAnnotation.h"
+#import "FootprintAnnotation.h"
 
-@implementation EverywhereFootprintAnnotation
+@implementation FootprintAnnotation
 
 - (CLLocation *)location{
     return [[CLLocation alloc] initWithCoordinate:self.coordinateWGS84 altitude:self.altitude horizontalAccuracy:0 verticalAccuracy:0 course:0 speed:self.speed timestamp:[NSDate date]];
@@ -41,7 +41,7 @@
 - (instancetype)initWithCoder:(NSCoder *)aDecoder{
     CGPoint coordinateWGS84Point = [aDecoder decodeCGPointForKey:@"coordinateWGS84Point"];
     
-    EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation new];
+    FootprintAnnotation *footprintAnnotation = [FootprintAnnotation new];
     footprintAnnotation.coordinateWGS84 = CLLocationCoordinate2DMake(coordinateWGS84Point.x, coordinateWGS84Point.y);
     footprintAnnotation.startDate = [aDecoder decodeObjectForKey:@"startDate"];
     footprintAnnotation.endDate = [aDecoder decodeObjectForKey:@"endDate"];
@@ -121,7 +121,7 @@
     return gpx_trk_trkseg_trkpt_String;
 }
 
-+ (EverywhereFootprintAnnotation *)footprintAnnotationFromGPXPointDictionary:(NSDictionary *)pointDictionary isUserManuallyAdded:(BOOL)isUserManuallyAdded{
++ (FootprintAnnotation *)footprintAnnotationFromGPXPointDictionary:(NSDictionary *)pointDictionary isUserManuallyAdded:(BOOL)isUserManuallyAdded{
     
     // 如果不是字典，返回空值
     if (!pointDictionary || ![pointDictionary isKindOfClass:[NSDictionary class]]) return nil;
@@ -131,7 +131,7 @@
         if (![valueObject isKindOfClass:[NSString class]]) return nil;
     }
     
-    EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation new];
+    FootprintAnnotation *footprintAnnotation = [FootprintAnnotation new];
     
     footprintAnnotation.isUserManuallyAdded = isUserManuallyAdded;
     

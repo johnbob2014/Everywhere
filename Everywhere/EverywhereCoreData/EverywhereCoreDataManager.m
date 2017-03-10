@@ -12,7 +12,7 @@
 
 #import "EverywhereSettingManager.h"
 
-#import "EverywhereFootprintsRepository.h"
+#import "FootprintsRepository.h"
 
 #import "GCPhotoManager.h"
 
@@ -198,7 +198,7 @@
 
 #pragma mark - EWFRInfo Data
 
-+ (BOOL)addEWFR:(EverywhereFootprintsRepository *)ewfr{
++ (BOOL)addEWFR:(FootprintsRepository *)ewfr{
     if (![NSFileManager directoryExistsAtPath:EWFRStorageDirectoryPath autoCreate:YES]){
         NSLog(@"无法创建存储文件夹，添加失败！");
         return NO;
@@ -250,7 +250,7 @@
 }
 
 /*
-+ (BOOL)removeEWFR:(EverywhereFootprintsRepository *)ewfr{
++ (BOOL)removeEWFR:(FootprintsRepository *)ewfr{
     EWFRInfo *ewfrInfo = [EWFRInfo fetchEWFRInfoWithIdentifier:ewfr.identifier inManagedObjectContext:self.appDelegateMOC];
     if (ewfrInfo){
         NSError *removeError;
@@ -304,7 +304,7 @@
         if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
             
             // 如果已经存在这个足迹包，跳出本次循环
-            EverywhereFootprintsRepository *footprintsRepositoryFromExistsFile = [EverywhereFootprintsRepository importFromMFRFile:filePath];
+            FootprintsRepository *footprintsRepositoryFromExistsFile = [FootprintsRepository importFromMFRFile:filePath];
             if ([EWFRInfo fetchEWFRInfoWithIdentifier:footprintsRepositoryFromExistsFile.identifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]]) continue;
             
             // 如果不存在，更改一个名称来存储
@@ -335,7 +335,7 @@
         if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
             
             // 如果已经存在这个足迹包，跳出本次循环
-            EverywhereFootprintsRepository *footprintsRepositoryFromExistsFile = [EverywhereFootprintsRepository importFromGPXFile:filePath];
+            FootprintsRepository *footprintsRepositoryFromExistsFile = [FootprintsRepository importFromGPXFile:filePath];
             if ([EWFRInfo fetchEWFRInfoWithIdentifier:footprintsRepositoryFromExistsFile.identifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]]) continue;
             
             // 如果不存在，更改一个名称来存储
@@ -344,7 +344,7 @@
             filePath = [filePath stringByAppendingString:@".gpx"];
         }
         
-        EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository importFromMFRFile:[ewfrInfo filePath]];
+        FootprintsRepository *footprintsRepository = [FootprintsRepository importFromMFRFile:[ewfrInfo filePath]];
         footprintsRepository.title = ewfrInfo.title;
         if ([footprintsRepository exportToGPXFile:filePath]){
             count++;
@@ -376,12 +376,12 @@
         NSString *filePath = [directoryPath stringByAppendingPathComponent:fileName];
         NSString *pathExtension = [fileName pathExtension].lowercaseString;
         
-        EverywhereFootprintsRepository *footprintsRepository;
+        FootprintsRepository *footprintsRepository;
         
         if ([pathExtension isEqualToString:@"mfr"])
-            footprintsRepository = [EverywhereFootprintsRepository importFromMFRFile:filePath];
+            footprintsRepository = [FootprintsRepository importFromMFRFile:filePath];
         else if ([pathExtension isEqualToString:@"gpx"])
-            footprintsRepository = [EverywhereFootprintsRepository importFromGPXFile:filePath];
+            footprintsRepository = [FootprintsRepository importFromGPXFile:filePath];
         
         if (footprintsRepository){
             

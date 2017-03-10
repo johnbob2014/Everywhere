@@ -7,18 +7,18 @@
 //
 
 #import "FootprintAnnotationPickerVC.h"
-#import "EverywhereFootprintsRepository.h"
+#import "FootprintsRepository.h"
 #import "EverywhereSettingManager.h"
 #import "EverywhereCoreDataManager.h"
 #import "GCLocationAnalyser.h"
 
 @interface FootprintAnnotationPickerVC ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
-@property (strong,nonatomic) NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationMA;
+@property (strong,nonatomic) NSMutableArray <FootprintAnnotation *> *footprintAnnotationMA;
 @end
 
 @implementation FootprintAnnotationPickerVC{
-    NSArray <EverywhereFootprintAnnotation *> *currentGroupArray;
-    //NSMutableArray <EverywhereFootprintAnnotation *> *editedArray;
+    NSArray <FootprintAnnotation *> *currentGroupArray;
+    //NSMutableArray <FootprintAnnotation *> *editedArray;
     UITextField *mergeDistanceTF;
     NSArray <NSString *> *groupNameArray;
     UISegmentedControl *groupSeg;
@@ -39,7 +39,7 @@
     // 默认合并时保留用户手动添加的足迹点
     reserveManuallyAddedFootprint = YES;
     
-    EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository importFromMFRFile:[self.ewfrInfo filePath]];
+    FootprintsRepository *footprintsRepository = [FootprintsRepository importFromMFRFile:[self.ewfrInfo filePath]];
     
     self.footprintAnnotationMA = [NSMutableArray arrayWithArray:footprintsRepository.footprintAnnotations];
     currentGroupArray = self.footprintAnnotationMA;//self.footprintAnnotationMA.reverseObjectEnumerator.allObjects;
@@ -152,7 +152,7 @@
 - (void)saveOnly{
     [SVProgressHUD showWithStatus:NSLocalizedString(@"Saving...", @"正在保存...")];
     
-    EverywhereFootprintsRepository *editedFootprintsRepository = [EverywhereFootprintsRepository new];
+    FootprintsRepository *editedFootprintsRepository = [FootprintsRepository new];
     editedFootprintsRepository.footprintAnnotations = self.footprintAnnotationMA;
     editedFootprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Edit", @"编辑"),self.ewfrInfo.title];
     editedFootprintsRepository.creationDate = NOW;
@@ -181,7 +181,7 @@
     NSMutableArray *excluedUserManuallyAddedArray = [NSMutableArray new];
     NSMutableArray *userManuallyAddedArray = [NSMutableArray new];
     if (reserveManuallyAddedFootprint) {
-        [self.footprintAnnotationMA enumerateObjectsUsingBlock:^(EverywhereFootprintAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [self.footprintAnnotationMA enumerateObjectsUsingBlock:^(FootprintAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if (obj.isUserManuallyAdded) [userManuallyAddedArray addObject:obj];
             else [excluedUserManuallyAddedArray addObject:obj];
         }];
@@ -207,7 +207,7 @@
     [resultArray sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
         NSComparisonResult comparisonResult;
         
-        NSTimeInterval ti = [((EverywhereFootprintAnnotation *)obj1).startDate timeIntervalSinceDate:((EverywhereFootprintAnnotation *)obj2).startDate];
+        NSTimeInterval ti = [((FootprintAnnotation *)obj1).startDate timeIntervalSinceDate:((FootprintAnnotation *)obj2).startDate];
         
         if (ti < 0) comparisonResult = NSOrderedAscending;
         else if (ti == 0) comparisonResult = NSOrderedSame;
@@ -220,7 +220,7 @@
     NSString *distanceString = NSLocalizedString(@"Grouping Distance", @"分组距离");
     NSString *reserveString = reserveManuallyAddedFootprint ? NSLocalizedString(@"ReserveManuallyAddedFootprint", @"保留手动添加足迹点") : NSLocalizedString(@"MergeManuallyAddedFootprint", @"合并手动添加足迹点");
     
-    EverywhereFootprintsRepository *editedFootprintsRepository = [EverywhereFootprintsRepository new];
+    FootprintsRepository *editedFootprintsRepository = [FootprintsRepository new];
     editedFootprintsRepository.footprintAnnotations = resultArray;
     
     if (!mergeInOrder) editedFootprintsRepository.radius = mergeDistance / 2.0;
@@ -258,7 +258,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"Cell"];
     cell.accessoryType = UITableViewCellAccessoryDetailButton;
-    EverywhereFootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
+    FootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
     NSString *headerString = footprintAnnotation.isUserManuallyAdded ? @"📍" : @"📌";
     cell.textLabel.text = [NSString stringWithFormat:@"%lu %@ %@",(unsigned long)(indexPath.row + 1),headerString,footprintAnnotation.customTitle];
     
@@ -275,7 +275,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    EverywhereFootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
+    FootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
     
     NSString *alertTitle = NSLocalizedString(@"Items", @"选项");
     NSString *alertMessage = NSLocalizedString(@"Select an action", @"请选择操作");
@@ -318,7 +318,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
-    EverywhereFootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
+    FootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
     
     __block UITextField *tf;
     UIAlertController *renameAC = [UIAlertController renameAlertControllerWithOKActionHandler:^(UIAlertAction *action) {
@@ -340,7 +340,7 @@
 
 /*
 - (NSArray<UITableViewRowAction *> *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath{
-    EverywhereFootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
+    FootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
  
     UITableViewRowAction *renameRA = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDefault
                                                                          title:NSLocalizedString(@"Rename", @"重命名")
@@ -370,7 +370,7 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        EverywhereFootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
+        FootprintAnnotation *footprintAnnotation = currentGroupArray[indexPath.row];
         [self.footprintAnnotationMA removeObject:footprintAnnotation];
         [self updateData];
     }

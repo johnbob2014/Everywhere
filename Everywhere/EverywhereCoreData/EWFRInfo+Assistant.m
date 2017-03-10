@@ -35,7 +35,7 @@
     return info;
 }
 
-+ (EWFRInfo *)newEWFRInfoWithEWFR:(EverywhereFootprintsRepository *)ewfr inManagedObjectContext:(NSManagedObjectContext *)context{
++ (EWFRInfo *)newEWFRInfoWithEWFR:(FootprintsRepository *)ewfr inManagedObjectContext:(NSManagedObjectContext *)context{
     EWFRInfo *info = [NSEntityDescription insertNewObjectForEntityForName:EntityName_EWFRInfo inManagedObjectContext:context];
     
     info.footprintsCount = @(ewfr.footprintAnnotations.count);

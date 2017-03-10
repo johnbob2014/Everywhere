@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 @import Photos;
-@class EverywhereFootprintsRepository;
+@class FootprintsRepository;
 
 @interface AssetsMapProVC : UIViewController
 
@@ -16,7 +16,7 @@
 
 @property (assign,nonatomic) BOOL isRecording;
 
-- (void)didReceiveFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository;
+- (void)didReceiveFootprintsRepository:(FootprintsRepository *)footprintsRepository;
 
 - (void)intelligentlySaveRecordedFootprintAnnotationsAndClearCatche;
 

@@ -10,7 +10,7 @@
 
 #import "EverywhereCoreDataManager.h"
 #import "EverywhereSettingManager.h"
-#import "EverywhereFootprintsRepository.h"
+#import "FootprintsRepository.h"
 
 #import "AssetsMapProVC.h"
 
@@ -191,16 +191,16 @@
     }
     */
     
-    EverywhereFootprintsRepository *footprintsRepository = nil;
+    FootprintsRepository *footprintsRepository = nil;
     NSString *pathExtension = [[filePath pathExtension] lowercaseString];
     
     if ([pathExtension isEqualToString:@"mfr"]){
         [SVProgressHUD showWithStatus:NSLocalizedString(@"Receiving data...", @"接收数据中...")];
-        footprintsRepository = [EverywhereFootprintsRepository importFromMFRFile:filePath];
+        footprintsRepository = [FootprintsRepository importFromMFRFile:filePath];
         [SVProgressHUD dismiss];
     }else if ([pathExtension isEqualToString:@"gpx"]){
         [SVProgressHUD showWithStatus:NSLocalizedString(@"Receiving data...", @"接收数据中...")];
-        footprintsRepository = [EverywhereFootprintsRepository importFromGPXFile:filePath];
+        footprintsRepository = [FootprintsRepository importFromGPXFile:filePath];
         [SVProgressHUD dismiss];
     }else{
         [assetsMapProVC dismissViewControllerAnimated:YES completion:nil];
@@ -215,6 +215,7 @@
         [assetsMapProVC presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"Parse file failed!", @"解析文件失败！")]
                                      animated:YES
                                    completion:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:filePath error:NULL];
         return;
     }
     
@@ -243,7 +244,7 @@
     //if (DEBUGMODE) if(DEBUGMODE) NSLog(@"\n%@",footprintsRepositoryString);
     
     // 获取接收到的分享对象
-    EverywhereFootprintsRepository *footprintsRepository = nil;
+    FootprintsRepository *footprintsRepository = nil;
     
     //footprintsRepository = [NSKeyedUnarchiver unarchiveObjectWithData:footprintsRepositoryData];
     

@@ -1,4 +1,4 @@
-//
+ //
 //  ShareFootprintsRepositoryVC.m
 //  Everywhere
 //
@@ -12,7 +12,7 @@
 #import "EverywhereSettingManager.h"
 #import "EverywhereCoreDataManager.h"
 
-#import "EverywhereFootprintAnnotation.h"
+#import "FootprintAnnotation.h"
 
 #define ShareButtonHeight 40
 #define LabelHeight 20
@@ -33,7 +33,7 @@
     NSString *gpxString;
     
     EverywhereSettingManager *settingManager;
-    EverywhereFootprintsRepository *wxShareFR;
+    FootprintsRepository *wxShareFR;
     
     CGFloat thumbnailOffset;
     CGFloat thumbnailWidth;
@@ -130,10 +130,10 @@
     
     // 第1层循环
     __block NSUInteger addedCount = 0;
-    [self.footprintsRepository.footprintAnnotations enumerateObjectsUsingBlock:^(EverywhereFootprintAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.footprintsRepository.footprintAnnotations enumerateObjectsUsingBlock:^(FootprintAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         // 第2层循环
-        [obj.thumbnailArray enumerateObjectsUsingBlock:^(UIImage * _Nonnull image, NSUInteger imageIndex, BOOL * _Nonnull stop) {
-            UIImageView *iv = [[UIImageView alloc] initWithImage:image];
+        [obj.thumbnailArray enumerateObjectsUsingBlock:^(id _Nonnull image, NSUInteger imageIndex, BOOL * _Nonnull stop) {
+            UIImageView *iv = [[UIImageView alloc] initWithImage: ([image isKindOfClass:[UIImage class]] ? image : [[UIImage alloc] initWithData:image])];
             iv.backgroundColor = ClearColor;
             iv.contentMode = UIViewContentModeScaleAspectFit;
             
@@ -227,7 +227,7 @@
 - (void)crossButtonTD:(UIButton *)sender{
     if(DEBUGMODE) NSLog(@"%@",NSStringFromCGPoint(CGPointMake(sender.superview.tag, sender.tag)));
     
-    EverywhereFootprintAnnotation *modifiedFA = self.footprintsRepository.footprintAnnotations[sender.superview.tag];
+    FootprintAnnotation *modifiedFA = self.footprintsRepository.footprintAnnotations[sender.superview.tag];
     [modifiedFA.thumbnailArray removeObjectAtIndex:sender.tag];
     
     [self updateThumbnailSV];
@@ -335,7 +335,7 @@
     
     // 清除缩略图数据
     wxShareFR = [self.footprintsRepository copy];
-    for (EverywhereFootprintAnnotation *footprintAnnotation in wxShareFR.footprintAnnotations) {
+    for (FootprintAnnotation *footprintAnnotation in wxShareFR.footprintAnnotations) {
         footprintAnnotation.thumbnailArray = nil;
     }
     

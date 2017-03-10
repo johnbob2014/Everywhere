@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EverywhereFootprintsRepository.h"
+#import "FootprintsRepository.h"
 
-typedef void(^FootprintsRepositoryDidChangeHandler)(EverywhereFootprintsRepository *choosedFootprintsRepository);
+typedef void(^FootprintsRepositoryDidChangeHandler)(FootprintsRepository *choosedFootprintsRepository);
 
 @interface FootprintsRepositoryPickerVC : UIViewController
 

@@ -1,5 +1,5 @@
 //
-//  EverywhereFootprintAnnotation.h
+//  FootprintAnnotation.h
 //  Everywhere
 //
 //  Created by BobZhang on 16/7/15.
@@ -11,7 +11,7 @@
 
 @import MapKit;
 
-@interface EverywhereFootprintAnnotation : NSObject <MKAnnotation,NSCoding,GCLocationAnalyserProtocol>
+@interface FootprintAnnotation : NSObject <MKAnnotation,NSCoding,GCLocationAnalyserProtocol>
 
 /**
  *  必需，coordinateWGS84
@@ -56,14 +56,14 @@
 /**
  *  缩略图数组
  */
-@property (strong,nonatomic) NSMutableArray <UIImage *> *thumbnailArray;
+@property (strong,nonatomic) NSMutableArray *thumbnailArray;
 
 #pragma mark - 导入和导出为GPX方法
 
 /**
  *  从 GPX文件 点字典 生成新实例
  */
-+ (EverywhereFootprintAnnotation *)footprintAnnotationFromGPXPointDictionary:(NSDictionary *)pointDictionary isUserManuallyAdded:(BOOL)isUserManuallyAdded;
++ (FootprintAnnotation *)footprintAnnotationFromGPXPointDictionary:(NSDictionary *)pointDictionary isUserManuallyAdded:(BOOL)isUserManuallyAdded;
 
 /**
  *  生成 wpt 字符串

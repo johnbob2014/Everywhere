@@ -244,16 +244,16 @@
     
     [SVProgressHUD show];
     
-    __block NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationMA = [NSMutableArray new];
+    __block NSMutableArray <FootprintAnnotation *> *footprintAnnotationMA = [NSMutableArray new];
     [selectedEWFRInfoArray enumerateObjectsUsingBlock:^(EWFRInfo * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        EverywhereFootprintsRepository *ewfr = [EverywhereFootprintsRepository importFromMFRFile:[obj filePath]];
+        FootprintsRepository *ewfr = [FootprintsRepository importFromMFRFile:[obj filePath]];
         [footprintAnnotationMA addObjectsFromArray:ewfr.footprintAnnotations];
     }];
     
     [footprintAnnotationMA sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
         NSComparisonResult comparisonResult;
         
-        NSTimeInterval ti = [((EverywhereFootprintAnnotation *)obj1).startDate timeIntervalSinceDate:((EverywhereFootprintAnnotation *)obj2).startDate];
+        NSTimeInterval ti = [((FootprintAnnotation *)obj1).startDate timeIntervalSinceDate:((FootprintAnnotation *)obj2).startDate];
         
         if (ti < 0) comparisonResult = NSOrderedAscending;
         else if (ti == 0) comparisonResult = NSOrderedSame;
@@ -262,7 +262,7 @@
         return comparisonResult;
     }];
     
-    EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
+    FootprintsRepository *footprintsRepository = [FootprintsRepository new];
     footprintsRepository.footprintAnnotations = footprintAnnotationMA;
     footprintsRepository.creationDate = NOW;
     footprintsRepository.footprintsRepositoryType = FootprintsRepositoryTypeEdited;
@@ -355,7 +355,7 @@
         return;
     }
     
-    EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository importFromMFRFile:[ewfrInfo filePath]];
+    FootprintsRepository *footprintsRepository = [FootprintsRepository importFromMFRFile:[ewfrInfo filePath]];
     footprintsRepository.title = ewfrInfo.title;
     
     NSString *alertTitle = NSLocalizedString(@"Items", @"选项");

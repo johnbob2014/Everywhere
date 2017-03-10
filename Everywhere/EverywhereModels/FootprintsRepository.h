@@ -1,5 +1,5 @@
 //
-//  EverywhereFootprintsRepository.h
+//  FootprintsRepository.h
 //  Everywhere
 //
 //  Created by 张保国 on 16/7/17.
@@ -7,15 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EverywhereFootprintAnnotation.h"
+#import "FootprintAnnotation.h"
 
-@interface EverywhereFootprintsRepository : NSObject <NSCoding,NSCopying>
+@interface FootprintsRepository : NSObject <NSCoding,NSCopying>
 
 #pragma mark - 属性
 /**
  *  必须，包含的足迹点数组
  */
-@property (strong,nonatomic) NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotations;
+@property (strong,nonatomic) NSMutableArray <FootprintAnnotation *> *footprintAnnotations;
 
 /**
  *  必须，创建日期
@@ -93,7 +93,7 @@
 /**
  *  从MFR文件生成新实例
  */
-+ (EverywhereFootprintsRepository *)importFromMFRFile:(NSString *)filePath;
++ (FootprintsRepository *)importFromMFRFile:(NSString *)filePath;
 
 /**
  *  写入GPX文件
@@ -103,6 +103,6 @@
 /**
  *  从GPX文件生成新实例
  */
-+ (EverywhereFootprintsRepository *)importFromGPXFile:(NSString *)filePath;
++ (FootprintsRepository *)importFromGPXFile:(NSString *)filePath;
 
 @end

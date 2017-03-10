@@ -8,7 +8,7 @@
 
 
 #import "EWFRInfo.h"
-#import "EverywhereFootprintsRepository.h"
+#import "FootprintsRepository.h"
 
 @interface EWFRInfo (Assistant)
 
@@ -25,7 +25,7 @@
 /**
  *  根据 指定足迹包 创建新的 EWFRInfo实例 注意：足迹包文件不会自动保存！
  */
-+ (EWFRInfo *)newEWFRInfoWithEWFR:(EverywhereFootprintsRepository *)ewfr inManagedObjectContext:(NSManagedObjectContext *)context;
++ (EWFRInfo *)newEWFRInfoWithEWFR:(FootprintsRepository *)ewfr inManagedObjectContext:(NSManagedObjectContext *)context;
 
 /**
  *  获取 全部 EWFRInfo实例

@@ -1,14 +1,14 @@
 //
-//  EverywhereFootprintsRepository.m
+//  FootprintsRepository.m
 //  Everywhere
 //
 //  Created by 张保国 on 16/7/17.
 //  Copyright © 2016年 ZhangBaoGuo. All rights reserved.
 //
 
-#import "EverywhereFootprintsRepository.h"
+#import "FootprintsRepository.h"
 
-@implementation EverywhereFootprintsRepository
+@implementation FootprintsRepository
 
 - (NSDate *)modificatonDate{
     if(_modificatonDate) return _modificatonDate;
@@ -19,7 +19,7 @@
     if (self.footprintAnnotations.count <= 1) return 0;
     
     __block double distance = 0;
-    [self.footprintAnnotations enumerateObjectsUsingBlock:^(EverywhereFootprintAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.footprintAnnotations enumerateObjectsUsingBlock:^(FootprintAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (idx > 0){
             distance += [obj.location distanceFromLocation:self.footprintAnnotations[idx - 1].location];
         }
@@ -50,7 +50,7 @@
 
 - (NSInteger)thumbnailCount{
     __block NSInteger thumbnailCount = 0;
-    [self.footprintAnnotations enumerateObjectsUsingBlock:^(EverywhereFootprintAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.footprintAnnotations enumerateObjectsUsingBlock:^(FootprintAnnotation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (obj.thumbnailArray.count > 0){
             thumbnailCount += obj.thumbnailArray.count;
         }
@@ -68,7 +68,7 @@
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder{
-    EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
+    FootprintsRepository *footprintsRepository = [FootprintsRepository new];
     
     footprintsRepository.footprintAnnotations = [aDecoder decodeObjectForKey:@"footprintAnnotations"];
     
@@ -105,7 +105,7 @@
 }
 
 - (id)copyWithZone:(NSZone *)zone{
-    EverywhereFootprintsRepository *copyFootprintsRepository = [EverywhereFootprintsRepository allocWithZone:zone];
+    FootprintsRepository *copyFootprintsRepository = [FootprintsRepository allocWithZone:zone];
     
     copyFootprintsRepository.footprintAnnotations = self.footprintAnnotations;
     copyFootprintsRepository.radius = self.radius;
@@ -124,15 +124,15 @@
     return [NSKeyedArchiver archiveRootObject:self toFile:filePath];
 }
 
-+ (EverywhereFootprintsRepository *)importFromMFRFile:(NSString *)filePath{
++ (FootprintsRepository *)importFromMFRFile:(NSString *)filePath{
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]){
         NSLog(@"MFR文件不存在，从MFR文件生成足迹包失败！");
         return nil;
     }
     
-    EverywhereFootprintsRepository *footprintsRepository = nil;
+    FootprintsRepository *footprintsRepository = nil;
     @try {
-        footprintsRepository = (EverywhereFootprintsRepository *)[NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
+        footprintsRepository = (FootprintsRepository *)[NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
     }
     @catch (NSException *exception) {
         NSLog(@"数据解析错误，从MFR文件生成足迹包失败！");
@@ -167,13 +167,13 @@
     [gpx_String appendFormat:@"    <name>%@</name>",self.title];
     
     // 座标范围
-    EverywhereFootprintAnnotation *firstFP = self.footprintAnnotations.firstObject;
+    FootprintAnnotation *firstFP = self.footprintAnnotations.firstObject;
     CLLocationDegrees minlat = firstFP.coordinateWGS84.latitude;
     CLLocationDegrees minlon = firstFP.coordinateWGS84.longitude;
     CLLocationDegrees maxlat = minlat;
     CLLocationDegrees maxlon = minlon;
     
-    for (EverywhereFootprintAnnotation *fp in self.footprintAnnotations) {
+    for (FootprintAnnotation *fp in self.footprintAnnotations) {
         
         CLLocationDegrees currentLatitude = fp.coordinateWGS84.latitude;
         if (currentLatitude < minlat) minlat = currentLatitude;
@@ -193,7 +193,7 @@
     [gpx_String appendFormat:@"    <radius>%.2f</radius>",self.radius];
     
     // 添加wpt
-    for (EverywhereFootprintAnnotation *fp in self.footprintAnnotations) {
+    for (FootprintAnnotation *fp in self.footprintAnnotations) {
         if (fp.isUserManuallyAdded) [gpx_String appendString:[fp gpx_wpt_String]];
     }
     
@@ -205,7 +205,7 @@
     [gpx_String appendFormat:@"        <trkseg>"];
     
     // 添加trkpt
-    for (EverywhereFootprintAnnotation *fp in self.footprintAnnotations) {
+    for (FootprintAnnotation *fp in self.footprintAnnotations) {
         [gpx_String appendString:[fp gpx_trk_trkseg_trkpt_String]];
     }
     
@@ -223,7 +223,7 @@
     return [gpx_Data writeToFile:filePath atomically:YES];
 }
 
-+ (EverywhereFootprintsRepository *)importFromGPXFile:(NSString *)filePath{
++ (FootprintsRepository *)importFromGPXFile:(NSString *)filePath{
     
     //if (![[filePath pathExtension] isEqualToString:@"gpx"]) return nil;
     
@@ -232,7 +232,7 @@
     // 如果格式不对
     if (!gpxFileDic || ![gpxFileDic isKindOfClass:[NSDictionary class]]) return nil;
     
-    EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
+    FootprintsRepository *footprintsRepository = [FootprintsRepository new];
     id valueObject;
     
     if ([gpxFileDic.allKeys containsObject:@"name"])
@@ -259,7 +259,7 @@
     }
     
     // 添加wpt
-    NSMutableArray <EverywhereFootprintAnnotation *> *userManuallyAddedFootprintArray = [NSMutableArray new];
+    NSMutableArray <FootprintAnnotation *> *userManuallyAddedFootprintArray = [NSMutableArray new];
     if ([gpxFileDic.allKeys containsObject:@"wpt"]){
         id wptObject = gpxFileDic[@"wpt"];
         
@@ -273,7 +273,7 @@
             }
             
             for (NSDictionary *wptDic in wptDicArray) {
-                EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation footprintAnnotationFromGPXPointDictionary:wptDic isUserManuallyAdded:YES];
+                FootprintAnnotation *footprintAnnotation = [FootprintAnnotation footprintAnnotationFromGPXPointDictionary:wptDic isUserManuallyAdded:YES];
                 if(footprintAnnotation) [userManuallyAddedFootprintArray addObject:footprintAnnotation];
             }
         }
@@ -281,7 +281,7 @@
     }
     
     // 添加trkpt
-    NSMutableArray <EverywhereFootprintAnnotation *> *footprintArray = [NSMutableArray new];
+    NSMutableArray <FootprintAnnotation *> *footprintArray = [NSMutableArray new];
     if ([gpxFileDic.allKeys containsObject:@"trk"]){
         //trkDic
         NSDictionary *trkDic = gpxFileDic[@"trk"];
@@ -310,7 +310,7 @@
                     }
                     
                     for (NSDictionary *trkptDic in trkptDicArray) {
-                        EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation footprintAnnotationFromGPXPointDictionary:trkptDic isUserManuallyAdded:NO];
+                        FootprintAnnotation *footprintAnnotation = [FootprintAnnotation footprintAnnotationFromGPXPointDictionary:trkptDic isUserManuallyAdded:NO];
                         if(footprintAnnotation) [footprintArray addObject:footprintAnnotation];
                     }
 
@@ -327,7 +327,7 @@
     [footprintArray sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
         NSComparisonResult comparisonResult;
         
-        NSTimeInterval ti = [((EverywhereFootprintAnnotation *)obj1).startDate timeIntervalSinceDate:((EverywhereFootprintAnnotation *)obj2).startDate];
+        NSTimeInterval ti = [((FootprintAnnotation *)obj1).startDate timeIntervalSinceDate:((FootprintAnnotation *)obj2).startDate];
         
         if (ti < 0) comparisonResult = NSOrderedAscending;
         else if (ti == 0) comparisonResult = NSOrderedSame;

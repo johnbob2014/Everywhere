@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EverywhereFootprintsRepository.h"
+#import "FootprintsRepository.h"
 
 typedef void(^UserDidSelectedPurchaseShareFunctionHandler)();
 
@@ -16,7 +16,7 @@ typedef void(^UserDidSelectedPurchaseShareFunctionHandler)();
 /**
  *  分享足迹包
  */
-@property (strong,nonatomic) EverywhereFootprintsRepository *footprintsRepository;
+@property (strong,nonatomic) FootprintsRepository *footprintsRepository;
 
 /**
  *  分享缩略图

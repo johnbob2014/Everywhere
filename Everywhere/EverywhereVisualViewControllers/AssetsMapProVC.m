@@ -30,8 +30,8 @@
 
 #import "EverywhereAnnotation.h"
 #import "EverywhereSettingManager.h"
-#import "EverywhereFootprintAnnotation.h"
-#import "EverywhereFootprintsRepository.h"
+#import "FootprintAnnotation.h"
+#import "FootprintsRepository.h"
 
 #import "SimpleImageBrowser.h"
 
@@ -93,7 +93,7 @@
 #pragma mark 添加的各种Annos
 @property (strong,nonatomic) NSArray <id<MKAnnotation>> *addedIDAnnotations;
 @property (strong,nonatomic) NSArray <EverywhereAnnotation *> *addedEWAnnotations;
-@property (strong,nonatomic) NSArray <EverywhereFootprintAnnotation *> *addedEWFootprintAnnotations;
+@property (strong,nonatomic) NSArray <FootprintAnnotation *> *addedEWFootprintAnnotations;
 @property (assign,nonatomic) NSInteger currentAnnotationIndex;
 
 /**
@@ -113,7 +113,7 @@
 /**
  *  当前显示的足迹包
  */
-@property (strong,nonatomic) EverywhereFootprintsRepository *currentShowEWFR;
+@property (strong,nonatomic) FootprintsRepository *currentShowEWFR;
 @end
 
 @implementation AssetsMapProVC{
@@ -123,7 +123,7 @@
     /**
      *  最后一次接收的足迹包
      */
-    EverywhereFootprintsRepository *lastReceivedEWFR;
+    FootprintsRepository *lastReceivedEWFR;
     
 #pragma mark 用于模式转换时恢复数据
     NSString *savedTitleForBaseMode;
@@ -150,7 +150,7 @@
 #pragma mark 用于RecordMode
     CLLocation *lastRecordLocation;
     NSDate *lastRecordDate;
-    NSMutableArray <EverywhereFootprintAnnotation *> *recordedFootprintAnnotations;
+    NSMutableArray <FootprintAnnotation *> *recordedFootprintAnnotations;
     NSTimer *timerForRecord;
     NSMutableArray <MKPolyline *> *savedPolylineForRecord;
 
@@ -925,7 +925,7 @@
     
     FootprintsRepositoryPickerVC *footprintsRepositoryPickerVC = [FootprintsRepositoryPickerVC new];
     footprintsRepositoryPickerVC.showFootprintsRepositoryType = showFootprintsRepositoryType;
-    footprintsRepositoryPickerVC.footprintsRepositoryDidChangeHandler = ^(EverywhereFootprintsRepository *choosedFootprintsRepository){
+    footprintsRepositoryPickerVC.footprintsRepositoryDidChangeHandler = ^(FootprintsRepository *choosedFootprintsRepository){
         [weakSelf checkBeforeShowFootprintsRepository:choosedFootprintsRepository];
     };
    
@@ -2061,7 +2061,7 @@
     [ms appendFormat:@"%@ %@",placemarkInfoBar.totalTitle,placemarkInfoBar.totalContent];
     
     // 生成分享对象
-    EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
+    FootprintsRepository *footprintsRepository = [FootprintsRepository new];
     footprintsRepository.footprintAnnotations = [NSMutableArray arrayWithArray:self.addedEWFootprintAnnotations];
     if (self.settingManager.mapBaseMode == MapBaseModeMoment) footprintsRepository.radius = 0;
     else footprintsRepository.radius = self.settingManager.mergeDistanceForLocation / 2.0;
@@ -2090,7 +2090,7 @@
     }];
 }
 
-- (void)didReceiveFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository{
+- (void)didReceiveFootprintsRepository:(FootprintsRepository *)footprintsRepository{
     if (!footprintsRepository) return;
     // 成功获取分享的数据
     lastReceivedEWFR = footprintsRepository;
@@ -2217,7 +2217,7 @@
     // 恢复Main Mode地图
     msBaseModeBar.info = savedTitleForBaseMode;
     [self.myMapView addAnnotations:savedAnnotationsForBaseMode];
-    self.addedEWFootprintAnnotations = (NSArray <EverywhereFootprintAnnotation*> *)savedFootprintAnnotationsForBaseMode;
+    self.addedEWFootprintAnnotations = (NSArray <FootprintAnnotation*> *)savedFootprintAnnotationsForBaseMode;
     [self.myMapView addOverlays:savedOverlaysForBaseMode];
     self.addedIDAnnotations = savedAnnotationsForBaseMode;
     //self.startDate = savedStartDateForBaseMode;
@@ -2238,7 +2238,7 @@
     
 }
 
-- (void)checkBeforeShowFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository{
+- (void)checkBeforeShowFootprintsRepository:(FootprintsRepository *)footprintsRepository{
     
     if (!recordedFootprintAnnotations || recordedFootprintAnnotations.count == 0) {
         [self showFootprintsRepository:footprintsRepository];
@@ -2261,7 +2261,7 @@
 }
 
 
-- (void)showFootprintsRepository:(EverywhereFootprintsRepository *)footprintsRepository{
+- (void)showFootprintsRepository:(FootprintsRepository *)footprintsRepository{
     // 清理地图
     [self.myMapView removeAnnotations:self.addedIDAnnotations];
     self.addedEWAnnotations = nil;
@@ -2486,7 +2486,7 @@
     // 保存前先暂停
     self.isRecording = NO;
     
-    EverywhereFootprintsRepository *footprintsRepository = [EverywhereFootprintsRepository new];
+    FootprintsRepository *footprintsRepository = [FootprintsRepository new];
     footprintsRepository.footprintAnnotations = recordedFootprintAnnotations;
     footprintsRepository.creationDate = NOW;
     footprintsRepository.title = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Record", @"记录"),[footprintsRepository.creationDate stringWithDefaultFormat]];
@@ -2533,7 +2533,7 @@
     // 把刚刚保存的轨迹显示到地图上
     CLLocationCoordinate2D coordinates[recordedFootprintAnnotations.count];
     NSInteger i = 0;
-    for (EverywhereFootprintAnnotation *fpAnnotation in recordedFootprintAnnotations) {
+    for (FootprintAnnotation *fpAnnotation in recordedFootprintAnnotations) {
         coordinates[i++] = fpAnnotation.coordinate;
     }
     MKPolyline *polyline = [MKPolyline polylineWithCoordinates:coordinates count:recordedFootprintAnnotations.count];
@@ -2545,7 +2545,7 @@
     [self.myMapView addOverlays:savedPolylineForRecord];
 
     // 清空存储的足迹点
-    EverywhereFootprintAnnotation *lastfpAnnotation = recordedFootprintAnnotations.lastObject;
+    FootprintAnnotation *lastfpAnnotation = recordedFootprintAnnotations.lastObject;
     recordedFootprintAnnotations = [NSMutableArray new];
     [recordedFootprintAnnotations addObject:lastfpAnnotation];
     
@@ -2583,7 +2583,7 @@
     
     // 添加 MKAnnotations
     NSMutableArray <EverywhereAnnotation *> *annotationsToAdd = [NSMutableArray new];
-    NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationsToAdd = [NSMutableArray new];
+    NSMutableArray <FootprintAnnotation *> *footprintAnnotationsToAdd = [NSMutableArray new];
     
     [self.assetsArray enumerateObjectsUsingBlock:^(NSArray<PHAsset *> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *status = [NSString stringWithFormat:@"%@\n%lu/%lu",NSLocalizedString(@"Adding footprints...", @"正在添加足迹点..."),(unsigned long)(idx + 1),(unsigned long)self.assetsArray.count];
@@ -2607,7 +2607,7 @@
             anno.annotationSubtitle = [NSString stringWithFormat:@"%@ ~ %@",[firstAsset.creationDate stringWithFormat:@"yyyy-MM-dd"],[lastAsset.creationDate stringWithFormat:@"yyyy-MM-dd"]];
         }
         
-        EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation new];
+        FootprintAnnotation *footprintAnnotation = [FootprintAnnotation new];
         footprintAnnotation.customTitle = anno.annotationTitle;
         footprintAnnotation.coordinateWGS84 = firstAsset.location.coordinate;
         footprintAnnotation.altitude = firstAsset.location.altitude;
@@ -2672,22 +2672,22 @@
 - (void)updateThumbnailForAddedEWFootprintAnnotations{
     
     @try {
-        //NSMutableArray <EverywhereFootprintAnnotation *> *footprintAnnotationsToAdd = [NSMutableArray new];
+        //NSMutableArray <FootprintAnnotation *> *footprintAnnotationsToAdd = [NSMutableArray new];
         NSInteger faIndex = 0;
         // 第1层循环
         for (EverywhereAnnotation *everywhereAnnotation in self.addedEWAnnotations) {
-            EverywhereFootprintAnnotation *footprintAnnotation = self.addedEWFootprintAnnotations[faIndex++];
+            FootprintAnnotation *footprintAnnotation = self.addedEWFootprintAnnotations[faIndex++];
             
             // 如果用户选择自动添加第一张照片作为缩略图
             if (self.settingManager.autoUseFirstAssetAsThumbnail){
                 NSString *firstID = everywhereAnnotation.assetLocalIdentifiers.firstObject;
                 NSData *imageDate = [self thumbnailDataWithLocalIdentifier:firstID];
-                footprintAnnotation.thumbnailArray = [NSMutableArray arrayWithObject:[[UIImage alloc] initWithData:imageDate]];
+                footprintAnnotation.thumbnailArray = [NSMutableArray arrayWithObject:imageDate];
                 continue;
             }
             
             // 否则，开始第2层循环，添加actAsThumbnail属性为真的PHAssetInfo对应的缩略图
-            NSMutableArray <UIImage *> *ma = [NSMutableArray new];
+            NSMutableArray *ma = [NSMutableArray new];
             for (NSString *assetLocalIdentifier in everywhereAnnotation.assetLocalIdentifiers) {
                 PHAssetInfo *assetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:assetLocalIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
                 
@@ -2696,7 +2696,7 @@
                     // 或者actAsThumbnail属性为真
                     // 均添加该PHAssetInfo对应的缩略图
                     NSData *imageDate = [self thumbnailDataWithLocalIdentifier:assetInfo.localIdentifier];
-                    [ma addObject:[[UIImage alloc] initWithData:imageDate]];
+                    [ma addObject:imageDate];
                 }
                 
             }
@@ -2991,13 +2991,13 @@
         pinAV.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
         
         annotationView = pinAV;
-    }else if ([annotation isKindOfClass:[EverywhereFootprintAnnotation class]]){
+    }else if ([annotation isKindOfClass:[FootprintAnnotation class]]){
         
         //MKPinAnnotationView *pinAV = (MKPinAnnotationView *) [mapView dequeueReusableAnnotationViewWithIdentifier:@"pinShareAV"];
         //if (!pinAV) pinAV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pinShareAV"];
         MKPinAnnotationView *pinAV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"pinShareAV"];
         
-        EverywhereFootprintAnnotation *footprintAnnotation = (EverywhereFootprintAnnotation *)annotation;
+        FootprintAnnotation *footprintAnnotation = (FootprintAnnotation *)annotation;
         
         pinAV.animatesDrop = NO;
         
@@ -3007,8 +3007,11 @@
         pinAV.canShowCallout = YES;
         
         if (footprintAnnotation.thumbnailArray.count > 0){
+            id first = footprintAnnotation.thumbnailArray.firstObject;
+            UIImage *image = [first isKindOfClass:[UIImage class]] ? first : [UIImage imageWithData:first];
+            
             UIImageView *imageView = [AssetsMapProVC badgeImageViewWithFrame:CGRectMake(0, 0, 40, 40)
-                                                                       image:footprintAnnotation.thumbnailArray.firstObject
+                                                                       image:image
                                                                        title:[NSString stringWithFormat:@"%ld",(long)footprintAnnotation.thumbnailArray.count]];
             UITapGestureRecognizer *imageViewTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageViewTapGR:)];
             [imageView addGestureRecognizer:imageViewTapGR];
@@ -3070,8 +3073,8 @@
         
         
         [self presentViewController:showVC animated:YES completion:nil];
-    }else if ([firstSelectedAnnotation isKindOfClass:[EverywhereFootprintAnnotation class]]){
-        EverywhereFootprintAnnotation *footprintAnnotation = (EverywhereFootprintAnnotation *)self.myMapView.selectedAnnotations.firstObject;
+    }else if ([firstSelectedAnnotation isKindOfClass:[FootprintAnnotation class]]){
+        FootprintAnnotation *footprintAnnotation = (FootprintAnnotation *)self.myMapView.selectedAnnotations.firstObject;
         
         if (footprintAnnotation.thumbnailArray.count <= 0) return;
         
@@ -3102,8 +3105,8 @@
         
         coordinateInfo = [CoordinateInfo coordinateInfoWithPHAssetInfo:assetInfo
                                                                 inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
-    }else if ([view.annotation isKindOfClass:[EverywhereFootprintAnnotation class]]){
-        EverywhereFootprintAnnotation *footprintAnnotation = (EverywhereFootprintAnnotation *)view.annotation;
+    }else if ([view.annotation isKindOfClass:[FootprintAnnotation class]]){
+        FootprintAnnotation *footprintAnnotation = (FootprintAnnotation *)view.annotation;
         coordinateInfo = [CoordinateInfo coordinateInfoWithCLLocation:footprintAnnotation.location
                                                                inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
     }else if ([view isKindOfClass:[GCStarAnnotationView class]]){
@@ -3228,8 +3231,8 @@
     
     if (self.showUserLocationMode == ShowUserLocationModeFollow) {
         if (self.isRecording && recordedFootprintAnnotations.count >=2){
-            EverywhereFootprintAnnotation *lastFP = recordedFootprintAnnotations.lastObject;
-            EverywhereFootprintAnnotation *secondLastFP = recordedFootprintAnnotations[recordedFootprintAnnotations.count - 2];
+            FootprintAnnotation *lastFP = recordedFootprintAnnotations.lastObject;
+            FootprintAnnotation *secondLastFP = recordedFootprintAnnotations[recordedFootprintAnnotations.count - 2];
             CLLocationDistance distance = [lastFP.location distanceFromLocation:secondLastFP.location];
             [mapView setRegion:MKCoordinateRegionMakeWithDistance(checkedUserLocation.coordinate, distance * 6 , distance * 6) animated:YES];
         }else{
@@ -3294,7 +3297,7 @@
 }
 
 - (void)addRecordedFootprintAnnotationsWithLocation:(CLLocation *)newLocation isUserManuallyAdded:(BOOL)isUserManuallyAdded{
-    EverywhereFootprintAnnotation *footprintAnnotation = [EverywhereFootprintAnnotation new];
+    FootprintAnnotation *footprintAnnotation = [FootprintAnnotation new];
     footprintAnnotation.coordinateWGS84 = newLocation.coordinate;
     footprintAnnotation.altitude = newLocation.altitude;
     footprintAnnotation.speed = newLocation.speed;
@@ -3307,7 +3310,7 @@
     if (recordedFootprintAnnotations.count > 1){
         //NSInteger lastIndex = [recordedFootprintAnnotations indexOfObject:footprintAnnotation];
         // 显示出两点之间的箭头
-        EverywhereFootprintAnnotation *lastAnno = recordedFootprintAnnotations[recordedFootprintAnnotations.count - 2];
+        FootprintAnnotation *lastAnno = recordedFootprintAnnotations[recordedFootprintAnnotations.count - 2];
         MKPolyline *polyline = [AssetsMapProVC createLineMKPolylineBetweenStartCoordinate:lastAnno.coordinate endCoordinate:footprintAnnotation.coordinate];
         polyline.title = self.settingManager.routeColorIsMonochrome? MKOverlayTitleForMapModeColor : MKOverlayTitleForRandomColor;
         MKPolygon *polygon = [AssetsMapProVC createArrowMKPolygonBetweenStartCoordinate:lastAnno.coordinate endCoordinate:footprintAnnotation.coordinate];

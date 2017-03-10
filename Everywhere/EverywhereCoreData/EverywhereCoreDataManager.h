@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class EverywhereFootprintsRepository;
+@class FootprintsRepository;
 
 #import "PHAssetInfo.h"
 #import "EWFRInfo.h"
@@ -57,7 +57,7 @@ typedef void(^UpdatePlacemarkForPHAssetInfoCompletionBlock)(NSInteger reverseGeo
 /**
  *  添加足迹包并存储
  */
-+ (BOOL)addEWFR:(EverywhereFootprintsRepository *)ewfr;
++ (BOOL)addEWFR:(FootprintsRepository *)ewfr;
 
 /**
  *  移除足迹包

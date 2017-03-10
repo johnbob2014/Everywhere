@@ -31,10 +31,18 @@
 }
 
 #pragma mark - Life Cycle
-- (instancetype)initWithImageArray:(NSArray<UIImage *> *)imageArray{
+- (instancetype)initWithImageArray:(NSArray *)imageArray{
     self = [super init];
     if (self) {
-        self.imageArray = imageArray;
+        if ([imageArray.firstObject isKindOfClass:[UIImage class]]) {
+            self.imageArray = imageArray;
+        }else if([imageArray.firstObject isKindOfClass:[NSData class]]) {
+            NSMutableArray *ma = [NSMutableArray new];
+            for (NSData *imageData in imageArray) {
+                [ma addObject:[UIImage imageWithData:imageData]];
+            }
+            self.imageArray = ma;
+        }
     }
     return self;
 }
