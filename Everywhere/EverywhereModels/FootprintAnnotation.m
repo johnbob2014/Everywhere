@@ -126,10 +126,10 @@
     // 如果不是字典，返回空值
     if (!pointDictionary || ![pointDictionary isKindOfClass:[NSDictionary class]]) return nil;
     
-    // point字典中的所有值都应该是字符串，如果不是，返回空值
-    for (id valueObject in pointDictionary.allValues) {
-        if (![valueObject isKindOfClass:[NSString class]]) return nil;
-    }
+//    // point字典中的所有值都应该是字符串，如果不是，返回空值
+//    for (id valueObject in pointDictionary.allValues) {
+//        if (![valueObject isKindOfClass:[NSString class]]) return nil;
+//    }
     
     FootprintAnnotation *footprintAnnotation = [FootprintAnnotation new];
     
@@ -156,6 +156,30 @@
     if ([pointDictionary.allKeys containsObject:@"endtime"]){
         NSString *timeString = pointDictionary[@"endtime"];
         footprintAnnotation.endDate = [NSDate dateFromGPXTimeString:timeString];
+    }
+    
+    // AlbumMaps特有属性
+    if ([pointDictionary.allKeys containsObject:@"thumbnails"]){
+        NSDictionary *thumbnailsDic = pointDictionary[@"thumbnails"];
+        if ([thumbnailsDic.allKeys containsObject:@"thumbnail"]) {
+            id thumbnailObject = thumbnailsDic[@"thumbnail"];
+            
+            NSArray *thumbnailNSDicNSArray = [NSArray new];
+            if ([thumbnailObject isKindOfClass:[NSArray class]]) {
+                thumbnailNSDicNSArray = (NSArray *)thumbnailObject;
+            }else if ([thumbnailObject isKindOfClass:[NSDictionary class]]){
+                thumbnailNSDicNSArray = @[thumbnailObject];
+            }
+            
+            footprintAnnotation.thumbnailArray = [NSMutableArray new];
+            for (NSDictionary *thumbnailNSDic in thumbnailNSDicNSArray) {
+                if ([thumbnailNSDic.allKeys containsObject:@"data"] ) {
+                    NSString *thumbnailDataString = thumbnailNSDic[@"data"];
+                    NSData *thumbnailData = [[NSData alloc] initWithBase64EncodedString:thumbnailDataString options:NSDataBase64DecodingIgnoreUnknownCharacters];
+                    [footprintAnnotation.thumbnailArray addObject:thumbnailData];
+                }
+            }
+        }
     }
     
     return footprintAnnotation;

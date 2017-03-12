@@ -54,7 +54,7 @@
 @property (strong,nonatomic,readonly) CLLocation *location;
 
 /**
- *  缩略图数组
+ *  缩略图数组，可为 NSData 或 UIImage
  */
 @property (strong,nonatomic) NSMutableArray *thumbnailArray;
 

@@ -235,16 +235,16 @@
                                                 
                                                 assetInfo.reverseGeocodeSucceed = @(YES);
                                                 
+                                                NSLog(@"PHAssetInfo : %@",assetInfo.localizedPlaceString_Placemark);
+                                                
+                                                // 保存修改后的信息
+                                                [assetInfo.managedObjectContext save:NULL];
+                                                
                                             }else{
                                                 // 解析失败
                                                 placeInfo = error.localizedDescription;
                                                 assetInfo.reverseGeocodeSucceed = @(NO);
                                             }
-                                            
-                                            NSLog(@"PHAssetInfo : %@",assetInfo.localizedPlaceString_Placemark);
-                                            
-                                            // 保存修改后的信息
-                                            [assetInfo.managedObjectContext save:NULL];
                                         }];
     
     

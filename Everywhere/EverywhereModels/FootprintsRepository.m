@@ -192,6 +192,9 @@
     // AlbumMaps特有属性 足迹包半径
     [gpx_String appendFormat:@"    <radius>%.2f</radius>",self.radius];
     
+    // AlbumMaps特有属性 地点统计信息
+    [gpx_String appendFormat:@"    <placemarkStatisticalInfo>%@</placemarkStatisticalInfo>",self.placemarkStatisticalInfo];
+    
     // 添加wpt
     for (FootprintAnnotation *fp in self.footprintAnnotations) {
         if (fp.isUserManuallyAdded) [gpx_String appendString:[fp gpx_wpt_String]];
