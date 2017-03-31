@@ -478,16 +478,30 @@ typedef BOOL (^OnChangeCharacterInRange)(RETextItem *item, NSRange range, NSStri
         }
     }];
     
-    RETableViewItem *exportRepositoryToGPXItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📤 Export to GPX Files",@"📤 导出足迹包至GPX文件") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+    RETableViewItem *exportRepositoryToGPXItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📤 Export to Normal GPX Files",@"📤 导出足迹包至普通GPX文件") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
         [item deselectRowAnimated:YES];
         if ([self checkhasPurchasedImportAndExport]){
             
             [SVProgressHUD showWithStatus:NSLocalizedString(@"Exporting", @"正在导出")];
-            NSUInteger count = [EverywhereCoreDataManager  exportFootprintsRepositoryToGPXFilesAtPath:[[NSURL documentURL].path stringByAppendingPathComponent:@"Exported"]];
+            NSUInteger count = [EverywhereCoreDataManager  exportFootprintsRepositoryToGPXFilesAtPath:[[NSURL documentURL].path stringByAppendingPathComponent:@"Exported"] enhancedGPX:NO];
             [SVProgressHUD dismiss];
             NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully export repository to gpx files count", @"成功导出足迹包至GPX文件数量"),(unsigned long)count];
             UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
                                                                                                message:alertMessage];
+            [weakSelf presentViewController:alertController animated:YES completion:nil];
+        }
+    }];
+    
+    RETableViewItem *exportRepositoryToEnhancedGPXItem=[RETableViewItem itemWithTitle:NSLocalizedString(@"📤 Export to Enhanced GPX Files",@"📤 导出足迹包至增强GPX文件") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+        [item deselectRowAnimated:YES];
+        if ([self checkhasPurchasedImportAndExport]){
+            
+            [SVProgressHUD showWithStatus:NSLocalizedString(@"Exporting", @"正在导出")];
+            NSUInteger count = [EverywhereCoreDataManager  exportFootprintsRepositoryToGPXFilesAtPath:[[NSURL documentURL].path stringByAppendingPathComponent:@"Exported"] enhancedGPX:YES];
+            [SVProgressHUD dismiss];
+            NSString *alertMessage = [NSString stringWithFormat:@"%@ : %lu",NSLocalizedString(@"Successfully export repository to enhanced gpx files count", @"成功导出足迹包至增强GPX文件数量"),(unsigned long)count];
+            UIAlertController *alertController = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示")
+                                                                                                message:alertMessage];
             [weakSelf presentViewController:alertController animated:YES completion:nil];
         }
     }];
@@ -514,7 +528,7 @@ typedef BOOL (^OnChangeCharacterInRange)(RETextItem *item, NSRange range, NSStri
         
     }];
     
-    [extendedModeFRManagementSection addItemsFromArray:@[documentsItem,importRepositoryItem,exportRepositoryToMFRItem,exportRepositoryToGPXItem,clearCatchItem]];
+    [extendedModeFRManagementSection addItemsFromArray:@[documentsItem,importRepositoryItem,exportRepositoryToEnhancedGPXItem,exportRepositoryToGPXItem,exportRepositoryToMFRItem,clearCatchItem]];
     
 #pragma mark - 购买
     

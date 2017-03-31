@@ -73,6 +73,6 @@
 /**
  *  生成 trkpt 字符串
  */
-- (NSString *)gpx_trk_trkseg_trkpt_String;
+- (NSString *)gpx_trk_trkseg_trkpt_String:(BOOL)enhancedGPX;
 
 @end

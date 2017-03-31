@@ -262,7 +262,7 @@
     
     [self performSelector:@selector(checkFirstLaunch) withObject:nil afterDelay:20.0];
     
-    //[self checkFirstLaunch];
+    [self performSelector:@selector(checkNewVersion) withObject:nil afterDelay:60.0];
 }
 
 - (void)checkFirstLaunch{
@@ -280,7 +280,18 @@
         
         [self presentViewController:alert animated:YES completion:nil];
     }
+}
 
+- (void)checkNewVersion{
+    int currentVersion = [self.settingManager.appVersion stringByReplacingOccurrencesOfString:@"." withString:@""].intValue;
+    int lastVersion = [self.settingManager.lastAppVersion stringByReplacingOccurrencesOfString:@"." withString:@""].intValue;
+    if (currentVersion > lastVersion) {
+        
+        UIAlertController *alert = [UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"温馨提示") message:NSLocalizedString(@"Album Maps for macOS is available now.", @"Mac版本《相册地图》已经上线，欢迎使用！")];
+        [self presentViewController:alert animated:YES completion:nil];
+        
+        self.settingManager.lastAppVersion = self.settingManager.appVersion;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -2595,17 +2606,22 @@
         anno.location = firstAsset.location;
         
         PHAssetInfo *firstAssetInfo = [PHAssetInfo fetchAssetInfoWithLocalIdentifier:firstAsset.localIdentifier inManagedObjectContext:[EverywhereCoreDataManager appDelegateMOC]];
-        NSString *placeName = [firstAssetInfo.localizedPlaceString_Placemark placemarkBriefName];
-        if (!placeName) placeName = NSLocalizedString(@"(Parsing location)",@"（正在解析位置）");
-        //下面注释的这一行同时显示序号和名称，后来发现不好用
-        //anno.annotationTitle = [NSString stringWithFormat:@"%lu/%lu %@",(unsigned long)(idx + 1),(unsigned long)(self.assetsArray.count),placeName];
-        anno.annotationTitle = [NSString stringWithFormat:@"%@",placeName];
+        
         
         if (self.settingManager.mapBaseMode == MapBaseModeMoment) {
             anno.annotationSubtitle = [NSString stringWithFormat:@"%@",[firstAsset.creationDate stringWithDefaultFormat]];
         }else{
             anno.annotationSubtitle = [NSString stringWithFormat:@"%@ ~ %@",[firstAsset.creationDate stringWithFormat:@"yyyy-MM-dd"],[lastAsset.creationDate stringWithFormat:@"yyyy-MM-dd"]];
         }
+        
+        NSString *placeName = [firstAssetInfo.localizedPlaceString_Placemark placemarkBriefName];
+        if (!placeName) {
+            //placeName = NSLocalizedString(@"(Parsing location)",@"（正在解析位置）");
+            placeName = anno.annotationSubtitle;
+        }
+        //下面注释的这一行同时显示序号和名称，后来发现不好用
+        //anno.annotationTitle = [NSString stringWithFormat:@"%lu/%lu %@",(unsigned long)(idx + 1),(unsigned long)(self.assetsArray.count),placeName];
+        anno.annotationTitle = [NSString stringWithFormat:@"%@",placeName];
         
         FootprintAnnotation *footprintAnnotation = [FootprintAnnotation new];
         footprintAnnotation.customTitle = anno.annotationTitle;

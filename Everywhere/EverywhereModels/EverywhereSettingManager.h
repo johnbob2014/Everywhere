@@ -75,6 +75,11 @@
 @property (strong,nonatomic) NSString *appVersion;
 
 /**
+ * 上次的app版本号
+ */
+@property (strong,nonatomic) NSString *lastAppVersion;
+
+/**
  * app帮助链接
  */
 @property (strong,nonatomic) NSString *appUserGuideURLString;

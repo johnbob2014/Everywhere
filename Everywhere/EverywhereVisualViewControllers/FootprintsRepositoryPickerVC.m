@@ -400,7 +400,7 @@
                                                                  [NSFileManager directoryExistsAtPath:dirPath autoCreate:YES];
                                                                  
                                                                  NSString *exportToGPXPath = [dirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.gpx",footprintsRepository.title]];
-                                                                 BOOL exportToGPX = [footprintsRepository exportToGPXFile:exportToGPXPath];
+                                                                 BOOL exportToGPX = [footprintsRepository exportToGPXFile:exportToGPXPath enhancedGPX:YES];
                                                                  
                                                                  NSString *exportToMFRPath = [dirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mfr",footprintsRepository.title]];
                                                                  BOOL exportToMFR = [footprintsRepository exportToMFRFile:exportToMFRPath];

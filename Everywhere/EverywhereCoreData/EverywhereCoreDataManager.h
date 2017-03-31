@@ -82,7 +82,7 @@ typedef void(^UpdatePlacemarkForPHAssetInfoCompletionBlock)(NSInteger reverseGeo
 /**
  *  将 所有足迹包 导出为GPX文件，返回导出成功的数量
  */
-+ (NSUInteger)exportFootprintsRepositoryToGPXFilesAtPath:(NSString *)directoryPath;
++ (NSUInteger)exportFootprintsRepositoryToGPXFilesAtPath:(NSString *)directoryPath enhancedGPX:(BOOL)enhancedGPX;
 
 /**
  *  从指定文件夹导入足迹包，并将导入成功的文件移入指定文件夹（如果为空，则删除），返回导入成功的数量

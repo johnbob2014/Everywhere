@@ -98,7 +98,7 @@
 /**
  *  写入GPX文件
  */
-- (BOOL)exportToGPXFile:(NSString *)filePath;
+- (BOOL)exportToGPXFile:(NSString *)filePath enhancedGPX:(BOOL)enhancedGPX;
 
 /**
  *  从GPX文件生成新实例

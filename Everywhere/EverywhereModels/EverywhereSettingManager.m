@@ -236,6 +236,17 @@
 
 #pragma mark - Items
 
+- (NSString *)lastAppVersion{
+    NSString *last = [[NSUserDefaults standardUserDefaults] stringForKey:@"lastAppVersion"];
+    if (last) return last;
+    else return @"1.0.0";
+}
+
+- (void)setLastAppVersion:(NSString *)lastAppVersion{
+    [[NSUserDefaults standardUserDefaults] setValue:lastAppVersion forKey:@"lastAppVersion"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (BOOL)debugMode{
     return [[NSUserDefaults standardUserDefaults] boolForKey:@"debugMode"];
 }

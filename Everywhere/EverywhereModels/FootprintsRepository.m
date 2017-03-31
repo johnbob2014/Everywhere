@@ -145,7 +145,7 @@
 
 #pragma mark - Export To and Import From GPX File
 
-- (BOOL)exportToGPXFile:(NSString *)filePath{
+- (BOOL)exportToGPXFile:(NSString *)filePath enhancedGPX:(BOOL)enhancedGPX{
     NSMutableString *gpx_String = [NSMutableString new];
     
     // xml版本及编码
@@ -209,7 +209,7 @@
     
     // 添加trkpt
     for (FootprintAnnotation *fp in self.footprintAnnotations) {
-        [gpx_String appendString:[fp gpx_trk_trkseg_trkpt_String]];
+        [gpx_String appendString:[fp gpx_trk_trkseg_trkpt_String:enhancedGPX]];
     }
     
     // 回缩，结束trkseg

@@ -68,9 +68,20 @@
     NSDate *timeTest = [NSDate date];
     __block NSInteger addedPHAssetInfoCount = 0;
     
+    
     NSString *userLibraryAssetCollectionID = [GCPhotoManager GCAssetCollectionID_UserLibrary];
     NSDictionary *dic = [GCPhotoManager fetchAssetsFormStartDate:startDate toEndDate:endDate fromAssetCollectionIDs:@[userLibraryAssetCollectionID]];
-    NSArray <PHAsset *> *assetArray = dic[userLibraryAssetCollectionID];
+     NSArray <PHAsset *> *assetArray = dic[userLibraryAssetCollectionID];
+    
+    /*
+    NSArray *albumAssetCollectionIDs = [GCPhotoManager GCAssetCollectionIDs_Album];
+    NSDictionary *dic = [GCPhotoManager fetchAssetsFormStartDate:startDate toEndDate:endDate fromAssetCollectionIDs:albumAssetCollectionIDs];
+    NSMutableArray <PHAsset *> *ma = [NSMutableArray new];
+    for (NSArray *array in dic.allValues) {
+        [ma addObjectsFromArray:array];
+    }
+    NSArray <PHAsset *> *assetArray = ma;
+    */
     
     [assetArray enumerateObjectsUsingBlock:^(PHAsset *obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (obj.location){
@@ -322,7 +333,7 @@
     return  count;
 }
 
-+ (NSUInteger)exportFootprintsRepositoryToGPXFilesAtPath:(NSString *)directoryPath{
++ (NSUInteger)exportFootprintsRepositoryToGPXFilesAtPath:(NSString *)directoryPath enhancedGPX:(BOOL)enhancedGPX{
     
     if (![NSFileManager directoryExistsAtPath:directoryPath autoCreate:YES]) return 0;
     
@@ -346,7 +357,7 @@
         
         FootprintsRepository *footprintsRepository = [FootprintsRepository importFromMFRFile:[ewfrInfo filePath]];
         footprintsRepository.title = ewfrInfo.title;
-        if ([footprintsRepository exportToGPXFile:filePath]){
+        if ([footprintsRepository exportToGPXFile:filePath enhancedGPX:enhancedGPX]){
             count++;
         }
         

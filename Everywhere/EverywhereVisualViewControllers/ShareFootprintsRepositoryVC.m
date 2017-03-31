@@ -27,10 +27,9 @@
     UITextField *titleTF;
     UITextView *statisticsInfoTV;
     UIScrollView *thumbnailSV;
-    UIButton *bottomLeftButton,*topLeftButton,*topRightButton;
+    UIButton *bottomBtn02,*topBtn01,*topBtn02,*bottomBtn01;
     
-    NSString *mfrString;
-    NSString *gpxString;
+    NSString *mfrString,*gpxString,*enhancedGpxString;
     
     EverywhereSettingManager *settingManager;
     FootprintsRepository *wxShareFR;
@@ -43,8 +42,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     settingManager = [EverywhereSettingManager defaultManager];
-    mfrString = NSLocalizedString(@"MFR Share", @"MFR分享");
-    gpxString = NSLocalizedString(@"GPX Share", @"GPX分享");
+    mfrString = NSLocalizedString(@"MFR", @"MFR");
+    gpxString = NSLocalizedString(@"Normal GPX", @"普通GPX");
+    enhancedGpxString = NSLocalizedString(@"Enhanced GPX", @"增强GPX");
     
     self.contentSizeInPopup = CGSizeMake(ScreenWidth * 0.9, 480);
     self.landscapeContentSizeInPopup = CGSizeMake(480, ScreenWidth * 0.9);
@@ -97,7 +97,7 @@
     [statisticsInfoTV autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight * 1.5];
     
     thumbnailLabel = [UILabel newAutoLayoutView];
-    thumbnailLabel.text = [NSString stringWithFormat:@"%@ - %lu",NSLocalizedString(@"MFR Thumbnails", @"MFR缩略图"),(long)self.footprintsRepository.thumbnailCount];
+    thumbnailLabel.text = [NSString stringWithFormat:@"%@ - %lu",NSLocalizedString(@"Thumbnails", @"缩略图"),(long)self.footprintsRepository.thumbnailCount];
     thumbnailLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:thumbnailLabel];
     [thumbnailLabel autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:statisticsInfoTV withOffset:10];
@@ -169,57 +169,75 @@
     [buttonContainerView autoPinEdge:ALEdgeTop toEdge:ALEdgeBottom ofView:thumbnailSV withOffset:10];
     [buttonContainerView autoAlignAxis:ALAxisVertical toSameAxisOfView:self.view];
     
-    NSString *tempString = mfrString;
+    NSString *tempString = enhancedGpxString;
     
-    topLeftButton = [UIButton newAutoLayoutView];
+    topBtn01 = [UIButton newAutoLayoutView];
     if (!settingManager.hasPurchasedShareAndBrowse){
         tempString = [tempString stringByAppendingFormat:@"(%lu)",(long)settingManager.trialCountForShareAndBrowse];
     }
-    [topLeftButton setTitle:tempString forState:UIControlStateNormal];
-    [topLeftButton setStyle:UIButtonStylePrimary];
-    topLeftButton.tag = 0;
-    [topLeftButton addTarget:self action:@selector(fileShare:) forControlEvents:UIControlEventTouchDown];
-    [buttonContainerView addSubview:topLeftButton];
-    [topLeftButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
-    [topLeftButton autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
-    [topLeftButton autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight];
+    [topBtn01 setTitle:tempString forState:UIControlStateNormal];
+    [topBtn01 setStyle:UIButtonStylePrimary];
+    topBtn01.tag = 0;
+    [topBtn01 addTarget:self action:@selector(fileShare:) forControlEvents:UIControlEventTouchDown];
+    [buttonContainerView addSubview:topBtn01];
+    [topBtn01 autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+    [topBtn01 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
+    [topBtn01 autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight];
     
     tempString = gpxString;
-    topRightButton = [UIButton newAutoLayoutView];
+    topBtn02 = [UIButton newAutoLayoutView];
     if (!settingManager.hasPurchasedShareAndBrowse){
         tempString = [tempString stringByAppendingFormat:@"(%lu)",(long)settingManager.trialCountForShareAndBrowse];
     }
-    [topRightButton setTitle:tempString forState:UIControlStateNormal];
-    [topRightButton setStyle:UIButtonStylePrimary];
-    topRightButton.tag = 1;
-    [topRightButton addTarget:self action:@selector(fileShare:) forControlEvents:UIControlEventTouchDown];
-    [buttonContainerView addSubview:topRightButton];
-    [topRightButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
-    [topRightButton autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
-    [topRightButton autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight];
-    [topRightButton autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:topLeftButton];
-    [topRightButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:topLeftButton withOffset:10];
+    [topBtn02 setTitle:tempString forState:UIControlStateNormal];
+    [topBtn02 setStyle:UIButtonStylePrimary];
+    topBtn02.tag = 1;
+    [topBtn02 addTarget:self action:@selector(fileShare:) forControlEvents:UIControlEventTouchDown];
+    [buttonContainerView addSubview:topBtn02];
+    [topBtn02 autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+    [topBtn02 autoPinEdgeToSuperviewEdge:ALEdgeTop withInset:0];
+    [topBtn02 autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight];
+    [topBtn02 autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:topBtn01];
+    [topBtn02 autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:topBtn01 withOffset:10];
     
-    bottomLeftButton = [UIButton newAutoLayoutView];
-    [bottomLeftButton setTitle:NSLocalizedString(@"Free Share", @"无图分享") forState:UIControlStateNormal];
-    [bottomLeftButton setStyle:UIButtonStylePrimary];
-    bottomLeftButton.tag = WXSceneSession;
-    [bottomLeftButton addTarget:self action:@selector(wxShare:) forControlEvents:UIControlEventTouchDown];
-    [buttonContainerView addSubview:bottomLeftButton];
-    [bottomLeftButton autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
-    [bottomLeftButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
-    [bottomLeftButton autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight];
+    tempString = mfrString;
+    bottomBtn01 = [UIButton newAutoLayoutView];
+    if (!settingManager.hasPurchasedShareAndBrowse){
+        tempString = [tempString stringByAppendingFormat:@"(%lu)",(long)settingManager.trialCountForShareAndBrowse];
+    }
+    [bottomBtn01 setTitle:tempString forState:UIControlStateNormal];
+    [bottomBtn01 setStyle:UIButtonStylePrimary];
+    bottomBtn01.tag = 2;
+    [bottomBtn01 addTarget:self action:@selector(fileShare:) forControlEvents:UIControlEventTouchDown];
+    [buttonContainerView addSubview:bottomBtn01];
+    [bottomBtn01 autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+    [bottomBtn01 autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
+    [bottomBtn01 autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight];
+    //[bottomBtn01 autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:topBtn01];
+    //[bottomBtn01 autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:topBtn02 withOffset:10];
     
-    UIButton *bottomRightButton = [UIButton newAutoLayoutView];
-    [bottomRightButton setTitle:NSLocalizedString(@"Instructions", @"分享说明") forState:UIControlStateNormal];
-    [bottomRightButton setStyle:UIButtonStylePrimary];
-    [bottomRightButton addTarget:self action:@selector(showInfoAlertController) forControlEvents:UIControlEventTouchDown];
-    [buttonContainerView addSubview:bottomRightButton];
-    [bottomRightButton autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
-    [bottomRightButton autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
-    [bottomRightButton autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight];
-    [bottomRightButton autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:bottomLeftButton];
-    [bottomRightButton autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:bottomLeftButton withOffset:10];
+    bottomBtn02 = [UIButton newAutoLayoutView];
+    [bottomBtn02 setTitle:NSLocalizedString(@"WeChat", @"微信") forState:UIControlStateNormal];
+    [bottomBtn02 setStyle:UIButtonStylePrimary];
+    bottomBtn02.tag = WXSceneSession;
+    [bottomBtn02 addTarget:self action:@selector(wxShare:) forControlEvents:UIControlEventTouchDown];
+    [buttonContainerView addSubview:bottomBtn02];
+    //[bottomBtn02 autoPinEdgeToSuperviewEdge:ALEdgeLeft withInset:0];
+    [bottomBtn02 autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
+    [bottomBtn02 autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight];
+    [bottomBtn02 autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:bottomBtn01];
+    [bottomBtn02 autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:bottomBtn01 withOffset:10];
+    
+    UIButton *bottomBtn03 = [UIButton newAutoLayoutView];
+    [bottomBtn03 setTitle:NSLocalizedString(@"Instructions", @"分享说明") forState:UIControlStateNormal];
+    [bottomBtn03 setStyle:UIButtonStylePrimary];
+    [bottomBtn03 addTarget:self action:@selector(showInfoAlertController) forControlEvents:UIControlEventTouchDown];
+    [buttonContainerView addSubview:bottomBtn03];
+    [bottomBtn03 autoPinEdgeToSuperviewEdge:ALEdgeRight withInset:0];
+    [bottomBtn03 autoPinEdgeToSuperviewEdge:ALEdgeBottom withInset:0];
+    [bottomBtn03 autoSetDimension:ALDimensionHeight toSize:ShareButtonHeight];
+    [bottomBtn03 autoMatchDimension:ALDimensionWidth toDimension:ALDimensionWidth ofView:bottomBtn02];
+    [bottomBtn03 autoPinEdge:ALEdgeLeft toEdge:ALEdgeRight ofView:bottomBtn02 withOffset:10];
 }
 
 #pragma mark - Thumnail Images
@@ -242,8 +260,9 @@
     if (![EverywhereSettingManager defaultManager].hasPurchasedShareAndBrowse){
         if (settingManager.trialCountForShareAndBrowse > 0){
             settingManager.trialCountForShareAndBrowse--;
-            [topLeftButton setTitle:[NSString stringWithFormat:@"%@(%lu)",mfrString,(long)settingManager.trialCountForShareAndBrowse] forState:UIControlStateNormal];
-            [topRightButton setTitle:[NSString stringWithFormat:@"%@(%lu)",gpxString,(long)settingManager.trialCountForShareAndBrowse] forState:UIControlStateNormal];
+            [topBtn01 setTitle:[NSString stringWithFormat:@"%@(%lu)",enhancedGpxString,(long)settingManager.trialCountForShareAndBrowse] forState:UIControlStateNormal];
+            [topBtn02 setTitle:[NSString stringWithFormat:@"%@(%lu)",gpxString,(long)settingManager.trialCountForShareAndBrowse] forState:UIControlStateNormal];
+            [bottomBtn01 setTitle:[NSString stringWithFormat:@"%@(%lu)",mfrString,(long)settingManager.trialCountForShareAndBrowse] forState:UIControlStateNormal];
         }else{
             if(self.userDidSelectedPurchaseShareFunctionHandler) self.userDidSelectedPurchaseShareFunctionHandler();
             return;
@@ -261,14 +280,19 @@
     
     switch (sender.tag) {
         case 0:
-            filePath = [filePath stringByAppendingString:@".mfr"];
-            exportSucceeded = [self.footprintsRepository exportToMFRFile:filePath];
-            documentInteractionController.UTI = UTI_MFR;
+            filePath = [filePath stringByAppendingString:@".gpx"];
+            exportSucceeded = [self.footprintsRepository exportToGPXFile:filePath enhancedGPX:YES];
+            documentInteractionController.UTI = UTI_GPX;
             break;
         case 1:
             filePath = [filePath stringByAppendingString:@".gpx"];
-            exportSucceeded = [self.footprintsRepository exportToGPXFile:filePath];
+            exportSucceeded = [self.footprintsRepository exportToGPXFile:filePath enhancedGPX:NO];
             documentInteractionController.UTI = UTI_GPX;
+            break;
+        case 2:
+            filePath = [filePath stringByAppendingString:@".mfr"];
+            exportSucceeded = [self.footprintsRepository exportToMFRFile:filePath];
+            documentInteractionController.UTI = UTI_MFR;
             break;
         default:
             break;
@@ -355,7 +379,7 @@
 
 - (void)showInfoAlertController{
     NSMutableString *ms = [NSMutableString new];
-    [ms appendFormat:@"%@\n",NSLocalizedString(@"ShareAndBrowse function include MFR and GPX file share without footprints count restriction. MFR file support thumbnails. GPX file can be used on portable GPS.", @"分享和浏览功能可以MFR或GPX两种文件格式进行分享，均没有足迹点数量限制。MFR文件支持缩略图。GPX文件可以在手持GPS上使用。")];
+    [ms appendFormat:@"%@\n",NSLocalizedString(@"ShareAndBrowse function include Enhanced GPX, Normal GPX and MFR file share without footprints count restriction. Enhanced GPX and MFR file support thumbnails. Normal GPX file can be used on portable GPS. Enhanced GPX and Normal GPX are compatible with AlbumMaps running on macOS.", @"分享和浏览功能可以增强GPX、普通GPX或MFR三种文件格式进行分享，均没有足迹点数量限制。增强GPX、MFR文件支持缩略图。GPX文件可以在手持GPS上使用。增强GPX、普通GPX与Mac版《相册地图》兼容。")];
     [ms appendFormat:@"%@\n",NSLocalizedString(@"You have 10 chances to try until you purchase ShareAndBrowse function.", @"如果未购买分享和浏览功能，您仍有10次试用机会。")];
     [ms appendFormat:@"%@\n",NSLocalizedString(@"WeChat share is free. But it doesn't support thumbnails and has footprints count restriction.Because of the restriction of WeChat content, make sure your footprints count is less than 30, otherwise share may fail.",@"无图分享免费使用，信托微信消息进行分享，有足迹点数量限制。由于微信将分享内容限制为10K，所以请将足迹点数量控制在30个以内，否则可能会分享失败。")];
     

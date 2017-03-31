@@ -105,17 +105,42 @@
     return gpx_wpt_String;
 }
 
-- (NSString *)gpx_trk_trkseg_trkpt_String{
+- (NSString *)gpx_trk_trkseg_trkpt_String:(BOOL)enhancedGPX{
     NSMutableString *gpx_trk_trkseg_trkpt_String = [NSMutableString new];
     [gpx_trk_trkseg_trkpt_String appendFormat:@"\n            "];
     [gpx_trk_trkseg_trkpt_String appendFormat:@"<trkpt lat=\"%.9f\" lon=\"%.9f\">",self.coordinateWGS84.latitude,self.coordinateWGS84.longitude];
     [gpx_trk_trkseg_trkpt_String appendFormat:@"<ele>%.2f</ele>",self.altitude];
     [gpx_trk_trkseg_trkpt_String appendFormat:@"\n            "];
     [gpx_trk_trkseg_trkpt_String appendFormat:@"<time>%@T%@Z</time>",[self.startDate stringWithFormat:@"yyyy-MM-dd"],[self.startDate stringWithFormat:@"hh:mm:ss"]];
+    // AlbumMaps特有属性 trkpt结束日期
     if (self.endDate){
         [gpx_trk_trkseg_trkpt_String appendFormat:@"\n            "];
         [gpx_trk_trkseg_trkpt_String appendFormat:@"<endtime>%@T%@Z</endtime>",[self.endDate stringWithFormat:@"yyyy-MM-dd"],[self.endDate stringWithFormat:@"hh:mm:ss"]];
     }
+    
+    // AlbumMaps特有属性 trkpt缩略图
+    if (enhancedGPX){
+        [gpx_trk_trkseg_trkpt_String appendFormat:@"\n            <thumbnails>"];
+        int index = 0;
+        for (id thumbnail in self.thumbnailArray) {
+            NSData *thumbnailData;
+            if ([thumbnail isKindOfClass:[NSData class]]){
+                thumbnailData = (NSData *)thumbnail;
+            }
+            else if ([thumbnail isKindOfClass:[UIImage class]]){
+                UIImage *thumbnailUIImage = (UIImage *)thumbnail;
+                thumbnailData = UIImageJPEGRepresentation(thumbnailUIImage, 1.0);
+            }
+            
+            [gpx_trk_trkseg_trkpt_String appendFormat:@"\n                <thumbnail index=\"%d\">",index];
+            [gpx_trk_trkseg_trkpt_String appendFormat:@"\n                    <data>%@</data>",[thumbnailData base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed]];
+            [gpx_trk_trkseg_trkpt_String appendFormat:@"\n                </thumbnail>"];
+            
+            index++;
+        }
+        [gpx_trk_trkseg_trkpt_String appendFormat:@"\n            </thumbnails>"];
+    }
+    
     [gpx_trk_trkseg_trkpt_String appendFormat:@"\n            "];
     [gpx_trk_trkseg_trkpt_String appendFormat:@"</trkpt>"];
     return gpx_trk_trkseg_trkpt_String;
