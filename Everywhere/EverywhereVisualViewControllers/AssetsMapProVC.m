@@ -2446,7 +2446,8 @@
     
     [self presentViewController:[UIAlertController informationAlertControllerWithTitle:NSLocalizedString(@"Note", @"提示") message:NSLocalizedString(@"The recorded footprints has been saved.", @"足迹保存成功。")]
                        animated:YES completion:nil];
-     
+    
+    self.isRecording = NO;
 }
 
 - (void)showQuiteRecordModeAlertController{
@@ -2479,7 +2480,11 @@
                                                        }];
     */
     
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",@"取消") style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {
+        //[self intelligentlySaveRecordedFootprintAnnotationsAndClearCatche];
+        [self quiteRecordMode];
+        [self quiteExtendedMode];
+    }];
     
     [alertController addAction:saveAction];
     //[alertController addAction:dropAction];
@@ -2520,6 +2525,7 @@
     if (!self.settingManager.hasPurchasedRecordAndEdit && self.settingManager.trialCountForRecordAndEdit > 0){
         NSInteger trialCount = self.settingManager.trialCountForRecordAndEdit;
         trialCount--;
+        self.settingManager.trialCountForRecordAndEdit = trialCount;
         
         NSString *leftTrialCountString;
         if(trialCount > 0) leftTrialCountString = [NSString stringWithFormat:@"%@ : %ld",NSLocalizedString(@"Left trial count for RecordAndEdit function", @"记录和编辑功能剩余试用次数"),(long)trialCount];
@@ -2556,9 +2562,9 @@
     [self.myMapView addOverlays:savedPolylineForRecord];
 
     // 清空存储的足迹点
-    FootprintAnnotation *lastfpAnnotation = recordedFootprintAnnotations.lastObject;
+    //FootprintAnnotation *lastfpAnnotation = recordedFootprintAnnotations.lastObject;
     recordedFootprintAnnotations = [NSMutableArray new];
-    [recordedFootprintAnnotations addObject:lastfpAnnotation];
+    //[recordedFootprintAnnotations addObject:lastfpAnnotation];
     
     totalDistanceForRecord = 0;
     
